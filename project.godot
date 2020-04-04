@@ -16,6 +16,7 @@ _global_script_class_icons={
 [application]
 
 config/name="PixelLevel"
+config/description="Pixel-perfect dungeon and environment sprites."
 config/icon="res://icon.png"
 
 [display]
