@@ -1,4 +1,7 @@
-[gd_scene format=2]
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://PixelLevel/Tiles.tres" type="TileSet" id=1]
 
 [node name="Level" type="TileMap"]
+tile_set = ExtResource( 1 )
 format = 1
