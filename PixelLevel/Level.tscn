@@ -2,8 +2,9 @@
 
 [ext_resource path="res://PixelLevel/Tiles.tres" type="TileSet" id=1]
 
-[node name="Map" type="Node2D"]
+[node name="Level" type="Node2D"]
 
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = ExtResource( 1 )
+cell_size = Vector2( 16, 16 )
 format = 1
