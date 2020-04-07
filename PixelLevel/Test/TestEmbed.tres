@@ -28,6 +28,7 @@ region = Rect2( 80, 0, 16, 16 )
 
 [resource]
 frames = 6
+fps = 8.0
 frame_0/texture = SubResource( 1 )
 frame_1/texture = SubResource( 2 )
 frame_1/delay_sec = 0.0
