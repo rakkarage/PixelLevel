@@ -7,7 +7,6 @@
 [ext_resource path="res://PixelLevel/Animation/BannerA4.tres" type="Texture" id=5]
 [ext_resource path="res://PixelLevel/Animation/BannerA3.tres" type="Texture" id=6]
 
-
 [resource]
 frames = 6
 fps = 8.0
