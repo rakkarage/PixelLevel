@@ -1,7 +1,7 @@
 [gd_resource type="TileSet" load_steps=5 format=2]
 
 [ext_resource path="res://PixelLevel/Level.png" type="Texture" id=1]
-[ext_resource path="res://PixelLevel/Animation/BannerA.tres" type="Texture" id=2]
+[ext_resource path="res://PixelLevel/Test/Test.tres" type="Texture" id=2]
 [ext_resource path="res://PixelLevel/Animation/Torch.tres" type="Texture" id=3]
 [ext_resource path="res://PixelLevel/Animation/BannerB.tres" type="Texture" id=4]
 
