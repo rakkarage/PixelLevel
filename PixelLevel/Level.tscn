@@ -1,6 +1,9 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://PixelLevel/Level.png" type="Texture" id=1]
+[ext_resource path="res://PixelLevel/BannerA0.tres" type="Material" id=2]
+[ext_resource path="res://PixelLevel/Torch0.tres" type="Material" id=3]
+[ext_resource path="res://PixelLevel/BannerB0.tres" type="Material" id=4]
 
 [sub_resource type="TileSet" id=1]
 0/name = "Level.png 0"
@@ -90,6 +93,7 @@
 4/name = "Level.png 4"
 4/texture = ExtResource( 1 )
 4/tex_offset = Vector2( 0, 0 )
+4/material = ExtResource( 3 )
 4/modulate = Color( 1, 1, 1, 1 )
 4/region = Rect2( 272, 0, 64, 16 )
 4/tile_mode = 2
@@ -174,6 +178,7 @@
 8/name = "Level.png 8"
 8/texture = ExtResource( 1 )
 8/tex_offset = Vector2( 0, 0 )
+8/material = ExtResource( 2 )
 8/modulate = Color( 1, 1, 1, 1 )
 8/region = Rect2( 288, 16, 96, 16 )
 8/tile_mode = 2
@@ -195,6 +200,7 @@
 9/name = "Level.png 9"
 9/texture = ExtResource( 1 )
 9/tex_offset = Vector2( 0, 0 )
+9/material = ExtResource( 4 )
 9/modulate = Color( 1, 1, 1, 1 )
 9/region = Rect2( 384, 16, 80, 16 )
 9/tile_mode = 2
