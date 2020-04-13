@@ -10,6 +10,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Map" parent="." instance=ExtResource( 2 )]
+[node name="Level" parent="." instance=ExtResource( 2 )]
 
 [node name="Intro" parent="." instance=ExtResource( 1 )]
