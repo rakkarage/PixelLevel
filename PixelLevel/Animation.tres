@@ -20,7 +20,7 @@ default_input_values = [ 0, 0.0, 1, 3.0 ]
 operator = 2
 
 [sub_resource type="VisualShaderNodeScalarFunc" id=6]
-function = 15
+function = 14
 
 [sub_resource type="VisualShaderNodeInput" id=7]
 input_name = "uv"
@@ -67,7 +67,7 @@ void fragment() {
 	float n_out4p0 = n_out3p0 * n_out11p0;
 
 // ScalarFunc:5
-	float n_out5p0 = round(n_out4p0);
+	float n_out5p0 = floor(n_out4p0);
 
 // VectorOp:7
 	vec3 n_in7p1 = vec3(0.03450, 0.00000, 0.00000);
@@ -92,7 +92,7 @@ void light() {
 
 }
 "
-graph_offset = Vector2( -280, 4 )
+graph_offset = Vector2( -178, -138 )
 mode = 1
 flags/light_only = false
 nodes/fragment/0/position = Vector2( 1200, 120 )
