@@ -6,7 +6,7 @@
 [ext_resource path="res://PixelLevel/BannerA.tres" type="Material" id=4]
 
 [sub_resource type="TileSet" id=1]
-0/name = "Level.png 0"
+0/name = "Floor"
 0/texture = ExtResource( 3 )
 0/tex_offset = Vector2( 0, 0 )
 0/modulate = Color( 1, 1, 1, 1 )
@@ -27,7 +27,7 @@
 0/shape_one_way_margin = 0.0
 0/shapes = [  ]
 0/z_index = 0
-1/name = "Level.png 1"
+1/name = "FloorRoom"
 1/texture = ExtResource( 3 )
 1/tex_offset = Vector2( 0, 0 )
 1/modulate = Color( 1, 1, 1, 1 )
@@ -48,7 +48,7 @@
 1/shape_one_way_margin = 0.0
 1/shapes = [  ]
 1/z_index = 0
-2/name = "Level.png 2"
+2/name = "Stair"
 2/texture = ExtResource( 3 )
 2/tex_offset = Vector2( 0, 0 )
 2/modulate = Color( 1, 1, 1, 1 )
@@ -69,7 +69,7 @@
 2/shape_one_way_margin = 0.0
 2/shapes = [  ]
 2/z_index = 0
-3/name = "Level.png 3"
+3/name = "Door"
 3/texture = ExtResource( 3 )
 3/tex_offset = Vector2( 0, 0 )
 3/modulate = Color( 1, 1, 1, 1 )
@@ -90,7 +90,7 @@
 3/shape_one_way_margin = 0.0
 3/shapes = [  ]
 3/z_index = 0
-4/name = "Level.png 4"
+4/name = "WallTorch"
 4/texture = ExtResource( 3 )
 4/tex_offset = Vector2( 0, 0 )
 4/material = ExtResource( 2 )
@@ -112,7 +112,7 @@
 4/shape_one_way_margin = 0.0
 4/shapes = [  ]
 4/z_index = 0
-5/name = "Level.png 5"
+5/name = "Wall"
 5/texture = ExtResource( 3 )
 5/tex_offset = Vector2( 0, 0 )
 5/modulate = Color( 1, 1, 1, 1 )
@@ -133,7 +133,7 @@
 5/shape_one_way_margin = 0.0
 5/shapes = [  ]
 5/z_index = 0
-6/name = "Level.png 6"
+6/name = "Carpet"
 6/texture = ExtResource( 3 )
 6/tex_offset = Vector2( 0, 0 )
 6/modulate = Color( 1, 1, 1, 1 )
@@ -154,7 +154,7 @@
 6/shape_one_way_margin = 0.0
 6/shapes = [  ]
 6/z_index = 0
-7/name = "Level.png 7"
+7/name = "Furniture"
 7/texture = ExtResource( 3 )
 7/tex_offset = Vector2( 0, 0 )
 7/modulate = Color( 1, 1, 1, 1 )
@@ -175,7 +175,7 @@
 7/shape_one_way_margin = 0.0
 7/shapes = [  ]
 7/z_index = 0
-8/name = "Level.png 8"
+8/name = "BannerA"
 8/texture = ExtResource( 3 )
 8/tex_offset = Vector2( 0, 0 )
 8/material = ExtResource( 4 )
@@ -197,7 +197,7 @@
 8/shape_one_way_margin = 0.0
 8/shapes = [  ]
 8/z_index = 0
-9/name = "Level.png 9"
+9/name = "BannerB"
 9/texture = ExtResource( 3 )
 9/tex_offset = Vector2( 0, 0 )
 9/material = ExtResource( 1 )
