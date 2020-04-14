@@ -39,35 +39,35 @@ operator = 3
 [sub_resource type="VisualShaderNodeScalarOp" id=12]
 operator = 4
 
-[sub_resource type="VisualShaderNodeVectorDecompose" id=14]
+[sub_resource type="VisualShaderNodeVectorDecompose" id=13]
 
-[sub_resource type="VisualShaderNodeScalarOp" id=15]
+[sub_resource type="VisualShaderNodeScalarOp" id=14]
 default_input_values = [ 0, 0.6555, 1, 0.6555 ]
 operator = 1
 
-[sub_resource type="VisualShaderNodeVectorOp" id=16]
+[sub_resource type="VisualShaderNodeVectorOp" id=15]
 operator = 1
 
-[sub_resource type="VisualShaderNodeVectorOp" id=17]
+[sub_resource type="VisualShaderNodeVectorOp" id=16]
 operator = 2
 
-[sub_resource type="VisualShaderNodeScalarFunc" id=18]
+[sub_resource type="VisualShaderNodeScalarFunc" id=17]
 function = 16
 
-[sub_resource type="VisualShaderNodeScalarUniform" id=19]
+[sub_resource type="VisualShaderNodeScalarUniform" id=18]
 uniform_name = "step"
 
-[sub_resource type="VisualShaderNodeScalarUniform" id=20]
+[sub_resource type="VisualShaderNodeScalarUniform" id=19]
 uniform_name = "start"
 
-[sub_resource type="VisualShaderNodeVectorCompose" id=21]
+[sub_resource type="VisualShaderNodeVectorCompose" id=20]
 
-[sub_resource type="VisualShaderNodeVectorOp" id=22]
+[sub_resource type="VisualShaderNodeVectorOp" id=21]
 operator = 2
 
-[sub_resource type="VisualShaderNodeVectorOp" id=23]
+[sub_resource type="VisualShaderNodeVectorOp" id=22]
 
-[sub_resource type="VisualShaderNodeTexture" id=24]
+[sub_resource type="VisualShaderNodeTexture" id=23]
 texture = ExtResource( 1 )
 
 [resource]
@@ -179,11 +179,11 @@ flags/light_only = false
 nodes/fragment/0/position = Vector2( 1000, 580 )
 nodes/fragment/2/node = SubResource( 8 )
 nodes/fragment/2/position = Vector2( -500, 540 )
-nodes/fragment/7/node = SubResource( 22 )
+nodes/fragment/7/node = SubResource( 21 )
 nodes/fragment/7/position = Vector2( 620, 500 )
-nodes/fragment/8/node = SubResource( 23 )
+nodes/fragment/8/node = SubResource( 22 )
 nodes/fragment/8/position = Vector2( 820, 340 )
-nodes/fragment/9/node = SubResource( 24 )
+nodes/fragment/9/node = SubResource( 23 )
 nodes/fragment/9/position = Vector2( 820, 460 )
 nodes/fragment/10/node = SubResource( 1 )
 nodes/fragment/10/position = Vector2( -720, 600 )
@@ -207,20 +207,20 @@ nodes/fragment/25/node = SubResource( 11 )
 nodes/fragment/25/position = Vector2( 260, 500 )
 nodes/fragment/26/node = SubResource( 12 )
 nodes/fragment/26/position = Vector2( 440, 500 )
-nodes/fragment/30/node = SubResource( 14 )
+nodes/fragment/30/node = SubResource( 13 )
 nodes/fragment/30/position = Vector2( -520, 340 )
-nodes/fragment/31/node = SubResource( 15 )
+nodes/fragment/31/node = SubResource( 14 )
 nodes/fragment/31/position = Vector2( -300, 340 )
-nodes/fragment/32/node = SubResource( 16 )
+nodes/fragment/32/node = SubResource( 15 )
 nodes/fragment/32/position = Vector2( 480, 300 )
-nodes/fragment/33/node = SubResource( 17 )
+nodes/fragment/33/node = SubResource( 16 )
 nodes/fragment/33/position = Vector2( 280, 340 )
-nodes/fragment/35/node = SubResource( 18 )
+nodes/fragment/35/node = SubResource( 17 )
 nodes/fragment/35/position = Vector2( 60, 360 )
-nodes/fragment/36/node = SubResource( 19 )
+nodes/fragment/36/node = SubResource( 18 )
 nodes/fragment/36/position = Vector2( -300, 460 )
-nodes/fragment/37/node = SubResource( 20 )
+nodes/fragment/37/node = SubResource( 19 )
 nodes/fragment/37/position = Vector2( -500, 460 )
-nodes/fragment/38/node = SubResource( 21 )
+nodes/fragment/38/node = SubResource( 20 )
 nodes/fragment/38/position = Vector2( -100, 460 )
 nodes/fragment/connections = PoolIntArray( 7, 0, 8, 1, 8, 0, 9, 0, 9, 0, 0, 0, 9, 1, 0, 1, 13, 0, 14, 1, 17, 0, 18, 0, 21, 0, 30, 0, 31, 0, 24, 0, 25, 0, 26, 0, 10, 0, 26, 1, 24, 0, 35, 0, 35, 0, 33, 0, 26, 0, 7, 0, 32, 0, 8, 0, 30, 0, 31, 0, 37, 0, 31, 1, 36, 0, 24, 1, 18, 0, 25, 1, 35, 0, 25, 0, 36, 0, 38, 0, 7, 0, 8, 1, 8, 0, 9, 0, 9, 0, 0, 0, 9, 1, 0, 1, 13, 0, 14, 1, 17, 0, 18, 0, 21, 0, 30, 0, 31, 0, 24, 0, 25, 0, 26, 0, 10, 0, 26, 1, 24, 0, 35, 0, 35, 0, 33, 0, 26, 0, 7, 0, 32, 0, 8, 0, 30, 0, 31, 0, 37, 0, 31, 1, 36, 0, 24, 1, 18, 0, 25, 1, 35, 0, 25, 0, 36, 0, 38, 0, 38, 0, 33, 1, 38, 0, 7, 1, 16, 0, 17, 0, 14, 0, 17, 1, 2, 0, 16, 0, 15, 0, 16, 1, 10, 0, 15, 0, 14, 0, 15, 1, 33, 0, 32, 1, 21, 0, 32, 0 )
