@@ -9,4 +9,4 @@ Pixel-perfect dungeon and environment sprites.
 
 - random rotation and flip tiles?
 - random tile animation start frame? offset time?
- - you dont need offset if you use the offset built into atlas tiles!!!
+  - you dont need offset if you use the offset built into atlas tiles!!!

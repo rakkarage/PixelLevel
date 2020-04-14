@@ -4,6 +4,5 @@
 
 [resource]
 shader = ExtResource( 1 )
-shader_param/offset = null
 shader_param/fps = 4.0
 shader_param/frames = 6.0
