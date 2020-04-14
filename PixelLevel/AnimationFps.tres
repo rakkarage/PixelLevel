@@ -18,26 +18,26 @@ operator = 4
 [sub_resource type="VisualShaderNodeScalarOp" id=5]
 operator = 2
 
-[sub_resource type="VisualShaderNodeInput" id=7]
+[sub_resource type="VisualShaderNodeInput" id=6]
 input_name = "time"
 
-[sub_resource type="VisualShaderNodeScalarOp" id=8]
+[sub_resource type="VisualShaderNodeScalarOp" id=7]
 default_input_values = [ 0, 0.0, 1, 3.0 ]
 operator = 2
 
-[sub_resource type="VisualShaderNodeScalarFunc" id=9]
+[sub_resource type="VisualShaderNodeScalarFunc" id=8]
 function = 16
 
-[sub_resource type="VisualShaderNodeInput" id=10]
+[sub_resource type="VisualShaderNodeInput" id=9]
 input_name = "uv"
 
-[sub_resource type="VisualShaderNodeVectorOp" id=11]
+[sub_resource type="VisualShaderNodeVectorOp" id=10]
 default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 0.0345, 0, 0 ) ]
 operator = 2
 
-[sub_resource type="VisualShaderNodeVectorOp" id=12]
+[sub_resource type="VisualShaderNodeVectorOp" id=11]
 
-[sub_resource type="VisualShaderNodeTexture" id=13]
+[sub_resource type="VisualShaderNodeTexture" id=12]
 texture = ExtResource( 1 )
 
 [resource]
@@ -105,23 +105,23 @@ void light() {
 
 }
 "
-graph_offset = Vector2( -525, 39 )
+graph_offset = Vector2( -335, -187 )
 mode = 1
 flags/light_only = false
 nodes/fragment/0/position = Vector2( 1200, 120 )
-nodes/fragment/2/node = SubResource( 7 )
+nodes/fragment/2/node = SubResource( 6 )
 nodes/fragment/2/position = Vector2( -80, 0 )
-nodes/fragment/4/node = SubResource( 8 )
+nodes/fragment/4/node = SubResource( 7 )
 nodes/fragment/4/position = Vector2( 280, 140 )
-nodes/fragment/5/node = SubResource( 9 )
+nodes/fragment/5/node = SubResource( 8 )
 nodes/fragment/5/position = Vector2( 460, 160 )
-nodes/fragment/6/node = SubResource( 10 )
+nodes/fragment/6/node = SubResource( 9 )
 nodes/fragment/6/position = Vector2( 660, 60 )
-nodes/fragment/7/node = SubResource( 11 )
+nodes/fragment/7/node = SubResource( 10 )
 nodes/fragment/7/position = Vector2( 660, 140 )
-nodes/fragment/8/node = SubResource( 12 )
+nodes/fragment/8/node = SubResource( 11 )
 nodes/fragment/8/position = Vector2( 840, 80 )
-nodes/fragment/9/node = SubResource( 13 )
+nodes/fragment/9/node = SubResource( 12 )
 nodes/fragment/9/position = Vector2( 1020, -20 )
 nodes/fragment/10/node = SubResource( 1 )
 nodes/fragment/10/position = Vector2( -280, 220 )

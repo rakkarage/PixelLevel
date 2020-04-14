@@ -8,6 +8,6 @@ Pixel-perfect dungeon and environment sprites.
 ## TODO
 
 - random rotation and flip tiles?
-- random tile animation start frame?
+- random tile animation start frame? offset time?
 - animation length? all are same length no matter frames?
 - share the shader!
