@@ -27,41 +27,41 @@ function = 14
 [sub_resource type="VisualShaderNodeInput" id=8]
 input_name = "time"
 
-[sub_resource type="VisualShaderNodeInput" id=10]
+[sub_resource type="VisualShaderNodeInput" id=9]
 input_name = "uv"
 
-[sub_resource type="VisualShaderNodeScalarOp" id=11]
+[sub_resource type="VisualShaderNodeScalarOp" id=10]
 default_input_values = [ 0, 0.0, 1, 0.0345 ]
 operator = 3
 
-[sub_resource type="VisualShaderNodeScalarOp" id=16]
+[sub_resource type="VisualShaderNodeScalarOp" id=11]
 
-[sub_resource type="VisualShaderNodeScalarOp" id=17]
-default_input_values = [ 0, 0.0, 1, 6.0 ]
+[sub_resource type="VisualShaderNodeScalarOp" id=12]
 operator = 4
 
-[sub_resource type="VisualShaderNodeInput" id=18]
+[sub_resource type="VisualShaderNodeInput" id=13]
 input_name = "uv"
 
-[sub_resource type="VisualShaderNodeVectorDecompose" id=19]
+[sub_resource type="VisualShaderNodeVectorDecompose" id=14]
 
-[sub_resource type="VisualShaderNodeScalarOp" id=20]
+[sub_resource type="VisualShaderNodeScalarOp" id=15]
 default_input_values = [ 0, 0.6555, 1, 0.0 ]
 operator = 1
 
-[sub_resource type="VisualShaderNodeVectorDecompose" id=21]
-
-[sub_resource type="VisualShaderNodeScalarOp" id=22]
-default_input_values = [ 0, 0.0, 1, 0.6555 ]
+[sub_resource type="VisualShaderNodeVectorOp" id=16]
 operator = 1
 
-[sub_resource type="VisualShaderNodeVectorOp" id=13]
+[sub_resource type="VisualShaderNodeVectorOp" id=17]
 default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 0.0345, 0, 0 ) ]
 operator = 2
 
-[sub_resource type="VisualShaderNodeVectorOp" id=14]
+[sub_resource type="VisualShaderNodeVectorOp" id=18]
+default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 0.0345, 0, 0 ) ]
+operator = 2
 
-[sub_resource type="VisualShaderNodeTexture" id=15]
+[sub_resource type="VisualShaderNodeVectorOp" id=19]
+
+[sub_resource type="VisualShaderNodeTexture" id=20]
 texture = ExtResource( 1 )
 
 [resource]
@@ -80,6 +80,29 @@ void vertex() {
 void fragment() {
 // Input:29
 	vec3 n_out29p0 = vec3(UV, 0.0);
+
+// Input:21
+	vec3 n_out21p0 = vec3(UV, 0.0);
+
+// VectorDecompose:30
+	float n_out30p0 = n_out21p0.x;
+	float n_out30p1 = n_out21p0.y;
+	float n_out30p2 = n_out21p0.z;
+
+// ScalarOp:31
+	float n_in31p0 = 0.65550;
+	float n_out31p0 = n_in31p0 - n_out30p0;
+
+// ScalarOp:24
+	float n_in24p1 = 0.03450;
+	float n_out24p0 = n_out31p0 / n_in24p1;
+
+// VectorOp:33
+	vec3 n_in33p1 = vec3(0.03450, 0.00000, 0.00000);
+	vec3 n_out33p0 = vec3(n_out24p0) * n_in33p1;
+
+// VectorOp:32
+	vec3 n_out32p0 = n_out29p0 - n_out33p0;
 
 // Input:2
 	float n_out2p0 = TIME;
@@ -106,12 +129,18 @@ void fragment() {
 // ScalarFunc:18
 	float n_out18p0 = floor(n_out17p0);
 
+// ScalarOp:25
+	float n_out25p0 = n_out18p0 + n_out24p0;
+
+// ScalarOp:26
+	float n_out26p0 = mod(n_out25p0, n_out10p0);
+
 // VectorOp:7
 	vec3 n_in7p1 = vec3(0.03450, 0.00000, 0.00000);
-	vec3 n_out7p0 = vec3(n_out18p0) * n_in7p1;
+	vec3 n_out7p0 = vec3(n_out26p0) * n_in7p1;
 
 // VectorOp:8
-	vec3 n_out8p0 = n_out29p0 + n_out7p0;
+	vec3 n_out8p0 = n_out32p0 + n_out7p0;
 
 // Texture:9
 	vec4 tex_frg_9_read = texture(tex_frg_9, n_out8p0.xy);
@@ -129,20 +158,20 @@ void light() {
 
 }
 "
-graph_offset = Vector2( 52, -209 )
+graph_offset = Vector2( 15, -162 )
 mode = 1
 flags/light_only = false
 nodes/fragment/0/position = Vector2( 1080, 360 )
 nodes/fragment/2/node = SubResource( 8 )
 nodes/fragment/2/position = Vector2( 280, -220 )
-nodes/fragment/7/node = SubResource( 13 )
+nodes/fragment/7/node = SubResource( 18 )
 nodes/fragment/7/position = Vector2( 720, 280 )
-nodes/fragment/8/node = SubResource( 14 )
+nodes/fragment/8/node = SubResource( 19 )
 nodes/fragment/8/position = Vector2( 900, 160 )
-nodes/fragment/9/node = SubResource( 15 )
+nodes/fragment/9/node = SubResource( 20 )
 nodes/fragment/9/position = Vector2( 900, 280 )
 nodes/fragment/10/node = SubResource( 1 )
-nodes/fragment/10/position = Vector2( 80, -160 )
+nodes/fragment/10/position = Vector2( 60, -180 )
 nodes/fragment/13/node = SubResource( 2 )
 nodes/fragment/13/position = Vector2( -120, -40 )
 nodes/fragment/14/node = SubResource( 3 )
@@ -155,22 +184,22 @@ nodes/fragment/17/node = SubResource( 6 )
 nodes/fragment/17/position = Vector2( 640, -100 )
 nodes/fragment/18/node = SubResource( 7 )
 nodes/fragment/18/position = Vector2( 820, -60 )
-nodes/fragment/21/node = SubResource( 10 )
+nodes/fragment/21/node = SubResource( 9 )
 nodes/fragment/21/position = Vector2( -520, 380 )
-nodes/fragment/24/node = SubResource( 11 )
+nodes/fragment/24/node = SubResource( 10 )
 nodes/fragment/24/position = Vector2( 80, 340 )
-nodes/fragment/25/node = SubResource( 16 )
+nodes/fragment/25/node = SubResource( 11 )
 nodes/fragment/25/position = Vector2( 280, 320 )
-nodes/fragment/26/node = SubResource( 17 )
-nodes/fragment/26/position = Vector2( 460, 320 )
-nodes/fragment/29/node = SubResource( 18 )
-nodes/fragment/29/position = Vector2( 240, 120 )
-nodes/fragment/30/node = SubResource( 19 )
+nodes/fragment/26/node = SubResource( 12 )
+nodes/fragment/26/position = Vector2( 500, 320 )
+nodes/fragment/29/node = SubResource( 13 )
+nodes/fragment/29/position = Vector2( 80, 80 )
+nodes/fragment/30/node = SubResource( 14 )
 nodes/fragment/30/position = Vector2( -360, 380 )
-nodes/fragment/31/node = SubResource( 20 )
+nodes/fragment/31/node = SubResource( 15 )
 nodes/fragment/31/position = Vector2( -140, 340 )
-nodes/fragment/32/node = SubResource( 21 )
-nodes/fragment/32/position = Vector2( 420, 100 )
-nodes/fragment/33/node = SubResource( 22 )
-nodes/fragment/33/position = Vector2( 660, 140 )
-nodes/fragment/connections = PoolIntArray( 7, 0, 8, 1, 8, 0, 9, 0, 9, 0, 0, 0, 9, 1, 0, 1, 13, 0, 14, 1, 15, 0, 16, 1, 14, 0, 17, 1, 17, 0, 18, 0, 2, 0, 16, 0, 16, 0, 17, 0, 18, 0, 25, 0, 25, 0, 26, 0, 21, 0, 30, 0, 30, 0, 31, 1, 31, 0, 24, 0, 24, 0, 25, 1, 29, 0, 32, 0, 32, 0, 33, 0, 10, 0, 15, 0, 14, 0, 15, 1, 29, 0, 8, 0, 18, 0, 7, 0 )
+nodes/fragment/32/node = SubResource( 16 )
+nodes/fragment/32/position = Vector2( 500, 60 )
+nodes/fragment/33/node = SubResource( 17 )
+nodes/fragment/33/position = Vector2( 300, 160 )
+nodes/fragment/connections = PoolIntArray( 7, 0, 8, 1, 8, 0, 9, 0, 9, 0, 0, 0, 9, 1, 0, 1, 13, 0, 14, 1, 15, 0, 16, 1, 14, 0, 17, 1, 17, 0, 18, 0, 2, 0, 16, 0, 16, 0, 17, 0, 18, 0, 25, 0, 21, 0, 30, 0, 30, 0, 31, 1, 31, 0, 24, 0, 24, 0, 25, 1, 10, 0, 15, 0, 14, 0, 15, 1, 24, 0, 33, 0, 29, 0, 32, 0, 33, 0, 32, 1, 26, 0, 7, 0, 25, 0, 26, 0, 10, 0, 26, 1, 32, 0, 8, 0 )

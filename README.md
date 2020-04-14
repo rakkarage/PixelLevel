@@ -43,8 +43,6 @@ if on frame 5 and offset is 1 then 0
 so need to add and then modulate!?!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 then start from start instead of current!
 
-
-
 woo!
 
 and add params
@@ -52,3 +50,17 @@ start, step
 
 uv 0: frame 0: 0
 uv 1: frame 0: 1
+
+0 + 0 = 0 mod 6 = 0
+1 + 0 = 1 mod 6 = 1
+2 + 0 = 2 mod 6 = 2
+3 + 0 = 3 mod 6 = 3
+4 + 0 = 4 mod 6 = 4
+5 + 0 = 5 mod 6 = 5
+
+0 + 1 = 1 mod 6 = 1
+1 + 1 = 2 mod 6 = 2
+2 + 1 = 3 mod 6 = 3
+3 + 1 = 4 mod 6 = 4
+4 + 1 = 5 mod 6 = 5
+5 + 1 = 6 mod 6 = 0
