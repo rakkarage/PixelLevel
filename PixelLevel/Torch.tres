@@ -4,6 +4,7 @@
 
 [resource]
 shader = ExtResource( 1 )
-shader_param/test = Vector3( 0.621, 0.0345, 0 )
+shader_param/start = 0.621
+shader_param/step = 0.0345
 shader_param/frames = 4.0
 shader_param/fps = 8.0
