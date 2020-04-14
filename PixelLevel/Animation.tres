@@ -81,9 +81,6 @@ void fragment() {
 // Input:2
 	float n_out2p0 = TIME;
 
-// ScalarOp:21
-	float n_out21p0 = n_out20p0 + n_out2p0;
-
 // ScalarUniform:10
 	float n_out10p0 = frames;
 
@@ -91,10 +88,13 @@ void fragment() {
 	float n_out15p0 = n_out14p0 * n_out10p0;
 
 // ScalarOp:16
-	float n_out16p0 = mod(n_out21p0, n_out15p0);
+	float n_out16p0 = mod(n_out2p0, n_out15p0);
+
+// ScalarOp:21
+	float n_out21p0 = n_out20p0 + n_out16p0;
 
 // ScalarOp:17
-	float n_out17p0 = n_out16p0 / n_out14p0;
+	float n_out17p0 = n_out21p0 / n_out14p0;
 
 // ScalarFunc:18
 	float n_out18p0 = floor(n_out17p0);
@@ -122,7 +122,7 @@ void light() {
 
 }
 "
-graph_offset = Vector2( -203, -232 )
+graph_offset = Vector2( -202, -377.5 )
 mode = 1
 flags/light_only = false
 nodes/fragment/0/position = Vector2( 1020, 280 )
@@ -147,13 +147,13 @@ nodes/fragment/15/position = Vector2( 260, 20 )
 nodes/fragment/16/node = SubResource( 5 )
 nodes/fragment/16/position = Vector2( 440, 20 )
 nodes/fragment/17/node = SubResource( 6 )
-nodes/fragment/17/position = Vector2( 660, -100 )
+nodes/fragment/17/position = Vector2( 660, -80 )
 nodes/fragment/18/node = SubResource( 7 )
-nodes/fragment/18/position = Vector2( 840, -80 )
+nodes/fragment/18/position = Vector2( 840, -60 )
 nodes/fragment/19/node = SubResource( 8 )
 nodes/fragment/19/position = Vector2( 80, -160 )
 nodes/fragment/20/node = SubResource( 10 )
 nodes/fragment/20/position = Vector2( 280, -220 )
 nodes/fragment/21/node = SubResource( 11 )
 nodes/fragment/21/position = Vector2( 480, -180 )
-nodes/fragment/connections = PoolIntArray( 6, 0, 8, 0, 7, 0, 8, 1, 8, 0, 9, 0, 9, 0, 0, 0, 9, 1, 0, 1, 13, 0, 14, 1, 14, 0, 15, 0, 10, 0, 15, 1, 15, 0, 16, 1, 16, 0, 17, 0, 14, 0, 17, 1, 17, 0, 18, 0, 18, 0, 7, 0, 19, 0, 20, 0, 14, 0, 20, 1, 20, 0, 21, 0, 2, 0, 21, 1, 21, 0, 16, 0 )
+nodes/fragment/connections = PoolIntArray( 6, 0, 8, 0, 7, 0, 8, 1, 8, 0, 9, 0, 9, 0, 0, 0, 9, 1, 0, 1, 13, 0, 14, 1, 14, 0, 15, 0, 10, 0, 15, 1, 15, 0, 16, 1, 14, 0, 17, 1, 17, 0, 18, 0, 18, 0, 7, 0, 19, 0, 20, 0, 14, 0, 20, 1, 20, 0, 21, 0, 2, 0, 16, 0, 16, 0, 21, 1, 21, 0, 17, 0 )
