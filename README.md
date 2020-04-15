@@ -22,8 +22,10 @@ fragment
   - mod time by animation length and divide by frame length then ceil to get current frame
 - calculate offset frame
   - subtract start from uv then divide by step then ceil to get offset frame
-- add current frame and offset frame and mod by frames to get actual frame
+-calculate actual frame
+  - add current frame and offset frame and mod by frames to get actual frame
 - calculate uv
   - uv - (current frame \* step) + (actual frame \* step)
   - TODO: don't need to mult twice!? do it after add!!!
   - TODO: there is a better way to calc this? it could be a constant!? like start?
+    - but it does not work when i make it a constant vector .6555, .0345, 0? like uv?
