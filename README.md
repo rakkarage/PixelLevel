@@ -12,17 +12,17 @@ uniform
 - frames: how many frames
 - fps: how many frames to show per second
 - start: where the first frame starts (X) (eg. 0.6555)
-- step: how big each frame (eg. 16 pixels or 0.0345)
+- step: uv width of each frame
 
 fragment
 
 - calculate frame
   - calculate the length of a frame by dividing 1 by the fps
   - calculate the length of the animation by multiplying frames by length
-  - mod time by animation length and divide by frame length then ceil to get current frame
+  - mod time by animation length and divide by frame length then floor to get current frame
 - calculate offset frame
   - calculate the uv width of a frame by divide 1 / frames
-  - subtract start from uv then divide by step then ceil to get offset frame
+  - subtract start from uv then divide by step then floor to get offset frame
 - calculate actual frame
   - add current frame and offset frame and mod by frames to get actual frame
 - calculate uv
