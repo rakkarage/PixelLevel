@@ -31,7 +31,6 @@ input_name = "time"
 input_name = "uv"
 
 [sub_resource type="VisualShaderNodeScalarOp" id=10]
-default_input_values = [ 0, 0.0, 1, 0.0345 ]
 operator = 3
 
 [sub_resource type="VisualShaderNodeScalarOp" id=11]
@@ -42,7 +41,6 @@ operator = 4
 [sub_resource type="VisualShaderNodeVectorDecompose" id=13]
 
 [sub_resource type="VisualShaderNodeScalarOp" id=14]
-default_input_values = [ 0, 0.6555, 1, 0.6555 ]
 operator = 1
 
 [sub_resource type="VisualShaderNodeVectorOp" id=15]
