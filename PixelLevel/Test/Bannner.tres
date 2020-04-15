@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+
+[ext_resource path="res://PixelLevel/Test/Test.tres" type="Shader" id=1]
+
+[resource]
+shader = ExtResource( 1 )
+shader_param/start = null
+shader_param/step = 0.0345
+shader_param/frames = 6.0
+shader_param/fps = 4.0

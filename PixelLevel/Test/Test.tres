@@ -1,6 +1,6 @@
-[gd_resource type="VisualShader" load_steps=28 format=2]
+[gd_resource type="VisualShader" load_steps=26 format=2]
 
-[ext_resource path="res://PixelLevel/Level.png" type="Texture" id=1]
+[ext_resource path="res://PixelLevel/Test/Banner.png" type="Texture" id=1]
 
 [sub_resource type="VisualShaderNodeScalarUniform" id=1]
 uniform_name = "frames"
@@ -60,20 +60,14 @@ uniform_name = "start"
 
 [sub_resource type="VisualShaderNodeVectorCompose" id=20]
 
-[sub_resource type="VisualShaderNodeVec3Constant" id=21]
-constant = Vector3( 0.6555, 0.0345, 0 )
+[sub_resource type="VisualShaderNodeScalarOp" id=21]
 
 [sub_resource type="VisualShaderNodeVectorOp" id=22]
 operator = 2
 
-[sub_resource type="VisualShaderNodeScalarOp" id=23]
+[sub_resource type="VisualShaderNodeVectorOp" id=23]
 
-[sub_resource type="VisualShaderNodeVectorOp" id=24]
-operator = 2
-
-[sub_resource type="VisualShaderNodeVectorOp" id=25]
-
-[sub_resource type="VisualShaderNodeTexture" id=26]
+[sub_resource type="VisualShaderNodeTexture" id=24]
 texture = ExtResource( 1 )
 
 [resource]
@@ -179,17 +173,17 @@ void light() {
 
 }
 "
-graph_offset = Vector2( -38, 51 )
+graph_offset = Vector2( 574, 311 )
 mode = 1
 flags/light_only = false
 nodes/fragment/0/position = Vector2( 1460, 400 )
 nodes/fragment/2/node = SubResource( 8 )
 nodes/fragment/2/position = Vector2( -560, 800 )
-nodes/fragment/7/node = SubResource( 24 )
+nodes/fragment/7/node = SubResource( 22 )
 nodes/fragment/7/position = Vector2( 780, 480 )
-nodes/fragment/8/node = SubResource( 25 )
+nodes/fragment/8/node = SubResource( 23 )
 nodes/fragment/8/position = Vector2( 960, 360 )
-nodes/fragment/9/node = SubResource( 26 )
+nodes/fragment/9/node = SubResource( 24 )
 nodes/fragment/9/position = Vector2( 1280, 280 )
 nodes/fragment/10/node = SubResource( 1 )
 nodes/fragment/10/position = Vector2( -780, 860 )
@@ -229,10 +223,6 @@ nodes/fragment/37/node = SubResource( 19 )
 nodes/fragment/37/position = Vector2( -580, 320 )
 nodes/fragment/38/node = SubResource( 20 )
 nodes/fragment/38/position = Vector2( -180, 340 )
-nodes/fragment/39/node = SubResource( 21 )
-nodes/fragment/39/position = Vector2( 420, 120 )
-nodes/fragment/40/node = SubResource( 22 )
-nodes/fragment/40/position = Vector2( 820, 120 )
-nodes/fragment/41/node = SubResource( 23 )
+nodes/fragment/41/node = SubResource( 21 )
 nodes/fragment/41/position = Vector2( 654, 615 )
-nodes/fragment/connections = PoolIntArray( 7, 0, 8, 1, 8, 0, 9, 0, 9, 0, 0, 0, 9, 1, 0, 1, 13, 0, 14, 1, 17, 0, 18, 0, 21, 0, 30, 0, 31, 0, 24, 0, 25, 0, 26, 0, 10, 0, 26, 1, 24, 0, 35, 0, 35, 0, 33, 0, 30, 0, 31, 0, 37, 0, 31, 1, 36, 0, 24, 1, 35, 0, 25, 0, 36, 0, 38, 0, 7, 0, 8, 1, 8, 0, 9, 0, 9, 0, 0, 0, 9, 1, 0, 1, 13, 0, 14, 1, 17, 0, 18, 0, 21, 0, 30, 0, 31, 0, 24, 0, 25, 0, 26, 0, 10, 0, 26, 1, 24, 0, 35, 0, 35, 0, 33, 0, 30, 0, 31, 0, 37, 0, 31, 1, 36, 0, 24, 1, 35, 0, 25, 0, 36, 0, 38, 0, 38, 0, 33, 1, 38, 0, 7, 1, 16, 0, 17, 0, 14, 0, 17, 1, 2, 0, 16, 0, 15, 0, 16, 1, 10, 0, 15, 0, 14, 0, 15, 1, 33, 0, 32, 1, 21, 0, 32, 0, 18, 0, 25, 1, 26, 0, 7, 0, 32, 0, 8, 0, 39, 0, 40, 0 )
+nodes/fragment/connections = PoolIntArray( 7, 0, 8, 1, 8, 0, 9, 0, 9, 0, 0, 0, 9, 1, 0, 1, 13, 0, 14, 1, 17, 0, 18, 0, 21, 0, 30, 0, 31, 0, 24, 0, 25, 0, 26, 0, 10, 0, 26, 1, 24, 0, 35, 0, 35, 0, 33, 0, 30, 0, 31, 0, 37, 0, 31, 1, 36, 0, 24, 1, 35, 0, 25, 0, 36, 0, 38, 0, 7, 0, 8, 1, 8, 0, 9, 0, 9, 0, 0, 0, 9, 1, 0, 1, 13, 0, 14, 1, 17, 0, 18, 0, 21, 0, 30, 0, 31, 0, 24, 0, 25, 0, 26, 0, 10, 0, 26, 1, 24, 0, 35, 0, 35, 0, 33, 0, 30, 0, 31, 0, 37, 0, 31, 1, 36, 0, 24, 1, 35, 0, 25, 0, 36, 0, 38, 0, 38, 0, 33, 1, 38, 0, 7, 1, 16, 0, 17, 0, 14, 0, 17, 1, 2, 0, 16, 0, 15, 0, 16, 1, 10, 0, 15, 0, 14, 0, 15, 1, 33, 0, 32, 1, 21, 0, 32, 0, 18, 0, 25, 1, 26, 0, 7, 0, 32, 0, 8, 0 )
