@@ -33,4 +33,7 @@ fragment
   - both problems solved by constant start?
     - but it does not work when i make it a constant vector .6555, .0345, 0? like uv?
   - start was passed in? use it instead of calculating start each pixel you dolt!?
+  - no i guess it is not constant? it is the tile start pixel start not?
+  - but it shakes and wobbles!? have to do something...
+  - test it with smaller numbers to see if shader rounding errors!!!
   
