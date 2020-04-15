@@ -25,3 +25,5 @@ fragment
 - add current frame and offset frame and mod by frames to get actual frame
 - calculate uv
   - uv - (current frame \* step) + (actual frame \* step)
+  - TODO: don't need to mult twice!? do it after add!!!
+  - TODO: there is a better way to calc this? it could be a constant!? like start?
