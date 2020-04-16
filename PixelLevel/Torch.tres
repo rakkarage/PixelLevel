@@ -4,7 +4,7 @@
 
 [resource]
 shader = ExtResource( 1 )
-shader_param/FrameStart = 0.620689655
-shader_param/FrameWidth = 0.034482759
+shader_param/FrameStart = 0.62069
+shader_param/FrameWidth = 0.0344828
 shader_param/FrameCount = 4.0
 shader_param/FrameLength = 0.125
