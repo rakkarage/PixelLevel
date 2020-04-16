@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://PixelLevel/BannerB.tres" type="Material" id=1]
-[ext_resource path="res://PixelLevel/Torch.tres" type="Material" id=2]
+[ext_resource path="res://PixelLevel/TorchA.tres" type="Material" id=2]
 [ext_resource path="res://PixelLevel/Level.png" type="Texture" id=3]
 [ext_resource path="res://PixelLevel/BannerA.tres" type="Material" id=4]
 
