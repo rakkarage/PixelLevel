@@ -20,6 +20,10 @@ fragment
   - mod time by animationLength and divide by frameLength and floor to get currentFrame
 - calculate offsetFrame
   - divide uv x by frameWidth and floor to get offsetFrame
+
+  - subtract start from uv then divide by step then floor to get offset frame?
+  - adds jitter back? need to seperate atlas?
+
 - calculate actualFrame
   - add current frame and offset frame and mod by frames to get actualFrame
 - offset uv to actualFrame
