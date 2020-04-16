@@ -5,7 +5,7 @@
 
 [resource]
 shader = ExtResource( 1 )
-shader_param/FrameWidth = 0.25
+shader_param/FrameWidth = 0.0344828
 shader_param/FrameCount = 4.0
 shader_param/FrameLength = 0.125
 shader_param/Atlas = ExtResource( 2 )
