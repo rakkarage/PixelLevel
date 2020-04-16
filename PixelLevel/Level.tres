@@ -129,7 +129,7 @@
 5/autotile/spacing = 0
 5/autotile/occluder_map = [  ]
 5/autotile/navpoly_map = [  ]
-5/autotile/priority_map = [  ]
+5/autotile/priority_map = [ Vector3( 0, 0, 10 ), Vector3( 1, 0, 10 ), Vector3( 2, 0, 10 ), Vector3( 3, 0, 10 ), Vector3( 4, 0, 5 ), Vector3( 5, 0, 5 ) ]
 5/autotile/z_index_map = [  ]
 5/occluder_offset = Vector2( 0, 0 )
 5/navigation_offset = Vector2( 0, 0 )
@@ -150,7 +150,7 @@
 6/autotile/spacing = 0
 6/autotile/occluder_map = [  ]
 6/autotile/navpoly_map = [  ]
-6/autotile/priority_map = [  ]
+6/autotile/priority_map = [ Vector3( 0, 0, 10 ), Vector3( 1, 0, 10 ), Vector3( 2, 0, 10 ), Vector3( 3, 0, 10 ) ]
 6/autotile/z_index_map = [  ]
 6/occluder_offset = Vector2( 0, 0 )
 6/navigation_offset = Vector2( 0, 0 )
@@ -171,7 +171,7 @@
 7/autotile/spacing = 0
 7/autotile/occluder_map = [  ]
 7/autotile/navpoly_map = [  ]
-7/autotile/priority_map = [  ]
+7/autotile/priority_map = [ Vector3( 0, 0, 10 ), Vector3( 1, 0, 10 ), Vector3( 2, 0, 10 ), Vector3( 3, 0, 10 ) ]
 7/autotile/z_index_map = [  ]
 7/occluder_offset = Vector2( 0, 0 )
 7/navigation_offset = Vector2( 0, 0 )
