@@ -1,5 +1,7 @@
 on:
   push:
+    tags:
+      - 'v*'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -8,6 +10,15 @@ jobs:
       with:
         submodules: 'true'
     - run: zip -r Release.zip . -x *.git* .github/workflows/release.tml bitbucket-pipelines.yml
+    - id: create
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
     - id: upload
       uses: actions/upload-release-asset@v1
       env:
