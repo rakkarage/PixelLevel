@@ -3,7 +3,7 @@
 Pixel-perfect dungeon and environment sprites.
 
 - <https://godotmarketplace.com/publisher/henry-software/>
-- <https://bitbucket.org/henrysoftware/pixellevel/issues>
+- <https://bitbucket.org/rakkarage/pixellevel/issues>
 
 ## Shader Description
 
