@@ -1,0 +1,10 @@
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: thedoctor0/zip-release@master
+      with:
+        filename: 'Release.zip'
+        exclusions: '*.git* bitbucket-pipelines.yml github-actions.yml'
