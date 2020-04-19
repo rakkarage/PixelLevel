@@ -7,8 +7,7 @@ Pixel-perfect dungeon and environment sprites.
 
 ## Shader Description
 
-animates an atlas in a cycle offset by frame so each instance is not, necessarily, in sync
-can select priority paint to let godot tilemap editor pick a random tile animation for you
+Animates an atlas in a cycle offset by frame so each instance is not, necessarily, in sync. Can select priority paint to let godot tilemap editor pick a random tile animation for you.
 
 uniform
 
