@@ -7,6 +7,9 @@
 
 [node name="Mob" type="Area2D"]
 script = ExtResource( 2 )
+__meta__ = {
+"_edit_group_": true
+}
 Start = Vector2( 4, 4 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
