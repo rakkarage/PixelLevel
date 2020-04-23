@@ -12,14 +12,14 @@ Animates an atlas in a cycle offset by frame so each instance is not, necessaril
 uniform
 
 - frames: eg. 6
-- frameLength: eg. 0.25 (4 fps)
+- frameDuration: eg. 0.25 (4 fps)
 - frameWidth: eg. 0.034482759 (1 / 29)
 
 fragment
 
 - calculate currentFrame
-  - calculate animationLength by multiplying frames by frameLength
-  - mod time by animationLength and divide by frameLength and floor to get currentFrame
+  - calculate animationDuration by multiplying frames by frameDuration
+  - mod time by animationDuration and divide by frameDuration and floor to get currentFrame
 - calculate offsetFrame
   - divide uv by frameWidth and floor to get offsetFrame
 - calculate actualFrame
