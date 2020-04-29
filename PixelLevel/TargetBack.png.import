@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/TargetBack.png-e0a5fec0084e6ee78ddf8dcac80621ee.stex"
+path="res://.import/TargetBack.png-f579060476f41387cdc15281405129f3.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://TargetBack.png"
-dest_files=[ "res://.import/TargetBack.png-e0a5fec0084e6ee78ddf8dcac80621ee.stex" ]
+source_file="res://PixelLevel/TargetBack.png"
+dest_files=[ "res://.import/TargetBack.png-f579060476f41387cdc15281405129f3.stex" ]
 
 [params]
 
