@@ -1,11 +1,11 @@
-[gd_resource type="ShaderMaterial" load_steps=3 format=2]
+[gd_resource type="ShaderMaterial" load_steps=2 format=2]
 
-[ext_resource path="res://PixelLevel/Animation.tres" type="Shader" id=1]
+[ext_resource path="res://PixelLevel/Animation.shader" type="Shader" id=1]
 [ext_resource path="res://PixelLevel/BannerB.png" type="Texture" id=2]
 
 [resource]
 shader = ExtResource( 1 )
-shader_param/FrameWidth = 0.2
-shader_param/FrameCount = 5.0
-shader_param/FrameLength = 0.25
-shader_param/Atlas = ExtResource( 2 )
+shader_param/count = 5.0
+shader_param/duration = 0.25
+shader_param/width = 0.2
+shader_param/frames = ExtResource( 2 )
