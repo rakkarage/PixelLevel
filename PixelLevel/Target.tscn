@@ -3,6 +3,7 @@
 [ext_resource path="res://PixelLevel/Target.tres" type="SpriteFrames" id=1]
 
 [node name="Target" type="Node2D"]
+position = Vector2( 0, -8 )
 
 [node name="Back" type="AnimatedSprite" parent="."]
 frames = ExtResource( 1 )
