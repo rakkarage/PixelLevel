@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://PixelLevel/Target.tres" type="SpriteFrames" id=1]
+
+[node name="Target" type="Node2D"]
+
+[node name="Back" type="AnimatedSprite" parent="."]
+frames = ExtResource( 1 )
+animation = "Back"
+playing = true
+
+[node name="Fore" type="AnimatedSprite" parent="."]
+frames = ExtResource( 1 )
+animation = "Fore"
+playing = true
