@@ -1,4 +1,4 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+[gd_resource type="ShaderMaterial" load_steps=3 format=2]
 
 [ext_resource path="res://PixelLevel/Animation.shader" type="Shader" id=1]
 [ext_resource path="res://PixelLevel/ThemeA.png" type="Texture" id=2]

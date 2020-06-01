@@ -9,12 +9,18 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Node2D",
+"class": "Level",
+"language": "GDScript",
+"path": "res://PixelLevel/Level.gd"
+}, {
 "base": "Object",
 "class": "Utility",
 "language": "GDScript",
 "path": "res://Intro/Utility.gd"
 } ]
 _global_script_class_icons={
+"Level": "",
 "Utility": ""
 }
 
