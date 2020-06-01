@@ -12,14 +12,15 @@ __meta__ = {
 }
 Start = Vector2( 4, 4 )
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="Sprite" type="AnimatedSprite" parent="."]
+frames = ExtResource( 1 )
+frame = 5
+playing = true
+
+[node name="Collision" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
 
-[node name="RayCast2D" type="RayCast2D" parent="."]
+[node name="RayCast" type="RayCast2D" parent="."]
 cast_to = Vector2( 0, 16 )
-
-[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
-frames = ExtResource( 1 )
-playing = true
 
 [node name="Tween" type="Tween" parent="."]

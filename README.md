@@ -5,7 +5,7 @@ Pixel-perfect dungeon and environment sprites.
 - <https://godotmarketplace.com/publisher/henry-software/>
 - <https://bitbucket.org/rakkarage/pixellevel/issues>
 
-## Shader Description
+## Tilemap Animation Shader Description
 
 Animates an atlas in a cycle offset by frame so each instance is not, necessarily, in sync. Can select priority paint to let godot tilemap editor pick a random tile animation for you.
 
