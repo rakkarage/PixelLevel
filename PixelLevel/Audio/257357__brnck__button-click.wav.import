@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/257357__brnck__button-click.wav-f187d005290a4e4dca1715ff5c325ea4.sample"
+
+[deps]
+
+source_file="res://PixelLevel/Audio/257357__brnck__button-click.wav"
+dest_files=[ "res://.import/257357__brnck__button-click.wav-f187d005290a4e4dca1715ff5c325ea4.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0
