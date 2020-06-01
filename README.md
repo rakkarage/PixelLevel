@@ -5,6 +5,16 @@ Pixel-perfect dungeon and environment sprites.
 - <https://godotmarketplace.com/publisher/henry-software/>
 - <https://bitbucket.org/rakkarage/pixellevel/issues>
 
+## Submodules
+
+To include submodules, clone with the --recursive flag:
+
+`git clone --recursive https://bitbucket.org/rakkarage/PixelLevel.git`
+
+or download a zip from bitbucket (bitbucket-pipelines.yml) which includes all submodules.
+
+<https://bitbucket.org/rakkarage/pixellevel/downloads/>
+
 ## Tilemap Animation Shader Description
 
 Animates an atlas in a cycle offset by frame so each instance is not, necessarily, in sync. Can select priority paint to let godot tilemap editor pick a random tile animation for you.
