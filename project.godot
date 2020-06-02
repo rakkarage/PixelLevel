@@ -30,7 +30,7 @@ config/icon="res://icon.png"
 window/size/width=640
 window/size/height=480
 window/stretch/mode="2d"
-window/stretch/aspect="keep"
+window/stretch/aspect="expand"
 
 [importer_defaults]
 
@@ -58,3 +58,7 @@ texture={
 [input_devices]
 
 pointing/emulate_touch_from_mouse=true
+
+[rendering]
+
+quality/2d/use_pixel_snap=true

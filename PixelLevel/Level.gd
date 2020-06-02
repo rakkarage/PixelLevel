@@ -6,6 +6,8 @@ onready var _fore   := $Fore
 onready var _mob    := $Mob
 onready var _target := $Target
 onready var _nav    := $Nav
+onready var _size: Vector2 = _back.cell_size
+
 var _path := PoolVector2Array()
 var _drag := false
 var _t : Transform2D
@@ -24,19 +26,21 @@ func _ready() -> void:
 # 	_camera.limit_right = rect.end.x * _back.cell_size.x
 # 	_camera.limit_bottom = rect.end.y * _back.cell_size.y
 
+func _tilePos(tile: Vector2) -> Vector2:
+	return _back.world_to_map(tile * _size + _size / 2.0)
+
 func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.button_index == BUTTON_LEFT:
-			if event.pressed:
-				var map = _back.world_to_map(event.global_position)
-				_target.global_position = _back.world_to_map(_back.map_to_world(map))
-				print(_target.global_position)
-	# 			_drag = true
-	# 		else:
-	# 			_drag = false
-	# elif event is InputEventMouseMotion:
-	# 	if _drag:
-	# 		print(event)
+	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
+		if event.pressed:
+			var test = _tilePos(event.global_position)
+			print(test)
+			_target.global_position = test
+			_drag = true
+		else:
+			_drag = false
+	elif event is InputEventMouseMotion:
+		if _drag:
+			print(event.relative)
 	# 		_t = get_canvas_transform()
 	# 		_t[2] += event.relative
 	# 		# _t = _t.scaled(Vector2(_scale, _scale))

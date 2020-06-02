@@ -6,14 +6,14 @@ onready var _rayCast := $RayCast
 onready var _tween := $Tween
 
 func _ready() -> void:
-	position = start * _size + _size / 2.0
+	global_position = start * _size + _size / 2.0
 
 func _step(direction: Vector2) -> void:
 	var test := direction * _size
 	_rayCast.cast_to = test
 	_rayCast.force_raycast_update()
 	if not _rayCast.is_colliding():
-		_tween.interpolate_property(self, "position", position, position + test, 0.22, Tween.TRANS_LINEAR, Tween.EASE_INOUT)
+		_tween.interpolate_property(self, "global_position", global_position, global_position + test, 0.22, Tween.TRANS_LINEAR, Tween.EASE_INOUT)
 		_tween.start()
 
 func _unhandled_key_input(event: InputEventKey) -> void:
