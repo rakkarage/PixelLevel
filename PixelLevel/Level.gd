@@ -1,6 +1,6 @@
 extends Viewport
 
-onready var _camera := $Camera
+onready var _camera := $CCamera
 onready var _back   := $Back
 onready var _fore   := $Fore
 onready var _mob    := $Mob
@@ -29,17 +29,17 @@ func _input(event: InputEvent) -> void:
 		if event.button_index == BUTTON_LEFT:
 			if event.pressed:
 				var map = _back.world_to_map(event.global_position)
-				_target.global_position = _back.map_to_world(map) / _scale
-				print(_target)
-				_drag = true
-			else:
-				_drag = false
-	elif event is InputEventMouseMotion:
-		if _drag:
-			print(event)
-			_t = get_canvas_transform()
-			_t[2] += event.relative
-			# _t = _t.scaled(Vector2(_scale, _scale))
-			set_canvas_transform(_t)
+				_target.global_position = _back.world_to_map(_back.map_to_world(map))
+				print(_target.global_position)
+	# 			_drag = true
+	# 		else:
+	# 			_drag = false
+	# elif event is InputEventMouseMotion:
+	# 	if _drag:
+	# 		print(event)
+	# 		_t = get_canvas_transform()
+	# 		_t[2] += event.relative
+	# 		# _t = _t.scaled(Vector2(_scale, _scale))
+	# 		set_canvas_transform(_t)
 
 # get_simple_path from mob to target!!!
