@@ -1,21 +1,19 @@
-extends Node
+extends Viewport
 
-onready var _back   := $Container/Viewport/Back
-onready var _fore   := $Container/Viewport/Fore
-onready var _mob    := $Container/Viewport/Mob
-onready var _target := $Container/Viewport/Target
-onready var _nav    := $Container/Viewport/Nav
+onready var _back   := $Back
+onready var _fore   := $Fore
+onready var _mob    := $Mob
+onready var _target := $Target
+onready var _nav    := $Nav
 var _path := PoolVector2Array()
 var _drag := false
 var _t : Transform2D
 var _scale := 2.0
 
-# get_viewport_rect().size
-
 func _ready() -> void:
-	_t = get_viewport().get_canvas_transform()
+	_t = get_canvas_transform()
 	_t = _t.scaled(Vector2(_scale, _scale))
-	get_viewport().set_canvas_transform(_t)
+	set_canvas_transform(_t)
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -29,6 +27,6 @@ func _input(event: InputEvent) -> void:
 	elif event is InputEventMouseMotion:
 		if _drag:
 			_t[2] = -_mob.position
-			get_viewport().set_canvas_transform(_t)
+			set_canvas_transform(_t)
 
 # get_simple_path from mob to target!!!
