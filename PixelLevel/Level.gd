@@ -1,6 +1,6 @@
 extends Viewport
 
-onready var _camera := $CCamera
+onready var _camera := $Camera
 onready var _back   := $Back
 onready var _fore   := $Fore
 onready var _mob    := $Mob
