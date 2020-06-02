@@ -32,9 +32,7 @@ func _tilePos(tile: Vector2) -> Vector2:
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
 		if event.pressed:
-			var test = _tilePos(event.global_position)
-			print(test)
-			_target.global_position = test
+			_target.global_position = _tilePos(event.global_position)
 			_drag = true
 		else:
 			_drag = false
