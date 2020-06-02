@@ -8,10 +8,10 @@
 frames = ExtResource( 1 )
 animation = "Back"
 playing = true
-offset = Vector2( 0, -8 )
+offset = Vector2( 8, 0 )
 
 [node name="Fore" type="AnimatedSprite" parent="."]
 frames = ExtResource( 1 )
 animation = "Fore"
 playing = true
-offset = Vector2( 0, -8 )
+offset = Vector2( 8, 0 )

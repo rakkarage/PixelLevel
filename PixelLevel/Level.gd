@@ -11,12 +11,12 @@ onready var _size: Vector2 = _back.cell_size
 var _path := PoolVector2Array()
 var _drag := false
 var _t : Transform2D
-var _scale := 2.0
+# var _scale := 2.0
 
-func _ready() -> void:
-	_t = get_canvas_transform()
-	_t = _t.scaled(Vector2(_scale, _scale))
-	set_canvas_transform(_t)
+# func _ready() -> void:
+	# _t = get_canvas_transform()
+	# _t = _t.scaled(Vector2(_scale, _scale))
+	# set_canvas_transform(_t)
 	# _setLimit()
 
 # func _setLimit() -> void:
@@ -27,7 +27,7 @@ func _ready() -> void:
 # 	_camera.limit_bottom = rect.end.y * _back.cell_size.y
 
 func _tilePos(tile: Vector2) -> Vector2:
-	return _back.world_to_map(tile * _size + _size / 2.0)
+	return _back.map_to_world(_back.world_to_map(tile))
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
@@ -40,10 +40,11 @@ func _input(event: InputEvent) -> void:
 			_drag = false
 	elif event is InputEventMouseMotion:
 		if _drag:
-			print(event.relative)
-	# 		_t = get_canvas_transform()
-	# 		_t[2] += event.relative
-	# 		# _t = _t.scaled(Vector2(_scale, _scale))
-	# 		set_canvas_transform(_t)
+			_camera.position -= event.relative
+			# print(event.relative)
+			# _t = _t.translated(event.relative)
+			# _t = _t.scaled(Vector2(_scale, _scale))
+			# print(_t[2])
+			# set_canvas_transform(_t)
 
 # get_simple_path from mob to target!!!
