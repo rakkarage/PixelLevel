@@ -16,7 +16,7 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT:
 			if event.pressed:
-				_target.global_position = _tilePos(event.global_position + _camera.global_position)
+				_target.global_position = _tilePos(event.global_position * _camera.zoom + _camera.global_position)
 				_drag = true
 			else:
 				_drag = false
@@ -26,4 +26,4 @@ func _input(event: InputEvent) -> void:
 			_camera.zoom += Vector2(0.02, 0.02)
 	elif event is InputEventMouseMotion:
 		if _drag:
-			_camera.global_position -= event.relative
+			_camera.global_position -= event.relative * _camera.zoom
