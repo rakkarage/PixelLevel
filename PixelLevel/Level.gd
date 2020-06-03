@@ -8,9 +8,9 @@ onready var _mob          := $Mob
 onready var _target       := $Target
 onready var _tween        := $Tween
 onready var _astar        := AStar2D.new()
+var _rect := Rect2()
 var _path := PoolVector2Array()
 var _drag := false
-var _rect := Rect2()
 
 func _ready() -> void:
 	_rect = _back.get_used_rect()
@@ -42,16 +42,21 @@ func _input(event: InputEvent) -> void:
 		if event.button_index == BUTTON_LEFT:
 			# use button up? else it is a drag!!!!!!!!!!!
 			if event.pressed:
-				var map = _map(event.global_position * _camera.zoom + _camera.global_position)
+				var tile = _map(event.global_position * _camera.zoom + _camera.global_position)
 				var target = _map(_target.global_position)
-				if map.is_equal_approx(target):
-					print("double")
-				_target.global_position = _world(map)
-				if not _rect.has_point(map):
-					_targetToClosest(map)
+				if tile.is_equal_approx(target):
+					var mob = _map(_mob.position)
+					if (tile.is_equal_approx(mob)):
+						print("double mob")
+					else:
+						print("double")
+				_target.global_position = _world(tile)
+				if not _rect.has_point(tile):
+					_targetToClosest(tile)
 				_drag = true
 			else:
 				_drag = false
+		# FIX ZOOM!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		elif event.button_index == BUTTON_WHEEL_UP:
 			_camera.zoom -= Vector2(0.02, 0.02)
 		elif event.button_index == BUTTON_WHEEL_DOWN: 
