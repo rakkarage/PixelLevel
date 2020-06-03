@@ -1,18 +1,11 @@
 extends Viewport
 
-const _zoomMin := Vector2.ONE
-const _zoomMinMin := Vector2(0.8, 0.8)
-const _zoomMax := Vector2(32.0, 32.0)
-const _zoomMaxMax := Vector2(40.0, 40.0)
-const _duration := 0.333
 onready var _camera := $Camera
 onready var _back   := $Back
 onready var _fore   := $Fore
 onready var _mob    := $Mob
 onready var _target := $Target
 onready var _nav    := $Nav
-onready var _tween  := $Tween
-onready var _size: Vector2 = _back.cell_size
 var _path := PoolVector2Array()
 var _drag := false
 
