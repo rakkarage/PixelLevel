@@ -5,7 +5,7 @@ onready var _back   := $Back
 onready var _fore   := $Fore
 onready var _mob    := $Mob
 onready var _target := $Target
-onready var _nav    := $Nav
+onready var _astar := AStar2D.new()
 var _path := PoolVector2Array()
 var _drag := false
 
@@ -27,3 +27,6 @@ func _input(event: InputEvent) -> void:
 	elif event is InputEventMouseMotion:
 		if _drag:
 			_camera.global_position -= event.relative * _camera.zoom
+
+func _findPath() -> void:
+	pass

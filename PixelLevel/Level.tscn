@@ -62,10 +62,6 @@ tile_data = PoolIntArray( 0, 5, 1, 1, 5, 2, 2, 5, 3, 3, 5, 3, 4, 4, 2, 5, 5, 0, 
 
 [node name="Target" parent="Level/Viewport" instance=ExtResource( 3 )]
 
-[node name="Nav" type="Navigation2D" parent="Level/Viewport"]
-
-[node name="Tween" type="Tween" parent="Level/Viewport"]
-
 [node name="Fore" type="ViewportContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
