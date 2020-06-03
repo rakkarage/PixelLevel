@@ -4,6 +4,7 @@ const _zoomMin := Vector2.ONE
 const _zoomMinMin := Vector2(0.8, 0.8)
 const _zoomMax := Vector2(32.0, 32.0)
 const _zoomMaxMax := Vector2(40.0, 40.0)
+const _duration := 0.333
 onready var _camera := $Camera
 onready var _back   := $Back
 onready var _fore   := $Fore
@@ -22,7 +23,7 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT:
 			if event.pressed:
-				_target.global_position = _tilePos(event.global_position)
+				_target.global_position = _tilePos(event.global_position + _camera.global_position)
 				_drag = true
 			else:
 				_drag = false
