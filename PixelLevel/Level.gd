@@ -27,9 +27,9 @@ func _input(event: InputEvent) -> void:
 			else:
 				_drag = false
 		elif event.button_index == BUTTON_WHEEL_UP:
-			_camera.zoom -= Vector2(0.2, 0.2)
+			_camera.zoom -= Vector2(0.02, 0.02)
 		elif event.button_index == BUTTON_WHEEL_DOWN: 
-			_camera.zoom += Vector2(0.2, 0.2)
+			_camera.zoom += Vector2(0.02, 0.02)
 	elif event is InputEventMouseMotion:
 		if _drag:
 			_camera.global_position -= event.relative
