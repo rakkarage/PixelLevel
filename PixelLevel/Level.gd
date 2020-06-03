@@ -8,16 +8,39 @@ onready var _target       := $Target
 onready var _astar        := AStar2D.new()
 var _path := PoolVector2Array()
 var _drag := false
+var _rect := Rect2()
 
-func _tilePos(tile: Vector2) -> Vector2:
-	return _back.map_to_world(_back.world_to_map(tile))
+func _ready() -> void:
+	_rect = _back.get_used_rect()
+	print("rect: %s" % _rect)
+	_addPoints();
+
+func _index(p: Vector2) -> int:
+	return int(p.x + (p.y * _rect.size.x))
+
+func _addPoints() -> void:
+	for y in range(size.y):
+		for x in range(size.x):
+			var p = Vector2(x, y)
+			_astar.add_point(_index(p), p)
+
+func _tilePosition(tile: Vector2) -> Vector2:
+	return _back.map_to_world(tile)
+
+func _tileAt(position: Vector2) -> Vector2:
+	return _back.world_to_map(position)
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT:
 			if event.pressed:
 				# if target already here???
-				_target.global_position = _tilePos(event.global_position * _camera.zoom + _camera.global_position)
+				var tile = _tileAt(event.global_position * _camera.zoom + _camera.global_position)
+				_target.global_position = _tilePosition(tile)
+				if _rect.has_point(tile):
+					print("in")
+				else:
+					print("out")
 				_drag = true
 			else:
 				_drag = false
@@ -32,12 +55,3 @@ func _input(event: InputEvent) -> void:
 func _findPath() -> void:
 	# from mob to target and draw it with effect
 	pass
-
-func _ready() -> void:
-	_addPoints();
-
-func _addPoints() -> void:
-	var size = _back.get_used_rect().size
-	for y in range(size.y):
-		for x in range(size.x):
-			_astar.add_point(x + (y * size.x), Vector2(x, y))
