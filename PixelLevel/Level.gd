@@ -15,14 +15,15 @@ const _duration := 0.333
 var _zoomMin := Vector2(0.01, 0.01)
 var _zoomMax := Vector2(1.0, 1.0)
 const _zoomVector := Vector2(0.02, 0.02)
+# factor = multiply: use it with itself for better expo scaling!? idk * not + u dolt
 
 func _ready() -> void:
 	_rect = _back.get_used_rect()
 	_addPoints();
 	# _targetTo(_map(_mob.global_position))
-	# _cameraTo(_map(_mob.position))
+	# _cameraTo(_map(_mob.global_position))
 	# _camera.global_position = Vector2(320, 240)
-	# print(_camera.position)
+	# print(_camera.global_position)
 	# print(_camera.offset)
 
 func _tileIndex(p: Vector2) -> int:
@@ -52,12 +53,14 @@ func _input(event: InputEvent) -> void:
 				_targetTo(event.global_position)
 				_dragRight = true
 			else:
+				_targetUpdate()
 				_dragRight = false
 		elif event.button_index == BUTTON_LEFT:
 			if event.pressed:
 				_targetTo(event.global_position)
 				_dragLeft = true
 			else:
+				_targetUpdate()
 				_dragLeft = false
 		elif event.button_index == BUTTON_WHEEL_UP:
 			var new = _camera.zoom - _zoomVector
@@ -75,6 +78,9 @@ func _input(event: InputEvent) -> void:
 		if _dragRight:
 			_camera.global_position -= event.relative * _camera.zoom
 
+# 0, 0 in middle? 640/480 / 2.0???????????????
+# add some 2d points or gizmo!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 # func _zoomIn(offset: Vector2) -> void:
 # 	_zoom(Vector2(_zoomMin, _zoomMin), offset)
 
@@ -91,17 +97,19 @@ func _input(event: InputEvent) -> void:
 # 		_tween.start()
 
 func _targetTo(to: Vector2) -> void:
-	var tile := _map(to * _camera.zoom + _camera.offset)
-	_target.global_position = _world(tile)
+	_target.global_position = _world(_map(to + _camera.offset * _camera.zoom))
+
+func _targetUpdate() -> void:
+	var tile = _map(_target.global_position)
 	if not _rect.has_point(tile):
 		_targetSnapClosest(tile)
 
-func _targetSnapClosest(to: Vector2) -> void:
-	_targetSnap(_astar.get_point_position(_astar.get_closest_point(to)))
+func _targetSnapClosest(tile: Vector2) -> void:
+	_targetSnap(_astar.get_point_position(_astar.get_closest_point(tile)))
 
-func _targetSnap(to: Vector2) -> void:
-	_tween.stop(_target, "position")
-	_tween.interpolate_property(_target, "position", null, _world(to), _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
+func _targetSnap(tile: Vector2) -> void:
+	_tween.stop(_target, "global_position")
+	_tween.interpolate_property(_target, "global_position", null, _world(tile), _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
 	_tween.start()
 
 # func _cameraToClosest(to: Vector2) -> void:
