@@ -4,6 +4,7 @@ Pixel-perfect dungeon and environment sprites.
 
 - <https://godotmarketplace.com/publisher/henry-software/>
 - <https://bitbucket.org/rakkarage/pixellevel/issues>
+- <https://github.com/rakkarage/pixellevel/issues>
 
 ## Submodules
 
