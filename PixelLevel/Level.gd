@@ -15,16 +15,12 @@ const _duration := 0.333
 var _zoomMin := Vector2(0.01, 0.01)
 var _zoomMax := Vector2(1.0, 1.0)
 const _zoomVector := Vector2(0.02, 0.02)
-# factor = multiply: use it with itself for better expo scaling!? idk * not + u dolt
 
 func _ready() -> void:
 	_rect = _back.get_used_rect()
+	_cameraTo(_rect.size * _back.cell_size / 2.0)
+	_targetTo(_mob.global_position)
 	_addPoints();
-	# _targetTo(_map(_mob.global_position))
-	# _cameraTo(_map(_mob.global_position))
-	# _camera.global_position = Vector2(320, 240)
-	# print(_camera.global_position)
-	# print(_camera.offset)
 
 func _tileIndex(p: Vector2) -> int:
 	return int(p.x + (p.y * _rect.size.x))
@@ -78,8 +74,36 @@ func _input(event: InputEvent) -> void:
 		if _dragRight:
 			_camera.global_position -= event.relative * _camera.zoom
 
-# 0, 0 in middle? 640/480 / 2.0???????????????
-# add some 2d points or gizmo!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+func _targetTo(to: Vector2) -> void:
+	_target.global_position = _world(_map(to))
+
+func _targetUpdate() -> void:
+	var tile = _map(_target.global_position)
+	if not _rect.has_point(tile):
+		_targetSnapClosest(tile)
+
+func _targetSnapClosest(tile: Vector2) -> void:
+	_targetSnap(_astar.get_point_position(_astar.get_closest_point(tile)))
+
+func _targetSnap(tile: Vector2) -> void:
+	_snap(_target, tile)
+
+func _cameraTo(to: Vector2) -> void:
+	_camera.global_position = _world(_map(to))
+
+func _cameraUpdate() -> void:
+	_cameraSnap(_map(_camera.global_position))
+
+func _cameraSnapClosest(tile: Vector2) -> void:
+	_targetSnap(_astar.get_point_position(_astar.get_closest_point(tile)))
+
+func _cameraSnap(tile: Vector2) -> void:
+	_snap(_camera, tile)
+
+func _snap(object: Object, tile: Vector2) -> void:
+	_tween.stop(object, "global_position")
+	_tween.interpolate_property(object, "global_position", null, _world(tile), _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
+	_tween.start()
 
 # func _zoomIn(offset: Vector2) -> void:
 # 	_zoom(Vector2(_zoomMin, _zoomMin), offset)
@@ -95,31 +119,4 @@ func _input(event: InputEvent) -> void:
 # 		_tween.stop(_camera, "offset")
 # 		_tween.interpolate_property(_camera, "offset", _camera.offset, offset, _duration, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
 # 		_tween.start()
-
-func _targetTo(to: Vector2) -> void:
-	_target.global_position = _world(_map(to + _camera.offset * _camera.zoom))
-
-func _targetUpdate() -> void:
-	var tile = _map(_target.global_position)
-	if not _rect.has_point(tile):
-		_targetSnapClosest(tile)
-
-func _targetSnapClosest(tile: Vector2) -> void:
-	_targetSnap(_astar.get_point_position(_astar.get_closest_point(tile)))
-
-func _targetSnap(tile: Vector2) -> void:
-	_tween.stop(_target, "global_position")
-	_tween.interpolate_property(_target, "global_position", null, _world(tile), _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
-	_tween.start()
-
-# func _cameraToClosest(to: Vector2) -> void:
-# 	_cameraTo(_astar.get_point_position(_astar.get_closest_point(to)))
-
-# func _cameraTo(to: Vector2) -> void:
-# 	_tween.stop(_camera, "offset")
-# 	_tween.interpolate_property(_camera, "offset", null, _world(to), _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
-# 	_tween.start()
-
-# func _findPath() -> void:
-# 	# from mob to target and draw it with effect
-# 	pass
+# factor = multiply: use it with itself for better expo scaling!? idk * not + u dolt
