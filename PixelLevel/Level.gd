@@ -18,7 +18,7 @@ const _zoomVector := Vector2(0.02, 0.02)
 
 func _ready() -> void:
 	_rect = _back.get_used_rect()
-	_cameraTo(_rect.size * _back.cell_size / 2.0)
+	_cameraTo(-(size / 2.0) + _rect.size * _back.cell_size / 2.0)
 	_targetTo(_mob.global_position)
 	_addPoints();
 
@@ -52,6 +52,8 @@ func _input(event: InputEvent) -> void:
 				_targetUpdate()
 				_dragRight = false
 		elif event.button_index == BUTTON_LEFT:
+			print(event.global_position)
+			print(_map(event.global_position))
 			if event.pressed:
 				_targetTo(event.global_position)
 				_dragLeft = true
@@ -70,17 +72,15 @@ func _input(event: InputEvent) -> void:
 				print("down: %s" % new.x)
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
-			_camera.offset -= event.relative * _camera.zoom
-		if _dragRight:
 			_camera.global_position -= event.relative * _camera.zoom
+		if _dragRight:
+			_camera.offset -= event.relative * _camera.zoom
 
 func _targetTo(to: Vector2) -> void:
-	_target.global_position = _world(_map(to))
+	_target.global_position = _world(_map(to * _camera.zoom + _camera.global_position))
 
 func _targetUpdate() -> void:
-	var tile = _map(_target.global_position)
-	if not _rect.has_point(tile):
-		_targetSnapClosest(tile)
+	_targetSnapClosest(_map(_target.global_position))
 
 func _targetSnapClosest(tile: Vector2) -> void:
 	_targetSnap(_astar.get_point_position(_astar.get_closest_point(tile)))
@@ -88,6 +88,7 @@ func _targetSnapClosest(tile: Vector2) -> void:
 func _targetSnap(tile: Vector2) -> void:
 	_snap(_target, tile)
 
+### maybe _mapTo!?
 func _cameraTo(to: Vector2) -> void:
 	_camera.global_position = _world(_map(to))
 
@@ -100,10 +101,12 @@ func _cameraSnapClosest(tile: Vector2) -> void:
 func _cameraSnap(tile: Vector2) -> void:
 	_snap(_camera, tile)
 
-func _snap(object: Object, tile: Vector2) -> void:
-	_tween.stop(object, "global_position")
-	_tween.interpolate_property(object, "global_position", null, _world(tile), _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
-	_tween.start()
+func _snap(node: Node2D, tile: Vector2) -> void:
+	var p = _world(tile)
+	if node.global_position != p:
+		_tween.stop(node, "global_position")
+		_tween.interpolate_property(node, "global_position", null, p, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
+		_tween.start()
 
 # func _zoomIn(offset: Vector2) -> void:
 # 	_zoom(Vector2(_zoomMin, _zoomMin), offset)
