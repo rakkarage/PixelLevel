@@ -2,13 +2,15 @@
 
 [ext_resource path="res://PixelLevel/Animation/BannerB.tres" type="Material" id=1]
 [ext_resource path="res://PixelLevel/Animation/BannerA.tres" type="Material" id=2]
-[ext_resource path="res://PixelLevel/Sprite/ThemeA.png" type="Texture" id=3]
+[ext_resource path="res://PixelLevel/Sprite/Theme0.png" type="Texture" id=3]
 [ext_resource path="res://PixelLevel/Sprite/Carpet.png" type="Texture" id=4]
 [ext_resource path="res://PixelLevel/Sprite/Furniture.png" type="Texture" id=5]
-[ext_resource path="res://PixelLevel/Animation/TorchA.tres" type="Material" id=6]
+[ext_resource path="res://PixelLevel/Animation/Torch0.tres" type="Material" id=6]
 [ext_resource path="res://PixelLevel/Sprite/BannerA.png" type="Texture" id=7]
 [ext_resource path="res://PixelLevel/Sprite/BannerB.png" type="Texture" id=8]
 [ext_resource path="res://PixelLevel/Sprite/Light.png" type="Texture" id=9]
+
+
 
 
 
