@@ -14,7 +14,8 @@ var _dragLeft := false
 const _duration := 0.333
 var _zoomMin := Vector2(0.01, 0.01)
 var _zoomMax := Vector2(1.0, 1.0)
-const _zoomVector := Vector2(0.02, 0.02)
+const _zoomIn := Vector2(0.98, 0.98)
+const _zoomOut := Vector2(1.02, 1.02)
 
 func _ready() -> void:
 	_rect = _back.get_used_rect()
@@ -44,16 +45,7 @@ func _map(position: Vector2) -> Vector2:
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
-		if event.button_index == BUTTON_RIGHT:
-			if event.pressed:
-				_targetTo(event.global_position)
-				_dragRight = true
-			else:
-				_targetUpdate()
-				_dragRight = false
-		elif event.button_index == BUTTON_LEFT:
-			print(event.global_position)
-			print(_map(event.global_position))
+		if event.button_index == BUTTON_LEFT:
 			if event.pressed:
 				_targetTo(event.global_position)
 				_dragLeft = true
@@ -61,20 +53,18 @@ func _input(event: InputEvent) -> void:
 				_targetUpdate()
 				_dragLeft = false
 		elif event.button_index == BUTTON_WHEEL_UP:
-			var new = _camera.zoom - _zoomVector
+			var new = _camera.zoom * _zoomIn
 			if new >= _zoomMin:
 				_camera.zoom = new
 				print("up: %s" % new.x)
 		elif event.button_index == BUTTON_WHEEL_DOWN:
-			var new = _camera.zoom + _zoomVector
+			var new = _camera.zoom * _zoomOut
 			if new <= _zoomMax:
 				_camera.zoom = new
 				print("down: %s" % new.x)
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
 			_camera.global_position -= event.relative * _camera.zoom
-		if _dragRight:
-			_camera.offset -= event.relative * _camera.zoom
 
 func _targetTo(to: Vector2) -> void:
 	_target.global_position = _world(_map(to * _camera.zoom + _camera.global_position))
@@ -88,7 +78,6 @@ func _targetSnapClosest(tile: Vector2) -> void:
 func _targetSnap(tile: Vector2) -> void:
 	_snap(_target, tile)
 
-### maybe _mapTo!?
 func _cameraTo(to: Vector2) -> void:
 	_camera.global_position = _world(_map(to))
 
