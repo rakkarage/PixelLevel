@@ -12,10 +12,10 @@ var _path := PoolVector2Array()
 var _dragRight := false
 var _dragLeft := false
 const _duration := 0.22
-var _zoomMin := Vector2(0.01, 0.01)
-var _zoomMax := Vector2(1.0, 1.0)
-const _zoomIn := Vector2(0.98, 0.98)
-const _zoomOut := Vector2(1.02, 1.02)
+const _zoomMin := Vector2(0.01, 0.01)
+const _zoomMax := Vector2(1.0, 1.0)
+const _factorIn := 0.98
+const _factorOut := 1.02
 
 func _ready() -> void:
 	_rect = _back.get_used_rect()
@@ -47,15 +47,17 @@ func _input(event: InputEvent) -> void:
 				_targetUpdate()
 				_dragLeft = false
 		elif event.button_index == BUTTON_WHEEL_UP:
-			var new = _camera.zoom * _zoomIn
-			if new >= _zoomMin:
-				_camera.zoom = new
-				print("up: %s" % new.x)
+			_zoom(_factorIn, event.global_position)
+			# var new = _camera.zoom * _zoomIn
+			# if new >= _zoomMin:
+			# 	_camera.zoom = new
+			# 	print("up: %s" % new.x)
 		elif event.button_index == BUTTON_WHEEL_DOWN:
-			var new = _camera.zoom * _zoomOut
-			if new <= _zoomMax:
-				_camera.zoom = new
-				print("down: %s" % new.x)
+			_zoom(_factorOut, event.global_position)
+			# var new = _camera.zoom * _zoomOut
+			# if new <= _zoomMax:
+			# 	_camera.zoom = new
+			# 	print("down: %s" % new.x)
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
 			_camera.global_position -= event.relative * _camera.zoom
@@ -102,6 +104,14 @@ func _snap(node: Node2D, tile: Vector2) -> void:
 		_tween.stop(node, "global_position")
 		_tween.interpolate_property(node, "global_position", null, p, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
 		_tween.start()
+
+func _zoom(factor: float, at: Vector2) -> void:
+	var z0 = _camera.zoom
+	var z1 = z0 * factor
+	var c0 = _camera.position
+	var c1 = c0 + at * (z0 - z1)
+	_camera.zoom = z1
+	_camera.global_position = c1
 
 # func _zoomIn(offset: Vector2) -> void:
 # 	_zoom(Vector2(_zoomMin, _zoomMin), offset)
