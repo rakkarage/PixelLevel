@@ -1,6 +1,7 @@
 [gd_resource type="SpriteFrames" load_steps=18 format=2]
 
-[ext_resource path="res://PixelLevel/SlimeA.png" type="Texture" id=1]
+[ext_resource path="res://PixelLevel/Sprite/SlimeA.png" type="Texture" id=1]
+
 
 
 [sub_resource type="AtlasTexture" id=1]

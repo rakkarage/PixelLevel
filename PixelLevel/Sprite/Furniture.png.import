@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Furniture.png-221c6f550b6fa69880e302dc928f41c4.stex"
+path="res://.import/Furniture.png-0e888c55d2e723306c65d2ba45b5f266.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://PixelLevel/Furniture.png"
-dest_files=[ "res://.import/Furniture.png-221c6f550b6fa69880e302dc928f41c4.stex" ]
+source_file="res://PixelLevel/Sprite/Furniture.png"
+dest_files=[ "res://.import/Furniture.png-0e888c55d2e723306c65d2ba45b5f266.stex" ]
 
 [params]
 

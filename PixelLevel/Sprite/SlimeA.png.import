@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Light.png-7a20fe0278c7184c7132eff7dc21181f.stex"
+path="res://.import/SlimeA.png-f3d605945bd5812803abda8617491239.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://PixelLevel/Light.png"
-dest_files=[ "res://.import/Light.png-7a20fe0278c7184c7132eff7dc21181f.stex" ]
+source_file="res://PixelLevel/Sprite/SlimeA.png"
+dest_files=[ "res://.import/SlimeA.png-f3d605945bd5812803abda8617491239.stex" ]
 
 [params]
 

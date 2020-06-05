@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Carpet.png-565eab7e770271a23e703f7d9662dc80.stex"
+path="res://.import/Carpet.png-ba42c6de831abd969f6b158f758f07e7.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://PixelLevel/Carpet.png"
-dest_files=[ "res://.import/Carpet.png-565eab7e770271a23e703f7d9662dc80.stex" ]
+source_file="res://PixelLevel/Sprite/Carpet.png"
+dest_files=[ "res://.import/Carpet.png-ba42c6de831abd969f6b158f758f07e7.stex" ]
 
 [params]
 

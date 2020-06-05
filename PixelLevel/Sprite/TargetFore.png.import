@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/TargetFore.png-256fc70187a5a07aec3059c3c1e1c591.stex"
+path="res://.import/TargetFore.png-07fed81875f139ef734c0171347be400.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://PixelLevel/TargetFore.png"
-dest_files=[ "res://.import/TargetFore.png-256fc70187a5a07aec3059c3c1e1c591.stex" ]
+source_file="res://PixelLevel/Sprite/TargetFore.png"
+dest_files=[ "res://.import/TargetFore.png-07fed81875f139ef734c0171347be400.stex" ]
 
 [params]
 
