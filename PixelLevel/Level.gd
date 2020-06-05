@@ -18,8 +18,8 @@ const _zoomVector := Vector2(0.02, 0.02)
 
 func _ready() -> void:
 	_rect = _back.get_used_rect()
-	_cameraTo(-(size / 2.0) + _rect.size * _back.cell_size / 2.0)
 	_targetTo(_mob.global_position)
+	_cameraTo(-(size / 2.0) + _rect.size * _back.cell_size / 2.0)
 	_addPoints();
 
 func _tileIndex(p: Vector2) -> int:
