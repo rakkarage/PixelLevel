@@ -48,16 +48,8 @@ func _input(event: InputEvent) -> void:
 				_dragLeft = false
 		elif event.button_index == BUTTON_WHEEL_UP:
 			_zoom(_factorIn, event.global_position)
-			# var new = _camera.zoom * _zoomIn
-			# if new >= _zoomMin:
-			# 	_camera.zoom = new
-			# 	print("up: %s" % new.x)
 		elif event.button_index == BUTTON_WHEEL_DOWN:
 			_zoom(_factorOut, event.global_position)
-			# var new = _camera.zoom * _zoomOut
-			# if new <= _zoomMax:
-			# 	_camera.zoom = new
-			# 	print("down: %s" % new.x)
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
 			_camera.global_position -= event.relative * _camera.zoom
@@ -112,19 +104,3 @@ func _zoom(factor: float, at: Vector2) -> void:
 	var c1 = c0 + at * (z0 - z1)
 	_camera.zoom = z1
 	_camera.global_position = c1
-
-# func _zoomIn(offset: Vector2) -> void:
-# 	_zoom(Vector2(_zoomMin, _zoomMin), offset)
-
-# func _zoomOut(offset: Vector2) -> void:
-# 	_zoom(Vector2(_zoomMax, _zoomMax), offset)
-
-# func _zoom(zoom: Vector2, offset: Vector2) -> void:
-# 	if zoom.x != _zoomCurrent:
-# 		_zoomCurrent = zoom.x
-# 		_tween.stop(_camera, "zoom")
-# 		_tween.interpolate_property(_camera, "zoom", _camera.zoom, Vector2(_zoomCurrent, _zoomCurrent), _duration, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
-# 		_tween.stop(_camera, "offset")
-# 		_tween.interpolate_property(_camera, "offset", _camera.offset, offset, _duration, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
-# 		_tween.start()
-# factor = multiply: use it with itself for better expo scaling!? idk * not + u dolt
