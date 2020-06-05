@@ -9,7 +9,6 @@ onready var _tween        := $Tween
 onready var _astar        := AStar2D.new()
 var _rect := Rect2()
 var _path := PoolVector2Array()
-var _dragRight := false
 var _dragLeft := false
 const _duration := 0.22
 const _zoomMin := Vector2(0.1, 0.1)
@@ -75,6 +74,13 @@ func _targetSnapClosest(tile: Vector2) -> void:
 func _targetSnap(tile: Vector2) -> void:
 	_snap(_target, tile)
 
+func _snap(node: Node2D, tile: Vector2) -> void:
+	var p = _world(tile)
+	if node.global_position != p:
+		_tween.stop(node, "global_position")
+		_tween.interpolate_property(node, "global_position", null, p, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
+		_tween.start()
+
 func _center() -> Vector2:
 	return -(size / 2.0) + _rect.size * _back.cell_size / 2.0
 
@@ -83,22 +89,6 @@ func _cameraCenter() -> void:
 
 func _cameraTo(to: Vector2) -> void:
 	_camera.global_position = _world(_map(to))
-
-func _cameraUpdate() -> void:
-	_cameraSnap(_map(_camera.global_position))
-
-func _cameraSnapClosest(tile: Vector2) -> void:
-	_targetSnap(_astar.get_point_position(_astar.get_closest_point(tile)))
-
-func _cameraSnap(tile: Vector2) -> void:
-	_snap(_camera, tile)
-
-func _snap(node: Node2D, tile: Vector2) -> void:
-	var p = _world(tile)
-	if node.global_position != p:
-		_tween.stop(node, "global_position")
-		_tween.interpolate_property(node, "global_position", null, p, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
-		_tween.start()
 
 func _zoom(factor: float, at: Vector2) -> void:
 	var z0 = _camera.zoom
