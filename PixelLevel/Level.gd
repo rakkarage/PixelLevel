@@ -12,10 +12,10 @@ var _path := PoolVector2Array()
 var _dragRight := false
 var _dragLeft := false
 const _duration := 0.22
-const _zoomMin := Vector2(0.01, 0.01)
+const _zoomMin := Vector2(0.1, 0.1)
 const _zoomMax := Vector2(1.0, 1.0)
-const _factorIn := 0.98
-const _factorOut := 1.02
+const _factorIn := 0.90
+const _factorOut := 1.10
 
 func _ready() -> void:
 	_rect = _back.get_used_rect()
@@ -99,8 +99,11 @@ func _snap(node: Node2D, tile: Vector2) -> void:
 
 func _zoom(factor: float, at: Vector2) -> void:
 	var z0 = _camera.zoom
-	var z1 = z0 * factor
+	var z1 = _zoomNew(z0 * factor)
 	var c0 = _camera.position
 	var c1 = c0 + at * (z0 - z1)
 	_camera.zoom = z1
 	_camera.global_position = c1
+
+func _zoomNew(zoom: Vector2) -> Vector2:
+	return _zoomMin if zoom < _zoomMin else _zoomMax if zoom > _zoomMax else zoom
