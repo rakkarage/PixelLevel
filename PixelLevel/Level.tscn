@@ -22,6 +22,7 @@ handle_input_locally = false
 render_target_update_mode = 3
 
 [node name="Camera" type="Camera2D" parent="Back/Viewport"]
+anchor_mode = 0
 
 [node name="Back" parent="Back/Viewport" instance=ExtResource( 5 )]
 
@@ -79,3 +80,4 @@ handle_input_locally = false
 render_target_update_mode = 3
 
 [node name="Camera" type="Camera2D" parent="Fore/Viewport"]
+anchor_mode = 0
