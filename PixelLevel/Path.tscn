@@ -2,7 +2,6 @@
 
 [ext_resource path="res://PixelLevel/Path.tres" type="SpriteFrames" id=1]
 
-
 [node name="Path" type="AnimatedSprite"]
 frames = ExtResource( 1 )
 playing = true
