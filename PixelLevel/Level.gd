@@ -75,8 +75,11 @@ func _targetSnapClosest(tile: Vector2) -> void:
 func _targetSnap(tile: Vector2) -> void:
 	_snap(_target, tile)
 
+func _center() -> Vector2:
+	return -(size / 2.0) + _rect.size * _back.cell_size / 2.0
+
 func _cameraCenter() -> void:
-	_cameraTo(-(size / 2.0) + _rect.size * _back.cell_size / 2.0)
+	_cameraTo(_center())
 
 func _cameraTo(to: Vector2) -> void:
 	_camera.global_position = _world(_map(to))
@@ -100,7 +103,7 @@ func _snap(node: Node2D, tile: Vector2) -> void:
 func _zoom(factor: float, at: Vector2) -> void:
 	var z0 = _camera.zoom
 	var z1 = _zoomNew(z0 * factor)
-	var c0 = _camera.position
+	var c0 = _camera.global_position
 	var c1 = c0 + at * (z0 - z1)
 	_camera.zoom = z1
 	_camera.global_position = c1
