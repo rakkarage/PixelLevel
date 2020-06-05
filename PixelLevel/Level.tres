@@ -10,13 +10,6 @@
 [ext_resource path="res://PixelLevel/Sprite/BannerB.png" type="Texture" id=8]
 [ext_resource path="res://PixelLevel/Sprite/Light.png" type="Texture" id=9]
 
-
-
-
-
-
-
-
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
 
