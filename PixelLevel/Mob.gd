@@ -13,7 +13,7 @@ func _step(direction: Vector2) -> void:
 	_rayCast.cast_to = test
 	_rayCast.force_raycast_update()
 	if not _rayCast.is_colliding():
-		_tween.interpolate_property(self, "global_position", global_position, global_position + test, 0.22, Tween.TRANS_LINEAR, Tween.EASE_INOUT)
+		_tween.interpolate_property(self, "global_position", global_position, global_position + test, 0.22, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
 		_tween.start()
 
 func _unhandled_key_input(event: InputEventKey) -> void:

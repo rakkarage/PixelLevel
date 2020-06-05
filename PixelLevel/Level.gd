@@ -11,7 +11,7 @@ var _rect := Rect2()
 var _path := PoolVector2Array()
 var _dragRight := false
 var _dragLeft := false
-const _duration := 0.333
+const _duration := 0.22
 var _zoomMin := Vector2(0.01, 0.01)
 var _zoomMax := Vector2(1.0, 1.0)
 const _zoomIn := Vector2(0.98, 0.98)
@@ -19,8 +19,8 @@ const _zoomOut := Vector2(1.02, 1.02)
 
 func _ready() -> void:
 	_rect = _back.get_used_rect()
-	_targetTo(_mob.global_position)
-	_cameraTo(-(size / 2.0) + _rect.size * _back.cell_size / 2.0)
+	_targetToMob()
+	_cameraCenter()
 	_addPoints();
 
 func _tileIndex(p: Vector2) -> int:
@@ -66,6 +66,11 @@ func _input(event: InputEvent) -> void:
 		if _dragLeft:
 			_camera.global_position -= event.relative * _camera.zoom
 
+# nothing left to try but middle mode?
+
+func _targetToMob() -> void:
+	_targetTo(_mob.global_position)
+
 func _targetTo(to: Vector2) -> void:
 	_target.global_position = _world(_map(to * _camera.zoom + _camera.global_position))
 
@@ -77,6 +82,9 @@ func _targetSnapClosest(tile: Vector2) -> void:
 
 func _targetSnap(tile: Vector2) -> void:
 	_snap(_target, tile)
+
+func _cameraCenter() -> void:
+	_cameraTo(-(size / 2.0) + _rect.size * _back.cell_size / 2.0)
 
 func _cameraTo(to: Vector2) -> void:
 	_camera.global_position = _world(_map(to))
