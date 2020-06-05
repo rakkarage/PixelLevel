@@ -37,12 +37,6 @@ func _addPoints() -> void:
 			var p := Vector2(x, y)
 			_astar.add_point(_tileIndex(p), p)
 
-func _world(tile: Vector2) -> Vector2:
-	return _back.map_to_world(tile)
-
-func _map(position: Vector2) -> Vector2:
-	return _back.world_to_map(position)
-
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT:
@@ -66,7 +60,11 @@ func _input(event: InputEvent) -> void:
 		if _dragLeft:
 			_camera.global_position -= event.relative * _camera.zoom
 
-# nothing left to try but middle mode?
+func _world(tile: Vector2) -> Vector2:
+	return _back.map_to_world(tile)
+
+func _map(position: Vector2) -> Vector2:
+	return _back.world_to_map(position)
 
 func _targetToMob() -> void:
 	_targetTo(_mob.global_position)
