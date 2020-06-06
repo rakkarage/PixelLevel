@@ -119,7 +119,7 @@ func _snapCameraBy(by: Vector2) -> void:
 
 func _constrainRect(world: Rect2, map: Rect2) -> Vector2:
 	return _constrain(world.position, world.end, map.position, map.end)
-	
+
 func _constrain(minWorld: Vector2, maxWorld: Vector2, minMap: Vector2, maxMap: Vector2) -> Vector2:
 	var delta = Vector2.ZERO
 	if minWorld.x > minMap.x: delta.x += minMap.x - minWorld.x
