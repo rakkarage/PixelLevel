@@ -17,6 +17,7 @@ const _factorIn := 0.90
 const _factorOut := 1.10
 
 func _ready() -> void:
+	# _camera.zoom = Vector2(0.75, 0.75)
 	_rect = _back.get_used_rect()
 	_targetToMob()
 	_cameraCenter()
@@ -67,7 +68,7 @@ func _map(position: Vector2) -> Vector2:
 	return _back.world_to_map(position)
 
 func _mapSize() -> Vector2:
-	return _rect.size * _back.cell_size
+	return _rect.size * _back.cell_size# / _camera.zoom
 
 func _mapBounds() -> Rect2:
 	return Rect2(-_camera.global_position, _mapSize())
@@ -98,7 +99,7 @@ func _center() -> Vector2:
 	return -(_worldSize() / 2.0) + _mapSize() / 2.0
 
 func _cameraCenter() -> void:
-	_cameraTo(_center())
+	_cameraTo(_center())# * _camera.zoom)
 
 func _cameraTo(to: Vector2) -> void:
 	_camera.global_position = _world(_map(to))
@@ -108,8 +109,11 @@ func _cameraBy(by: Vector2) -> void:
 
 func _cameraUpdate() -> void:
 	var map := _mapBounds()
+	print(map)
 	var world := _worldBounds().grow(-_back.cell_size.x)
+	print(world)
 	if not world.intersects(map):
+		print("not!!!")
 		_snapCameraBy(_constrainRect(world, map))
 
 func _snapCameraBy(by: Vector2) -> void:
