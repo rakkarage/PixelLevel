@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=30 format=2]
+[gd_resource type="TileSet" load_steps=31 format=2]
 
 [ext_resource path="res://PixelLevel/Animation/BannerB.tres" type="Material" id=1]
 [ext_resource path="res://PixelLevel/Animation/BannerA.tres" type="Material" id=2]
@@ -15,6 +15,7 @@
 [ext_resource path="res://PixelLevel/Animation/WaterDeepBack.tres" type="Material" id=13]
 [ext_resource path="res://PixelLevel/Animation/WaterShallowBack.tres" type="Material" id=14]
 [ext_resource path="res://PixelLevel/Animation/WaterDeepFore.tres" type="Material" id=15]
+[ext_resource path="res://PixelLevel/Sprite/Theme4.png" type="Texture" id=16]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
@@ -145,7 +146,8 @@ points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
 3/shape_one_way_margin = 0.0
 3/shapes = [  ]
 3/z_index = 0
-4/name = "ThemeA Torch"
+
+4/name = "Theme0 Torch"
 4/texture = ExtResource( 3 )
 4/tex_offset = Vector2( 0, 0 )
 4/material = ExtResource( 6 )
@@ -198,7 +200,7 @@ points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
 "shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
 } ]
 4/z_index = 0
-5/name = "ThemeA Wall"
+5/name = "Theme0 Wall"
 5/texture = ExtResource( 3 )
 5/tex_offset = Vector2( 0, 0 )
 5/modulate = Color( 1, 1, 1, 1 )
@@ -268,7 +270,7 @@ points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
 "shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
 } ]
 5/z_index = 0
-6/name = "ThemeA Floor"
+6/name = "Theme0 Floor"
 6/texture = ExtResource( 3 )
 6/tex_offset = Vector2( 0, 0 )
 6/modulate = Color( 1, 1, 1, 1 )
@@ -289,7 +291,7 @@ points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
 6/shape_one_way_margin = 0.0
 6/shapes = [  ]
 6/z_index = 0
-7/name = "ThemeA.png Floor Room"
+7/name = "Theme0 Floor Room"
 7/texture = ExtResource( 3 )
 7/tex_offset = Vector2( 0, 0 )
 7/modulate = Color( 1, 1, 1, 1 )
@@ -310,7 +312,7 @@ points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
 7/shape_one_way_margin = 0.0
 7/shapes = [  ]
 7/z_index = 0
-8/name = "ThemeA Stair"
+8/name = "Theme0 Stair"
 8/texture = ExtResource( 3 )
 8/tex_offset = Vector2( 0, 0 )
 8/modulate = Color( 1, 1, 1, 1 )
@@ -331,7 +333,7 @@ points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
 8/shape_one_way_margin = 0.0
 8/shapes = [  ]
 8/z_index = 0
-9/name = "ThemeA Door"
+9/name = "Theme0 Door"
 9/texture = ExtResource( 3 )
 9/tex_offset = Vector2( 0, 0 )
 9/modulate = Color( 1, 1, 1, 1 )
@@ -359,12 +361,12 @@ points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
 "shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
 } ]
 9/z_index = 0
-10/name = "WaterDeep Back"
-10/texture = ExtResource( 9 )
+10/name = "Theme4 Torch"
+10/texture = ExtResource( 16 )
 10/tex_offset = Vector2( 0, 0 )
-10/material = ExtResource( 13 )
+10/material = ExtResource( 6 )
 10/modulate = Color( 1, 1, 1, 1 )
-10/region = Rect2( 0, 0, 112, 16 )
+10/region = Rect2( 0, 0, 64, 16 )
 10/tile_mode = 2
 10/autotile/icon_coordinate = Vector2( 0, 0 )
 10/autotile/tile_size = Vector2( 16, 16 )
@@ -377,45 +379,123 @@ points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
 10/navigation_offset = Vector2( 0, 0 )
 10/shape_offset = Vector2( 0, 0 )
 10/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+10/shape = SubResource( 1 )
 10/shape_one_way = false
-10/shape_one_way_margin = 0.0
-10/shapes = [  ]
+10/shape_one_way_margin = 1.0
+10/shapes = [ {
+"autotile_coord": Vector2( 0, 0 ),
+"one_way": false,
+"one_way_margin": 1.0,
+"shape": SubResource( 1 ),
+"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
+}, {
+"autotile_coord": Vector2( 0, 0 ),
+"one_way": false,
+"one_way_margin": 1.0,
+"shape": SubResource( 2 ),
+"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
+}, {
+"autotile_coord": Vector2( 1, 0 ),
+"one_way": false,
+"one_way_margin": 1.0,
+"shape": SubResource( 3 ),
+"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
+}, {
+"autotile_coord": Vector2( 2, 0 ),
+"one_way": false,
+"one_way_margin": 1.0,
+"shape": SubResource( 4 ),
+"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
+}, {
+"autotile_coord": Vector2( 3, 0 ),
+"one_way": false,
+"one_way_margin": 1.0,
+"shape": SubResource( 5 ),
+"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
+} ]
 10/z_index = 0
-11/name = "WaterDeep Fore"
-11/texture = ExtResource( 9 )
+11/name = "Theme4 Wall"
+11/texture = ExtResource( 16 )
 11/tex_offset = Vector2( 0, 0 )
-11/material = ExtResource( 15 )
 11/modulate = Color( 1, 1, 1, 1 )
-11/region = Rect2( 112, 0, 112, 16 )
+11/region = Rect2( 64, 0, 128, 16 )
 11/tile_mode = 2
 11/autotile/icon_coordinate = Vector2( 0, 0 )
 11/autotile/tile_size = Vector2( 16, 16 )
 11/autotile/spacing = 0
 11/autotile/occluder_map = [  ]
 11/autotile/navpoly_map = [  ]
-11/autotile/priority_map = [  ]
+11/autotile/priority_map = [ Vector3( 0, 0, 10 ), Vector3( 1, 0, 10 ), Vector3( 2, 0, 10 ), Vector3( 3, 0, 10 ), Vector3( 4, 0, 5 ), Vector3( 5, 0, 5 ) ]
 11/autotile/z_index_map = [  ]
 11/occluder_offset = Vector2( 0, 0 )
 11/navigation_offset = Vector2( 0, 0 )
 11/shape_offset = Vector2( 0, 0 )
 11/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+11/shape = SubResource( 6 )
 11/shape_one_way = false
-11/shape_one_way_margin = 0.0
-11/shapes = [  ]
+11/shape_one_way_margin = 1.0
+11/shapes = [ {
+"autotile_coord": Vector2( 0, 0 ),
+"one_way": false,
+"one_way_margin": 1.0,
+"shape": SubResource( 6 ),
+"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
+}, {
+"autotile_coord": Vector2( 1, 0 ),
+"one_way": false,
+"one_way_margin": 1.0,
+"shape": SubResource( 7 ),
+"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
+}, {
+"autotile_coord": Vector2( 2, 0 ),
+"one_way": false,
+"one_way_margin": 1.0,
+"shape": SubResource( 8 ),
+"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
+}, {
+"autotile_coord": Vector2( 3, 0 ),
+"one_way": false,
+"one_way_margin": 1.0,
+"shape": SubResource( 9 ),
+"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
+}, {
+"autotile_coord": Vector2( 4, 0 ),
+"one_way": false,
+"one_way_margin": 1.0,
+"shape": SubResource( 10 ),
+"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
+}, {
+"autotile_coord": Vector2( 5, 0 ),
+"one_way": false,
+"one_way_margin": 1.0,
+"shape": SubResource( 11 ),
+"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
+}, {
+"autotile_coord": Vector2( 6, 0 ),
+"one_way": false,
+"one_way_margin": 1.0,
+"shape": SubResource( 12 ),
+"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
+}, {
+"autotile_coord": Vector2( 7, 0 ),
+"one_way": false,
+"one_way_margin": 1.0,
+"shape": SubResource( 13 ),
+"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
+} ]
 11/z_index = 0
-12/name = "WaterShallow Back"
-12/texture = ExtResource( 10 )
+12/name = "Theme4 Floor"
+12/texture = ExtResource( 16 )
 12/tex_offset = Vector2( 0, 0 )
-12/material = ExtResource( 14 )
 12/modulate = Color( 1, 1, 1, 1 )
-12/region = Rect2( 0, 0, 112, 16 )
+12/region = Rect2( 192, 0, 96, 16 )
 12/tile_mode = 2
 12/autotile/icon_coordinate = Vector2( 0, 0 )
 12/autotile/tile_size = Vector2( 16, 16 )
 12/autotile/spacing = 0
 12/autotile/occluder_map = [  ]
 12/autotile/navpoly_map = [  ]
-12/autotile/priority_map = [  ]
+12/autotile/priority_map = [ Vector3( 0, 0, 10 ), Vector3( 1, 0, 10 ), Vector3( 2, 0, 10 ), Vector3( 3, 0, 10 ) ]
 12/autotile/z_index_map = [  ]
 12/occluder_offset = Vector2( 0, 0 )
 12/navigation_offset = Vector2( 0, 0 )
@@ -425,19 +505,18 @@ points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
 12/shape_one_way_margin = 0.0
 12/shapes = [  ]
 12/z_index = 0
-13/name = "WaterShallow Fore"
-13/texture = ExtResource( 10 )
+13/name = "Theme4 Floor Room"
+13/texture = ExtResource( 16 )
 13/tex_offset = Vector2( 0, 0 )
-13/material = ExtResource( 12 )
 13/modulate = Color( 1, 1, 1, 1 )
-13/region = Rect2( 112, 0, 112, 16 )
+13/region = Rect2( 288, 0, 96, 16 )
 13/tile_mode = 2
 13/autotile/icon_coordinate = Vector2( 0, 0 )
 13/autotile/tile_size = Vector2( 16, 16 )
 13/autotile/spacing = 0
 13/autotile/occluder_map = [  ]
 13/autotile/navpoly_map = [  ]
-13/autotile/priority_map = [  ]
+13/autotile/priority_map = [ Vector3( 0, 0, 10 ), Vector3( 1, 0, 10 ), Vector3( 2, 0, 10 ), Vector3( 3, 0, 10 ) ]
 13/autotile/z_index_map = [  ]
 13/occluder_offset = Vector2( 0, 0 )
 13/navigation_offset = Vector2( 0, 0 )
@@ -447,11 +526,11 @@ points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
 13/shape_one_way_margin = 0.0
 13/shapes = [  ]
 13/z_index = 0
-14/name = "Light"
-14/texture = ExtResource( 11 )
+14/name = "Theme4 Stair"
+14/texture = ExtResource( 16 )
 14/tex_offset = Vector2( 0, 0 )
 14/modulate = Color( 1, 1, 1, 1 )
-14/region = Rect2( 0, 0, 512, 16 )
+14/region = Rect2( 384, 0, 32, 16 )
 14/tile_mode = 2
 14/autotile/icon_coordinate = Vector2( 0, 0 )
 14/autotile/tile_size = Vector2( 16, 16 )
@@ -468,3 +547,140 @@ points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
 14/shape_one_way_margin = 0.0
 14/shapes = [  ]
 14/z_index = 0
+15/name = "Theme4 Door"
+15/texture = ExtResource( 16 )
+15/tex_offset = Vector2( 0, 0 )
+15/modulate = Color( 1, 1, 1, 1 )
+15/region = Rect2( 416, 0, 48, 16 )
+15/tile_mode = 2
+15/autotile/icon_coordinate = Vector2( 0, 0 )
+15/autotile/tile_size = Vector2( 16, 16 )
+15/autotile/spacing = 0
+15/autotile/occluder_map = [  ]
+15/autotile/navpoly_map = [  ]
+15/autotile/priority_map = [  ]
+15/autotile/z_index_map = [  ]
+15/occluder_offset = Vector2( 0, 0 )
+15/navigation_offset = Vector2( 0, 0 )
+15/shape_offset = Vector2( 0, 0 )
+15/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+15/shape = SubResource( 14 )
+15/shape_one_way = false
+15/shape_one_way_margin = 1.0
+15/shapes = [ {
+"autotile_coord": Vector2( 0, 0 ),
+"one_way": false,
+"one_way_margin": 1.0,
+"shape": SubResource( 14 ),
+"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
+} ]
+15/z_index = 0
+16/name = "WaterDeep Back"
+16/texture = ExtResource( 9 )
+16/tex_offset = Vector2( 0, 0 )
+16/material = ExtResource( 13 )
+16/modulate = Color( 1, 1, 1, 1 )
+16/region = Rect2( 0, 0, 112, 16 )
+16/tile_mode = 2
+16/autotile/icon_coordinate = Vector2( 0, 0 )
+16/autotile/tile_size = Vector2( 16, 16 )
+16/autotile/spacing = 0
+16/autotile/occluder_map = [  ]
+16/autotile/navpoly_map = [  ]
+16/autotile/priority_map = [  ]
+16/autotile/z_index_map = [  ]
+16/occluder_offset = Vector2( 0, 0 )
+16/navigation_offset = Vector2( 0, 0 )
+16/shape_offset = Vector2( 0, 0 )
+16/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+16/shape_one_way = false
+16/shape_one_way_margin = 0.0
+16/shapes = [  ]
+16/z_index = 0
+17/name = "WaterDeep Fore"
+17/texture = ExtResource( 9 )
+17/tex_offset = Vector2( 0, 0 )
+17/material = ExtResource( 15 )
+17/modulate = Color( 1, 1, 1, 1 )
+17/region = Rect2( 112, 0, 112, 16 )
+17/tile_mode = 2
+17/autotile/icon_coordinate = Vector2( 0, 0 )
+17/autotile/tile_size = Vector2( 16, 16 )
+17/autotile/spacing = 0
+17/autotile/occluder_map = [  ]
+17/autotile/navpoly_map = [  ]
+17/autotile/priority_map = [  ]
+17/autotile/z_index_map = [  ]
+17/occluder_offset = Vector2( 0, 0 )
+17/navigation_offset = Vector2( 0, 0 )
+17/shape_offset = Vector2( 0, 0 )
+17/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+17/shape_one_way = false
+17/shape_one_way_margin = 0.0
+17/shapes = [  ]
+17/z_index = 0
+18/name = "WaterShallow Back"
+18/texture = ExtResource( 10 )
+18/tex_offset = Vector2( 0, 0 )
+18/material = ExtResource( 14 )
+18/modulate = Color( 1, 1, 1, 1 )
+18/region = Rect2( 0, 0, 112, 16 )
+18/tile_mode = 2
+18/autotile/icon_coordinate = Vector2( 0, 0 )
+18/autotile/tile_size = Vector2( 16, 16 )
+18/autotile/spacing = 0
+18/autotile/occluder_map = [  ]
+18/autotile/navpoly_map = [  ]
+18/autotile/priority_map = [  ]
+18/autotile/z_index_map = [  ]
+18/occluder_offset = Vector2( 0, 0 )
+18/navigation_offset = Vector2( 0, 0 )
+18/shape_offset = Vector2( 0, 0 )
+18/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+18/shape_one_way = false
+18/shape_one_way_margin = 0.0
+18/shapes = [  ]
+18/z_index = 0
+19/name = "WaterShallow Fore"
+19/texture = ExtResource( 10 )
+19/tex_offset = Vector2( 0, 0 )
+19/material = ExtResource( 12 )
+19/modulate = Color( 1, 1, 1, 1 )
+19/region = Rect2( 112, 0, 112, 16 )
+19/tile_mode = 2
+19/autotile/icon_coordinate = Vector2( 0, 0 )
+19/autotile/tile_size = Vector2( 16, 16 )
+19/autotile/spacing = 0
+19/autotile/occluder_map = [  ]
+19/autotile/navpoly_map = [  ]
+19/autotile/priority_map = [  ]
+19/autotile/z_index_map = [  ]
+19/occluder_offset = Vector2( 0, 0 )
+19/navigation_offset = Vector2( 0, 0 )
+19/shape_offset = Vector2( 0, 0 )
+19/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+19/shape_one_way = false
+19/shape_one_way_margin = 0.0
+19/shapes = [  ]
+19/z_index = 0
+20/name = "Light"
+20/texture = ExtResource( 11 )
+20/tex_offset = Vector2( 0, 0 )
+20/modulate = Color( 1, 1, 1, 1 )
+20/region = Rect2( 0, 0, 512, 16 )
+20/tile_mode = 2
+20/autotile/icon_coordinate = Vector2( 0, 0 )
+20/autotile/tile_size = Vector2( 16, 16 )
+20/autotile/spacing = 0
+20/autotile/occluder_map = [  ]
+20/autotile/navpoly_map = [  ]
+20/autotile/priority_map = [  ]
+20/autotile/z_index_map = [  ]
+20/occluder_offset = Vector2( 0, 0 )
+20/navigation_offset = Vector2( 0, 0 )
+20/shape_offset = Vector2( 0, 0 )
+20/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+20/shape_one_way = false
+20/shape_one_way_margin = 0.0
+20/shapes = [  ]
+20/z_index = 0
