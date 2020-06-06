@@ -44,6 +44,7 @@ func _input(event: InputEvent) -> void:
 				_dragLeft = true
 			else:
 				_targetUpdate()
+				_cameraUpdate()
 				_dragLeft = false
 		elif event.button_index == BUTTON_WHEEL_UP:
 			_zoom(_factorIn, event.global_position)
@@ -52,7 +53,6 @@ func _input(event: InputEvent) -> void:
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
 			_camera.global_position -= event.relative * _camera.zoom
-			_cameraUpdate()
 
 func _world(tile: Vector2) -> Vector2:
 	return _back.map_to_world(tile)
@@ -85,9 +85,9 @@ func _targetSnapClosest(tile: Vector2) -> void:
 	_targetSnap(_astar.get_point_position(_astar.get_closest_point(tile)))
 
 func _targetSnap(tile: Vector2) -> void:
-	_snap(_target, tile)
+	_snapTo(_target, tile)
 
-func _snap(node: Node2D, tile: Vector2) -> void:
+func _snapTo(node: Node2D, tile: Vector2) -> void:
 	var p := _world(tile)
 	if not node.global_position.is_equal_approx(p):
 		_tween.stop(node, "global_position")
@@ -109,67 +109,25 @@ func _cameraBy(by: Vector2) -> void:
 func _cameraUpdate() -> void:
 	var map := _mapBounds()
 	var world := _worldBounds()
-	if world.intersects(map):
-		_snap(_camera, _constrainRect(world, map))
+	if not world.intersects(map):
+		_snapCameraBy(_constrainRect(world, map))
 
-static func _constrainRect(world: Rect2, map: Rect2) -> Vector2:
+func _snapCameraBy(by: Vector2) -> void:
+	_tween.stop(_camera, "global_position")
+	_tween.interpolate_property(_camera, "global_position", null, _camera.global_position + by, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
+	_tween.start()
+
+func _constrainRect(world: Rect2, map: Rect2) -> Vector2:
 	return _constrain(world.position, world.end, map.position, map.end)
 	
-static func _constrain(minWorld: Vector2, maxWorld: Vector2, minMap: Vector2, maxMap: Vector2) -> Vector2:
+func _constrain(minWorld: Vector2, maxWorld: Vector2, minMap: Vector2, maxMap: Vector2) -> Vector2:
 	var delta = Vector2.ZERO
-	if minWorld.x < minMap.x: delta.x += minMap.x - minWorld.x
-	if maxWorld.x > maxMap.x: delta.x -= maxWorld.x - maxMap.x
-	if minWorld.y < minMap.y: delta.y += minMap.y - minWorld.y
-	if maxWorld.y > maxMap.y: delta.y -= maxWorld.y - maxMap.y
+	var c = _back.cell_size.x
+	if minWorld.x > minMap.x: delta.x += minMap.x - minWorld.x - c
+	if maxWorld.x < maxMap.x: delta.x -= maxWorld.x - maxMap.x - c
+	if minWorld.y > minMap.y: delta.y += minMap.y - minWorld.y - c
+	if maxWorld.y < maxMap.y: delta.y -= maxWorld.y - maxMap.y - c
 	return delta
-
-# static public Vector2 ConstrainRect(Bounds screen, Bounds map)
-# {
-# 	return ConstrainRect(screen.min, screen.max, map.min, map.max);
-# }
-# static public Vector2 ConstrainRect(Vector2 minScreen, Vector2 maxScreen, Vector2 minMap, Vector2 maxMap)
-# {
-# 	var offset = Vector2.zero;
-# 	var screenWidth = maxScreen.x - minScreen.x;
-# 	var screenHeight = maxScreen.y - minScreen.y;
-# 	var mapWidth = maxMap.x - minMap.x;
-# 	var mapHeight = maxMap.y - minMap.y;
-# 	if (screenWidth > mapWidth)
-# 	{
-# 		var diff = screenWidth - mapWidth;
-# 		minMap.x -= diff;
-# 		maxMap.x += diff;
-# 	}
-# 	if (screenHeight > mapHeight)
-# 	{
-# 		var diff = screenHeight - mapHeight;
-# 		minMap.y -= diff;
-# 		maxMap.y += diff;
-# 	}
-# 	if (minScreen.x < minMap.x) offset.x += minMap.x - minScreen.x;
-# 	if (maxScreen.x > maxMap.x) offset.x -= maxScreen.x - maxMap.x;
-# 	if (minScreen.y < minMap.y) offset.y += minMap.y - minScreen.y;
-# 	if (maxScreen.y > maxMap.y) offset.y -= maxScreen.y - maxMap.y;
-# 	return offset;
-# }
-
-# var size = GameCamera.orthographicSize;
-# var targetZoom = 0f;
-# if (size < ZoomMin)
-# 	targetZoom = ZoomMin;
-# else if (size > ZoomMax)
-# 	targetZoom = ZoomMax;
-# if (!Mathf.Approximately(targetZoom, 0f))
-# 	Ease.Go(this, size, targetZoom, Constants.TimeTween, v => GameCamera.orthographicSize = v, null, EaseType.Spring);
-# else
-# 	GameCamera.orthographicSize = Mathf.RoundToInt(size);
-# var boundsCamera = GameCamera.OrthographicBounds();
-# var boundsMap = TileMap.Mesh.bounds;
-# boundsMap.center = new Vector2((int)(boundsMap.center.x - .5f), (int)(boundsMap.center.y - .5f));
-# var boundsTest = boundsMap;
-# boundsTest.extents -= new Vector3(2f, 2f, 0f);
-# var delta = (!boundsCamera.Intersects(boundsTest)) ? Utility.ConstrainRect(boundsCamera, boundsMap) : Vector2.zero;
-# Spring(delta);
 
 func _zoom(factor: float, at: Vector2) -> void:
 	var z0 = _camera.zoom
