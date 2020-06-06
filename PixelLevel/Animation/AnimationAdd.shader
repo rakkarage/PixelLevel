@@ -1,4 +1,5 @@
 shader_type canvas_item;
+render_mode blend_add;
 
 uniform sampler2D frames: hint_albedo;
 uniform float count;

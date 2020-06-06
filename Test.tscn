@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://PixelLevel/Sprite/WaterDeep.png" type="Texture" id=1]
+[ext_resource path="res://PixelLevel/Animation/WaterDeepBack.tres" type="Material" id=2]
+[ext_resource path="res://PixelLevel/Animation/WaterDeepFore.tres" type="Material" id=3]
+
+[node name="Test" type="Node2D"]
+
+[node name="Back" type="Sprite" parent="."]
+material = ExtResource( 2 )
+position = Vector2( -8, 0 )
+texture = ExtResource( 1 )
+hframes = 14
+
+[node name="Fore" type="Sprite" parent="."]
+material = ExtResource( 3 )
+position = Vector2( 8, 0 )
+texture = ExtResource( 1 )
+hframes = 14
