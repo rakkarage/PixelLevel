@@ -20,6 +20,7 @@ signal onRotate(at, value)
 var _dragging = false
 
 func _ready() -> void:
+	print("gesture")
 	for _i in range(_max):
 		_points.append({ p = Vector2.ZERO, start = Vector2.ZERO, state = false })
 	Utility.ok(connect("onZoom", self, "onZoom"))
@@ -27,6 +28,7 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventScreenDrag:
+		print("drag")
 		_points[event.index].pos = event.position
 	if event is InputEventScreenTouch:
 		_points[event.index].state = event.pressed
@@ -51,6 +53,23 @@ func _input(event: InputEvent) -> void:
 	if count == 2:
 		_zoom(event)
 		_rotate(event)
+
+# func _simulateTouch(event: InputEvent) -> void:
+# 	if event is InputEventKey and event.scancode == KEY_ALT:
+# 		var i = 0
+# 		if event.pressed:
+# 			if i == 0: i = 1
+# 		else:
+# 			if i == 1: i = 0
+# 	if event is InputEventMouseButton:
+# 		_points[event.index].state = event.pressed
+# 		_points[event.index].pos  = event.position
+# 		if event.pressed:
+# 			_points[event.index].start_pos = event.position
+# 	if event is InputEventMouseMotion:
+# 		_points[event.index].pos = event.position
+# 	update_touch_info()
+# 	update_pinch_gesture()
 
 func _zoom(event: InputEvent) -> void:
 	if event is InputEventScreenDrag:
@@ -97,9 +116,7 @@ func _process(_delta) -> void:
 
 func _draw():
 	for point in _points:
-		var c := Color(1, 0, 0)
-		if not point.state:
-			c = Color(0, 0, 1)
-		draw_circle(point.p, 32, c)
-		draw_circle(point.start, 32, Color(0, 1, 0))
-		draw_line(point.p, point.start, Color(1, 1, 0), 4)
+		if point.state:
+			draw_circle(point.p, 15, Color(1, 0, 0))
+			draw_circle(point.start, 16, Color(0, 1, 0))
+			draw_line(point.p, point.start, Color(1, 1, 0), 2)

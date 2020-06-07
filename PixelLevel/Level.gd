@@ -11,10 +11,10 @@ var _rect := Rect2()
 var _path := PoolVector2Array()
 var _dragLeft := false
 const _duration := 0.22
-const _zoomMin := Vector2(0.1, 0.1)
-const _zoomMinMin := Vector2(0.05, 0.05)
-const _zoomMax := Vector2(1.0, 1.0)
-const _zoomMaxMax := Vector2(1.2, 1.2)
+const _zoomMin := 0.1
+const _zoomMinMin := 0.05
+const _zoomMax := 1.0
+const _zoomMaxMax := 1.2
 const _factorIn := 0.90
 const _factorOut := 1.10
 
@@ -102,7 +102,7 @@ func _center() -> Vector2:
 	return -(_worldSize() / 2.0) + _mapSize() / 2.0
 
 func _cameraCenter() -> void:
-	_cameraTo(_center())# * _camera.zoom)
+	_cameraTo(_center())
 
 func _cameraTo(to: Vector2) -> void:
 	_camera.global_position = _world(_map(to))
@@ -134,12 +134,9 @@ func _constrain(minWorld: Vector2, maxWorld: Vector2, minMap: Vector2, maxMap: V
 
 func _zoom(at: Vector2, factor: float) -> void:
 	var z0 = _camera.zoom
-	var z1 = _zoomNew(z0 * factor)
+	var z1 = clamp(z0 * factor, _zoomMin, _zoomMax)
 	var c0 = _camera.global_position
 	var c1 = c0 + at * (z0 - z1)
 	_camera.zoom = z1
 	_camera.global_position = c1
 	_cameraUpdate()
-
-func _zoomNew(zoom: Vector2) -> Vector2:
-	return _zoomMin if zoom < _zoomMin else _zoomMax if zoom > _zoomMax else zoom
