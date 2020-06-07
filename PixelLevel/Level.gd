@@ -59,7 +59,7 @@ func _world(tile: Vector2) -> Vector2:
 	return _back.map_to_world(tile)
 
 func _worldSize() -> Vector2:
-	return size
+	return size * _camera.zoom
 
 func _worldBounds() -> Rect2:
 	return Rect2(Vector2.ZERO, _worldSize())
@@ -68,7 +68,7 @@ func _map(position: Vector2) -> Vector2:
 	return _back.world_to_map(position)
 
 func _mapSize() -> Vector2:
-	return _rect.size * _back.cell_size# / _camera.zoom
+	return _rect.size * _back.cell_size
 
 func _mapBounds() -> Rect2:
 	return Rect2(-_camera.global_position, _mapSize())
