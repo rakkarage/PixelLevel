@@ -11,10 +11,10 @@ var _rect := Rect2()
 var _path := PoolVector2Array()
 var _dragLeft := false
 const _duration := 0.22
-const _zoomMin := 0.1
-const _zoomMinMin := 0.05
-const _zoomMax := 1.0
-const _zoomMaxMax := 1.2
+const _zoomMin := Vector2(0.1, 0.1)
+const _zoomMinMin := Vector2(0.05, 0.05)
+const _zoomMax := Vector2(1.0, 1.0)
+const _zoomMaxMax := Vector2(1.2, 1.2)
 const _factorIn := 0.90
 const _factorOut := 1.10
 
@@ -76,6 +76,52 @@ func _mapSize() -> Vector2:
 func _mapBounds() -> Rect2:
 	return Rect2(-_camera.global_position, _mapSize())
 
+func _center() -> Vector2:
+	return -(_worldSize() / 2.0) + _mapSize() / 2.0
+
+func _cameraCenter() -> void:
+	_cameraTo(_center())
+
+func _cameraTo(to: Vector2) -> void:
+	_camera.global_position = _world(_map(to))
+
+func _cameraBy(by: Vector2) -> void:
+	_cameraTo(_camera.global_position + by)
+
+func _cameraUpdate() -> void:
+	var map := _mapBounds()
+	var world := _worldBounds().grow(-_back.cell_size.x)
+	if not world.intersects(map):
+		_snapCameraBy(_constrainRect(world, map))
+
+static func _constrainRect(world: Rect2, map: Rect2) -> Vector2:
+	return _constrain(world.position, world.end, map.position, map.end)
+
+static func _constrain(minWorld: Vector2, maxWorld: Vector2, minMap: Vector2, maxMap: Vector2) -> Vector2:
+	var delta = Vector2.ZERO
+	if minWorld.x > minMap.x: delta.x += minMap.x - minWorld.x
+	if maxWorld.x < maxMap.x: delta.x -= maxWorld.x - maxMap.x
+	if minWorld.y > minMap.y: delta.y += minMap.y - minWorld.y
+	if maxWorld.y < maxMap.y: delta.y -= maxWorld.y - maxMap.y
+	return delta
+
+func _snapCameraBy(by: Vector2) -> void:
+	_tween.stop(_camera, "global_position")
+	_tween.interpolate_property(_camera, "global_position", null, _camera.global_position + by, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
+	_tween.start()
+
+func _zoom(at: Vector2, factor: float) -> void:
+	var z0 = _camera.zoom
+	var z1 = _zoomClamp(z0 * factor)
+	var c0 = _camera.global_position
+	var c1 = c0 + at * (z0 - z1)
+	_camera.zoom = z1
+	_camera.global_position = c1
+	_cameraUpdate()
+
+func _zoomClamp(zoom: Vector2) -> Vector2:
+	return _zoomMin if zoom < _zoomMin else _zoomMax if zoom > _zoomMax else zoom
+
 func _targetToMob() -> void:
 	_targetTo(_mob.global_position)
 
@@ -97,46 +143,3 @@ func _snapTo(node: Node2D, tile: Vector2) -> void:
 		_tween.stop(node, "global_position")
 		_tween.interpolate_property(node, "global_position", null, p, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
 		_tween.start()
-
-func _center() -> Vector2:
-	return -(_worldSize() / 2.0) + _mapSize() / 2.0
-
-func _cameraCenter() -> void:
-	_cameraTo(_center())
-
-func _cameraTo(to: Vector2) -> void:
-	_camera.global_position = _world(_map(to))
-
-func _cameraBy(by: Vector2) -> void:
-	_cameraTo(_camera.global_position + by)
-
-func _cameraUpdate() -> void:
-	var map := _mapBounds()
-	var world := _worldBounds().grow(-_back.cell_size.x)
-	if not world.intersects(map):
-		_snapCameraBy(_constrainRect(world, map))
-
-func _snapCameraBy(by: Vector2) -> void:
-	_tween.stop(_camera, "global_position")
-	_tween.interpolate_property(_camera, "global_position", null, _camera.global_position + by, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
-	_tween.start()
-
-func _constrainRect(world: Rect2, map: Rect2) -> Vector2:
-	return _constrain(world.position, world.end, map.position, map.end)
-
-func _constrain(minWorld: Vector2, maxWorld: Vector2, minMap: Vector2, maxMap: Vector2) -> Vector2:
-	var delta = Vector2.ZERO
-	if minWorld.x > minMap.x: delta.x += minMap.x - minWorld.x
-	if maxWorld.x < maxMap.x: delta.x -= maxWorld.x - maxMap.x
-	if minWorld.y > minMap.y: delta.y += minMap.y - minWorld.y
-	if maxWorld.y < maxMap.y: delta.y -= maxWorld.y - maxMap.y
-	return delta
-
-func _zoom(at: Vector2, factor: float) -> void:
-	var z0 = _camera.zoom
-	var z1 = clamp(z0 * factor, _zoomMin, _zoomMax)
-	var c0 = _camera.global_position
-	var c1 = c0 + at * (z0 - z1)
-	_camera.zoom = z1
-	_camera.global_position = c1
-	_cameraUpdate()
