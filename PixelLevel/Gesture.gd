@@ -15,8 +15,8 @@ var _rotateCurrent := 0.0
 const _rotateRate := 1
 var _rotateStarted := false
 
-signal onZoom(event)
-signal onRotate(event)
+signal onZoom(at, value)
+signal onRotate(at, value)
 
 var _dragging = false
 
@@ -26,7 +26,7 @@ func _ready() -> void:
 	Utility.ok(connect("onZoom", self, "onZoom"))
 	Utility.ok(connect("onRotate", self, "onRotate"))
 
-func _input(event) -> void:
+func _input(event: InputEvent) -> void:
 	if event is InputEventScreenDrag:
 		_points[event.index].pos = event.position
 	if event is InputEventScreenTouch:
@@ -53,7 +53,7 @@ func _input(event) -> void:
 		_zoom(event)
 		_rotate(event)
 
-func _zoom(event) -> void:
+func _zoom(event: InputEvent) -> void:
 	if event is InputEventScreenDrag:
 		var zoom : float = _points[0].p.distance_to(_points[1].p)
 		if _zoomStarted:
@@ -63,9 +63,9 @@ func _zoom(event) -> void:
 		else:
 			_zoomCurrent = _zoomLast - zoom
 			_zoomLast = zoom
-		emit_signal("onZoom", _zoomCurrent)
+		emit_signal("onZoom", event.global_position, _zoomCurrent)
 
-func _rotate(event) -> void:
+func _rotate(event: InputEvent) -> void:
 	if event is InputEventScreenDrag:
 		var rotate : float = _points[0].p.angle_to_point(_points[1].p)
 		if _rotateStarted:
@@ -75,9 +75,10 @@ func _rotate(event) -> void:
 		else:
 			_rotateCurrent = _rotateLast - rotate
 			_rotateLast = rotate
-		emit_signal("onRotate", _rotateCurrent)
+		emit_signal("onRotate", event.global_position, _rotateCurrent)
 
-func onZoom(_event) -> void:
+func onZoom(_at: Vector2, _value: float) -> void:
+	print("zoom")
 	if abs(_zoomCurrent) > 0.1 and abs(_zoomCurrent) < 20:
 		var s : Vector2 = $Sprite.scale
 		var zoom := - _zoomCurrent * _zoomRate
@@ -85,7 +86,8 @@ func onZoom(_event) -> void:
 		s.y = clamp(s.y + zoom, 1, 10)
 		$Sprite.scale = s
 
-func onRotate(_event) -> void:
+func onRotate(_at: Vector2, _value) -> void:
+	print("rotate")
 	if abs(_rotateCurrent) > 0.001 and abs(_rotateCurrent) < 0.5:
 		var r : float = $Sprite.rotation
 		var a := _rotateCurrent * _rotateRate

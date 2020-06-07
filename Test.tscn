@@ -4,8 +4,8 @@
 [ext_resource path="res://PixelLevel/Gesture.gd" type="Script" id=2]
 
 [node name="Test" type="Node2D"]
+script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
 position = Vector2( 194.575, 123.56 )
 texture = ExtResource( 1 )
-script = ExtResource( 2 )

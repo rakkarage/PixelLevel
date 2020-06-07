@@ -24,6 +24,7 @@ func _ready() -> void:
 	_targetToMob()
 	_cameraCenter()
 	_addPoints()
+	Utility.ok(Gesture.connect("onZoom", self, "_zoom"))
 
 func _tileIndex(p: Vector2) -> int:
 	return int(p.x + (p.y * _rect.size.x))
@@ -50,9 +51,9 @@ func _input(event: InputEvent) -> void:
 				_cameraUpdate()
 				_dragLeft = false
 		elif event.button_index == BUTTON_WHEEL_UP:
-			_zoom(_factorIn, event.global_position)
+			_zoom(event.global_position, _factorIn)
 		elif event.button_index == BUTTON_WHEEL_DOWN:
-			_zoom(_factorOut, event.global_position)
+			_zoom(event.global_position, _factorOut)
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
 			_camera.global_position -= event.relative * _camera.zoom
@@ -131,7 +132,7 @@ func _constrain(minWorld: Vector2, maxWorld: Vector2, minMap: Vector2, maxMap: V
 	if maxWorld.y < maxMap.y: delta.y -= maxWorld.y - maxMap.y
 	return delta
 
-func _zoom(factor: float, at: Vector2) -> void:
+func _zoom(at: Vector2, factor: float) -> void:
 	var z0 = _camera.zoom
 	var z1 = _zoomNew(z0 * factor)
 	var c0 = _camera.global_position
