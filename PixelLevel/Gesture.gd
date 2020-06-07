@@ -1,5 +1,4 @@
 extends Node2D
-class_name Gesture
 
 const _max := 10
 

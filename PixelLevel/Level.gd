@@ -19,7 +19,7 @@ const _factorIn := 0.90
 const _factorOut := 1.10
 
 func _ready() -> void:
-	# _camera.zoom = Vector2(0.75, 0.75)
+	_camera.zoom = Vector2(0.75, 0.75)
 	_rect = _back.get_used_rect()
 	_targetToMob()
 	_cameraCenter()
