@@ -12,7 +12,9 @@ var _path := PoolVector2Array()
 var _dragLeft := false
 const _duration := 0.22
 const _zoomMin := Vector2(0.1, 0.1)
+const _zoomMinMin := Vector2(0.05, 0.05)
 const _zoomMax := Vector2(1.0, 1.0)
+const _zoomMaxMax := Vector2(1.2, 1.2)
 const _factorIn := 0.90
 const _factorOut := 1.10
 
@@ -109,11 +111,8 @@ func _cameraBy(by: Vector2) -> void:
 
 func _cameraUpdate() -> void:
 	var map := _mapBounds()
-	print(map)
 	var world := _worldBounds().grow(-_back.cell_size.x)
-	print(world)
 	if not world.intersects(map):
-		print("not!!!")
 		_snapCameraBy(_constrainRect(world, map))
 
 func _snapCameraBy(by: Vector2) -> void:
@@ -139,6 +138,7 @@ func _zoom(factor: float, at: Vector2) -> void:
 	var c1 = c0 + at * (z0 - z1)
 	_camera.zoom = z1
 	_camera.global_position = c1
+	_cameraUpdate()
 
 func _zoomNew(zoom: Vector2) -> Vector2:
 	return _zoomMin if zoom < _zoomMin else _zoomMax if zoom > _zoomMax else zoom
