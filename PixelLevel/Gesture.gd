@@ -20,7 +20,6 @@ signal onRotate(at, value)
 var _dragging = false
 
 func _ready() -> void:
-	print("gesture")
 	for _i in range(_max):
 		_points.append({ p = Vector2.ZERO, start = Vector2.ZERO, state = false })
 	Utility.ok(connect("onZoom", self, "onZoom"))
@@ -28,7 +27,6 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventScreenDrag:
-		print("drag")
 		_points[event.index].pos = event.position
 	if event is InputEventScreenTouch:
 		_points[event.index].state = event.pressed
@@ -51,6 +49,7 @@ func _input(event: InputEvent) -> void:
 			_zoomStarted = true
 			_rotateStarted = true
 	if count == 2:
+		print("pinch")
 		_zoom(event)
 		_rotate(event)
 
