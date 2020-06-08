@@ -1,11 +1,11 @@
 extends Viewport
 
-onready var _camera       := $Camera
-onready var _back: TileMap = $Back
-onready var _fore: TileMap = $Fore
-onready var _mob          := $Mob
-onready var _target       := $Target
-onready var _tween        := $Tween
+onready var _camera: Camera2D = $Camera
+onready var _back:    TileMap = $Back
+onready var _fore:    TileMap = $Fore
+onready var _mob             := $Mob
+onready var _target          := $Target
+onready var _tween:     Tween = $Tween
 onready var _astar        := AStar2D.new()
 var _rect := Rect2()
 var _path := PoolVector2Array()
@@ -106,9 +106,9 @@ static func _constrain(minWorld: Vector2, maxWorld: Vector2, minMap: Vector2, ma
 	return delta
 
 func _snapCameraBy(by: Vector2) -> void:
-	_tween.stop(_camera, "global_position")
-	_tween.interpolate_property(_camera, "global_position", null, _camera.global_position + by, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
-	_tween.start()
+	Utility.stfu(_tween.stop(_camera, "global_position"))
+	Utility.stfu(_tween.interpolate_property(_camera, "global_position", null, _camera.global_position + by, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
+	Utility.stfu(_tween.start())
 
 func _zoom(at: Vector2, factor: float) -> void:
 	var z0 := _camera.zoom
@@ -140,6 +140,6 @@ func _targetSnap(tile: Vector2) -> void:
 func _snapTo(node: Node2D, tile: Vector2) -> void:
 	var p := _world(tile)
 	if not node.global_position.is_equal_approx(p):
-		_tween.stop(node, "global_position")
-		_tween.interpolate_property(node, "global_position", null, p, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
-		_tween.start()
+		Utility.stfu(_tween.stop(node, "global_position"))
+		Utility.stfu(_tween.interpolate_property(node, "global_position", null, p, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
+		Utility.stfu(_tween.start())
