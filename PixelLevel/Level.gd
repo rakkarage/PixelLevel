@@ -24,7 +24,7 @@ func _ready() -> void:
 	_targetToMob()
 	_cameraCenter()
 	_addPoints()
-	Utility.ok(Gesture.connect("onZoom", self, "_zoom"))
+	# Utility.ok(Gesture.connect("onZoom", self, "_zoom"))
 
 func _tileIndex(p: Vector2) -> int:
 	return int(p.x + (p.y * _rect.size.x))
@@ -98,7 +98,7 @@ static func _constrainRect(world: Rect2, map: Rect2) -> Vector2:
 	return _constrain(world.position, world.end, map.position, map.end)
 
 static func _constrain(minWorld: Vector2, maxWorld: Vector2, minMap: Vector2, maxMap: Vector2) -> Vector2:
-	var delta = Vector2.ZERO
+	var delta := Vector2.ZERO
 	if minWorld.x > minMap.x: delta.x += minMap.x - minWorld.x
 	if maxWorld.x < maxMap.x: delta.x -= maxWorld.x - maxMap.x
 	if minWorld.y > minMap.y: delta.y += minMap.y - minWorld.y
@@ -111,10 +111,10 @@ func _snapCameraBy(by: Vector2) -> void:
 	_tween.start()
 
 func _zoom(at: Vector2, factor: float) -> void:
-	var z0 = _camera.zoom
-	var z1 = _zoomClamp(z0 * factor)
-	var c0 = _camera.global_position
-	var c1 = c0 + at * (z0 - z1)
+	var z0 := _camera.zoom
+	var z1 := _zoomClamp(z0 * factor)
+	var c0 := _camera.global_position
+	var c1 := c0 + at * (z0 - z1)
 	_camera.zoom = z1
 	_camera.global_position = c1
 	_cameraUpdate()
