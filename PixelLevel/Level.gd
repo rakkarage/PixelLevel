@@ -83,7 +83,7 @@ func _cameraCenter() -> void:
 	_cameraTo(_center())
 
 func _cameraTo(to: Vector2) -> void:
-	_camera.global_position = _world(_map(to))
+	_camera.global_position = to
 
 func _cameraBy(by: Vector2) -> void:
 	_cameraTo(_camera.global_position + by)
