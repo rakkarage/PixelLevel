@@ -119,8 +119,8 @@ func _zoom(at: Vector2, factor: float) -> void:
 	_camera.global_position = c1
 	_cameraUpdate()
 
-func _zoomClamp(zoom: Vector2) -> Vector2:
-	return _zoomMin if zoom < _zoomMin else _zoomMax if zoom > _zoomMax else zoom
+func _zoomClamp(z: Vector2) -> Vector2:
+	return _zoomMin if z < _zoomMin else _zoomMax if z > _zoomMax else z
 
 func _targetToMob() -> void:
 	_targetTo(_mob.global_position)
