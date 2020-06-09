@@ -43,16 +43,16 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT:
 			if event.pressed:
-				_targetTo(event.global_position)
+				_targetTo(event.position)
 				_dragLeft = true
 			else:
 				_targetUpdate()
 				_cameraUpdate()
 				_dragLeft = false
 		elif event.button_index == BUTTON_WHEEL_UP:
-			_zoom(event.global_position, _zoomIn)
+			_zoom(event.position, _zoomIn)
 		elif event.button_index == BUTTON_WHEEL_DOWN:
-			_zoom(event.global_position, _zoomOut)
+			_zoom(event.position, _zoomOut)
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
 			offset -= event.relative * zoom
@@ -122,13 +122,13 @@ func _zoomClamp(z: Vector2) -> Vector2:
 	return _zoomMin if z < _zoomMin else _zoomMax if z > _zoomMax else z
 
 func _targetToMob() -> void:
-	_targetTo(_mob.global_position)
+	_targetTo(_mob.position)
 
 func _targetTo(to: Vector2) -> void:
-	_target.global_position = _world(_map(to * zoom + offset))
+	_target.position = _world(_map(to * zoom + offset))
 
 func _targetUpdate() -> void:
-	_targetSnapClosest(_map(_target.global_position))
+	_targetSnapClosest(_map(_target.position))
 
 func _targetSnapClosest(tile: Vector2) -> void:
 	_targetSnap(_astar.get_point_position(_astar.get_closest_point(tile)))
@@ -138,7 +138,7 @@ func _targetSnap(tile: Vector2) -> void:
 
 func _snapTo(node: Node2D, tile: Vector2) -> void:
 	var p := _world(tile)
-	if not node.global_position.is_equal_approx(p):
-		Utility.stfu(_tween.stop(node, "global_position"))
-		Utility.stfu(_tween.interpolate_property(node, "global_position", null, p, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
+	if not node.position.is_equal_approx(p):
+		Utility.stfu(_tween.stop(node, "position"))
+		Utility.stfu(_tween.interpolate_property(node, "position", null, p, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
 		Utility.stfu(_tween.start())
