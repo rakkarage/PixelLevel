@@ -14,8 +14,8 @@ const _zoomMin := Vector2(0.1, 0.1)
 const _zoomMinMin := Vector2(0.05, 0.05)
 const _zoomMax := Vector2(1.0, 1.0)
 const _zoomMaxMax := Vector2(1.2, 1.2)
-const _factorIn := 0.90
-const _factorOut := 1.10
+const _zoomIn := 0.90
+const _zoomOut := 1.10
 
 func _ready() -> void:
 	zoom = Vector2(0.75, 0.75)
@@ -50,9 +50,9 @@ func _input(event: InputEvent) -> void:
 				_cameraUpdate()
 				_dragLeft = false
 		elif event.button_index == BUTTON_WHEEL_UP:
-			_zoom(event.global_position, _factorIn)
+			_zoom(event.global_position, _zoomIn)
 		elif event.button_index == BUTTON_WHEEL_DOWN:
-			_zoom(event.global_position, _factorOut)
+			_zoom(event.global_position, _zoomOut)
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
 			offset -= event.relative * zoom
@@ -91,7 +91,7 @@ func _cameraUpdate() -> void:
 	var map := _mapBounds()
 	var world := _worldBounds().grow(-_back.cell_size.x)
 	if not world.intersects(map):
-		_snapCameraBy(offset + _constrainRect(world, map))
+		_snapCamera(offset + _constrainRect(world, map))
 
 static func _constrainRect(world: Rect2, map: Rect2) -> Vector2:
 	return _constrain(world.position, world.end, map.position, map.end)
@@ -104,7 +104,7 @@ static func _constrain(minWorld: Vector2, maxWorld: Vector2, minMap: Vector2, ma
 	if maxWorld.y < maxMap.y: delta.y -= maxWorld.y - maxMap.y
 	return delta
 
-func _snapCameraBy(to: Vector2) -> void:
+func _snapCamera(to: Vector2) -> void:
 	Utility.stfu(_tween.stop(self, "offset"))
 	Utility.stfu(_tween.interpolate_property(self, "offset", null, to, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
 	Utility.stfu(_tween.start())
