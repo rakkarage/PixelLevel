@@ -1,6 +1,5 @@
-extends Viewport
+extends Camera2D
 
-onready var _camera: Camera2D = $Camera
 onready var _back:    TileMap = $Back
 onready var _fore:    TileMap = $Fore
 onready var _mob             := $Mob
@@ -19,7 +18,7 @@ const _factorIn := 0.90
 const _factorOut := 1.10
 
 func _ready() -> void:
-	_camera.zoom = Vector2(0.75, 0.75)
+	zoom = Vector2(0.75, 0.75)
 	_rect = _back.get_used_rect()
 	_targetToMob()
 	_cameraCenter()
@@ -56,13 +55,13 @@ func _input(event: InputEvent) -> void:
 			_zoom(event.global_position, _factorOut)
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
-			_camera.global_position -= event.relative * _camera.zoom
+			offset -= event.relative * zoom
 
 func _world(tile: Vector2) -> Vector2:
 	return _back.map_to_world(tile)
 
 func _worldSize() -> Vector2:
-	return size * _camera.zoom
+	return get_viewport_rect().size * zoom
 
 func _worldBounds() -> Rect2:
 	return Rect2(Vector2.ZERO, _worldSize())
@@ -74,7 +73,7 @@ func _mapSize() -> Vector2:
 	return _rect.size * _back.cell_size
 
 func _mapBounds() -> Rect2:
-	return Rect2(-_camera.global_position, _mapSize())
+	return Rect2(-offset, _mapSize())
 
 func _center() -> Vector2:
 	return -(_worldSize() / 2.0) + _mapSize() / 2.0
@@ -83,16 +82,16 @@ func _cameraCenter() -> void:
 	_cameraTo(_center())
 
 func _cameraTo(to: Vector2) -> void:
-	_camera.global_position = to
+	offset = to
 
 func _cameraBy(by: Vector2) -> void:
-	_cameraTo(_camera.global_position + by)
+	_cameraTo(offset + by)
 
 func _cameraUpdate() -> void:
 	var map := _mapBounds()
 	var world := _worldBounds().grow(-_back.cell_size.x)
 	if not world.intersects(map):
-		_snapCameraBy(_constrainRect(world, map))
+		_snapCameraBy(offset + _constrainRect(world, map))
 
 static func _constrainRect(world: Rect2, map: Rect2) -> Vector2:
 	return _constrain(world.position, world.end, map.position, map.end)
@@ -105,18 +104,18 @@ static func _constrain(minWorld: Vector2, maxWorld: Vector2, minMap: Vector2, ma
 	if maxWorld.y < maxMap.y: delta.y -= maxWorld.y - maxMap.y
 	return delta
 
-func _snapCameraBy(by: Vector2) -> void:
-	Utility.stfu(_tween.stop(_camera, "global_position"))
-	Utility.stfu(_tween.interpolate_property(_camera, "global_position", null, _camera.global_position + by, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
+func _snapCameraBy(to: Vector2) -> void:
+	Utility.stfu(_tween.stop(self, "offset"))
+	Utility.stfu(_tween.interpolate_property(self, "offset", null, to, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
 	Utility.stfu(_tween.start())
 
 func _zoom(at: Vector2, factor: float) -> void:
-	var z0 := _camera.zoom
+	var z0 := zoom
 	var z1 := _zoomClamp(z0 * factor)
-	var c0 := _camera.global_position
+	var c0 := offset
 	var c1 := c0 + at * (z0 - z1)
-	_camera.zoom = z1
-	_camera.global_position = c1
+	zoom = z1
+	offset = c1
 	_cameraUpdate()
 
 func _zoomClamp(z: Vector2) -> Vector2:
@@ -126,7 +125,7 @@ func _targetToMob() -> void:
 	_targetTo(_mob.global_position)
 
 func _targetTo(to: Vector2) -> void:
-	_target.global_position = _world(_map(to * _camera.zoom + _camera.global_position))
+	_target.global_position = _world(_map(to * zoom + offset))
 
 func _targetUpdate() -> void:
 	_targetSnapClosest(_map(_target.global_position))
