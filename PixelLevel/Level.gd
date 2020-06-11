@@ -29,6 +29,7 @@ func _ready() -> void:
 	_camera.zoom = Vector2(0.75, 0.75)
 	_cameraCenter()
 	Utility.ok(connect("size_changed", self, "_onResize"))
+	Utility.ok(Gesture.connect("onZoom", self, "_zoom"))
 
 func _tileIndex(p: Vector2) -> int:
 	return int(p.x + (p.y * _rect.size.x))
