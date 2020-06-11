@@ -7,12 +7,12 @@ var _touch := []
 var _zoomLast := 0.0
 var _zoomCurrent := 0.0
 const _zoomRate := 0.05
-var _zoomStarted := false
+# var _zoomStarted := false
 
 var _rotateLast := 0.0
 var _rotateCurrent := 0.0
 const _rotateRate := 1
-var _rotateStarted := false
+# var _rotateStarted := false
 
 signal onZoom(at, value)
 signal onRotate(at, value)
@@ -28,6 +28,13 @@ func _ready() -> void:
 		_touch.append({ p = Vector2.ZERO, start = Vector2.ZERO, state = false })
 	# Utility.ok(connect("onZoom", self, "onZoom"))
 	# Utility.ok(connect("onRotate", self, "onRotate"))
+
+func _mirror() -> void:
+	var i = 0
+	var o = i + 5
+	_touch[o].state = _touch[i].state
+	_touch[o].p = _opposite(_touch[i].start, _touch[i].p)
+	_touch[o].start = _touch[i].start
 
 func _mirrorDrag(event: InputEvent) -> void:
 	var i = event.index
@@ -45,10 +52,11 @@ func _mirrorTouch(event: InputEvent) -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.scancode == KEY_ALT:
 		_alt = event.pressed
+		_mirror()
 	if event is InputEventScreenDrag:
 		_touch[event.index].p = event.position
 		if _alt:
-			print("alt drag")
+			# print("alt drag")
 			_mirrorDrag(event)
 		# 	var i = event.index
 		# 	var o = i + 5
@@ -59,24 +67,23 @@ func _input(event: InputEvent) -> void:
 		if event.pressed:
 			_touch[event.index].start = event.position
 		if _alt:
-			print("alt touch")
+			# print("alt touch")
 			_mirrorTouch(event)
 	var count := 0
 	for touch in _touch:
 		if touch.state:
 			count += 1
-	print(count)
 	if event is InputEventScreenTouch:
 		if not event.pressed and count < 2:
 			_zoomLast = 0
 			_zoomCurrent = 0
-			_zoomStarted = false
+			# _zoomStarted = false
 			_rotateLast = 0
 			_rotateCurrent = 0
-			_rotateStarted = false
-		if event.pressed and count == 2:
-			_zoomStarted = true
-			_rotateStarted = true
+			# _rotateStarted = false
+		# if event.pressed and count == 2:
+		# 	_zoomStarted = true
+		# 	_rotateStarted = true
 	if count == 2:
 		_zoom(event)
 		_rotate(event)
@@ -101,26 +108,28 @@ func _input(event: InputEvent) -> void:
 func _zoom(event: InputEvent) -> void:
 	if event is InputEventScreenDrag:
 		var zoom : float = _touch[0].p.distance_to(_touch[1].p)
-		if _zoomStarted:
-			_zoomStarted = false
-			_zoomLast = zoom
-			_zoomCurrent = zoom
-		else:
-			_zoomCurrent = _zoomLast - zoom
-			_zoomLast = zoom
-		emit_signal("onZoom", event.position, _zoomCurrent)
+		# print(_zoomStarted)
+		# if _zoomStarted:
+		# 	_zoomStarted = false
+		# 	_zoomLast = zoom
+		# 	_zoomCurrent = zoom
+		# else:
+		_zoomCurrent = _zoomLast - zoom
+		_zoomLast = zoom
+		# print(_zoomCurrent)
+		emit_signal("onZoom", _touch[0].start, clamp(_zoomCurrent, 1, 10))
 
 func _rotate(event: InputEvent) -> void:
 	if event is InputEventScreenDrag:
 		var rotate : float = _touch[0].p.angle_to_point(_touch[1].p)
-		if _rotateStarted:
-			_rotateStarted = false
-			_rotateLast = rotate
-			_rotateCurrent = rotate
-		else:
-			_rotateCurrent = _rotateLast - rotate
-			_rotateLast = rotate
-		emit_signal("onRotate", event.position, _rotateCurrent)
+		# if _rotateStarted:
+		# 	_rotateStarted = false
+		# 	_rotateLast = rotate
+		# 	_rotateCurrent = rotate
+		# else:
+		_rotateCurrent = _rotateLast - rotate
+		_rotateLast = rotate
+		emit_signal("onRotate", _touch[0].start, _rotateCurrent)
 
 # func onZoom(_at: Vector2, _value: float) -> void:
 # 	print("zoom")
@@ -138,6 +147,7 @@ func _rotate(event: InputEvent) -> void:
 # 		var a := _rotateCurrent * _rotateRate
 # 		$Sprite.rotation = r - a
 
+# TODO: WTF is this for!?
 func _process(_delta) -> void:
 	update()
 

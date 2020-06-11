@@ -18,8 +18,8 @@ const _zoomMin := Vector2(0.1, 0.1)
 const _zoomMinMin := Vector2(0.05, 0.05)
 const _zoomMax := Vector2(1.0, 1.0)
 const _zoomMaxMax := Vector2(1.2, 1.2)
-const _zoomIn := 0.90
-const _zoomOut := 1.10
+const _zoomFactorIn := 0.90
+const _zoomFactorOut := 1.10
 
 func _ready() -> void:
 	_rect = _back.get_used_rect()
@@ -56,9 +56,9 @@ func _input(event: InputEvent) -> void:
 				_cameraUpdate()
 				_dragLeft = false
 		elif event.button_index == BUTTON_WHEEL_UP:
-			_zoom(event.position, _zoomIn)
+			_zoomIn(event.position)
 		elif event.button_index == BUTTON_WHEEL_DOWN:
-			_zoom(event.position, _zoomOut)
+			_zoomOut(event.position)
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
 			_camera.offset -= event.relative * _camera.zoom
@@ -114,6 +114,12 @@ func _snapCamera(to: Vector2) -> void:
 	Utility.stfu(_tween.stop(_camera, "offset"))
 	Utility.stfu(_tween.interpolate_property(_camera, "offset", null, to, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
 	Utility.stfu(_tween.start())
+
+func _zoomIn(at: Vector2) -> void:
+	_zoom(at, _zoomFactorIn)
+
+func _zoomOut(at: Vector2) -> void:
+	_zoom(at, _zoomFactorOut)
 
 func _zoom(at: Vector2, factor: float) -> void:
 	var z0 := _camera.zoom

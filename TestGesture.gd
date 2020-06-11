@@ -5,11 +5,11 @@ func _ready() -> void:
 	Utility.ok(Gesture.connect("onRotate", self, "_onRotate"))
 
 func _onZoom(at: Vector2, value: float) -> void:
-	print("zoom")
+	print("zoom: %s" % value)
 	$Sprite.position = at
-	$Sprite.scale = Vector2(value, value)
+	$Sprite.scale += Vector2(value, value)
 
 func _onRotate(at: Vector2, value: int) -> void:
-	print("rotate")
+	print("rotate: %s" % value)
 	$Sprite.position = at
-	$Sprite.rotation = value
+	$Sprite.rotation += value
