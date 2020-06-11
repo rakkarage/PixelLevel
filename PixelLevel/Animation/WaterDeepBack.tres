@@ -8,5 +8,5 @@ shader = ExtResource( 1 )
 shader_param/count = 7.0
 shader_param/duration = 0.125
 shader_param/width = 0.0714286
-shader_param/start = 0.0
+shader_param/startX = 0.0
 shader_param/frames = ExtResource( 2 )
