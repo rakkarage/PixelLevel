@@ -25,6 +25,10 @@ config/description="Pixel-perfect dungeon and environment sprites."
 run/main_scene="res://Demo.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+Gesture="*res://PixelLevel/Gesture.gd"
+
 [display]
 
 window/size/width=640
