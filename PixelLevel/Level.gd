@@ -26,7 +26,7 @@ func _ready() -> void:
 	_size = size;
 	_targetToMob()
 	_addPoints()
-	_zoom(_center(), 0.75)
+	_camera.zoom = Vector2(0.75, 0.75)
 	_cameraCenter()
 	Utility.ok(connect("size_changed", self, "_onResize"))
 
@@ -148,7 +148,8 @@ func _snapTo(node: Node2D, tile: Vector2) -> void:
 		Utility.stfu(_tween.interpolate_property(node, "position", null, p, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
 		Utility.stfu(_tween.start())
 
-func _normalize() -> Vector2: return (_camera.offset - _mapSize() / 2.0) / _size
+func _normalize() -> Vector2:
+	return (_camera.offset - _mapSize() / 2.0) / _size
 
 func _onResize() -> void:
 	_camera.offset = _normalize() * size + _mapSize() / 2.0
