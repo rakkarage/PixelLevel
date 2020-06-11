@@ -29,7 +29,7 @@ func _ready() -> void:
 	_camera.zoom = Vector2(0.75, 0.75)
 	_cameraCenter()
 	Utility.ok(connect("size_changed", self, "_onResize"))
-	Utility.ok(Gesture.connect("onZoom", self, "_zoom"))
+	Utility.ok(Gesture.connect("onZoom", self, "_zoomPinch"))
 
 func _tileIndex(p: Vector2) -> int:
 	return int(p.x + (p.y * _rect.size.x))
@@ -114,6 +114,12 @@ func _snapCamera(to: Vector2) -> void:
 	Utility.stfu(_tween.stop(_camera, "offset"))
 	Utility.stfu(_tween.interpolate_property(_camera, "offset", null, to, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
 	Utility.stfu(_tween.start())
+
+func _zoomPinch(at: Vector2, amount: float) -> void:
+	if amount > 0:
+		_zoom(at, _zoomFactorIn * amount)
+	elif amount < 0:
+		_zoom(at, _zoomFactorOut * amount)
 
 func _zoomIn(at: Vector2) -> void:
 	_zoom(at, _zoomFactorIn)
