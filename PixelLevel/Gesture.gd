@@ -46,7 +46,8 @@ func _mirrorTouch(event: InputEvent) -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.scancode == KEY_ALT:
 		_alt = event.pressed
-		_mirror()
+		if _alt:
+			_mirror()
 	if event is InputEventScreenDrag:
 		_touch[event.index].p = event.position
 		if _alt:
@@ -113,5 +114,5 @@ func _draw():
 			draw_circle(touch.start, 16, Color(0, 1, 0))
 			draw_line(touch.start, touch.p, Color(1, 1, 0), 2)
 
-func _opposite(start: Vector2, p: Vector2) -> Vector2:
-	return start - (p - start)
+func _opposite(center: Vector2, p: Vector2) -> Vector2:
+	return center - (p - center)
