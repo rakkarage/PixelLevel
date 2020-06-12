@@ -115,7 +115,7 @@ func _draw():
 			draw_circle(touch.p, 16, Color(1, 0, 0))
 			draw_circle(touch.start, 16, Color(0, 1, 0))
 			draw_line(touch.start, touch.p, Color(1, 1, 0), 2)
-			draw_arc(touch.start, touch.start.distance_to(touch.p), 0, 2*PI, 64, Color.purple, 1)
+			draw_arc(touch.start, touch.start.distance_to(touch.p), 0, TAU, 64, Color.purple, 1)
 
 func _opposite(center: Vector2, p: Vector2) -> Vector2:
 	return center - (p - center)
