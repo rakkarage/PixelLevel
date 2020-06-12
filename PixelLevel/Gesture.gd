@@ -20,6 +20,7 @@ signal onRotate(at, value)
 var _alt = false
 
 func _ready() -> void:
+	z_index = 999
 	for _i in range(_max):
 		_touch.append({ p = Vector2.ZERO, start = Vector2.ZERO, state = false })
 
@@ -98,7 +99,8 @@ func _zoom(event: InputEvent) -> void:
 
 func _rotate(event: InputEvent) -> void:
 	if event is InputEventScreenDrag:
-		var rotate : float = _touch[0].p.angle_to_point(_touch[1].p)
+		var rotate : float = _touch[0].start.angle_to_point(_touch[0].p)
+		print("rotate: %s" % rotate)
 		if _rotateStarted:
 			_rotateStarted = false
 			_rotateLast = rotate
@@ -106,7 +108,8 @@ func _rotate(event: InputEvent) -> void:
 		else:
 			_rotateCurrent = _rotateLast - rotate
 			_rotateLast = rotate
-		emit_signal("onRotate", _touch[0].start, _rotateCurrent)
+		print(_rotateCurrent)
+		emit_signal("onRotate", _touch[0].start, -_rotateCurrent)
 
 func _draw():
 	# if get_tree().is_editor_hint():
