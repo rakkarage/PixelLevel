@@ -17,18 +17,5 @@ func _onZoom(at: Vector2, value: float) -> void:
 	# $Sprite.scale *= Vector2(value, value)
 
 func _onRotate(at: Vector2, value: float) -> void:
-	# print("rot: %s"  % value)
-	# if abs(value) > 0.001 and abs(value) < 0.5:
-		# print("inside")
-		# var r : float = $Sprite.rotation
-		# print(r)
-		# var a := value * 10
-		# print(a)
-		# print(rad2deg(a))
 	$Sprite.rotation += value
-		# print($Sprite.rotation_degrees)
-	# else: print(value)
 	$Sprite.position = at
-# 	print("rotate: %s" % value)
-# 	$Sprite.position = at
-# 	$Sprite.rotation += value
