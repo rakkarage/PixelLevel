@@ -16,6 +16,7 @@ signal onZoom(at, value)
 signal onRotate(at, value)
 
 var _alt = false
+var _pan = true
 
 func _ready() -> void:
 	z_index = 999
@@ -82,7 +83,7 @@ func _zoom(event: InputEvent) -> void:
 		else:
 			_zoomCurrent = _zoomLast - zoom
 			_zoomLast = zoom
-		emit_signal("onZoom", _mid(_touch[0].start, _touch[1].start), _zoomCurrent)
+		emit_signal("onZoom", _mid(_touch[0].p, _touch[1].p), _zoomCurrent)
 
 func _rotate(event: InputEvent) -> void:
 	if event is InputEventScreenDrag:
@@ -94,7 +95,7 @@ func _rotate(event: InputEvent) -> void:
 		else:
 			_rotateCurrent = _rotateLast - rotate
 			_rotateLast = rotate
-		emit_signal("onRotate", _mid(_touch[0].start, _touch[1].start), -_rotateCurrent)
+		emit_signal("onRotate", _mid(_touch[0].p, _touch[1].p), -_rotateCurrent)
 
 func _mid(a: Vector2, b: Vector2) -> Vector2:
 	return (a + b) / 2.0

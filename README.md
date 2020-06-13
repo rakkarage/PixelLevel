@@ -42,6 +42,7 @@ fragment
 ## TODO
 
 - pinch zoom gesture
+  - keep same rotation 2nd time
 - implement path finding
 - light & borders & edges
 - level generation and loading tmx
