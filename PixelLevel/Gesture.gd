@@ -6,12 +6,10 @@ var _touch := []
 
 var _zoomLast := 0.0
 var _zoomCurrent := 0.0
-const _zoomRate := 0.05
 var _zoomStarted := false
 
 var _rotateLast := 0.0
 var _rotateCurrent := 0.0
-const _rotateRate := 1
 var _rotateStarted := false
 
 signal onZoom(at, value)
@@ -45,8 +43,6 @@ func _mirrorTouch(event: InputEvent) -> void:
 		_touch[o].start = _touch[i].start
 
 func _input(event: InputEvent) -> void:
-	#TODO: need to set center when alt is pressed so can zoom in
-	# 2 fingers or 1 finger and alt
 	if event is InputEventKey and event.scancode == KEY_ALT:
 		_alt = event.pressed
 		if _alt:
@@ -84,9 +80,7 @@ func _input(event: InputEvent) -> void:
 
 func _zoom(event: InputEvent) -> void:
 	if event is InputEventScreenDrag:
-		# hardcode 0 and 1 if going to!?
 		var zoom : float = _touch[0].p.distance_to(_touch[1].p)
-		# print("z: %s" % zoom)
 		if _zoomStarted:
 			_zoomStarted = false
 			_zoomLast = zoom
@@ -94,12 +88,11 @@ func _zoom(event: InputEvent) -> void:
 		else:
 			_zoomCurrent = _zoomLast - zoom
 			_zoomLast = zoom
-		# print(_zoomCurrent)
-		emit_signal("onZoom", _touch[0].start, _zoomCurrent)
+		emit_signal("onZoom", _mid(_touch[0].start, _touch[1].start), _zoomCurrent)
 
 func _rotate(event: InputEvent) -> void:
 	if event is InputEventScreenDrag:
-		var rotate : float = _touch[0].start.angle_to_point(_touch[0].p)
+		var rotate : float = _touch[0].p.angle_to_point(_touch[1].p)
 		if _rotateStarted:
 			_rotateStarted = false
 			_rotateLast = rotate
@@ -107,16 +100,19 @@ func _rotate(event: InputEvent) -> void:
 		else:
 			_rotateCurrent = _rotateLast - rotate
 			_rotateLast = rotate
-		emit_signal("onRotate", _touch[0].start, -_rotateCurrent)
+		emit_signal("onRotate", _mid(_touch[0].start, _touch[1].start), -_rotateCurrent)
+
+func _mid(a: Vector2, b: Vector2) -> Vector2:
+	return (a + b) / 2.0
 
 func _draw():
-	# if get_tree().is_editor_hint():
-	for touch in _touch:
-		if touch.state:
-			draw_circle(touch.p, 16, Color(1, 0, 0))
-			draw_circle(touch.start, 16, Color(0, 1, 0))
-			draw_line(touch.start, touch.p, Color(1, 1, 0), 2)
-			draw_arc(touch.start, touch.start.distance_to(touch.p), 0, TAU, 64, Color.purple, 1)
+	if get_tree().is_editor_hint():
+		for touch in _touch:
+			if touch.state:
+				draw_circle(touch.p, 16, Color(1, 0, 0))
+				draw_circle(touch.start, 16, Color(0, 1, 0))
+				draw_line(touch.start, touch.p, Color(1, 1, 0), 2)
+				draw_arc(touch.start, touch.start.distance_to(touch.p), 0, TAU, 64, Color.purple, 1)
 
 func _opposite(center: Vector2, p: Vector2) -> Vector2:
 	return center - (p - center)
