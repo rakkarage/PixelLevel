@@ -1,6 +1,6 @@
 extends Node2D
 
-const _max := 10
+const _max := 2
 
 var _touch := []
 
@@ -23,24 +23,18 @@ func _ready() -> void:
 		_touch.append({ p = Vector2.ZERO, start = Vector2.ZERO, state = false })
 
 func _mirror() -> void:
-	var i = 0
-	var o = i + 5
-	_touch[o].state = _touch[i].state
-	_touch[o].p = _opposite(_touch[i].start, _touch[i].p)
-	_touch[o].start = _touch[i].start
+	_touch[1].state = _touch[0].state
+	_touch[1].p = _opposite(_touch[0].start, _touch[0].p)
+	_touch[1].start = _touch[0].start
 
-func _mirrorDrag(event: InputEvent) -> void:
-	var i = event.index
-	var o = i + 5
-	_touch[o].p = _opposite(_touch[i].start, _touch[i].p)
+func _mirrorDrag() -> void:
+	_touch[1].p = _opposite(_touch[0].start, _touch[0].p)
 
 func _mirrorTouch(event: InputEvent) -> void:
-	var i = event.index
-	var o = i + 5
-	_touch[o].state = _touch[i].state
-	_touch[o].p = _opposite(_touch[i].start, _touch[i].p)
+	_touch[1].state = _touch[0].state
+	_touch[1].p = _opposite(_touch[0].start, _touch[0].p)
 	if event.pressed:
-		_touch[o].start = _touch[i].start
+		_touch[1].start = _touch[0].start
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.scancode == KEY_ALT:
@@ -50,7 +44,7 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventScreenDrag:
 		_touch[event.index].p = event.position
 		if _alt:
-			_mirrorDrag(event)
+			_mirrorDrag()
 	if event is InputEventScreenTouch:
 		_touch[event.index].state = event.pressed
 		_touch[event.index].p = event.position
