@@ -1,19 +1,15 @@
 extends Node2D
 
 const _max := 2
-
+var _alt := false
 var _touch := []
-
 var _zoomLast := 0.0
 var _zoomCurrent := 0.0
-
 var _rotateLast := 0.0
 var _rotateCurrent := 0.0
 
 signal onZoom(at, value)
 signal onRotate(at, value)
-
-var _alt = false
 
 func _ready() -> void:
 	z_index = 999
@@ -89,4 +85,4 @@ func _draw():
 				draw_circle(touch.p, 16, _colorC )
 				draw_circle(touch.start, 16, _colorA)
 				draw_line(touch.start, touch.p, _colorB, 2)
-				draw_arc(touch.start, touch.start.distance_to(touch.p), 0, TAU, 16, _colorC, 2)
+				draw_arc(touch.start, touch.start.distance_to(touch.p), 0, TAU, 32, _colorC, 2)
