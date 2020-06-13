@@ -106,7 +106,7 @@ func _mid(a: Vector2, b: Vector2) -> Vector2:
 	return (a + b) / 2.0
 
 func _draw():
-	if get_tree().is_editor_hint():
+	if Engine.editor_hint:
 		for touch in _touch:
 			if touch.state:
 				draw_circle(touch.p, 16, Color(1, 0, 0))
