@@ -42,6 +42,7 @@ fragment
 ## TODO
 
 - pinch zoom gesture
+  - fix start rotate from start with sprite angle instead of drag angle
   - Level
 - implement path finding
 - light & borders & edges
