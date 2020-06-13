@@ -16,17 +16,23 @@ signal onZoom(at, value)
 signal onRotate(at, value)
 
 var _alt = false
-var _pan = true
 
 func _ready() -> void:
 	z_index = 999
 	for _i in range(_max):
-		_touch.append({ p = Vector2.ZERO, start = Vector2.ZERO, state = false })
+		_touch.append({ p = Vector2.ZERO, start = Vector2.ZERO, state = false, mirror = false })
+
+func _mirrorClear() -> void:
+	_touch[1].state = Vector2.ZERO
+	_touch[1].p = Vector2.ZERO
+	_touch[1].start = false
+	_touch[1].mirror = true
 
 func _mirror() -> void:
 	_touch[1].state = _touch[0].state
 	_touch[1].p = _opposite(_touch[0].start, _touch[0].p)
 	_touch[1].start = _touch[0].start
+	_touch[1].mirror = true
 
 func _mirrorDrag() -> void:
 	_touch[1].p = _opposite(_touch[0].start, _touch[0].p)
@@ -36,12 +42,15 @@ func _mirrorTouch(event: InputEvent) -> void:
 	_touch[1].p = _opposite(_touch[0].start, _touch[0].p)
 	if event.pressed:
 		_touch[1].start = _touch[0].start
+	_touch[1].mirror = true
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.scancode == KEY_ALT:
 		_alt = event.pressed
 		if _alt:
 			_mirror()
+		else:
+			_mirrorClear()
 	if event is InputEventScreenDrag:
 		_touch[event.index].p = event.position
 		if _alt:
@@ -90,8 +99,8 @@ func _rotate(event: InputEvent) -> void:
 		var rotate : float = _touch[0].p.angle_to_point(_touch[1].p)
 		if _rotateStarted:
 			_rotateStarted = false
-			_rotateLast = rotate
-			_rotateCurrent = rotate
+			_rotateLast = -rotate
+			_rotateCurrent = -rotate
 		else:
 			_rotateCurrent = _rotateLast - rotate
 			_rotateLast = rotate
@@ -100,13 +109,17 @@ func _rotate(event: InputEvent) -> void:
 func _mid(a: Vector2, b: Vector2) -> Vector2:
 	return (a + b) / 2.0
 
+const _colorA := Color(0.25, 0.25, 0.25)
+const _colorB := Color(0.5, 0.5, 0.5)
+const _colorC := Color(0.75, 0.75, 0.75)
+
 func _draw():
 	for touch in _touch:
 		if touch.state:
-			draw_circle(touch.p, 16, Color(1, 0, 0))
-			draw_circle(touch.start, 16, Color(0, 1, 0))
-			draw_line(touch.start, touch.p, Color(1, 1, 0), 2)
-			draw_arc(touch.start, touch.start.distance_to(touch.p), 0, TAU, 64, Color.purple, 1)
+			draw_circle(touch.p, 16, _colorA if touch.mirror else _colorC)
+			draw_circle(touch.start, 16, _colorB)
+			draw_line(touch.start, touch.p, _colorB, 2)
+			draw_arc(touch.start, touch.start.distance_to(touch.p), 0, TAU, 64, _colorB, 1)
 
 func _opposite(center: Vector2, p: Vector2) -> Vector2:
 	return center - (p - center)
