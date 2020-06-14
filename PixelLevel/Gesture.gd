@@ -22,29 +22,46 @@ func _mid(a: Vector2, b: Vector2) -> Vector2:
 func _opposite(center: Vector2, p: Vector2) -> Vector2:
 	return center - (p - center)
 
-func _mirror() -> void:
-	if _alt:
-		_touch[1].state = _touch[0].state
-		_touch[1].p = _opposite(_touch[0].start, _touch[0].p)
-		_touch[1].start = _touch[0].start
-	else:
-		_touch[1].state = Vector2.ZERO
-		_touch[1].p = Vector2.ZERO
-		_touch[1].start = false
+func _mirrorClear() -> void:
+	_touch[1].state = Vector2.ZERO
+	_touch[1].p = Vector2.ZERO
+	_touch[1].start = false
+	_touch[1].mirror = true
 
-func _input(event: InputEvent) -> void:
+func _mirror() -> void:
+	_touch[1].state = _touch[0].state
+	_touch[1].p = _opposite(_touch[0].start, _touch[0].p)
+	_touch[1].start = _touch[0].start
+	_touch[1].mirror = true
+
+func _mirrorDrag() -> void:
+	_touch[1].p = _opposite(_touch[0].start, _touch[0].p)
+
+func _mirrorTouch(event: InputEvent) -> void:
+	_touch[1].state = _touch[0].state
+	_touch[1].p = _opposite(_touch[0].start, _touch[0].p)
+	if event.pressed:
+		_touch[1].start = _touch[0].start
+	_touch[1].mirror = true
+
+func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.scancode == KEY_ALT:
 		_alt = event.pressed
-		_mirror()
+		if _alt:
+			_mirror()
+		else:
+			_mirrorClear()
 	if event is InputEventScreenDrag:
 		_touch[event.index].p = event.position
-		_mirror()
+		if _alt:
+			_mirrorDrag()
 	if event is InputEventScreenTouch:
 		_touch[event.index].state = event.pressed
 		_touch[event.index].p = event.position
 		if event.pressed:
 			_touch[event.index].start = event.position
-		_mirror()
+		if _alt:
+			_mirrorTouch(event)
 	var count := 0
 	for touch in _touch:
 		if touch.state:

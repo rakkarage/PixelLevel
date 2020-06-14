@@ -45,7 +45,7 @@ func _addPoints() -> void:
 			var p := Vector2(x, y)
 			_astar.add_point(_tileIndex(p), p)
 
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT:
 			if event.pressed:
