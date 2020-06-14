@@ -6,6 +6,7 @@
 [node name="Back" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+mouse_filter = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -22,6 +23,7 @@ margin_bottom = 512.0
 rect_rotation = 90.0
 rect_scale = Vector2( 0.625, 0.625 )
 rect_pivot_offset = Vector2( 384, 512 )
+mouse_filter = 2
 texture = ExtResource( 1 )
 stretch_mode = 4
 script = ExtResource( 2 )
