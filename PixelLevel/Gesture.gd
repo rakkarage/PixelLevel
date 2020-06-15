@@ -26,13 +26,11 @@ func _mirrorClear() -> void:
 	_touch[1].state = Vector2.ZERO
 	_touch[1].p = Vector2.ZERO
 	_touch[1].start = false
-	_touch[1].mirror = true
 
 func _mirror() -> void:
 	_touch[1].state = _touch[0].state
 	_touch[1].p = _opposite(_touch[0].start, _touch[0].p)
 	_touch[1].start = _touch[0].start
-	_touch[1].mirror = true
 
 func _mirrorDrag() -> void:
 	_touch[1].p = _opposite(_touch[0].start, _touch[0].p)
@@ -42,7 +40,6 @@ func _mirrorTouch(event: InputEvent) -> void:
 	_touch[1].p = _opposite(_touch[0].start, _touch[0].p)
 	if event.pressed:
 		_touch[1].start = _touch[0].start
-	_touch[1].mirror = true
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.scancode == KEY_ALT:

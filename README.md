@@ -41,8 +41,6 @@ fragment
 
 ## TODO
 
-- pinch zoom gesture
-  - Level
 - implement path finding
 - light & borders & edges
 - level generation and loading tmx
