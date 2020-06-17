@@ -54,8 +54,8 @@ func _connectPoints() -> void:
 			_connect(Vector2(x, y))
 
 func _connect(p: Vector2) -> void:
-	for yy in range(p.y - 1, p.y + 1):
-		for xx in range(p.x - 1, p.x + 1):
+	for yy in range(p.y - 1, p.y + 2):
+		for xx in range(p.x - 1, p.x + 2):
 			var pp := Vector2(xx, yy)
 			if (not is_equal_approx(yy, p.y) or not is_equal_approx(xx, p.x)) and _rect.has_point(pp):
 				_astar.connect_points(_tileIndex(p), _tileIndex(pp), false)
