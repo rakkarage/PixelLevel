@@ -64,6 +64,7 @@ format = 1
 tile_data = PoolIntArray( 393217, 18, 0, 458753, 18, 0, 458754, 18, 0, 524289, 16, 0, 524290, 18, 0, 524291, 18, 0, 589825, 16, 0, 589826, 16, 0, 589827, 18, 0, 589828, 18, 0 )
 
 [node name="Path" type="Node2D" parent="Level/Viewport/Camera"]
+position = Vector2( 8, 8 )
 
 [node name="Mob" parent="Level/Viewport/Camera" instance=ExtResource( 2 )]
 

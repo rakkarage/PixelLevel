@@ -5,4 +5,3 @@
 [node name="Path" type="AnimatedSprite"]
 frames = ExtResource( 1 )
 playing = true
-centered = false

@@ -163,14 +163,43 @@ func _targetUpdate() -> void:
 	var to := _map(_target.position)
 	to = _targetSnapClosest(to)
 	_pathPoints = _astar.get_point_path(_tileIndex(from), _tileIndex(to))
-	_pathDraw()
-
-func _pathDraw() -> void:
 	_pathClear()
-	for tile in _pathPoints:
+	var rotation := 0
+	var pathDelta := _delta(from, to)
+	for i in _pathPoints.size():
+		var tile := _pathPoints[i]
+		if i + 1 < _pathPoints.size():
+			var next := _pathPoints[i + 1]
+			var stepDelta := _delta(tile, next)
+			rotation = _pathRotate(stepDelta, pathDelta)
 		var child := _pathScene.instance()
+		child.rotation_degrees = rotation
 		child.position = _world(tile)
 		_path.add_child(child)
+
+func _delta(from: Vector2, to: Vector2) -> Vector2:
+	return to - from
+
+func _pathRotate(stepDelta, pathDelta) -> int:
+	var rotation := 0
+	var trending := abs(pathDelta.y) > abs(pathDelta.x)
+	if stepDelta.x > 0 and stepDelta.y < 0:
+		rotation = 270 if trending else 0
+	elif stepDelta.x > 0 and stepDelta.y > 0:
+		rotation = 90 if trending else 0
+	elif stepDelta.x < 0 and stepDelta.y < 0:
+		rotation = 270 if trending else 180
+	elif stepDelta.x < 0 and stepDelta.y > 0:
+		rotation = 90 if trending else 180
+	elif stepDelta.x > 0:
+		rotation = 0
+	elif stepDelta.x < 0:
+		rotation = 180
+	elif stepDelta.y < 0:
+		rotation = 270;
+	elif stepDelta.y > 0:
+		rotation = 90;
+	return rotation
 
 func _pathClear():
 	for path in _path.get_children():
