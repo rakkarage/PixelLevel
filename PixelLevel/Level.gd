@@ -35,11 +35,11 @@ func _ready() -> void:
 	Utility.ok(Gesture.connect("onZoom", self, "_zoomPinch"))
 
 func _tileIndex(p: Vector2) -> int:
-	return int(p.x + (p.y * _rect.size.x))
+	return int(p.y * _rect.size.x + p.x)
 
-func _tilePosition(i: int) -> Vector2:
-	var y := i / _rect.size.x
-	var x := i - _rect.size.x * y
+func _tilePosition(index: int) -> Vector2:
+	var y := index / _rect.size.x
+	var x := index - _rect.size.x * y
 	return Vector2(x, y)
 
 func _addPoints() -> void:
@@ -56,9 +56,9 @@ func _connectPoints() -> void:
 func _connect(p: Vector2) -> void:
 	for yy in range(p.y - 1, p.y + 1):
 		for xx in range(p.x - 1, p.x + 1):
-			var pp = Vector2(xx, yy)
+			var pp := Vector2(xx, yy)
 			if (not is_equal_approx(yy, p.y) or not is_equal_approx(xx, p.x)) and _rect.has_point(pp):
-				_astar.connect_points(_tileIndex(p), _tileIndex(pp))
+				_astar.connect_points(_tileIndex(p), _tileIndex(pp), false)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -124,7 +124,7 @@ func _cameraSnap() -> void:
 	var map := _mapBounds()
 	var world := _worldBounds().grow(-_back.cell_size.x)
 	if not world.intersects(map):
-		var to = _camera.offset + _constrainRect(world, map)
+		var to := _camera.offset + _constrainRect(world, map)
 		Utility.stfu(_tween.stop(_camera, "offset"))
 		Utility.stfu(_tween.interpolate_property(_camera, "offset", null, to, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
 		Utility.stfu(_tween.start())
@@ -156,22 +156,19 @@ func _targetToMob() -> void:
 
 func _targetTo(to: Vector2) -> void:
 	_targetStop()
-	var tile = _map(to * _camera.zoom + _camera.offset)
-	_target.position = _world(tile)
+	_target.position = _world(_map(to * _camera.zoom + _camera.offset))
 
 func _targetUpdate() -> void:
-	var from = _map(_mob.position)
-	var to = _map(_target.position)
+	var from := _map(_mob.position)
+	var to := _map(_target.position)
 	to = _targetSnapClosest(to)
-	var fromId = _tileIndex(from)
-	var toId = _tileIndex(to)
-	_pathPoints = _astar.get_point_path(fromId, toId)
+	_pathPoints = _astar.get_point_path(_tileIndex(from), _tileIndex(to))
 	_pathDraw()
 
 func _pathDraw() -> void:
 	_pathClear()
 	for tile in _pathPoints:
-		var child = _pathScene.instance()
+		var child := _pathScene.instance()
 		child.position = _world(tile)
 		_path.add_child(child)
 
@@ -180,7 +177,7 @@ func _pathClear():
 		path.free()
 
 func _targetSnapClosest(tile: Vector2) -> Vector2:
-	var p = _astar.get_point_position(_astar.get_closest_point(tile))
+	var p := _astar.get_point_position(_astar.get_closest_point(tile))
 	_targetSnap(p)
 	return p
 
