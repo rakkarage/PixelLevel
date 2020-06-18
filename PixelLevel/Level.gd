@@ -78,7 +78,8 @@ func _connect(p: Vector2) -> void:
 		for xx in range(p.x - 1, p.x + 2):
 			var pp := Vector2(xx, yy)
 			if (not is_equal_approx(yy, p.y) or not is_equal_approx(xx, p.x)) and _rect.has_point(pp):
-				_astar.connect_points(_tileIndex(p), _tileIndex(pp), false)
+				if not _blocked(xx, yy):
+					_astar.connect_points(_tileIndex(p), _tileIndex(pp), false)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -312,3 +313,11 @@ func _randomTile(id: int) -> Vector2:
 			if current >= random:
 				return p
 	return p
+
+func _blocked(x: int, y: int) -> bool:
+	var back := _back.get_cell(x, y)
+	var fore := _fore.get_cell(x, y)
+	var f: int = back == Tile.Theme0Floor or back == Tile.Theme4Floor
+	var fr: int = back == Tile.Theme0FloorRoom or back == Tile.Theme4FloorRoom
+	var w: int = fore == Tile.Theme0Wall or fore == Tile.Theme4Wall
+	return w or (not f and not fr)
