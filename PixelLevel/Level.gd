@@ -70,9 +70,8 @@ func _process(delta) -> void:
 		_timeTotal += _time
 		_turnTotal += 1
 		_move(_mob)
-		_time = 0.0
 		_lightUpdate(_map(_mob.position), _lightRadius)
-		# update light!!!!!!!!!!!
+		_time = 0.0
 		# if character too close to edge of screen center on character!
 		# update minimap!
 
@@ -361,16 +360,15 @@ func _randomTile(id: int) -> Vector2:
 	return p
 
 func _blocked(x: int, y: int) -> bool:
+	if not _insideMap(x, y): return false
 	var back := _back.get_cell(x, y)
 	var fore := _fore.get_cell(x, y)
 	var f: bool = back == Tile.Theme0Floor or back == Tile.Theme4Floor
 	var fr: bool = back == Tile.Theme0FloorRoom or back == Tile.Theme4FloorRoom
-	var w: bool = fore == Tile.Theme0Wall or fore == Tile.Theme4Wall
+	var w: bool = fore == Tile.Theme0Wall or fore == Tile.Theme4Wall or fore == Tile.Theme0Torch or fore == Tile.Theme4Torch
 	var d: bool = fore == Tile.Theme0Door or fore == Tile.Theme4Door
 	var s := _fore.get_cell_autotile_coord(x, y)
 	return w or (not f and not fr) or (d and s == Vector2(0, 0))
-
-### light
 
 const _lightRadius := 8
 const _lightMin := 0
@@ -390,7 +388,7 @@ func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float,
 	var rSquare := maxRadius * maxRadius
 	var r2 := maxRadius + maxRadius
 	var newStart := 0.0
-	for i in range(radius, maxRadius):
+	for i in range(radius, maxRadius + 1):
 		var dx := -i - 1
 		var dy := -i
 		var blocked := false
@@ -427,7 +425,7 @@ func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float,
 		if blocked: break
 
 func _lightEmit(at: Vector2, radius: int) -> void:
-	for i in range(8):
+	for i in range(_fovOctants[0].size()):
 		_lightEmitRecursive(at, 1, radius, 1.0, 0.0, _fovOctants[0][i], _fovOctants[1][i], _fovOctants[2][i], _fovOctants[3][i])
 	_setLight(int(at.x), int(at.y), _lightMax, true)
 
