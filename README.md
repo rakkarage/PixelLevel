@@ -41,6 +41,5 @@ fragment
 
 ## TODO
 
-- implement path finding
-- light & borders & edges
+- need to fix mob animation states!? and use walk animation
 - level generation and loading tmx

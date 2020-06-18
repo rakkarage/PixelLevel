@@ -58,6 +58,8 @@ func _ready() -> void:
 	_connectPoints()
 	_camera.zoom = Vector2(0.75, 0.75)
 	_cameraCenter()
+	_dark()
+	_lightUpdate(_map(_mob.position), _lightRadius)
 	Utility.ok(connect("size_changed", self, "_onResize"))
 	Utility.ok(Gesture.connect("onZoom", self, "_zoomPinch"))
 
@@ -69,12 +71,13 @@ func _process(delta) -> void:
 		_turnTotal += 1
 		_move(_mob)
 		_time = 0.0
+		_lightUpdate(_map(_mob.position), _lightRadius)
 		# update light!!!!!!!!!!!
 		# if character too close to edge of screen center on character!
 		# update minimap!
 
 func _move(mob: Node2D) -> void:
-	if _pathPoints.size() != 0:
+	if _pathPoints.size() > 1:
 		var delta = _delta(_pathPoints[0], _pathPoints[1])
 		_face(mob, delta)
 		# play walk animation!!!!!!!!!!!!!!!!!!!
@@ -369,7 +372,7 @@ func _blocked(x: int, y: int) -> bool:
 
 ### light
 
-const _lightRadius := 3
+const _lightRadius := 8
 const _lightMin := 0
 const _lightMax := 31
 const _lightExploredOffset := 7
@@ -405,7 +408,7 @@ func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float,
 					var intensity1 := 1.0 / (1.0 + distanceSquare / r2)
 					var intensity2 := intensity1 - (1.0 / (1.0 + rSquare))
 					var intensity := intensity2 / (1.0 - (1.0 / (1.0 + rSquare)))
-					var lightIndex := (intensity * _lightCount)
+					var lightIndex := int(intensity * _lightCount)
 					if lightIndex > 0:
 						var light = _lightMin + lightIndex + _lightExploredOffset
 						_setLight(int(mx), int(my), light, true)
@@ -420,7 +423,7 @@ func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float,
 				elif _blocked(int(mx), int(my)) and (radius < maxRadius):
 					blocked = true
 					_lightEmitRecursive(at, i + 1, maxRadius, start, lSlope, xx, xy, yx, yy)
-					newStart = rSlope;
+					newStart = rSlope
 		if blocked: break
 
 func _lightEmit(at: Vector2, radius: int) -> void:
