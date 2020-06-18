@@ -27,7 +27,7 @@ const _zoomPinchIn := 0.02
 const _zoomPinchOut := 1.02
 const _pathScene = preload("res://PixelLevel/Path.tscn")
 
-enum Tiles {
+enum Tile {
 	BannerA,
 	BannerB,
 	Carpet,
@@ -214,9 +214,9 @@ func _pathRotate(stepDelta, pathDelta) -> int:
 	elif stepDelta.x < 0:
 		rotation = 180
 	elif stepDelta.y < 0:
-		rotation = 270;
+		rotation = 270
 	elif stepDelta.y > 0:
-		rotation = 90;
+		rotation = 90
 	return rotation
 
 func _pathClear():
@@ -247,52 +247,52 @@ func _onResize() -> void:
 	_cameraSnap()
 
 func _drawEdge() -> void:
-	var minY = _rect.position.y - 1
-	var maxY = _rect.size.y
-	var minX = _rect.position.x - 1
-	var maxX = _rect.size.x
+	var minY := _rect.position.y - 1
+	var maxY := _rect.size.y
+	var minX := _rect.position.x - 1
+	var maxX := _rect.size.x
 	for y in range(minY, maxY + 1):
 		for x in range(minX, maxX + 1):
 			if x == minX or x == maxX or y == minY or y == maxY:
 				if x == minX and y == minY: # nw
-					_edge.set_cell(x, y, Tiles.EdgeOutsideCorner, false, false, false, Vector2(1, 0))
+					_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(1, 0))
 				elif x == minX and y == maxY: # sw
-					_edge.set_cell(x, y, Tiles.EdgeOutsideCorner, false, false, false, Vector2(2, 0))
+					_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(2, 0))
 				elif x == maxX and y == minY: # ne
-					_edge.set_cell(x, y, Tiles.EdgeOutsideCorner, false, false, false, Vector2(0, 0))
+					_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(0, 0))
 				elif x == maxX and y == maxY: # se
-					_edge.set_cell(x, y, Tiles.EdgeOutsideCorner, false, false, false, Vector2(3, 0))
+					_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(3, 0))
 				elif x == minX: # w
-					_setRandomTile(x, y, Tiles.EdgeOutside, false, _randomBool(), true)
+					_setRandomTile(_edge, x, y, Tile.EdgeOutside, false, _randomBool(), true)
 				elif x == maxX: # e
-					_setRandomTile(x, y, Tiles.EdgeOutside, true, _randomBool(), true)
+					_setRandomTile(_edge, x, y, Tile.EdgeOutside, true, _randomBool(), true)
 				elif y == minY: # n
-					_setRandomTile(x, y, Tiles.EdgeOutside, _randomBool(), false, false)
+					_setRandomTile(_edge, x, y, Tile.EdgeOutside, _randomBool(), false, false)
 				elif y == maxY: # s
-					_setRandomTile(x, y, Tiles.EdgeOutside, _randomBool(), true, false)
+					_setRandomTile(_edge, x, y, Tile.EdgeOutside, _randomBool(), true, false)
 			elif (x == minX + 1) or (x == maxX - 1) or (y == minY + 1) or (y == maxY - 1):
 				if x == minX + 1 and y == minY + 1: # nw
-					_setRandomTile(x, y, Tiles.EdgeInsideCorner, false, false, false)
+					_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, false, false, false)
 				elif x == minX + 1 and y == maxY - 1: # sw
-					_setRandomTile(x, y, Tiles.EdgeInsideCorner, false, true, false)
+					_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, false, true, false)
 				elif x == maxX - 1 and y == minY + 1: # ne
-					_setRandomTile(x, y, Tiles.EdgeInsideCorner, true, false, true)
+					_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, true, false, true)
 				elif x == maxX - 1 and y == maxY - 1: # se
-					_setRandomTile(x, y, Tiles.EdgeInsideCorner, true, true, false)
+					_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, true, true, false)
 				elif x == minX + 1: # w
-					_setRandomTile(x, y, Tiles.EdgeInside, false, _randomBool(), true)
+					_setRandomTile(_edge, x, y, Tile.EdgeInside, false, _randomBool(), true)
 				elif x == maxX - 1: # e
-					_setRandomTile(x, y, Tiles.EdgeInside, true, _randomBool(), true)
+					_setRandomTile(_edge, x, y, Tile.EdgeInside, true, _randomBool(), true)
 				elif y == minY + 1: # n
-					_setRandomTile(x, y, Tiles.EdgeInside, _randomBool(), false, false)
+					_setRandomTile(_edge, x, y, Tile.EdgeInside, _randomBool(), false, false)
 				elif y == maxY - 1: # s
-					_setRandomTile(x, y, Tiles.EdgeInside, _randomBool(), true, false)
+					_setRandomTile(_edge, x, y, Tile.EdgeInside, _randomBool(), true, false)
 
 func _randomBool() -> bool:
 	return bool(_rng.randi() % 2)
 
-func _setRandomTile(x: int, y: int, id: int, flipX: bool = false, flipY: bool = false, rot90: bool = false) -> void:
-	_edge.set_cell(x, y, id, flipX, flipY, rot90, _randomTile(id))
+func _setRandomTile(map: TileMap, x: int, y: int, id: int, flipX: bool = false, flipY: bool = false, rot90: bool = false) -> void:
+	map.set_cell(x, y, id, flipX, flipY, rot90, _randomTile(id))
 
 func _randomTile(id: int) -> Vector2:
 	var p := Vector2.ZERO
