@@ -22,7 +22,7 @@ var _turn := false
 var _time := 0.0
 var _turnTotal := 0
 var _timeTotal := 0.0
-const _turnTime := 1.333
+const _turnTime := 0.333
 const _duration := 0.22
 const _zoomMin := Vector2(0.2, 0.2)
 const _zoomMax := Vector2(1.0, 1.0)
@@ -30,7 +30,8 @@ const _zoomFactorIn := 0.90
 const _zoomFactorOut := 1.10
 const _zoomPinchIn := 0.02
 const _zoomPinchOut := 1.02
-const _pathScene = preload("res://PixelLevel/Path.tscn")
+const _pathScene := preload("res://PixelLevel/Path.tscn")
+const _startAt := Vector2(4, 4)
 
 enum Tile {
 	BannerA,
@@ -51,6 +52,7 @@ func _ready() -> void:
 	_size = size
 	_rng.randomize()
 	_drawEdge()
+	_mob.position = _world(_startAt) + _back.cell_size / 2.0
 	_targetToMob()
 	_addPoints()
 	_connectPoints()
@@ -77,7 +79,6 @@ func _move(mob: Node2D) -> void:
 		_face(mob, delta)
 		# play walk animation!!!!!!!!!!!!!!!!!!!
 		_step(mob, delta)
-		var old = _pathPoints[0]
 		_pathPoints.remove(0)
 		_path.get_child(0).queue_free()
 		if _pathPoints.size() > 1:
@@ -90,7 +91,7 @@ func _face(mob: Node2D, direction: Vector2) -> void:
 		mob.scale = Vector2(1, 1)
 
 func _step(mob: Node2D, direction: Vector2) -> void:
-	mob.position += direction
+	mob.position += _world(direction)
 
 func _tileIndex(p: Vector2) -> int:
 	return int(p.y * _rect.size.x + p.x)
