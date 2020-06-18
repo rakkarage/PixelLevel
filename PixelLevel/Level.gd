@@ -317,7 +317,9 @@ func _randomTile(id: int) -> Vector2:
 func _blocked(x: int, y: int) -> bool:
 	var back := _back.get_cell(x, y)
 	var fore := _fore.get_cell(x, y)
-	var f: int = back == Tile.Theme0Floor or back == Tile.Theme4Floor
-	var fr: int = back == Tile.Theme0FloorRoom or back == Tile.Theme4FloorRoom
-	var w: int = fore == Tile.Theme0Wall or fore == Tile.Theme4Wall
-	return w or (not f and not fr)
+	var f: bool = back == Tile.Theme0Floor or back == Tile.Theme4Floor
+	var fr: bool = back == Tile.Theme0FloorRoom or back == Tile.Theme4FloorRoom
+	var w: bool = fore == Tile.Theme0Wall or fore == Tile.Theme4Wall
+	var d: bool = fore == Tile.Theme0Door or fore == Tile.Theme4Door
+	var s := _fore.get_cell_autotile_coord(x, y)
+	return w or (not f and not fr) or (d and s == Vector2(0, 0))
