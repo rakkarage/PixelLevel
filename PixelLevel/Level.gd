@@ -7,13 +7,17 @@ onready var _waterBack: TileMap = $Camera/WaterBack
 onready var _mob:        Node2D = $Camera/Mob
 onready var _waterFore: TileMap = $Camera/WaterBack
 onready var _fore:      TileMap = $Camera/Fore
+onready var _light:     TileMap = $Camera/Light
+onready var _edge:      TileMap = $Camera/Edge
 onready var _target:     Node2D = $Camera/Target
 onready var _path:       Node2D = $Camera/Path
 onready var _astar:     AStar2D = AStar2D.new()
+onready var _tileSet:           = _back.tile_set
 var _rect := Rect2()
 var _pathPoints := PoolVector2Array()
 var _dragLeft := false
 var _size := Vector2.ZERO
+var _rng := RandomNumberGenerator.new()
 const _duration := 0.22
 const _zoomMin := Vector2(0.2, 0.2)
 const _zoomMax := Vector2(1.0, 1.0)
@@ -23,9 +27,25 @@ const _zoomPinchIn := 0.02
 const _zoomPinchOut := 1.02
 const _pathScene = preload("res://PixelLevel/Path.tscn")
 
+enum Tiles {
+	BannerA,
+	BannerB,
+	Carpet,
+	Furnature,
+	Theme0Torch, Theme0Wall, Theme0Floor, Theme0FloorRoom, Theme0Stair, Theme0Door,
+	Theme4Torch, Theme4Wall, Theme4Floor, Theme4FloorRoom, Theme4Stair, Theme4Door,
+	WaterDeepBack, WaterDeepFore,
+	WaterShallowBack, WaterShallowFore,
+	Light,
+	EdgeInside,	EdgeInsideCorner,
+	EdgeOutsideCorner, EdgeOutside,
+}
+
 func _ready() -> void:
 	_rect = _back.get_used_rect()
 	_size = size
+	_rng.randomize()
+	_drawEdge()
 	_targetToMob()
 	_addPoints()
 	_connectPoints()
@@ -169,9 +189,7 @@ func _targetUpdate() -> void:
 	for i in _pathPoints.size():
 		var tile := _pathPoints[i]
 		if i + 1 < _pathPoints.size():
-			var next := _pathPoints[i + 1]
-			var stepDelta := _delta(tile, next)
-			rotation = _pathRotate(stepDelta, pathDelta)
+			rotation = _pathRotate(_delta(tile, _pathPoints[i + 1]), pathDelta)
 		var child := _pathScene.instance()
 		child.rotation_degrees = rotation
 		child.position = _world(tile)
@@ -227,3 +245,70 @@ func _onResize() -> void:
 	_camera.offset = _normalize() * size + _mapSize() / 2.0
 	_size = size
 	_cameraSnap()
+
+func _drawEdge() -> void:
+	var minY = _rect.position.y - 1
+	var maxY = _rect.size.y
+	var minX = _rect.position.x - 1
+	var maxX = _rect.size.x
+	for y in range(minY, maxY + 1):
+		for x in range(minX, maxX + 1):
+			if x == minX or x == maxX or y == minY or y == maxY:
+				if x == minX and y == minY: # nw
+					_edge.set_cell(x, y, Tiles.EdgeOutsideCorner, false, false, false, Vector2(1, 0))
+				elif x == minX and y == maxY: # sw
+					_edge.set_cell(x, y, Tiles.EdgeOutsideCorner, false, false, false, Vector2(2, 0))
+				elif x == maxX and y == minY: # ne
+					_edge.set_cell(x, y, Tiles.EdgeOutsideCorner, false, false, false, Vector2(0, 0))
+				elif x == maxX and y == maxY: # se
+					_edge.set_cell(x, y, Tiles.EdgeOutsideCorner, false, false, false, Vector2(3, 0))
+				elif x == minX: # w
+					_setRandomTile(x, y, Tiles.EdgeOutside, false, _randomBool(), true)
+				elif x == maxX: # e
+					_setRandomTile(x, y, Tiles.EdgeOutside, true, _randomBool(), true)
+				elif y == minY: # n
+					_setRandomTile(x, y, Tiles.EdgeOutside, _randomBool(), false, false)
+				elif y == maxY: # s
+					_setRandomTile(x, y, Tiles.EdgeOutside, _randomBool(), true, false)
+			elif (x == minX + 1) or (x == maxX - 1) or (y == minY + 1) or (y == maxY - 1):
+				if x == minX + 1 and y == minY + 1: # nw
+					_setRandomTile(x, y, Tiles.EdgeInsideCorner, false, false, false)
+				elif x == minX + 1 and y == maxY - 1: # sw
+					_setRandomTile(x, y, Tiles.EdgeInsideCorner, false, true, false)
+				elif x == maxX - 1 and y == minY + 1: # ne
+					_setRandomTile(x, y, Tiles.EdgeInsideCorner, true, false, true)
+				elif x == maxX - 1 and y == maxY - 1: # se
+					_setRandomTile(x, y, Tiles.EdgeInsideCorner, true, true, false)
+				elif x == minX + 1: # w
+					_setRandomTile(x, y, Tiles.EdgeInside, false, _randomBool(), true)
+				elif x == maxX - 1: # e
+					_setRandomTile(x, y, Tiles.EdgeInside, true, _randomBool(), true)
+				elif y == minY + 1: # n
+					_setRandomTile(x, y, Tiles.EdgeInside, _randomBool(), false, false)
+				elif y == maxY - 1: # s
+					_setRandomTile(x, y, Tiles.EdgeInside, _randomBool(), true, false)
+
+func _randomBool() -> bool:
+	return bool(_rng.randi() % 2)
+
+func _setRandomTile(x: int, y: int, id: int, flipX: bool = false, flipY: bool = false, rot90: bool = false) -> void:
+	_edge.set_cell(x, y, id, flipX, flipY, rot90, _randomTile(id))
+
+func _randomTile(id: int) -> Vector2:
+	var p := Vector2.ZERO
+	var r := _tileSet.tile_get_region(id)
+	var s := _tileSet.autotile_get_size(id)
+	var size := r.size / s
+	var total := 0
+	for y in range(size.y):
+		for x in range(size.x):
+			total += _tileSet.autotile_get_subtile_priority(id, Vector2(x, y))
+	var random := _rng.randi() % total
+	var current := 0
+	for y in range(size.y):
+		for x in range(size.x):
+			p = Vector2(x, y)
+			current += _tileSet.autotile_get_subtile_priority(id, p)
+			if current >= random:
+				return p
+	return p
