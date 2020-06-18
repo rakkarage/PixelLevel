@@ -18,6 +18,11 @@ var _pathPoints := PoolVector2Array()
 var _dragLeft := false
 var _size := Vector2.ZERO
 var _rng := RandomNumberGenerator.new()
+var _turn := false
+var _time := 0.0
+var _turnTotal := 0
+var _timeTotal := 0.0
+const _turnTime := 1.333
 const _duration := 0.22
 const _zoomMin := Vector2(0.2, 0.2)
 const _zoomMax := Vector2(1.0, 1.0)
@@ -53,6 +58,39 @@ func _ready() -> void:
 	_cameraCenter()
 	Utility.ok(connect("size_changed", self, "_onResize"))
 	Utility.ok(Gesture.connect("onZoom", self, "_zoomPinch"))
+
+func _process(delta) -> void:
+	_time += delta
+	if _turn and _time > _turnTime:
+		_turn = false
+		_timeTotal += _time
+		_turnTotal += 1
+		_move(_mob)
+		_time = 0.0
+		# update light!!!!!!!!!!!
+		# if character too close to edge of screen center on character!
+		# update minimap!
+
+func _move(mob: Node2D) -> void:
+	if _pathPoints.size() != 0:
+		var delta = _delta(_pathPoints[0], _pathPoints[1])
+		_face(mob, delta)
+		# play walk animation!!!!!!!!!!!!!!!!!!!
+		_step(mob, delta)
+		var old = _pathPoints[0]
+		_pathPoints.remove(0)
+		_path.get_child(0).queue_free()
+		if _pathPoints.size() > 1:
+			_turn = true
+
+func _face(mob: Node2D, direction: Vector2) -> void:
+	if direction.x > 0 or direction.y > 0:
+		mob.scale = Vector2(-1, 1)
+	else:
+		mob.scale = Vector2(1, 1)
+
+func _step(mob: Node2D, direction: Vector2) -> void:
+	mob.position += direction
 
 func _tileIndex(p: Vector2) -> int:
 	return int(p.y * _rect.size.x + p.x)
@@ -177,7 +215,11 @@ func _targetToMob() -> void:
 
 func _targetTo(to: Vector2) -> void:
 	_targetStop()
-	_target.position = _world(_map(to * _camera.zoom + _camera.offset))
+	var new = _map(to * _camera.zoom + _camera.offset)
+	if _map(_target.position) == new:
+		_turn = true
+	else:
+		_target.position = _world(new)
 
 func _targetUpdate() -> void:
 	var from := _map(_mob.position)
