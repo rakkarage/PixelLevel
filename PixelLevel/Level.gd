@@ -366,3 +366,91 @@ func _blocked(x: int, y: int) -> bool:
 	var d: bool = fore == Tile.Theme0Door or fore == Tile.Theme4Door
 	var s := _fore.get_cell_autotile_coord(x, y)
 	return w or (not f and not fr) or (d and s == Vector2(0, 0))
+
+### light
+
+const _lightRadius := 3
+const _lightMin := 0
+const _lightMax := 31
+const _lightExploredOffset := 7
+const _lightCount := 25
+const _fovOctants = [
+	[1,  0,  0, -1, -1,  0,  0,  1],
+	[0,  1, -1,  0,  0, -1,  1,  0],
+	[0,  1,  1,  0,  0, -1, -1,  0],
+	[1,  0,  0,  1, -1,  0,  0, -1]
+]
+var _torches := []
+
+func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float, end: float, xx: int, xy: int, yx: int, yy: int) -> void:
+	if start < end: return
+	var rSquare := maxRadius * maxRadius
+	var r2 := maxRadius + maxRadius
+	var newStart := 0.0
+	for i in range(radius, maxRadius):
+		var dx := -i - 1
+		var dy := -i
+		var blocked := false
+		while dx <= 0:
+			dx += 1
+			var mx := at.x + dx * xx + dy * xy
+			var my := at.y + dx * yx + dy * yy
+			var lSlope := (dx - 0.5) / (dy + 0.5)
+			var rSlope := (dx + 0.5) / (dy - 0.5)
+			if start < rSlope: continue
+			elif end > lSlope: break
+			else:
+				var distanceSquare := (mx - at.x) * (mx - at.x) + (my - at.y) * (my - at.y)
+				if distanceSquare < rSquare:
+					var intensity1 := 1.0 / (1.0 + distanceSquare / r2)
+					var intensity2 := intensity1 - (1.0 / (1.0 + rSquare))
+					var intensity := intensity2 / (1.0 - (1.0 / (1.0 + rSquare)))
+					var lightIndex := (intensity * _lightCount)
+					if lightIndex > 0:
+						var light = _lightMin + lightIndex + _lightExploredOffset
+						_setLight(int(mx), int(my), light, true)
+				if not _insideMap(int(mx), int(my)): continue
+				if blocked:
+					if _blocked(int(mx), int(my)):
+						newStart = rSlope
+						continue
+					else:
+						blocked = false
+						start = newStart
+				elif _blocked(int(mx), int(my)) and (radius < maxRadius):
+					blocked = true
+					_lightEmitRecursive(at, i + 1, maxRadius, start, lSlope, xx, xy, yx, yy)
+					newStart = rSlope;
+		if blocked: break
+
+func _lightEmit(at: Vector2, radius: int) -> void:
+	for i in range(8):
+		_lightEmitRecursive(at, 1, radius, 1.0, 0.0, _fovOctants[0][i], _fovOctants[1][i], _fovOctants[2][i], _fovOctants[3][i])
+	_setLight(int(at.x), int(at.y), _lightMax, true)
+
+func _lightUpdate(at: Vector2, radius: int) -> void:
+	_darken()
+	_lightEmit(at, radius)
+	# light torches
+
+func _dark() -> void:
+	for y in range(_rect.size.y):
+		for x in range(_rect.size.x):
+			_setLight(x, y, _lightMin, false)
+
+func _darken() -> void:
+	for y in range(_rect.size.y):
+		for x in range(_rect.size.x):
+			var light := _getLight(x, y)
+			if light != _lightMin:
+				_setLight(x, y, _lightMin + _lightExploredOffset, false)
+
+func _getLight(x: int, y: int) -> int:
+	return int(_light.get_cell_autotile_coord(x, y).x)
+
+func _setLight(x: int, y: int, light: int, test: bool) -> void:
+	if _insideMap(x, y) and not test or light > _light.get_cell(x, y):
+		_light.set_cell(x, y, Tile.Light, false, false, false, Vector2(light, 0))
+
+func _insideMap(x: int, y: int) -> bool:
+	return x >= _rect.position.x and y >= _rect.position.y and x < _rect.size.x and y < _rect.size.y
