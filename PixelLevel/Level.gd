@@ -410,14 +410,15 @@ func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float,
 					if lightIndex > 0:
 						var light = lightIndex + _lightExploredOffset
 						_setLight(int(mx), int(my), light, true)
+				var blockedAt = _blocked(int(mx), int(my))
 				if blocked:
-					if _blocked(int(mx), int(my)):
+					if blockedAt:
 						newStart = rSlope
 						continue
 					else:
 						blocked = false
 						start = newStart
-				elif _blocked(int(mx), int(my)) and (radius < maxRadius):
+				elif blockedAt and radius < maxRadius:
 					blocked = true
 					_lightEmitRecursive(at, i + 1, maxRadius, start, lSlope, xx, xy, yx, yy)
 					newStart = rSlope
