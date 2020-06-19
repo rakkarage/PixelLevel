@@ -79,7 +79,7 @@ func _move(mob: Node2D) -> void:
 	if _pathPoints.size() > 1:
 		var delta := _delta(_pathPoints[0], _pathPoints[1])
 		_face(mob, delta)
-		# TODO: play walk animation!!!!!!!!!!!!!!!!!!!
+		# TODO: play walk animation which has step sounds!!!!!!!!!!!!!!!!!!!
 		_step(mob, delta)
 		_pathPoints.remove(0)
 		_path.get_child(0).queue_free()
@@ -394,22 +394,22 @@ func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float,
 		var blocked := false
 		while dx <= 0:
 			dx += 1
-			var mx := at.x + dx * xx + dy * xy
-			var my := at.y + dx * yx + dy * yy
+			var x := int(at.x + dx * xx + dy * xy)
+			var y := int(at.y + dx * yx + dy * yy)
+			if not _insideMap(x, y): continue
 			var lSlope := (dx - 0.5) / (dy + 0.5)
 			var rSlope := (dx + 0.5) / (dy - 0.5)
 			if start < rSlope: continue
 			elif end > lSlope: break
 			else:
-				if not _insideMap(int(mx), int(my)): continue
-				var distanceSquared := (at.x - mx) * (at.x - mx) + (at.y - my) * (at.y - my)
+				var distanceSquared := (at.x - x) * (at.x - x) + (at.y - y) * (at.y - y)
 				if distanceSquared < rSquared:
-					var intensity1 := 1.0 / (1.0 + distanceSquared / 20)
+					var intensity1 := 1.0 / (1.0 + distanceSquared / maxRadius)
 					var intensity2 := intensity1 - 1.0 / (1.0 + rSquared)
 					var intensity := intensity2 / (1.0 - 1.0 / (1.0 + rSquared))
 					var light := int(intensity * _lightCount)
-					_setLight(int(mx), int(my), _lightExploredOffset + light, true)
-				var blockedAt := _blocked(int(mx), int(my))
+					_setLight(x, y, _lightExploredOffset + light, true)
+				var blockedAt := _blocked(x, y)
 				if blocked:
 					if blockedAt:
 						newStart = rSlope
@@ -449,7 +449,7 @@ func _getLight(x: int, y: int) -> int:
 	return int(_light.get_cell_autotile_coord(x, y).x)
 
 func _setLight(x: int, y: int, light: int, test: bool) -> void:
-	if not test or light > _light.get_cell(x, y):
+	if not test or light > _getLight(x, y):
 		_light.set_cell(x, y, Tile.Light, false, false, false, Vector2(light, 0))
 
 func _insideMap(x: int, y: int) -> bool:
