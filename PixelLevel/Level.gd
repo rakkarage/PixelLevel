@@ -360,12 +360,11 @@ func _randomTile(id: int) -> Vector2:
 	return p
 
 func _blocked(x: int, y: int) -> bool:
-	if not _insideMap(x, y): return false
 	var back := _back.get_cell(x, y)
 	var fore := _fore.get_cell(x, y)
 	var f: bool = back == Tile.Theme0Floor or back == Tile.Theme4Floor
 	var fr: bool = back == Tile.Theme0FloorRoom or back == Tile.Theme4FloorRoom
-	var w: bool = fore == Tile.Theme0Wall or fore == Tile.Theme4Wall or fore == Tile.Theme0Torch or fore == Tile.Theme4Torch
+	var w: bool = fore == Tile.Theme0Wall or fore == Tile.Theme4Wall #or fore == Tile.Theme0Torch or fore == Tile.Theme4Torch
 	var d: bool = fore == Tile.Theme0Door or fore == Tile.Theme4Door
 	var s := _fore.get_cell_autotile_coord(x, y)
 	return w or (not f and not fr) or (d and s == Vector2(0, 0))
@@ -408,7 +407,7 @@ func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float,
 					var intensity := intensity2 / (1.0 - (1.0 / (1.0 + rSquare)))
 					var lightIndex := int(intensity * _lightCount)
 					if lightIndex > 0:
-						var light = _lightMin + lightIndex + _lightExploredOffset
+						var light = lightIndex + _lightExploredOffset
 						_setLight(int(mx), int(my), light, true)
 				if not _insideMap(int(mx), int(my)): continue
 				if blocked:
@@ -444,13 +443,13 @@ func _darken() -> void:
 		for x in range(_rect.size.x):
 			var light := _getLight(x, y)
 			if light != _lightMin:
-				_setLight(x, y, _lightMin + _lightExploredOffset, false)
+				_setLight(x, y, _lightExploredOffset, false)
 
 func _getLight(x: int, y: int) -> int:
 	return int(_light.get_cell_autotile_coord(x, y).x)
 
 func _setLight(x: int, y: int, light: int, test: bool) -> void:
-	if _insideMap(x, y) and not test or light > _light.get_cell(x, y):
+	if not test or light > _light.get_cell(x, y):
 		_light.set_cell(x, y, Tile.Light, false, false, false, Vector2(light, 0))
 
 func _insideMap(x: int, y: int) -> bool:

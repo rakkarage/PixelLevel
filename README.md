@@ -41,5 +41,7 @@ fragment
 
 ## TODO
 
+- test and fix light!!!!!!!!!!!!!!!!!
+- make base that does not know about Tiles.Light etc and extend it so less code per file and more expandable!?
 - need to fix mob animation states!? and use walk animation
 - level generation and loading tmx
