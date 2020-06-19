@@ -39,9 +39,18 @@ fragment
 - offset uv to actualFrame
   - uv = uv + ((actualFrame - offsetFrame) * frameWidth)
 
+### Lighting
+
+Lighting combines these two algorithms using sets of 32 gradient light tiles.
+
+- <http://www.roguebasin.com/index.php?title=FOV_using_recursive_shadowcasting>
+- <https://web.archive.org/web/20120626205857/http://doryen.eptalys.net/2011/03/ramblings-on-lights-in-full-color-roguelikes/>
+
 ## TODO
 
 - test and fix light!!!!!!!!!!!!!!!!!
+  - test without fog of war / explored
+  - draw numbers on light tiles again to verify
 - make base that does not know about Tiles.Light etc and extend it so less code per file and more expandable!?
 - need to fix mob animation states!? and use walk animation
 - level generation and loading tmx
