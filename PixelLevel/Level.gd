@@ -59,6 +59,7 @@ func _ready() -> void:
 	_camera.zoom = Vector2(0.75, 0.75)
 	_cameraCenter()
 	_dark()
+	_findTorches()
 	_lightUpdate(_map(_mob.position), _lightRadius)
 	Utility.ok(connect("size_changed", self, "_onResize"))
 	Utility.ok(Gesture.connect("onZoom", self, "_zoomPinch"))
@@ -339,6 +340,9 @@ func _drawEdge() -> void:
 func _randomBool() -> bool:
 	return bool(_rng.randi() % 2)
 
+func _randomTorchRadius() -> int:
+	return _rng.randi() % _torchRadius + 1
+
 func _setRandomTile(map: TileMap, x: int, y: int, id: int, flipX: bool = false, flipY: bool = false, rot90: bool = false) -> void:
 	map.set_cell(x, y, id, flipX, flipY, rot90, _randomTile(id))
 
@@ -361,16 +365,21 @@ func _randomTile(id: int) -> Vector2:
 				return p
 	return p
 
+func _blockedV(p: Vector2) -> bool:
+	return _blocked(int(p.x), int(p.y))
+
 func _blocked(x: int, y: int) -> bool:
+	if not _insideMap(x, y): return true
 	var back := _back.get_cell(x, y)
 	var fore := _fore.get_cell(x, y)
 	var f: bool = back == Tile.Theme0Floor or back == Tile.Theme4Floor
 	var fr: bool = back == Tile.Theme0FloorRoom or back == Tile.Theme4FloorRoom
-	var w: bool = fore == Tile.Theme0Wall or fore == Tile.Theme4Wall #or fore == Tile.Theme0Torch or fore == Tile.Theme4Torch
+	var w: bool = fore == Tile.Theme0Wall or fore == Tile.Theme4Wall or fore == Tile.Theme0Torch or fore == Tile.Theme4Torch
 	var d: bool = fore == Tile.Theme0Door or fore == Tile.Theme4Door
 	var s := _fore.get_cell_autotile_coord(x, y)
 	return w or (not f and not fr) or (d and s == Vector2(0, 0))
 
+const _torchRadius := 5
 const _lightRadius := 8
 const _lightMin := 0
 const _lightMax := 31
@@ -431,7 +440,51 @@ func _lightEmit(at: Vector2, radius: int) -> void:
 func _lightUpdate(at: Vector2, radius: int) -> void:
 	_darken()
 	_lightEmit(at, radius)
-	# TODO: light torches
+	_lightTorches()
+
+func _findTorches() -> void:
+	var torch0 := _fore.get_used_cells_by_id(Tile.Theme0Torch)
+	var torch1 := _fore.get_used_cells_by_id(Tile.Theme4Torch)
+	_torches = torch0 + torch1
+
+func _lightTorches() -> void:
+	for _repeat in range(2, 0, -1):
+		for p in _torches:
+			var north := Vector2(p.x, p.y + 1)
+			var east := Vector2(p.x + 1, p.y)
+			var south := Vector2(p.x, p.y - 1)
+			var west := Vector2(p.x - 1, p.y)
+			var emitted := false
+			if _insideMapV(p):
+				var northBlocked = _blockedV(north)
+				if not northBlocked and _exploredV(north):
+					emitted = true
+					_lightEmit(north, _randomTorchRadius())
+				var eastBlocked = _blockedV(east)
+				if not eastBlocked and _exploredV(east):
+					emitted = true
+					_lightEmit(east, _randomTorchRadius())
+				var southBlocked = _blockedV(south)
+				if not southBlocked and _exploredV(south):
+					emitted = true
+					_lightEmit(south, _randomTorchRadius())
+				var westBlocked = _blockedV(west)
+				if not westBlocked and _exploredV(west):
+					emitted = true
+					_lightEmit(west, _randomTorchRadius())
+				if not emitted:
+					var northEast := Vector2(p.x + 1, p.y + 1)
+					var southEast := Vector2(p.x + 1, p.y - 1)
+					var southWest := Vector2(p.x - 1, p.y - 1)
+					var northWest := Vector2(p.x - 1, p.y + 1)
+					if northBlocked and eastBlocked and not _blockedV(northEast) and _exploredV(northEast):
+						_lightEmit(northEast, _randomTorchRadius())
+					if southBlocked and eastBlocked and not _blockedV(southEast) and _exploredV(southEast):
+						_lightEmit(southEast, _randomTorchRadius())
+					if southBlocked and westBlocked and not _blockedV(southWest) and _exploredV(southWest):
+						_lightEmit(southWest, _randomTorchRadius())
+					if northBlocked and westBlocked and not _blockedV(northWest) and _exploredV(northWest):
+						_lightEmit(northWest, _randomTorchRadius())
 
 func _dark() -> void:
 	for y in range(_rect.size.y):
@@ -444,12 +497,21 @@ func _darken() -> void:
 			if _getLight(x, y) != _lightMin:
 				_setLight(x, y, _lightExplored, false)
 
+func _exploredV(p: Vector2) -> bool:
+	return _explored(int(p.x), int(p.y))
+
+func _explored(x: int, y: int) -> bool:
+	return _getLight(x, y) > _lightExplored
+
 func _getLight(x: int, y: int) -> int:
 	return int(_light.get_cell_autotile_coord(x, y).x)
 
 func _setLight(x: int, y: int, light: int, test: bool) -> void:
 	if not test or light > _getLight(x, y):
 		_light.set_cell(x, y, Tile.Light, false, false, false, Vector2(light, 0))
+
+func _insideMapV(p: Vector2) -> bool:
+	return _insideMap(int(p.x), int(p.y))
 
 func _insideMap(x: int, y: int) -> bool:
 	return x >= _rect.position.x and y >= _rect.position.y and x < _rect.size.x and y < _rect.size.y
