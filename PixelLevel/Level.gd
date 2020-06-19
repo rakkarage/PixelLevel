@@ -77,7 +77,7 @@ func _process(delta) -> void:
 
 func _move(mob: Node2D) -> void:
 	if _pathPoints.size() > 1:
-		var delta = _delta(_pathPoints[0], _pathPoints[1])
+		var delta := _delta(_pathPoints[0], _pathPoints[1])
 		_face(mob, delta)
 		# TODO: play walk animation!!!!!!!!!!!!!!!!!!!
 		_step(mob, delta)
@@ -220,7 +220,7 @@ func _targetToMob() -> void:
 
 func _targetTo(to: Vector2) -> void:
 	_targetStop()
-	var new = _map(to * _camera.zoom + _camera.offset)
+	var new := _map(to * _camera.zoom + _camera.offset)
 	if _map(_target.position) == new:
 		_turn = true
 	else:
@@ -374,8 +374,8 @@ func _blocked(x: int, y: int) -> bool:
 const _lightRadius := 8
 const _lightMin := 0
 const _lightMax := 31
-const _lightExploredOffset := 10
-const _lightCount := 22
+const _lightExploredOffset := 8
+const _lightCount := 24
 const _fovOctants = [
 	[1,  0,  0, -1, -1,  0,  0,  1],
 	[0,  1, -1,  0,  0, -1,  1,  0],
@@ -386,8 +386,7 @@ var _torches := []
 
 func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float, end: float, xx: int, xy: int, yx: int, yy: int) -> void:
 	if start < end: return
-	var rSquare := maxRadius * maxRadius
-	var r2 := maxRadius + maxRadius
+	var rSquared := maxRadius * maxRadius
 	var newStart := 0.0
 	for i in range(radius, maxRadius + 1):
 		var dx := -i - 1
@@ -402,15 +401,15 @@ func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float,
 			if start < rSlope: continue
 			elif end > lSlope: break
 			else:
-				var distanceSquare := (mx - at.x) * (mx - at.x) + (my - at.y) * (my - at.y)
 				if not _insideMap(int(mx), int(my)): continue
-				if distanceSquare < rSquare:
-					var intensity1 := 1.0 / (1.0 + distanceSquare / r2)
-					var intensity2 := intensity1 - (1.0 / (1.0 + rSquare))
-					var intensity := intensity2 / (1.0 - (1.0 / (1.0 + rSquare)))
+				var distanceSquared := (at.x - mx) * (at.x - mx) + (at.y - my) * (at.y - my)
+				if distanceSquared < rSquared:
+					var intensity1 := 1.0 / (1.0 + distanceSquared / 20)
+					var intensity2 := intensity1 - 1.0 / (1.0 + rSquared)
+					var intensity := intensity2 / (1.0 - 1.0 / (1.0 + rSquared))
 					var light := int(intensity * _lightCount)
 					_setLight(int(mx), int(my), _lightExploredOffset + light, true)
-				var blockedAt = _blocked(int(mx), int(my))
+				var blockedAt := _blocked(int(mx), int(my))
 				if blocked:
 					if blockedAt:
 						newStart = rSlope
