@@ -22,7 +22,7 @@ var _turn := false
 var _time := 0.0
 var _turnTotal := 0
 var _timeTotal := 0.0
-const _turnTime := 0.333
+const _turnTime := 0.22
 const _duration := 0.22
 const _zoomMin := Vector2(0.2, 0.2)
 const _zoomMax := Vector2(1.0, 1.0)
@@ -374,8 +374,8 @@ func _blocked(x: int, y: int) -> bool:
 const _lightRadius := 8
 const _lightMin := 0
 const _lightMax := 31
-const _lightExploredOffset := 7
-const _lightCount := 25
+const _lightExploredOffset := 10
+const _lightCount := 22
 const _fovOctants = [
 	[1,  0,  0, -1, -1,  0,  0,  1],
 	[0,  1, -1,  0,  0, -1,  1,  0],
@@ -408,10 +408,8 @@ func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float,
 					var intensity1 := 1.0 / (1.0 + distanceSquare / r2)
 					var intensity2 := intensity1 - (1.0 / (1.0 + rSquare))
 					var intensity := intensity2 / (1.0 - (1.0 / (1.0 + rSquare)))
-					var lightIndex := int(intensity * _lightCount)
-					if lightIndex > 0:
-						var light = lightIndex + _lightExploredOffset
-						_setLight(int(mx), int(my), light, true)
+					var light := int(intensity * _lightCount)
+					_setLight(int(mx), int(my), _lightExploredOffset + light, true)
 				var blockedAt = _blocked(int(mx), int(my))
 				if blocked:
 					if blockedAt:
