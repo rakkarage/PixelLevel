@@ -374,7 +374,7 @@ func _blocked(x: int, y: int) -> bool:
 const _lightRadius := 8
 const _lightMin := 0
 const _lightMax := 31
-const _lightExploredOffset := 8
+const _lightExplored := 8
 const _lightCount := 24
 const _fovOctants = [
 	[1,  0,  0, -1, -1,  0,  0,  1],
@@ -408,7 +408,7 @@ func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float,
 					var intensity2 := intensity1 - 1.0 / (1.0 + rSquared)
 					var intensity := intensity2 / (1.0 - 1.0 / (1.0 + rSquared))
 					var light := int(intensity * _lightCount)
-					_setLight(x, y, _lightExploredOffset + light, true)
+					_setLight(x, y, _lightExplored + light, true)
 				var blockedAt := _blocked(x, y)
 				if blocked:
 					if blockedAt:
@@ -441,9 +441,8 @@ func _dark() -> void:
 func _darken() -> void:
 	for y in range(_rect.size.y):
 		for x in range(_rect.size.x):
-			var light := _getLight(x, y)
-			if light != _lightMin:
-				_setLight(x, y, _lightExploredOffset, false)
+			if _getLight(x, y) != _lightMin:
+				_setLight(x, y, _lightExplored, false)
 
 func _getLight(x: int, y: int) -> int:
 	return int(_light.get_cell_autotile_coord(x, y).x)
