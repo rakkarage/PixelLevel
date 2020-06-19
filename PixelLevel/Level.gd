@@ -72,14 +72,14 @@ func _process(delta) -> void:
 		_move(_mob)
 		_lightUpdate(_map(_mob.position), _lightRadius)
 		_time = 0.0
-		# if character too close to edge of screen center on character!
-		# update minimap!
+		# TODO: if character too close to edge of screen center on character!
+		# TODO: update minimap!
 
 func _move(mob: Node2D) -> void:
 	if _pathPoints.size() > 1:
 		var delta = _delta(_pathPoints[0], _pathPoints[1])
 		_face(mob, delta)
-		# play walk animation!!!!!!!!!!!!!!!!!!!
+		# TODO: play walk animation!!!!!!!!!!!!!!!!!!!
 		_step(mob, delta)
 		_pathPoints.remove(0)
 		_path.get_child(0).queue_free()
@@ -401,6 +401,7 @@ func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float,
 			elif end > lSlope: break
 			else:
 				var distanceSquare := (mx - at.x) * (mx - at.x) + (my - at.y) * (my - at.y)
+				if not _insideMap(int(mx), int(my)): continue
 				if distanceSquare < rSquare:
 					var intensity1 := 1.0 / (1.0 + distanceSquare / r2)
 					var intensity2 := intensity1 - (1.0 / (1.0 + rSquare))
@@ -409,7 +410,6 @@ func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float,
 					if lightIndex > 0:
 						var light = lightIndex + _lightExploredOffset
 						_setLight(int(mx), int(my), light, true)
-				if not _insideMap(int(mx), int(my)): continue
 				if blocked:
 					if _blocked(int(mx), int(my)):
 						newStart = rSlope
@@ -431,7 +431,7 @@ func _lightEmit(at: Vector2, radius: int) -> void:
 func _lightUpdate(at: Vector2, radius: int) -> void:
 	_darken()
 	_lightEmit(at, radius)
-	# light torches
+	# TODO: light torches
 
 func _dark() -> void:
 	for y in range(_rect.size.y):
