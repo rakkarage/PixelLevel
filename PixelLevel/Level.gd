@@ -511,7 +511,7 @@ func _setLight(x: int, y: int, light: int, test: bool) -> void:
 		_light.set_cell(x, y, Tile.Light, false, false, false, Vector2(light, 0))
 
 func _insideMapV(p: Vector2) -> bool:
-	return _insideMap(int(p.x), int(p.y))
+	return _rect.has_point(p)
 
 func _insideMap(x: int, y: int) -> bool:
 	return x >= _rect.position.x and y >= _rect.position.y and x < _rect.size.x and y < _rect.size.y
