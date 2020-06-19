@@ -85,6 +85,8 @@ func _move(mob: Node2D) -> void:
 		_path.get_child(0).queue_free()
 		if _pathPoints.size() > 1:
 			_turn = true
+		else:
+			_path.get_child(1).queue_free()
 
 func _face(mob: Node2D, direction: Vector2) -> void:
 	if direction.x > 0 or direction.y > 0:
