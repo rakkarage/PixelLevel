@@ -14,16 +14,15 @@ onready var _path:       Node2D = $Camera/Path
 onready var _astar:     AStar2D = AStar2D.new()
 onready var _tileSet:           = _back.tile_set
 var _rect := Rect2()
+var _oldSize = Vector2.ZERO
 var _pathPoints := PoolVector2Array()
 var _dragLeft := false
-var _size := Vector2.ZERO
-var _rng := RandomNumberGenerator.new()
 var _turn := false
 var _time := 0.0
 var _turnTotal := 0
 var _timeTotal := 0.0
-const _turnTime := 0.22
-const _duration := 0.22
+const _turnTime := 0.333
+const _duration := 0.4444
 const _zoomMin := Vector2(0.2, 0.2)
 const _zoomMax := Vector2(1.0, 1.0)
 const _zoomFactorIn := 0.90
@@ -49,8 +48,7 @@ enum Tile {
 
 func _ready() -> void:
 	_rect = _back.get_used_rect()
-	_size = size
-	_rng.randomize()
+	_oldSize = size
 	_drawEdge()
 	_mob.position = _world(_startAt) + _back.cell_size / 2.0
 	_targetToMob()
@@ -72,8 +70,8 @@ func _process(delta) -> void:
 		_turnTotal += 1
 		_move(_mob)
 		_lightUpdate(_map(_mob.position), _lightRadius)
+		_checkCenter()
 		_time = 0.0
-		# TODO: if character too close to edge of screen center on character!
 		# TODO: update minimap!
 
 func _move(mob: Node2D) -> void:
@@ -133,7 +131,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				_dragLeft = true
 			else:
 				_targetUpdate()
-				_cameraSnap()
+				_cameraUpdate()
 				_dragLeft = false
 		elif event.button_index == BUTTON_WHEEL_UP:
 			_zoomIn(event.position)
@@ -147,7 +145,7 @@ func _world(tile: Vector2) -> Vector2:
 	return _back.map_to_world(tile)
 
 func _worldSize() -> Vector2:
-	return _size * _camera.zoom
+	return size * _camera.zoom
 
 func _worldBounds() -> Rect2:
 	return Rect2(Vector2.ZERO, _worldSize())
@@ -185,17 +183,29 @@ static func _constrain(minWorld: Vector2, maxWorld: Vector2, minMap: Vector2, ma
 	if maxWorld.y < maxMap.y: delta.y -= maxWorld.y - maxMap.y
 	return delta
 
-func _cameraSnap() -> void:
+func _cameraUpdate() -> void:
 	var map := _mapBounds()
 	var world := _worldBounds().grow(-_back.cell_size.x)
 	if not world.intersects(map):
-		var to := _camera.offset + _constrainRect(world, map)
-		Utility.stfu(_tween.stop(_camera, "offset"))
-		Utility.stfu(_tween.interpolate_property(_camera, "offset", null, to, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
-		Utility.stfu(_tween.start())
+		_cameraSnap(_camera.offset + _constrainRect(world, map))
+
+func _cameraSnap(to: Vector2) -> void:
+	_cameraStop()
+	Utility.stfu(_tween.interpolate_property(_camera, "offset", null, to, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
+	Utility.stfu(_tween.start())
 
 func _cameraStop() -> void:
 	Utility.stfu(_tween.stop(_camera, "offset"))
+
+const _edgeOffset := 1.5
+const _edgeOffsetV := Vector2(_edgeOffset, _edgeOffset)
+
+func _checkCenter() -> void:
+	var edge = _world(_edgeOffsetV) / _camera.zoom
+	var test = -(_camera.offset - _mob.position) / _camera.zoom
+	if ((test.x > size.x - edge.x) or (test.x < edge.x) or
+		(test.y > size.y - edge.y) or (test.y < edge.y)):
+		_cameraSnap(-(_worldSize() / 2.0) + _mob.position)
 
 func _zoomPinch(at: Vector2, amount: float) -> void:
 	if amount > 0: _zoom(at, _zoomFactorOut)
@@ -222,7 +232,7 @@ func _targetToMob() -> void:
 func _targetTo(to: Vector2) -> void:
 	_targetStop()
 	var new := _map(to * _camera.zoom + _camera.offset)
-	if _map(_target.position) == new:
+	if new == _map(_target.position):
 		_turn = true
 	else:
 		_target.position = _world(new)
@@ -288,12 +298,12 @@ func _targetStop() -> void:
 	Utility.stfu(_tween.stop(_target, "position"))
 
 func _normalize() -> Vector2:
-	return (_camera.offset - _mapSize() / 2.0) / _size
+	return (_camera.offset - _mapSize() / 2.0) / _oldSize
 
 func _onResize() -> void:
 	_camera.offset = _normalize() * size + _mapSize() / 2.0
-	_size = size
-	_cameraSnap()
+	_oldSize = size
+	_cameraUpdate()
 
 func _drawEdge() -> void:
 	var minY := _rect.position.y - 1
@@ -312,13 +322,13 @@ func _drawEdge() -> void:
 				elif x == maxX and y == maxY: # se
 					_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(3, 0))
 				elif x == minX: # w
-					_setRandomTile(_edge, x, y, Tile.EdgeOutside, false, _randomBool(), true)
+					_setRandomTile(_edge, x, y, Tile.EdgeOutside, false, Random.nextBool(), true)
 				elif x == maxX: # e
-					_setRandomTile(_edge, x, y, Tile.EdgeOutside, true, _randomBool(), true)
+					_setRandomTile(_edge, x, y, Tile.EdgeOutside, true, Random.nextBool(), true)
 				elif y == minY: # n
-					_setRandomTile(_edge, x, y, Tile.EdgeOutside, _randomBool(), false, false)
+					_setRandomTile(_edge, x, y, Tile.EdgeOutside, Random.nextBool(), false, false)
 				elif y == maxY: # s
-					_setRandomTile(_edge, x, y, Tile.EdgeOutside, _randomBool(), true, false)
+					_setRandomTile(_edge, x, y, Tile.EdgeOutside, Random.nextBool(), true, false)
 			elif (x == minX + 1) or (x == maxX - 1) or (y == minY + 1) or (y == maxY - 1):
 				if x == minX + 1 and y == minY + 1: # nw
 					_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, false, false, false)
@@ -329,44 +339,35 @@ func _drawEdge() -> void:
 				elif x == maxX - 1 and y == maxY - 1: # se
 					_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, true, true, false)
 				elif x == minX + 1: # w
-					_setRandomTile(_edge, x, y, Tile.EdgeInside, false, _randomBool(), true)
+					_setRandomTile(_edge, x, y, Tile.EdgeInside, false, Random.nextBool(), true)
 				elif x == maxX - 1: # e
-					_setRandomTile(_edge, x, y, Tile.EdgeInside, true, _randomBool(), true)
+					_setRandomTile(_edge, x, y, Tile.EdgeInside, true, Random.nextBool(), true)
 				elif y == minY + 1: # n
-					_setRandomTile(_edge, x, y, Tile.EdgeInside, _randomBool(), false, false)
+					_setRandomTile(_edge, x, y, Tile.EdgeInside, Random.nextBool(), false, false)
 				elif y == maxY - 1: # s
-					_setRandomTile(_edge, x, y, Tile.EdgeInside, _randomBool(), true, false)
-
-func _randomBool() -> bool:
-	return bool(_rng.randi() % 2)
-
-func _randomTorchRadius() -> int:
-	return _rng.randi() % _torchRadius + 1
+					_setRandomTile(_edge, x, y, Tile.EdgeInside, Random.nextBool(), true, false)
 
 func _setRandomTile(map: TileMap, x: int, y: int, id: int, flipX: bool = false, flipY: bool = false, rot90: bool = false) -> void:
 	map.set_cell(x, y, id, flipX, flipY, rot90, _randomTile(id))
 
 func _randomTile(id: int) -> Vector2:
 	var p := Vector2.ZERO
-	var r := _tileSet.tile_get_region(id)
-	var s := _tileSet.autotile_get_size(id)
-	var size := r.size / s
+	var s := _tileSet.tile_get_region(id).size / _tileSet.autotile_get_size(id)
 	var total := 0
-	for y in range(size.y):
-		for x in range(size.x):
+	for y in range(s.y):
+		for x in range(s.x):
 			total += _tileSet.autotile_get_subtile_priority(id, Vector2(x, y))
-	var random := _rng.randi() % total
+	var selected := Random.next(total)
 	var current := 0
-	for y in range(size.y):
-		for x in range(size.x):
+	for y in range(s.y):
+		for x in range(s.x):
 			p = Vector2(x, y)
 			current += _tileSet.autotile_get_subtile_priority(id, p)
-			if current >= random:
+			if current >= selected:
 				return p
 	return p
 
-func _blockedV(p: Vector2) -> bool:
-	return _blocked(int(p.x), int(p.y))
+func _blockedV(p: Vector2) -> bool: return _blocked(int(p.x), int(p.y))
 
 func _blocked(x: int, y: int) -> bool:
 	if not _insideMap(x, y): return true
@@ -459,32 +460,32 @@ func _lightTorches() -> void:
 				var northBlocked = _blockedV(north)
 				if not northBlocked and _exploredV(north):
 					emitted = true
-					_lightEmit(north, _randomTorchRadius())
+					_lightEmit(north, Random.next(_torchRadius))
 				var eastBlocked = _blockedV(east)
 				if not eastBlocked and _exploredV(east):
 					emitted = true
-					_lightEmit(east, _randomTorchRadius())
+					_lightEmit(east, Random.next(_torchRadius))
 				var southBlocked = _blockedV(south)
 				if not southBlocked and _exploredV(south):
 					emitted = true
-					_lightEmit(south, _randomTorchRadius())
+					_lightEmit(south, Random.next(_torchRadius))
 				var westBlocked = _blockedV(west)
 				if not westBlocked and _exploredV(west):
 					emitted = true
-					_lightEmit(west, _randomTorchRadius())
+					_lightEmit(west, Random.next(_torchRadius))
 				if not emitted:
 					var northEast := Vector2(p.x + 1, p.y + 1)
 					var southEast := Vector2(p.x + 1, p.y - 1)
 					var southWest := Vector2(p.x - 1, p.y - 1)
 					var northWest := Vector2(p.x - 1, p.y + 1)
 					if northBlocked and eastBlocked and not _blockedV(northEast) and _exploredV(northEast):
-						_lightEmit(northEast, _randomTorchRadius())
+						_lightEmit(northEast, Random.next(_torchRadius))
 					if southBlocked and eastBlocked and not _blockedV(southEast) and _exploredV(southEast):
-						_lightEmit(southEast, _randomTorchRadius())
+						_lightEmit(southEast, Random.next(_torchRadius))
 					if southBlocked and westBlocked and not _blockedV(southWest) and _exploredV(southWest):
-						_lightEmit(southWest, _randomTorchRadius())
+						_lightEmit(southWest, Random.next(_torchRadius))
 					if northBlocked and westBlocked and not _blockedV(northWest) and _exploredV(northWest):
-						_lightEmit(northWest, _randomTorchRadius())
+						_lightEmit(northWest, Random.next(_torchRadius))
 
 func _dark() -> void:
 	for y in range(_rect.size.y):
@@ -497,8 +498,7 @@ func _darken() -> void:
 			if _getLight(x, y) != _lightMin:
 				_setLight(x, y, _lightExplored, false)
 
-func _exploredV(p: Vector2) -> bool:
-	return _explored(int(p.x), int(p.y))
+func _exploredV(p: Vector2) -> bool: return _explored(int(p.x), int(p.y))
 
 func _explored(x: int, y: int) -> bool:
 	return _getLight(x, y) > _lightExplored
@@ -510,8 +510,7 @@ func _setLight(x: int, y: int, light: int, test: bool) -> void:
 	if not test or light > _getLight(x, y):
 		_light.set_cell(x, y, Tile.Light, false, false, false, Vector2(light, 0))
 
-func _insideMapV(p: Vector2) -> bool:
-	return _rect.has_point(p)
+func _insideMapV(p: Vector2) -> bool: return _rect.has_point(p)
 
 func _insideMap(x: int, y: int) -> bool:
 	return x >= _rect.position.x and y >= _rect.position.y and x < _rect.size.x and y < _rect.size.y
