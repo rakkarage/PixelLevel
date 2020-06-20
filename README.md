@@ -48,7 +48,7 @@ Lighting combines these two algorithms using sets of 32 gradient light tiles.
 
 ## TODO
 
+- global_position instead of offset?
 - need to fix mob animation states!? and use walk animation
 - level generation and loading tmx
-- global_position instead of offset?
-- make base that does not know about Tiles.Light etc and extend it so less code per file and more expandable!?
+- make base that does not know about Tiles.Light etc and extend it so less code per file and more expandable!? take tileMap as parameter like in randomTile

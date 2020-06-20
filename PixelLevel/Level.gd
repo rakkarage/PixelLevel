@@ -367,7 +367,8 @@ func _randomTile(id: int) -> Vector2:
 				return p
 	return p
 
-func _blockedV(p: Vector2) -> bool: return _blocked(int(p.x), int(p.y))
+func _blockedV(p: Vector2) -> bool:
+	return _blocked(int(p.x), int(p.y))
 
 func _blocked(x: int, y: int) -> bool:
 	if not _insideMap(x, y): return true
@@ -498,7 +499,8 @@ func _darken() -> void:
 			if _getLight(x, y) != _lightMin:
 				_setLight(x, y, _lightExplored, false)
 
-func _exploredV(p: Vector2) -> bool: return _explored(int(p.x), int(p.y))
+func _exploredV(p: Vector2) -> bool:
+	return _explored(int(p.x), int(p.y))
 
 func _explored(x: int, y: int) -> bool:
 	return _getLight(x, y) > _lightExplored
@@ -510,7 +512,8 @@ func _setLight(x: int, y: int, light: int, test: bool) -> void:
 	if not test or light > _getLight(x, y):
 		_light.set_cell(x, y, Tile.Light, false, false, false, Vector2(light, 0))
 
-func _insideMapV(p: Vector2) -> bool: return _rect.has_point(p)
+func _insideMapV(p: Vector2) -> bool:
+	return _rect.has_point(p)
 
 func _insideMap(x: int, y: int) -> bool:
 	return x >= _rect.position.x and y >= _rect.position.y and x < _rect.size.x and y < _rect.size.y
