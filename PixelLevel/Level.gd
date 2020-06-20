@@ -2,16 +2,16 @@ extends Viewport
 
 onready var _tween:       Tween = $Tween
 onready var _camera:   Camera2D = $Camera
-onready var _back:      TileMap = $Camera/Back
-onready var _waterBack: TileMap = $Camera/WaterBack
-onready var _mob:        Node2D = $Camera/Mob
-onready var _waterFore: TileMap = $Camera/WaterBack
-onready var _fore:      TileMap = $Camera/Fore
-onready var _light:     TileMap = $Camera/Light
-onready var _edge:      TileMap = $Camera/Edge
-onready var _target:     Node2D = $Camera/Target
-onready var _path:       Node2D = $Camera/Path
-onready var _astar:     AStar2D = AStar2D.new()
+onready var _back:      TileMap = $Back
+onready var _waterBack: TileMap = $WaterBack
+onready var _mob:        Node2D = $Mob
+onready var _waterFore: TileMap = $WaterBack
+onready var _fore:      TileMap = $Fore
+onready var _light:     TileMap = $Light
+onready var _edge:      TileMap = $Edge
+onready var _target:     Node2D = $Target
+onready var _path:       Node2D = $Path
+onready var _astar:             = AStar2D.new()
 onready var _tileSet:           = _back.tile_set
 var _rect := Rect2()
 var _oldSize = Vector2.ZERO
@@ -43,14 +43,14 @@ enum Tile {
 	WaterShallowBack, WaterShallowFore,
 	Light,
 	EdgeInside,	EdgeInsideCorner,
-	EdgeOutsideCorner, EdgeOutside,
+	EdgeOutsideCorner, EdgeOutside
 }
 
 func _ready() -> void:
 	_rect = _back.get_used_rect()
 	_oldSize = size
 	_drawEdge()
-	_mob.position = _world(_startAt) + _back.cell_size / 2.0
+	_mob.global_position = _world(_startAt) + _back.cell_size / 2.0
 	_targetToMob()
 	_addPoints()
 	_connectPoints()
@@ -58,7 +58,7 @@ func _ready() -> void:
 	_cameraCenter()
 	_dark()
 	_findTorches()
-	_lightUpdate(_map(_mob.position), _lightRadius)
+	_lightUpdate(_map(_mob.global_position), _lightRadius)
 	Utility.ok(connect("size_changed", self, "_onResize"))
 	Utility.ok(Gesture.connect("onZoom", self, "_zoomPinch"))
 
@@ -69,7 +69,7 @@ func _process(delta) -> void:
 		_timeTotal += _time
 		_turnTotal += 1
 		_move(_mob)
-		_lightUpdate(_map(_mob.position), _lightRadius)
+		_lightUpdate(_map(_mob.global_position), _lightRadius)
 		_checkCenter()
 		_time = 0.0
 		# TODO: update minimap!
@@ -94,7 +94,7 @@ func _face(mob: Node2D, direction: Vector2) -> void:
 		mob.scale = Vector2(1, 1)
 
 func _step(mob: Node2D, direction: Vector2) -> void:
-	mob.position += _world(direction)
+	mob.global_position += _world(direction)
 
 func _tileIndex(p: Vector2) -> int:
 	return int(p.y * _rect.size.x + p.x)
@@ -127,19 +127,19 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT:
 			if event.pressed:
-				_targetTo(event.position)
+				_targetTo(event.global_position)
 				_dragLeft = true
 			else:
 				_targetUpdate()
 				_cameraUpdate()
 				_dragLeft = false
 		elif event.button_index == BUTTON_WHEEL_UP:
-			_zoomIn(event.position)
+			_zoomIn(event.global_position)
 		elif event.button_index == BUTTON_WHEEL_DOWN:
-			_zoomOut(event.position)
+			_zoomOut(event.global_position)
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
-			_cameraTo(_camera.offset - event.relative * _camera.zoom)
+			_cameraTo(_camera.global_position - event.relative * _camera.zoom)
 
 func _world(tile: Vector2) -> Vector2:
 	return _back.map_to_world(tile)
@@ -157,7 +157,7 @@ func _mapSize() -> Vector2:
 	return _rect.size * _back.cell_size
 
 func _mapBounds() -> Rect2:
-	return Rect2(-_camera.offset, _mapSize())
+	return Rect2(-_camera.global_position, _mapSize())
 
 func _center() -> Vector2:
 	return -(_worldSize() / 2.0) + _mapSize() / 2.0
@@ -167,10 +167,10 @@ func _cameraCenter() -> void:
 
 func _cameraTo(to: Vector2) -> void:
 	_cameraStop()
-	_camera.offset = to
+	_camera.global_position = to
 
 func _cameraBy(by: Vector2) -> void:
-	_cameraTo(_camera.offset + by)
+	_cameraTo(_camera.global_position + by)
 
 static func _constrainRect(world: Rect2, map: Rect2) -> Vector2:
 	return _constrain(world.position, world.end, map.position, map.end)
@@ -187,25 +187,25 @@ func _cameraUpdate() -> void:
 	var map := _mapBounds()
 	var world := _worldBounds().grow(-_back.cell_size.x)
 	if not world.intersects(map):
-		_cameraSnap(_camera.offset + _constrainRect(world, map))
+		_cameraSnap(_camera.global_position + _constrainRect(world, map))
 
 func _cameraSnap(to: Vector2) -> void:
 	_cameraStop()
-	Utility.stfu(_tween.interpolate_property(_camera, "offset", null, to, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
+	Utility.stfu(_tween.interpolate_property(_camera, "global_position", null, to, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
 	Utility.stfu(_tween.start())
 
 func _cameraStop() -> void:
-	Utility.stfu(_tween.stop(_camera, "offset"))
+	Utility.stfu(_tween.stop(_camera, "global_position"))
 
 const _edgeOffset := 1.5
 const _edgeOffsetV := Vector2(_edgeOffset, _edgeOffset)
 
 func _checkCenter() -> void:
 	var edge = _world(_edgeOffsetV) / _camera.zoom
-	var test = -(_camera.offset - _mob.position) / _camera.zoom
+	var test = -(_camera.global_position - _mob.global_position) / _camera.zoom
 	if ((test.x > size.x - edge.x) or (test.x < edge.x) or
 		(test.y > size.y - edge.y) or (test.y < edge.y)):
-		_cameraSnap(-(_worldSize() / 2.0) + _mob.position)
+		_cameraSnap(-(_worldSize() / 2.0) + _mob.global_position)
 
 func _zoomPinch(at: Vector2, amount: float) -> void:
 	if amount > 0: _zoom(at, _zoomFactorOut)
@@ -218,28 +218,28 @@ func _zoomOut(at: Vector2) -> void: _zoom(at, _zoomFactorOut)
 func _zoom(at: Vector2, factor: float) -> void:
 	var z0 := _camera.zoom
 	var z1 := _zoomClamp(z0 * factor)
-	var c0 := _camera.offset
+	var c0 := _camera.global_position
 	var c1 := c0 + at * (z0 - z1)
 	_camera.zoom = z1
-	_camera.offset = c1
+	_camera.global_position = c1
 
 func _zoomClamp(z: Vector2) -> Vector2:
 	return _zoomMin if z < _zoomMin else _zoomMax if z > _zoomMax else z
 
 func _targetToMob() -> void:
-	_targetTo(_mob.position)
+	_targetTo(_mob.global_position)
 
 func _targetTo(to: Vector2) -> void:
 	_targetStop()
-	var new := _map(to * _camera.zoom + _camera.offset)
-	if new == _map(_target.position):
+	var new := _map(_camera.global_position + to * _camera.zoom)
+	if new == _map(_target.global_position):
 		_turn = true
 	else:
-		_target.position = _world(new)
+		_target.global_position = _world(new)
 
 func _targetUpdate() -> void:
-	var from := _map(_mob.position)
-	var to := _map(_target.position)
+	var from := _map(_mob.global_position)
+	var to := _map(_target.global_position)
 	to = _targetSnapClosest(to)
 	_pathPoints = _astar.get_point_path(_tileIndex(from), _tileIndex(to))
 	_pathClear()
@@ -250,8 +250,8 @@ func _targetUpdate() -> void:
 		if i + 1 < _pathPoints.size():
 			rotation = _pathRotate(_delta(tile, _pathPoints[i + 1]), pathDelta)
 		var child := _pathScene.instance()
-		child.rotation_degrees = rotation
-		child.position = _world(tile)
+		child.global_rotation_degrees = rotation
+		child.global_position = _world(tile)
 		_path.add_child(child)
 
 func _delta(from: Vector2, to: Vector2) -> Vector2:
@@ -289,19 +289,19 @@ func _targetSnapClosest(tile: Vector2) -> Vector2:
 
 func _targetSnap(tile: Vector2) -> void:
 	var p := _world(tile)
-	if not _target.position.is_equal_approx(p):
-		Utility.stfu(_tween.stop(_target, "position"))
-		Utility.stfu(_tween.interpolate_property(_target, "position", null, p, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
+	if not _target.global_position.is_equal_approx(p):
+		Utility.stfu(_tween.stop(_target, "global_position"))
+		Utility.stfu(_tween.interpolate_property(_target, "global_position", null, p, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
 		Utility.stfu(_tween.start())
 
 func _targetStop() -> void:
-	Utility.stfu(_tween.stop(_target, "position"))
+	Utility.stfu(_tween.stop(_target, "global_position"))
 
 func _normalize() -> Vector2:
-	return (_camera.offset - _mapSize() / 2.0) / _oldSize
+	return (_camera.global_position - _mapSize() / 2.0) / _oldSize
 
 func _onResize() -> void:
-	_camera.offset = _normalize() * size + _mapSize() / 2.0
+	_camera.global_position = _normalize() * size + _mapSize() / 2.0
 	_oldSize = size
 	_cameraUpdate()
 
