@@ -1,12 +1,14 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://PixelLevel/Level.tres" type="TileSet" id=1]
 [ext_resource path="res://PixelLevel/Mob.tscn" type="PackedScene" id=2]
 [ext_resource path="res://PixelLevel/Target.tscn" type="PackedScene" id=3]
 [ext_resource path="res://PixelLevel/Level.gd" type="Script" id=4]
 [ext_resource path="res://PixelLevel/Back.tscn" type="PackedScene" id=5]
+[ext_resource path="res://PixelLevel/MiniMap.gd" type="Script" id=6]
 
 [node name="Level" type="Node"]
+script = ExtResource( 6 )
 
 [node name="Back" type="ViewportContainer" parent="."]
 anchor_right = 1.0
@@ -113,3 +115,9 @@ render_target_update_mode = 3
 
 [node name="Camera" type="Camera2D" parent="Fore/Viewport"]
 anchor_mode = 0
+
+[node name="MiniMap" type="TextureRect" parent="Fore/Viewport"]
+margin_right = 64.0
+margin_bottom = 64.0
+rect_min_size = Vector2( 64, 64 )
+mouse_filter = 2

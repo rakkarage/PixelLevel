@@ -1,4 +1,5 @@
 extends Viewport
+class_name Level
 
 onready var _tween:       Tween = $Tween
 onready var _camera:   Camera2D = $Camera
@@ -47,7 +48,7 @@ enum Tile {
 }
 
 func _ready() -> void:
-	_rect = _back.get_used_rect()
+	_rect = getMapRect()
 	_oldSize = size
 	_drawEdge()
 	_mob.global_position = _world(_startAt) + _back.cell_size / 2.0
@@ -156,7 +157,7 @@ func _map(position: Vector2) -> Vector2:
 func _mapSize() -> Vector2:
 	return _rect.size * _back.cell_size
 
-func _mapBounds() -> Rect2:
+func mapBounds() -> Rect2:
 	return Rect2(-_camera.global_position, _mapSize())
 
 func _center() -> Vector2:
@@ -184,7 +185,7 @@ static func _constrain(minWorld: Vector2, maxWorld: Vector2, minMap: Vector2, ma
 	return delta
 
 func _cameraUpdate() -> void:
-	var map := _mapBounds()
+	var map := mapBounds()
 	var world := _worldBounds().grow(-_back.cell_size.x)
 	if not world.intersects(map):
 		_cameraSnap(_camera.global_position + _constrainRect(world, map))
@@ -231,16 +232,19 @@ func _targetToMob() -> void:
 
 func _targetTo(to: Vector2) -> void:
 	_targetStop()
-	var new := _map(_camera.global_position + to * _camera.zoom)
-	if new == _map(_target.global_position):
+	var tile := _map(_camera.global_position + to * _camera.zoom)
+	if tile == _map(_target.global_position):
 		_turn = true
 	else:
-		_target.global_position = _world(new)
+		_target.global_position = _world(tile)
 
 func _targetUpdate() -> void:
 	var from := _map(_mob.global_position)
 	var to := _map(_target.global_position)
 	to = _targetSnapClosest(to)
+	_pathUpdate(from, to)
+
+func _pathUpdate(from: Vector2, to: Vector2) -> void:
 	_pathPoints = _astar.get_point_path(_tileIndex(from), _tileIndex(to))
 	_pathClear()
 	var rotation := 0
@@ -459,19 +463,19 @@ func _lightTorches() -> void:
 			var emitted := false
 			if _insideMapV(p):
 				var northBlocked = _blockedV(north)
-				if not northBlocked and _exploredV(north):
+				if not northBlocked and _litV(north):
 					emitted = true
 					_lightEmit(north, Random.next(_torchRadius))
 				var eastBlocked = _blockedV(east)
-				if not eastBlocked and _exploredV(east):
+				if not eastBlocked and _litV(east):
 					emitted = true
 					_lightEmit(east, Random.next(_torchRadius))
 				var southBlocked = _blockedV(south)
-				if not southBlocked and _exploredV(south):
+				if not southBlocked and _litV(south):
 					emitted = true
 					_lightEmit(south, Random.next(_torchRadius))
 				var westBlocked = _blockedV(west)
-				if not westBlocked and _exploredV(west):
+				if not westBlocked and _litV(west):
 					emitted = true
 					_lightEmit(west, Random.next(_torchRadius))
 				if not emitted:
@@ -479,13 +483,13 @@ func _lightTorches() -> void:
 					var southEast := Vector2(p.x + 1, p.y - 1)
 					var southWest := Vector2(p.x - 1, p.y - 1)
 					var northWest := Vector2(p.x - 1, p.y + 1)
-					if northBlocked and eastBlocked and not _blockedV(northEast) and _exploredV(northEast):
+					if northBlocked and eastBlocked and not _blockedV(northEast) and _litV(northEast):
 						_lightEmit(northEast, Random.next(_torchRadius))
-					if southBlocked and eastBlocked and not _blockedV(southEast) and _exploredV(southEast):
+					if southBlocked and eastBlocked and not _blockedV(southEast) and _litV(southEast):
 						_lightEmit(southEast, Random.next(_torchRadius))
-					if southBlocked and westBlocked and not _blockedV(southWest) and _exploredV(southWest):
+					if southBlocked and westBlocked and not _blockedV(southWest) and _litV(southWest):
 						_lightEmit(southWest, Random.next(_torchRadius))
-					if northBlocked and westBlocked and not _blockedV(northWest) and _exploredV(northWest):
+					if northBlocked and westBlocked and not _blockedV(northWest) and _litV(northWest):
 						_lightEmit(northWest, Random.next(_torchRadius))
 
 func _dark() -> void:
@@ -503,7 +507,31 @@ func _exploredV(p: Vector2) -> bool:
 	return _explored(int(p.x), int(p.y))
 
 func _explored(x: int, y: int) -> bool:
+	return _getLight(x, y) == _lightExplored
+
+func _litV(p: Vector2) -> bool:
+	return _lit(int(p.x), int(p.y))
+
+func _lit(x: int, y: int) -> bool:
 	return _getLight(x, y) > _lightExplored
+
+func _wall(x: int, y: int) -> bool:
+	var tile = _fore.get_cell(x, y)
+	return (tile == Tile.Theme0Wall or tile == Tile.Theme4Wall or
+		tile == Tile.Theme0Torch or tile == Tile.Theme4Torch)
+
+func _stair(x: int, y: int) -> bool:
+	var tile = _fore.get_cell(x, y)
+	return tile == Tile.Theme0Stair or tile == Tile.Theme4Stair
+
+func _door(x: int, y: int) -> bool:
+	var tile = _fore.get_cell(x, y)
+	return tile == Tile.Theme0Door or tile == Tile.Theme4Door
+
+func _floor(x: int, y: int) -> bool:
+	var tile = _fore.get_cell(x, y)
+	return (tile == Tile.Theme0Floor or tile == Tile.Theme0FloorRoom or
+		tile == Tile.Theme4Floor or tile == Tile.Theme4FloorRoom)
 
 func _getLight(x: int, y: int) -> int:
 	return int(_light.get_cell_autotile_coord(x, y).x)
@@ -517,3 +545,24 @@ func _insideMapV(p: Vector2) -> bool:
 
 func _insideMap(x: int, y: int) -> bool:
 	return x >= _rect.position.x and y >= _rect.position.y and x < _rect.size.x and y < _rect.size.y
+
+func getMapRect() -> Rect2:
+	return _back.get_used_rect()
+
+# const _bright = 1.0
+# const _dim = 0.5
+# const _unlit = 0.333
+
+func getMapColor(x: int, y: int, screen := false) -> Color:
+	var color = Color.magenta if screen else Color.transparent
+	var lit = _lit(x, y)
+	if lit or _explored(x, y):
+		if _stair(x, y):
+			color = Color.yellow
+		elif _door(x, y):
+			color = Color.blue
+		elif not screen and _wall(x, y):
+			color = Color.lightgray
+		elif not screen and _floor(x, y):
+			color = Color.gray if lit else Color.darkgray
+	return color
