@@ -4,43 +4,41 @@ onready var _textureRect : TextureRect = $Fore/Viewport/MiniMap
 onready var _level : Level = $Level/Viewport
 onready var _imageTexture := ImageTexture.new()
 onready var _image := Image.new()
-const _scale := Vector2(20, 20)
-const _border := Vector2(16, 16)
+const _max := Vector2(64, 64)
 
-# TODO: handle resize
+# TODO: handle resize!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 func _ready() -> void:
-	_image.create(64, 64, false, Image.FORMAT_RGB8)
 	_textureRect.texture = _imageTexture
 	print(_image.get_size())
 	_update(Vector2.ZERO)
 
 func _update(at: Vector2) -> void:
-	var imageSize := _image.get_size()
-	var originalSize := _level.getMapRect().size
-	var size := originalSize
+	var original := _level.getMapRect().size
+	var size := original
 	var offset := Vector2.ZERO
-	if size.x > imageSize.x:
-		size.x = imageSize.x
+	if size.x > _max.x:
+		size.x = _max.x
 		offset.x = at.x - size.x / 2.0
 		if offset.x < 0: offset.x = 0
-		if offset.x > originalSize.x - size.x: offset.x = originalSize.x - size.x
-	if size.y > imageSize.y:
-		size.y = imageSize.y
+		if offset.x > original.x - size.x: offset.x = original.x - size.x
+	if size.y > _max.y:
+		size.y = _max.y
 		offset.y = at.y - size.y / 2.0
 		if offset.y < 0: offset.y = 0
-		if offset.y > originalSize.y - size.y: offset.y = originalSize.y - size.y
-	# TODO: draw screen from bounds
-	var bounds = _level.mapBounds()
+		if offset.y > original.y - size.y: offset.y = original.y - size.y
+	# TODO: draw screen from bounds!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	# var bounds = _level.mapBounds()
 	var screen = false
+	_image.create(int(size.x), int(size.y), false, Image.FORMAT_RGB8)
 	_image.lock()
-	for y in range(imageSize.y):
-		for x in range(imageSize.x):
+	for y in range(size.y):
+		for x in range(size.x):
 			var actualX = x + offset.x
 			var actualY = y + offset.y
-			# _image.set_pixel(x, y, Color(1, 0, 0, 1))
 			_image.set_pixel(x, y, _level.getMapColor(actualX, actualY, screen))
 	_image.unlock()
+	_image.expand_x2_hq2x()
 	_image.expand_x2_hq2x()
 	_imageTexture.create_from_image(_image)
 
