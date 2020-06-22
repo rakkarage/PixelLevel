@@ -47,6 +47,8 @@ enum Tile {
 	EdgeOutsideCorner, EdgeOutside
 }
 
+signal updateMap
+
 func _ready() -> void:
 	_rect = getMapRect()
 	_oldSize = size
@@ -72,6 +74,7 @@ func _process(delta) -> void:
 		_move(_mob)
 		_lightUpdate(_map(_mob.global_position), _lightRadius)
 		_checkCenter()
+		emit_signal("updateMap", _map(_camera.global_position))
 		_time = 0.0
 		# TODO: update minimap!
 
@@ -141,6 +144,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
 			_cameraTo(_camera.global_position - event.relative * _camera.zoom)
+	emit_signal("updateMap", _map(_camera.global_position))
 
 func _world(tile: Vector2) -> Vector2:
 	return _back.map_to_world(tile)
@@ -529,7 +533,7 @@ func _door(x: int, y: int) -> bool:
 	return tile == Tile.Theme0Door or tile == Tile.Theme4Door
 
 func _floor(x: int, y: int) -> bool:
-	var tile = _fore.get_cell(x, y)
+	var tile = _back.get_cell(x, y)
 	return (tile == Tile.Theme0Floor or tile == Tile.Theme0FloorRoom or
 		tile == Tile.Theme4Floor or tile == Tile.Theme4FloorRoom)
 
@@ -549,20 +553,37 @@ func _insideMap(x: int, y: int) -> bool:
 func getMapRect() -> Rect2:
 	return _back.get_used_rect()
 
-# const _bright = 1.0
-# const _dim = 0.5
-# const _unlit = 0.333
+func getCameraRect() -> Rect2:
+	# return -(_worldSize() / 2.0) + _mapSize() / 2.0
+	return Rect2(_map(_camera.global_position), _map(_worldSize()))
 
-func getMapColor(x: int, y: int, screen := false) -> Color:
-	var color = Color.magenta if screen else Color.transparent
+const _colorMob := Color(0, 1, 1, 1)
+const _colorStair := Color(1.0, 1.0, 0.0, 0.75)
+const _colorDoor := Color(0.0, 0.0, 1.0, 0.75)
+const _colorWall := Color(0.75, 0.75, 0.75, 0.75)
+const _colorFloorLit := Color(0.5, 0.5, 0.5, 0.5)
+const _colorFloor := Color(0.25, 0.25, 0.25, 0.25)
+const _colorCamera := Color(1, 0, 1, 0.75)
+
+func getMapColor(x: int, y: int) -> Color:
+	var rect = getCameraRect()
+	var color = Color(0.25, 0.25, 0.25, 1)
 	var lit = _lit(x, y)
+	var mob = _map(_mob.global_position)
 	if lit or _explored(x, y):
-		if _stair(x, y):
-			color = Color.yellow
+		if x == mob.x and y == mob.y:
+			color = _colorMob
+		elif (((x >= rect.position.x and x <= rect.size.x) and
+			(y == rect.position.y or y == rect.size.y)) or
+			((y >= rect.position.y and y <= rect.size.y) and
+			(x == rect.position.x or x == rect.size.x))):
+			color = _colorCamera
+		elif _stair(x, y):
+			color = _colorStair
 		elif _door(x, y):
-			color = Color.blue
-		elif not screen and _wall(x, y):
-			color = Color.lightgray
-		elif not screen and _floor(x, y):
-			color = Color.gray if lit else Color.darkgray
+			color = _colorDoor
+		elif _wall(x, y):
+			color = _colorWall
+		elif _floor(x, y):
+			color = _colorFloorLit if lit else _colorFloor
 	return color
