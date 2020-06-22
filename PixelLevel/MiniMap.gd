@@ -21,4 +21,5 @@ func _updateMap() -> void:
 	_image.unlock()
 	_image.expand_x2_hq2x()
 	_image.expand_x2_hq2x()
+	_image.expand_x2_hq2x()
 	_imageTexture.create_from_image(_image)

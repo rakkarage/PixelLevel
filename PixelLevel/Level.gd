@@ -556,17 +556,18 @@ func getMapRect() -> Rect2:
 func getCameraRect() -> Rect2:
 	return Rect2(_map(_camera.global_position), _map(_camera.global_position + _worldSize()))
 
-const _colorMob := Color(0, 1, 1, 1)
-const _colorStair := Color(1.0, 1.0, 0.0, 0.75)
-const _colorDoor := Color(0.0, 0.0, 1.0, 0.75)
-const _colorWall := Color(0.75, 0.75, 0.75, 0.75)
-const _colorFloorLit := Color(0.5, 0.5, 0.5, 0.5)
-const _colorFloor := Color(0.25, 0.25, 0.25, 0.25)
-const _colorCamera := Color(1, 0, 1, 0.75)
+const _alpha := 0.75
+const _colorMob := Color(0, 1, 0, _alpha)
+const _colorStair := Color(1, 1, 0, _alpha)
+const _colorDoor := Color(0, 0, 1, _alpha)
+const _colorWall := Color(0.75, 0.75, 0.75, _alpha)
+const _colorFloorLit := Color(0.5, 0.5, 0.5, _alpha)
+const _colorFloor := Color(0.25, 0.25, 0.25, _alpha)
+const _colorCamera := Color(1, 0, 1, _alpha)
 
 func getMapColor(x: int, y: int) -> Color:
 	var rect = getCameraRect()
-	var color = Color(0.25, 0.25, 0.25, 1)
+	var color = Color(0.25, 0.25, 0.25, 0.25)
 	var lit = _lit(x, y)
 	var mob = _map(_mob.global_position)
 	if lit or _explored(x, y):
