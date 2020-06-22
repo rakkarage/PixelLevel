@@ -55,6 +55,7 @@ func _ready() -> void:
 	_drawEdge()
 	_mob.global_position = _world(_startAt) + _back.cell_size / 2.0
 	_targetToMob()
+	_pathClear()
 	_addPoints()
 	_connectPoints()
 	_camera.zoom = Vector2(0.75, 0.75)
@@ -81,14 +82,13 @@ func _move(mob: Node2D) -> void:
 	if _pathPoints.size() > 1:
 		var delta := _delta(_pathPoints[0], _pathPoints[1])
 		_face(mob, delta)
-		# TODO: play walk animation which has step sounds!!!!!!!!!!!!!!!!!!!
 		_step(mob, delta)
 		_pathPoints.remove(0)
-		_path.get_child(0).queue_free()
+		_path.get_child(0).free()
 		if _pathPoints.size() > 1:
 			_turn = true
 		else:
-			_path.get_child(1).queue_free()
+			_pathClear()
 
 func _face(mob: Node2D, direction: Vector2) -> void:
 	if direction.x > 0 or direction.y > 0:
@@ -97,6 +97,8 @@ func _face(mob: Node2D, direction: Vector2) -> void:
 		mob.scale = Vector2(1, 1)
 
 func _step(mob: Node2D, direction: Vector2) -> void:
+	# TODO: play walk animation which has step sounds!!!!!!!!!!!!!!!!!!!
+	# interpolate global_position
 	mob.global_position += _world(direction)
 
 func _tileIndex(p: Vector2) -> int:
@@ -250,18 +252,22 @@ func _targetUpdate() -> void:
 	var from := _map(_mob.global_position)
 	var to := _map(_target.global_position)
 	to = _targetSnapClosest(to)
-	_pathUpdate(from, to)
+	_drawPath(from, to)
 
-func _pathUpdate(from: Vector2, to: Vector2) -> void:
-	_pathPoints = _astar.get_point_path(_tileIndex(from), _tileIndex(to))
+func _drawPath(from: Vector2, to: Vector2) -> void:
 	_pathClear()
+	if from == to: return
+	var color := _getPathColor(int(to.x), int(to.y))
+	_target.modulate = color
 	var rotation := 0
 	var pathDelta := _delta(from, to)
+	_pathPoints = _astar.get_point_path(_tileIndex(from), _tileIndex(to))
 	for i in _pathPoints.size():
 		var tile := _pathPoints[i]
 		if i + 1 < _pathPoints.size():
 			rotation = _pathRotate(_delta(tile, _pathPoints[i + 1]), pathDelta)
 		var child := _pathScene.instance()
+		child.modulate = color
 		child.global_rotation_degrees = rotation
 		child.global_position = _world(tile)
 		_path.add_child(child)
@@ -291,6 +297,7 @@ func _pathRotate(stepDelta, pathDelta) -> int:
 	return rotation
 
 func _pathClear():
+	_target.modulate = Color.transparent
 	for path in _path.get_children():
 		path.free()
 
@@ -590,4 +597,22 @@ func getMapColor(x: int, y: int) -> Color:
 			color = _colorWall
 		elif _floor(x, y):
 			color = _colorFloorLit if lit else _colorFloor
+	return color
+
+const _alphaPath := 0.333
+const _colorPathMob := Color(_colorMob.r, _colorMob.g, _colorMob.b, _alphaPath)
+const _colorPathStair := Color(_colorStair.r, _colorStair.g, _colorStair.b, _alphaPath)
+const _colorPathDoor := Color(_colorDoor.r, _colorDoor.g, _colorDoor.b, _alphaPath)
+const _colorPathWall := Color(_colorWall.r, _colorWall.g, _colorWall.b, _alphaPath)
+
+func _getPathColor(x: int, y: int) -> Color:
+	var color
+	if _stair(x, y):
+		color = _colorPathStair
+	elif _door(x, y):
+		color = _colorPathDoor
+	elif _wall(x, y):
+		color = _colorPathWall
+	elif _floor(x, y):
+		color = _colorPathMob
 	return color
