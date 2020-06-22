@@ -92,7 +92,7 @@ const _colorA := Color(0.25, 0.25, 0.25)
 const _colorB := Color(0.5, 0.5, 0.5)
 const _colorC := Color(0.75, 0.75, 0.75)
 
-func _draw():
+func _draw() -> void:
 	if _alt:
 		for touch in _touch:
 			if touch.state:

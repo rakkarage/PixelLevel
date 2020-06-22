@@ -48,6 +48,7 @@ Lighting combines these two algorithms using sets of 32 gradient light tiles.
 
 ## TODO
 
+- color path if door or stair etc
+- open and close doors
 - need to fix mob animation states!? and use walk animation
-- level generation and loading tmx
-- make base that does not know about Tiles.Light etc and extend it so less code per file and more expandable!? take tileMap as parameter like in randomTile
+- level generation and templates and loading tmx
