@@ -74,9 +74,8 @@ func _process(delta) -> void:
 		_move(_mob)
 		_lightUpdate(_map(_mob.global_position), _lightRadius)
 		_checkCenter()
-		emit_signal("updateMap", _map(_camera.global_position))
+		emit_signal("updateMap")
 		_time = 0.0
-		# TODO: update minimap!
 
 func _move(mob: Node2D) -> void:
 	if _pathPoints.size() > 1:
@@ -141,10 +140,11 @@ func _unhandled_input(event: InputEvent) -> void:
 			_zoomIn(event.global_position)
 		elif event.button_index == BUTTON_WHEEL_DOWN:
 			_zoomOut(event.global_position)
+		emit_signal("updateMap")
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
 			_cameraTo(_camera.global_position - event.relative * _camera.zoom)
-	emit_signal("updateMap", _map(_camera.global_position))
+			emit_signal("updateMap")
 
 func _world(tile: Vector2) -> Vector2:
 	return _back.map_to_world(tile)
@@ -554,8 +554,7 @@ func getMapRect() -> Rect2:
 	return _back.get_used_rect()
 
 func getCameraRect() -> Rect2:
-	# return -(_worldSize() / 2.0) + _mapSize() / 2.0
-	return Rect2(_map(_camera.global_position), _map(_worldSize()))
+	return Rect2(_map(_camera.global_position), _map(_camera.global_position + _worldSize()))
 
 const _colorMob := Color(0, 1, 1, 1)
 const _colorStair := Color(1.0, 1.0, 0.0, 0.75)
