@@ -200,6 +200,8 @@ func _cameraSnap(to: Vector2) -> void:
 	_cameraStop()
 	Utility.stfu(_tween.interpolate_property(_camera, "global_position", null, to, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
 	Utility.stfu(_tween.start())
+	yield(_tween, "tween_all_completed")
+	emit_signal("updateMap")
 
 func _cameraStop() -> void:
 	Utility.stfu(_tween.stop(_camera, "global_position"))
@@ -300,7 +302,7 @@ func _targetSnapClosest(tile: Vector2) -> Vector2:
 func _targetSnap(tile: Vector2) -> void:
 	var p := _world(tile)
 	if not _target.global_position.is_equal_approx(p):
-		Utility.stfu(_tween.stop(_target, "global_position"))
+		_targetStop()
 		Utility.stfu(_tween.interpolate_property(_target, "global_position", null, p, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
 		Utility.stfu(_tween.start())
 
