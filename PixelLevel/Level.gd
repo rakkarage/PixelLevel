@@ -138,8 +138,10 @@ func _unhandled_input(event: InputEvent) -> void:
 				_dragLeft = false
 		elif event.button_index == BUTTON_WHEEL_UP:
 			_zoomIn(event.global_position)
+			_cameraUpdate()
 		elif event.button_index == BUTTON_WHEEL_DOWN:
 			_zoomOut(event.global_position)
+			_cameraUpdate()
 		emit_signal("updateMap")
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
