@@ -72,7 +72,8 @@ func _process(delta) -> void:
 		_turn = false
 		_timeTotal += _time
 		_turnTotal += 1
-		_move(_mob)
+		if not _handleDoor():
+			_move(_mob)
 		_lightUpdate(_map(_mob.global_position), _lightRadius)
 		_checkCenter()
 		emit_signal("updateMap")
@@ -89,6 +90,27 @@ func _move(mob: Node2D) -> void:
 			_turn = true
 		else:
 			_pathClear()
+
+func _handleDoor() -> bool:
+	var from := _map(_mob.global_position)
+	var to := _map(_target.global_position)
+	var delta = _delta(from, to)
+	if delta.abs() <= Vector2.ONE:
+		if _doorV(to):
+			_toggleDoorV(to)
+			if _doorShutV(to):
+				_astar.set_point_disabled(_tileIndex(to), true)
+			else:
+				_astar.set_point_disabled(_tileIndex(to), false)
+			return true
+	return false
+
+func _toggleDoorV(to: Vector2) -> void:
+	_toggleDoor(int(to.x), int(to.y))
+
+func _toggleDoor(x: int, y: int) -> void:
+	var door := _fore.get_cell_autotile_coord(x, y)
+	_fore.set_cell(x, y, _fore.get_cell(x, y), false, false, false, Vector2(0 if door.x == 1 else 1, 0))
 
 func _face(mob: Node2D, direction: Vector2) -> void:
 	if direction.x > 0 or direction.y > 0:
@@ -125,8 +147,10 @@ func _connect(p: Vector2) -> void:
 		for xx in range(p.x - 1, p.x + 2):
 			var pp := Vector2(xx, yy)
 			if (not is_equal_approx(yy, p.y) or not is_equal_approx(xx, p.x)) and _rect.has_point(pp):
-				if not _blocked(xx, yy):
+				if _door(xx, yy) or not _blocked(xx, yy):
 					_astar.connect_points(_tileIndex(p), _tileIndex(pp), false)
+					if _doorShut(xx, yy):
+						_astar.set_point_disabled(_tileIndex(pp), true)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -302,7 +326,7 @@ func _pathClear():
 		path.free()
 
 func _targetSnapClosest(tile: Vector2) -> Vector2:
-	var p := _astar.get_point_position(_astar.get_closest_point(tile))
+	var p := _astar.get_point_position(_astar.get_closest_point(tile, true))
 	_targetSnap(p)
 	return p
 
@@ -539,9 +563,18 @@ func _stair(x: int, y: int) -> bool:
 	var tile = _fore.get_cell(x, y)
 	return tile == Tile.Theme0Stair or tile == Tile.Theme4Stair
 
+func _doorV(p: Vector2) -> bool:
+	return _door(int(p.x), int(p.y))
+
 func _door(x: int, y: int) -> bool:
 	var tile = _fore.get_cell(x, y)
 	return tile == Tile.Theme0Door or tile == Tile.Theme4Door
+
+func _doorShutV(at: Vector2) -> bool:
+	return _doorShut(int(at.x), int(at.y))
+
+func _doorShut(x: int, y: int) -> bool:
+	return _door(x, y) and _fore.get_cell_autotile_coord(x, y) == Vector2.ZERO
 
 func _floor(x: int, y: int) -> bool:
 	var tile = _back.get_cell(x, y)
