@@ -48,7 +48,5 @@ Lighting combines these two algorithms using sets of 32 gradient light tiles.
 
 ## TODO
 
-- color path if door or stair etc
-- open and close doors
 - need to fix mob animation states!? and use walk animation
 - level generation and templates and loading tmx
