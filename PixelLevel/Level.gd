@@ -94,14 +94,10 @@ func _move(mob: Node2D) -> void:
 func _handleDoor() -> bool:
 	var from := _map(_mob.global_position)
 	var to := _map(_target.global_position)
-	var delta = _delta(from, to)
-	if delta.abs() <= Vector2.ONE:
+	if from.distance_to(to) < 2.0:
 		if _doorV(to):
 			_toggleDoorV(to)
-			if _doorShutV(to):
-				_astar.set_point_disabled(_tileIndex(to), true)
-			else:
-				_astar.set_point_disabled(_tileIndex(to), false)
+			_astar.set_point_disabled(_tileIndex(to), _doorShutV(to))
 			return true
 	return false
 
