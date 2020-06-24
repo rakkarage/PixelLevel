@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/WaterShallow.png-63b3b54609ff73486a1ed591cb84cae2.stex"
+path="res://.import/Theme0.png-e76d7c4c3b78a83d35a14f4b11387bf8.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://PixelLevel/Sprite/WaterShallow.png"
-dest_files=[ "res://.import/WaterShallow.png-63b3b54609ff73486a1ed591cb84cae2.stex" ]
+source_file="res://PixelLevel/Sprite/Tile/Theme0.png"
+dest_files=[ "res://.import/Theme0.png-e76d7c4c3b78a83d35a14f4b11387bf8.stex" ]
 
 [params]
 

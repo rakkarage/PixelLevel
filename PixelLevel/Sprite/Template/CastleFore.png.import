@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Theme0.png-f0d5344efdcdc992ad24687cde99f075.stex"
+path="res://.import/CastleFore.png-3f08e26e2b0103d547f9cdd814cb8b57.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://PixelLevel/Sprite/Theme0.png"
-dest_files=[ "res://.import/Theme0.png-f0d5344efdcdc992ad24687cde99f075.stex" ]
+source_file="res://PixelLevel/Sprite/Template/CastleFore.png"
+dest_files=[ "res://.import/CastleFore.png-3f08e26e2b0103d547f9cdd814cb8b57.stex" ]
 
 [params]
 

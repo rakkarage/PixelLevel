@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/EdgeInsideCorner.png-a49eb013fa48f6a2af0972eb95177b84.stex"
+path="res://.import/EdgeInsideCorner.png-16cba580cb729097a71d2b4f1280f548.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://PixelLevel/Sprite/EdgeInsideCorner.png"
-dest_files=[ "res://.import/EdgeInsideCorner.png-a49eb013fa48f6a2af0972eb95177b84.stex" ]
+source_file="res://PixelLevel/Sprite/Tile/EdgeInsideCorner.png"
+dest_files=[ "res://.import/EdgeInsideCorner.png-16cba580cb729097a71d2b4f1280f548.stex" ]
 
 [params]
 

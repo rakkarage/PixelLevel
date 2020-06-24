@@ -2,6 +2,9 @@ extends Node
 
 onready var _level : Level = $Viewport
 
+var _depth := 0
+var _width := 0
+var _height := 0
 var _theme := 0
 var _cliff := 0.0
 var _wonky := false
@@ -28,8 +31,19 @@ func _generate() -> void:
 		6: _generateTemplate()
 		7: _generateTemplateCastle()
 
-func _generateBasic() -> void:
+func _size() -> void:
+	var d = 10 + _depth
+	_width = d * 2 + Random.next(d)
+
+func _clear(wall: bool) -> void:
 	pass
+	# for y in size.y:
+	# 	for x in size.x:
+			# _level.set
+
+func _generateBasic() -> void:
+	_size()
+	_clear(true)
 
 func _generateDungeon() -> void:
 	pass

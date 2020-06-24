@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/BannerB.png-120e69e2733163b6be50587ab345accb.stex"
+path="res://.import/BannerB.png-3973a25fd86512850588609f18f8fc8d.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://PixelLevel/Sprite/BannerB.png"
-dest_files=[ "res://.import/BannerB.png-120e69e2733163b6be50587ab345accb.stex" ]
+source_file="res://PixelLevel/Sprite/Tile/BannerB.png"
+dest_files=[ "res://.import/BannerB.png-3973a25fd86512850588609f18f8fc8d.stex" ]
 
 [params]
 

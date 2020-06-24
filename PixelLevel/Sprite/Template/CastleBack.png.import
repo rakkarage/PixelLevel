@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Furniture.png-0e888c55d2e723306c65d2ba45b5f266.stex"
+path="res://.import/CastleBack.png-1126ded0f4ecbd5faaa8e4c9e4eec4ba.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://PixelLevel/Sprite/Furniture.png"
-dest_files=[ "res://.import/Furniture.png-0e888c55d2e723306c65d2ba45b5f266.stex" ]
+source_file="res://PixelLevel/Sprite/Template/CastleBack.png"
+dest_files=[ "res://.import/CastleBack.png-1126ded0f4ecbd5faaa8e4c9e4eec4ba.stex" ]
 
 [params]
 
