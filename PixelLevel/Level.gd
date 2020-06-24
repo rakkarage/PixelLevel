@@ -44,7 +44,8 @@ enum Tile {
 	WaterShallowBack, WaterShallowFore,
 	Light,
 	EdgeInside,	EdgeInsideCorner,
-	EdgeOutsideCorner, EdgeOutside
+	EdgeOutsideCorner, EdgeOutside,
+	Cliff
 }
 
 signal updateMap

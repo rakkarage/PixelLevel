@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=21 format=2]
+[gd_resource type="TileSet" load_steps=22 format=2]
 
 [ext_resource path="res://PixelLevel/Animation/BannerB.tres" type="Material" id=1]
 [ext_resource path="res://PixelLevel/Animation/BannerA.tres" type="Material" id=2]
@@ -20,8 +20,7 @@
 [ext_resource path="res://PixelLevel/Sprite/Tile/EdgeInside.png" type="Texture" id=18]
 [ext_resource path="res://PixelLevel/Sprite/Tile/EdgeInsideCorner.png" type="Texture" id=19]
 [ext_resource path="res://PixelLevel/Sprite/Tile/EdgeOutside.png" type="Texture" id=20]
-
-
+[ext_resource path="res://PixelLevel/Sprite/Tile/CliffD.png" type="Texture" id=21]
 
 [resource]
 0/name = "BannerA"
@@ -557,3 +556,24 @@
 24/shape_one_way_margin = 0.0
 24/shapes = [  ]
 24/z_index = 0
+25/name = "Cliff"
+25/texture = ExtResource( 21 )
+25/tex_offset = Vector2( 0, 0 )
+25/modulate = Color( 1, 1, 1, 1 )
+25/region = Rect2( 0, 0, 160, 16 )
+25/tile_mode = 2
+25/autotile/icon_coordinate = Vector2( 0, 0 )
+25/autotile/tile_size = Vector2( 16, 16 )
+25/autotile/spacing = 0
+25/autotile/occluder_map = [  ]
+25/autotile/navpoly_map = [  ]
+25/autotile/priority_map = [  ]
+25/autotile/z_index_map = [  ]
+25/occluder_offset = Vector2( 0, 0 )
+25/navigation_offset = Vector2( 0, 0 )
+25/shape_offset = Vector2( 0, 0 )
+25/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+25/shape_one_way = false
+25/shape_one_way_margin = 0.0
+25/shapes = [  ]
+25/z_index = 0
