@@ -4,10 +4,10 @@ class_name Level
 onready var _tween:       Tween = $Tween
 onready var _camera:   Camera2D = $Camera
 onready var _back:      TileMap = $Back
+onready var _fore:      TileMap = $Fore
 onready var _waterBack: TileMap = $WaterBack
 onready var _mob:        Node2D = $Mob
-onready var _waterFore: TileMap = $WaterBack
-onready var _fore:      TileMap = $Fore
+onready var _waterFore: TileMap = $WaterFore
 onready var _light:     TileMap = $Light
 onready var _edge:      TileMap = $Edge
 onready var _target:     Node2D = $Target
@@ -52,6 +52,11 @@ signal updateMap
 signal generate
 
 func _ready() -> void:
+	generated()
+	Utility.ok(connect("size_changed", self, "_onResize"))
+	Utility.ok(Gesture.connect("onZoom", self, "_zoomPinch"))
+
+func generated() -> void:
 	_rect = getMapRect()
 	_oldSize = size
 	_drawEdge()
@@ -65,8 +70,6 @@ func _ready() -> void:
 	_dark()
 	_findTorches()
 	_lightUpdate(_map(_mob.global_position), _lightRadius)
-	Utility.ok(connect("size_changed", self, "_onResize"))
-	Utility.ok(Gesture.connect("onZoom", self, "_zoomPinch"))
 
 func _process(delta) -> void:
 	_time += delta
@@ -564,10 +567,16 @@ func _wall(x: int, y: int) -> bool:
 		tile == Tile.Theme0Torch or tile == Tile.Theme4Torch)
 
 func setWallA(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	_setRandomTile(_back, x, y, Tile.Theme0Wall, flipX, flipY, rot90)
+	_setRandomTile(_fore, x, y, Tile.Theme0Wall, flipX, flipY, rot90)
 
 func setWallB(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	_setRandomTile(_back, x, y, Tile.Theme4Wall, flipX, flipY, rot90)
+	_setRandomTile(_fore, x, y, Tile.Theme4Wall, flipX, flipY, rot90)
+
+func setTorchA(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_fore, x, y, Tile.Theme0Torch, flipX, flipY, rot90)
+
+func setTorchB(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_fore, x, y, Tile.Theme4Torch, flipX, flipY, rot90)
 
 func _stairV(p: Vector2) -> bool:
 	return _stair(int(p.x), int(p.y))
@@ -668,3 +677,11 @@ func _getPathColor(x: int, y: int) -> Color:
 	elif _floor(x, y):
 		color = _colorPathMob
 	return color
+
+func clear() -> void:
+	_back.clear()
+	_fore.clear()
+	_waterBack.clear()
+	_waterFore.clear()
+	_light.clear()
+	_edge.clear()

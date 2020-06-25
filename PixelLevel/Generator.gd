@@ -7,18 +7,21 @@ var _width := 0
 var _height := 0
 var _theme := 0
 var _cliff := 0.0
+var _torch := 0.0
 var _wonky := false
 
 func _ready() -> void:
 	Utility.ok(_level.connect("generate", self, "_generate"))
 
 func _generate() -> void:
+	_clear()
 	_depth += 1
 	var d = 10 + _depth
 	_width = d * 2 + Random.next(d)
 	_height = d * 2 + Random.next(d)
 	_theme = Random.next(2)
 	_cliff = Random.nextFloat() < 0.2
+	_torch = Random.nextFloat() < 0.1
 	_wonky = Random.nextBool()
 	match Random.next(8):
 		0: _generateBasic()
@@ -30,7 +33,10 @@ func _generate() -> void:
 		6: _generateTemplate()
 		7: _generateTemplateCastle()
 
-func _clear(wall: bool) -> void:
+func _clear() -> void:
+	_level.clear()
+
+func _fill(wall: bool) -> void:
 	for y in _height:
 		for x in _width:
 			_setFloor(x, y)
@@ -38,28 +44,36 @@ func _clear(wall: bool) -> void:
 				_setWall(x, y)
 
 func _generateBasic() -> void:
-	_clear(true)
+	_fill(false)
+	_level.generated()
 
 func _generateDungeon() -> void:
-	_clear(true)
+	_fill(false)
+	_level.generated()
 
 func _generateCrossroad() -> void:
-	_clear(true)
+	_fill(false)
+	_level.generated()
 
 func _generateMaze() -> void:
-	_clear(true)
+	_fill(false)
+	_level.generated()
 
 func _generateBuilding() -> void:
-	_clear(false)
+	_fill(false)
+	_level.generated()
 
 func _generateCave() -> void:
-	_clear(true)
+	_fill(false)
+	_level.generated()
 
 func _generateTemplate() -> void:
-	_clear(true)
+	_fill(false)
+	_level.generated()
 
 func _generateTemplateCastle() -> void:
-	_clear(false)
+	_fill(false)
+	_level.generated()
 
 func _setFloor(x: int, y: int) -> void:
 	var flipX = Random.nextBool() if _wonky else false
@@ -72,7 +86,14 @@ func _setFloor(x: int, y: int) -> void:
 
 func _setWall(x: int, y: int) -> void:
 	var flipX = Random.nextBool() if _wonky else false
+	var torch = Random.nextFloat() < _torch
 	if _theme == 0:
-		_level.setWallA(x, y, flipX)
+		if torch:
+			_level.setTorchA(x, y, flipX)
+		else:
+			_level.setWallA(x, y, flipX)
 	else:
-		_level.setWallB(x, y, flipX)
+		if torch:
+			_level.setTorchB(x, y, flipX)
+		else:
+			_level.setWallB(x, y, flipX)
