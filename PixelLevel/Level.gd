@@ -67,8 +67,6 @@ func _ready() -> void:
 	_lightUpdate(_map(_mob.global_position), _lightRadius)
 	Utility.ok(connect("size_changed", self, "_onResize"))
 	Utility.ok(Gesture.connect("onZoom", self, "_zoomPinch"))
-	print(_tileSet.tile_get_texture(Tile.WaterDeepBack))
-	print(_tileSet.tile_get_texture_offset(Tile.WaterDeepBack))
 
 func _process(delta) -> void:
 	_time += delta
@@ -565,6 +563,12 @@ func _wall(x: int, y: int) -> bool:
 	return (tile == Tile.Theme0Wall or tile == Tile.Theme4Wall or
 		tile == Tile.Theme0Torch or tile == Tile.Theme4Torch)
 
+func setWallA(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_back, x, y, Tile.Theme0Wall, flipX, flipY, rot90)
+
+func setWallB(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_back, x, y, Tile.Theme4Wall, flipX, flipY, rot90)
+
 func _stairV(p: Vector2) -> bool:
 	return _stair(int(p.x), int(p.y))
 
@@ -589,6 +593,12 @@ func _floor(x: int, y: int) -> bool:
 	var tile = _back.get_cell(x, y)
 	return (tile == Tile.Theme0Floor or tile == Tile.Theme0FloorRoom or
 		tile == Tile.Theme4Floor or tile == Tile.Theme4FloorRoom)
+
+func setFloorA(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_back, x, y, Tile.Theme0Floor, flipX, flipY, rot90)
+
+func setFloorB(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_back, x, y, Tile.Theme4Floor, flipX, flipY, rot90)
 
 func _getLight(x: int, y: int) -> int:
 	return int(_light.get_cell_autotile_coord(x, y).x)

@@ -10,3 +10,6 @@ func next(n: int) -> int:
 
 func nextBool() -> bool:
 	return bool(_rng.randi() % 2)
+
+func nextFloat() -> float:
+	return _rng.randf()
