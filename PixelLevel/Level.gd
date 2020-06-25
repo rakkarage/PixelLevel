@@ -31,7 +31,7 @@ const _zoomFactorOut := 1.10
 const _zoomPinchIn := 0.02
 const _zoomPinchOut := 1.02
 const _pathScene := preload("res://PixelLevel/Path.tscn")
-const _startAt := Vector2(4, 4)
+var startAt := Vector2(4, 4)
 
 enum Tile {
 	BannerA,
@@ -60,7 +60,7 @@ func generated() -> void:
 	_rect = getMapRect()
 	_oldSize = size
 	_drawEdge()
-	_mob.global_position = _world(_startAt) + _back.cell_size / 2.0
+	_mob.global_position = _world(startAt) + _back.cell_size / 2.0
 	_targetToMob()
 	_pathClear()
 	_addPoints()
@@ -98,16 +98,16 @@ func _move(mob: Node2D) -> void:
 			_pathClear()
 
 func _handleStair() -> void:
-	if _stairV(mobPosition()):
+	if isStairDownV(mobPosition()):
 		emit_signal("generate")
 
 func _handleDoor() -> bool:
 	var from := mobPosition()
 	var to := targetPosition()
 	if from.distance_to(to) < 2.0:
-		if _doorV(to):
+		if isDoorV(to):
 			_toggleDoorV(to)
-			_astar.set_point_disabled(_tileIndex(to), _doorShutV(to))
+			_astar.set_point_disabled(_tileIndex(to), isDoorShutV(to))
 			return true
 	return false
 
@@ -138,6 +138,7 @@ func _tilePosition(index: int) -> Vector2:
 	return Vector2(x, y)
 
 func _addPoints() -> void:
+	_astar.clear()
 	for y in range(_rect.size.y):
 		for x in range(_rect.size.x):
 			var p := Vector2(x, y)
@@ -153,9 +154,9 @@ func _connect(p: Vector2) -> void:
 		for xx in range(p.x - 1, p.x + 2):
 			var pp := Vector2(xx, yy)
 			if (not is_equal_approx(yy, p.y) or not is_equal_approx(xx, p.x)) and _rect.has_point(pp):
-				if _door(xx, yy) or not _blocked(xx, yy):
+				if isDoor(xx, yy) or not isBlocked(xx, yy):
 					_astar.connect_points(_tileIndex(p), _tileIndex(pp), false)
-					if _doorShut(xx, yy):
+					if isDoorShut(xx, yy):
 						_astar.set_point_disabled(_tileIndex(pp), true)
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -415,10 +416,10 @@ func _randomTile(id: int) -> Vector2:
 				return p
 	return p
 
-func _blockedV(p: Vector2) -> bool:
-	return _blocked(int(p.x), int(p.y))
+func isBlockedV(p: Vector2) -> bool:
+	return isBlocked(int(p.x), int(p.y))
 
-func _blocked(x: int, y: int) -> bool:
+func isBlocked(x: int, y: int) -> bool:
 	if not _insideMap(x, y): return true
 	var back := _back.get_cell(x, y)
 	var fore := _fore.get_cell(x, y)
@@ -468,7 +469,7 @@ func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float,
 					var intensity := intensity2 / (1.0 - 1.0 / (1.0 + rSquared))
 					var light := int(intensity * _lightCount)
 					_setLight(x, y, _lightExplored + light, true)
-				var blockedAt := _blocked(x, y)
+				var blockedAt := isBlocked(x, y)
 				if blocked:
 					if blockedAt:
 						newStart = rSlope
@@ -506,20 +507,20 @@ func _lightTorches() -> void:
 			var west := Vector2(p.x - 1, p.y)
 			var emitted := false
 			if _insideMapV(p):
-				var northBlocked = _blockedV(north)
-				if not northBlocked and _litV(north):
+				var northBlocked = isBlockedV(north)
+				if not northBlocked and isLitV(north):
 					emitted = true
 					_lightEmit(north, Random.next(_torchRadius))
-				var eastBlocked = _blockedV(east)
-				if not eastBlocked and _litV(east):
+				var eastBlocked = isBlockedV(east)
+				if not eastBlocked and isLitV(east):
 					emitted = true
 					_lightEmit(east, Random.next(_torchRadius))
-				var southBlocked = _blockedV(south)
-				if not southBlocked and _litV(south):
+				var southBlocked = isBlockedV(south)
+				if not southBlocked and isLitV(south):
 					emitted = true
 					_lightEmit(south, Random.next(_torchRadius))
-				var westBlocked = _blockedV(west)
-				if not westBlocked and _litV(west):
+				var westBlocked = isBlockedV(west)
+				if not westBlocked and isLitV(west):
 					emitted = true
 					_lightEmit(west, Random.next(_torchRadius))
 				if not emitted:
@@ -527,13 +528,13 @@ func _lightTorches() -> void:
 					var southEast := Vector2(p.x + 1, p.y - 1)
 					var southWest := Vector2(p.x - 1, p.y - 1)
 					var northWest := Vector2(p.x - 1, p.y + 1)
-					if northBlocked and eastBlocked and not _blockedV(northEast) and _litV(northEast):
+					if northBlocked and eastBlocked and not isBlockedV(northEast) and isLitV(northEast):
 						_lightEmit(northEast, Random.next(_torchRadius))
-					if southBlocked and eastBlocked and not _blockedV(southEast) and _litV(southEast):
+					if southBlocked and eastBlocked and not isBlockedV(southEast) and isLitV(southEast):
 						_lightEmit(southEast, Random.next(_torchRadius))
-					if southBlocked and westBlocked and not _blockedV(southWest) and _litV(southWest):
+					if southBlocked and westBlocked and not isBlockedV(southWest) and isLitV(southWest):
 						_lightEmit(southWest, Random.next(_torchRadius))
-					if northBlocked and westBlocked and not _blockedV(northWest) and _litV(northWest):
+					if northBlocked and westBlocked and not isBlockedV(northWest) and isLitV(northWest):
 						_lightEmit(northWest, Random.next(_torchRadius))
 
 func _dark() -> void:
@@ -547,19 +548,19 @@ func _darken() -> void:
 			if _getLight(x, y) != _lightMin:
 				_setLight(x, y, _lightExplored, false)
 
-func _exploredV(p: Vector2) -> bool:
-	return _explored(int(p.x), int(p.y))
+func isExploredV(p: Vector2) -> bool:
+	return isExplored(int(p.x), int(p.y))
 
-func _explored(x: int, y: int) -> bool:
+func isExplored(x: int, y: int) -> bool:
 	return _getLight(x, y) == _lightExplored
 
-func _litV(p: Vector2) -> bool:
-	return _lit(int(p.x), int(p.y))
+func isLitV(p: Vector2) -> bool:
+	return isLit(int(p.x), int(p.y))
 
-func _lit(x: int, y: int) -> bool:
+func isLit(x: int, y: int) -> bool:
 	return _getLight(x, y) > _lightExplored
 
-func _wall(x: int, y: int) -> bool:
+func isWall(x: int, y: int) -> bool:
 	var tile = _fore.get_cell(x, y)
 	return (tile == Tile.Theme0Wall or tile == Tile.Theme4Wall or
 		tile == Tile.Theme0Torch or tile == Tile.Theme4Torch)
@@ -576,27 +577,51 @@ func setTorchA(x: int, y: int, flipX := false, flipY := false, rot90 := false) -
 func setTorchB(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
 	_setRandomTile(_fore, x, y, Tile.Theme4Torch, flipX, flipY, rot90)
 
-func _stairV(p: Vector2) -> bool:
-	return _stair(int(p.x), int(p.y))
+func isStairV(p: Vector2) -> bool:
+	return isStair(int(p.x), int(p.y))
 
-func _stair(x: int, y: int) -> bool:
+func isStair(x: int, y: int) -> bool:
 	var tile = _fore.get_cell(x, y)
 	return tile == Tile.Theme0Stair or tile == Tile.Theme4Stair
 
-func _doorV(p: Vector2) -> bool:
-	return _door(int(p.x), int(p.y))
+func isStairUpV(p: Vector2) -> bool:
+	return isStairUp(int(p.x), int(p.y))
 
-func _door(x: int, y: int) -> bool:
+func isStairUp(x: int, y: int) -> bool:
+	return isStair(x, y) and _fore.get_cell_autotile_coord(x, y) == Vector2(1, 0)
+
+func isStairDownV(p: Vector2) -> bool:
+	return isStairDown(int(p.x), int(p.y))
+
+func isStairDown(x: int, y: int) -> bool:
+	return isStair(x, y) and _fore.get_cell_autotile_coord(x, y) == Vector2(0, 0)
+
+func setStairDownA(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_fore.set_cell(x, y, Tile.Theme0Stair, flipX, flipY, rot90, Vector2(0, 0))
+
+func setStairDownB(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_fore.set_cell(x, y, Tile.Theme4Stair, flipX, flipY, rot90, Vector2(0, 0))
+
+func setStairUpA(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_fore.set_cell(x, y, Tile.Theme0Stair, flipX, flipY, rot90, Vector2(1, 0))
+
+func setStairUpB(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_fore.set_cell(x, y, Tile.Theme4Stair, flipX, flipY, rot90, Vector2(1, 0))
+
+func isDoorV(p: Vector2) -> bool:
+	return isDoor(int(p.x), int(p.y))
+
+func isDoor(x: int, y: int) -> bool:
 	var tile = _fore.get_cell(x, y)
 	return tile == Tile.Theme0Door or tile == Tile.Theme4Door
 
-func _doorShutV(p: Vector2) -> bool:
-	return _doorShut(int(p.x), int(p.y))
+func isDoorShutV(p: Vector2) -> bool:
+	return isDoorShut(int(p.x), int(p.y))
 
-func _doorShut(x: int, y: int) -> bool:
-	return _door(x, y) and _fore.get_cell_autotile_coord(x, y) == Vector2.ZERO
+func isDoorShut(x: int, y: int) -> bool:
+	return isDoor(x, y) and _fore.get_cell_autotile_coord(x, y) == Vector2.ZERO
 
-func _floor(x: int, y: int) -> bool:
+func isFloor(x: int, y: int) -> bool:
 	var tile = _back.get_cell(x, y)
 	return (tile == Tile.Theme0Floor or tile == Tile.Theme0FloorRoom or
 		tile == Tile.Theme4Floor or tile == Tile.Theme4FloorRoom)
@@ -638,9 +663,9 @@ const _colorCamera := Color(1, 0, 1, _alpha)
 func getMapColor(x: int, y: int) -> Color:
 	var rect = getCameraRect()
 	var color = Color(0.25, 0.25, 0.25, 0.25)
-	var lit = _lit(x, y)
+	var lit = isLit(x, y)
 	var mob = mobPosition()
-	if lit or _explored(x, y):
+	if lit or isExplored(x, y):
 		if x == mob.x and y == mob.y:
 			color = _colorMob
 		elif (((x >= rect.position.x and x <= rect.size.x) and
@@ -648,13 +673,13 @@ func getMapColor(x: int, y: int) -> Color:
 			((y >= rect.position.y and y <= rect.size.y) and
 			(x == rect.position.x or x == rect.size.x))):
 			color = _colorCamera
-		elif _stair(x, y):
+		elif isStair(x, y):
 			color = _colorStair
-		elif _door(x, y):
+		elif isDoor(x, y):
 			color = _colorDoor
-		elif _wall(x, y):
+		elif isWall(x, y):
 			color = _colorWall
-		elif _floor(x, y):
+		elif isFloor(x, y):
 			color = _colorFloorLit if lit else _colorFloor
 	return color
 
@@ -666,13 +691,13 @@ const _colorPathWall := Color(_colorWall.r, _colorWall.g, _colorWall.b, _alphaPa
 
 func _getPathColor(x: int, y: int) -> Color:
 	var color
-	if _stair(x, y):
+	if isStair(x, y):
 		color = _colorPathStair
-	elif _door(x, y):
+	elif isDoor(x, y):
 		color = _colorPathDoor
-	elif _wall(x, y):
+	elif isWall(x, y):
 		color = _colorPathWall
-	elif _floor(x, y):
+	elif isFloor(x, y):
 		color = _colorPathMob
 	return color
 
