@@ -13,6 +13,9 @@ var _syncWonky := false
 var _syncRotate := 0
 var _syncFlip := false
 
+func _ready() -> void:
+	Utility.ok(_level.connect("generate", self, "_generate"))
+
 func _generate() -> void:
 	_theme = Random.next(2)
 	_cliff = Random.Next() < 0.2
@@ -35,7 +38,7 @@ func _size() -> void:
 	var d = 10 + _depth
 	_width = d * 2 + Random.next(d)
 
-func _clear(wall: bool) -> void:
+func _clear(_wall: bool) -> void:
 	pass
 	# for y in size.y:
 	# 	for x in size.x:

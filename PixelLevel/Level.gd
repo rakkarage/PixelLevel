@@ -49,6 +49,7 @@ enum Tile {
 }
 
 signal updateMap
+signal generate
 
 func _ready() -> void:
 	_rect = getMapRect()
@@ -66,6 +67,8 @@ func _ready() -> void:
 	_lightUpdate(_map(_mob.global_position), _lightRadius)
 	Utility.ok(connect("size_changed", self, "_onResize"))
 	Utility.ok(Gesture.connect("onZoom", self, "_zoomPinch"))
+	print(_tileSet.tile_get_texture(Tile.WaterDeepBack))
+	print(_tileSet.tile_get_texture_offset(Tile.WaterDeepBack))
 
 func _process(delta) -> void:
 	_time += delta
@@ -75,6 +78,7 @@ func _process(delta) -> void:
 		_turnTotal += 1
 		if not _handleDoor():
 			_move(_mob)
+		_handleStair()
 		_lightUpdate(_map(_mob.global_position), _lightRadius)
 		_checkCenter()
 		emit_signal("updateMap")
@@ -92,6 +96,11 @@ func _move(mob: Node2D) -> void:
 		else:
 			_pathClear()
 
+func _handleStair() -> void:
+	var p := _map(_mob.global_position)
+	if _stairV(p):
+		emit_signal("generate")
+
 func _handleDoor() -> bool:
 	var from := _map(_mob.global_position)
 	var to := _map(_target.global_position)
@@ -102,8 +111,8 @@ func _handleDoor() -> bool:
 			return true
 	return false
 
-func _toggleDoorV(to: Vector2) -> void:
-	_toggleDoor(int(to.x), int(to.y))
+func _toggleDoorV(p: Vector2) -> void:
+	_toggleDoor(int(p.x), int(p.y))
 
 func _toggleDoor(x: int, y: int) -> void:
 	var door := _fore.get_cell_autotile_coord(x, y)
@@ -556,6 +565,9 @@ func _wall(x: int, y: int) -> bool:
 	return (tile == Tile.Theme0Wall or tile == Tile.Theme4Wall or
 		tile == Tile.Theme0Torch or tile == Tile.Theme4Torch)
 
+func _stairV(p: Vector2) -> bool:
+	return _stair(int(p.x), int(p.y))
+
 func _stair(x: int, y: int) -> bool:
 	var tile = _fore.get_cell(x, y)
 	return tile == Tile.Theme0Stair or tile == Tile.Theme4Stair
@@ -567,8 +579,8 @@ func _door(x: int, y: int) -> bool:
 	var tile = _fore.get_cell(x, y)
 	return tile == Tile.Theme0Door or tile == Tile.Theme4Door
 
-func _doorShutV(at: Vector2) -> bool:
-	return _doorShut(int(at.x), int(at.y))
+func _doorShutV(p: Vector2) -> bool:
+	return _doorShut(int(p.x), int(p.y))
 
 func _doorShut(x: int, y: int) -> bool:
 	return _door(x, y) and _fore.get_cell_autotile_coord(x, y) == Vector2.ZERO
