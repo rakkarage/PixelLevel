@@ -69,7 +69,7 @@ func generated() -> void:
 	_cameraCenter()
 	_dark()
 	_findTorches()
-	_lightUpdate(_map(_mob.global_position), _lightRadius)
+	_lightUpdate(mobPosition(), _lightRadius)
 
 func _process(delta) -> void:
 	_time += delta
@@ -80,7 +80,7 @@ func _process(delta) -> void:
 		if not _handleDoor():
 			_move(_mob)
 		_handleStair()
-		_lightUpdate(_map(_mob.global_position), _lightRadius)
+		_lightUpdate(mobPosition(), _lightRadius)
 		_checkCenter()
 		emit_signal("updateMap")
 		_time = 0.0
@@ -98,13 +98,12 @@ func _move(mob: Node2D) -> void:
 			_pathClear()
 
 func _handleStair() -> void:
-	var p := _map(_mob.global_position)
-	if _stairV(p):
+	if _stairV(mobPosition()):
 		emit_signal("generate")
 
 func _handleDoor() -> bool:
-	var from := _map(_mob.global_position)
-	var to := _map(_target.global_position)
+	var from := mobPosition()
+	var to := targetPosition()
 	if from.distance_to(to) < 2.0:
 		if _doorV(to):
 			_toggleDoorV(to)
@@ -274,15 +273,14 @@ func _targetToMob() -> void:
 func _targetTo(to: Vector2) -> void:
 	_targetStop()
 	var tile := _map(_camera.global_position + to * _camera.zoom)
-	if tile == _map(_target.global_position):
+	if tile == targetPosition():
 		_turn = true
 	else:
 		_target.global_position = _world(tile)
 
 func _targetUpdate() -> void:
-	var from := _map(_mob.global_position)
-	var to := _map(_target.global_position)
-	to = _targetSnapClosest(to)
+	var from := mobPosition()
+	var to := _targetSnapClosest(targetPosition())
 	_drawPath(from, to)
 
 func _drawPath(from: Vector2, to: Vector2) -> void:
@@ -641,7 +639,7 @@ func getMapColor(x: int, y: int) -> Color:
 	var rect = getCameraRect()
 	var color = Color(0.25, 0.25, 0.25, 0.25)
 	var lit = _lit(x, y)
-	var mob = _map(_mob.global_position)
+	var mob = mobPosition()
 	if lit or _explored(x, y):
 		if x == mob.x and y == mob.y:
 			color = _colorMob
@@ -685,3 +683,9 @@ func clear() -> void:
 	_waterFore.clear()
 	_light.clear()
 	_edge.clear()
+
+func mobPosition() -> Vector2:
+	return _map(_mob.global_position)
+
+func targetPosition() -> Vector2:
+	return _map(_target.global_position)
