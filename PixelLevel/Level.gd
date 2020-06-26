@@ -700,7 +700,7 @@ const _colorPathDoor := Color(_colorDoor.r, _colorDoor.g, _colorDoor.b, _alphaPa
 const _colorPathWall := Color(_colorWall.r, _colorWall.g, _colorWall.b, _alphaPath)
 
 func _getPathColor(x: int, y: int) -> Color:
-	var color
+	var color = Color(0.25, 0.25, 0.25, 0.25)
 	if isStair(x, y):
 		color = _colorPathStair
 	elif isDoor(x, y):
