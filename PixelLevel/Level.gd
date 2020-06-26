@@ -120,7 +120,7 @@ func _toggleDoor(x: int, y: int) -> void:
 	_fore.set_cell(x, y, _fore.get_cell(x, y), false, false, false, Vector2(0 if door.x == 1 else 1, 0))
 
 func _face(mob: Node2D, direction: Vector2) -> void:
-	if direction.x > 0 or direction.y > 0:
+	if direction.x > 0:
 		mob.scale = Vector2(-1, 1)
 	else:
 		mob.scale = Vector2(1, 1)
