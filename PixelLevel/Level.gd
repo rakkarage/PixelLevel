@@ -80,10 +80,10 @@ func _process(delta) -> void:
 		_turnTotal += 1
 		if not _handleDoor():
 			_move(_mob)
-		_handleStair()
-		_lightUpdate(mobPosition(), _lightRadius)
-		_checkCenter()
-		emit_signal("updateMap")
+		if not _handleStair():
+			_lightUpdate(mobPosition(), _lightRadius)
+			_checkCenter()
+			emit_signal("updateMap")
 		_time = 0.0
 
 func _move(mob: Node2D) -> void:
@@ -98,9 +98,11 @@ func _move(mob: Node2D) -> void:
 		else:
 			_pathClear()
 
-func _handleStair() -> void:
+func _handleStair() -> bool:
 	if _pathPoints.size() == 1 and isStairDownV(mobPosition()):
 		emit_signal("generate")
+		return true
+	return false
 
 func _handleDoor() -> bool:
 	var from := mobPosition()
@@ -283,11 +285,11 @@ func _targetTo(to: Vector2) -> void:
 func _targetUpdate() -> void:
 	var from := mobPosition()
 	var to := _targetSnapClosest(targetPosition())
-	_drawPath(from, to)
+	_pathClear()
+	if from != to:
+		_drawPath(from, to)
 
 func _drawPath(from: Vector2, to: Vector2) -> void:
-	_pathClear()
-	if from == to: return
 	var color := _getPathColor(int(to.x), int(to.y))
 	_target.modulate = color
 	var rotation := 0
@@ -331,6 +333,8 @@ func _pathClear():
 	_target.modulate = Color.transparent
 	for path in _path.get_children():
 		path.free()
+	for i in _pathPoints.size():
+		_pathPoints.remove(i)
 
 func _targetSnapClosest(tile: Vector2) -> Vector2:
 	var p := _astar.get_point_position(_astar.get_closest_point(tile, true))
