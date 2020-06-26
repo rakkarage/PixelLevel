@@ -669,17 +669,19 @@ const _alpha := 0.75
 const _colorMob := Color(0, 1, 0, _alpha)
 const _colorStair := Color(1, 1, 0, _alpha)
 const _colorDoor := Color(0, 0, 1, _alpha)
-const _colorWall := Color(0.75, 0.75, 0.75, _alpha)
-const _colorFloorLit := Color(0.5, 0.5, 0.5, _alpha)
-const _colorFloor := Color(0.25, 0.25, 0.25, _alpha)
+const _colorWallLit := Color(0.8, 0.8, 0.8, _alpha)
+const _colorWall := Color(0.6, 0.6, 0.6, _alpha)
+const _colorFloorLit := Color(0.4, 0.4, 0.4, _alpha)
+const _colorFloor := Color(0.2, 0.2, 0.2, _alpha)
 const _colorCamera := Color(1, 0, 1, _alpha)
 
 func getMapColor(x: int, y: int) -> Color:
 	var rect = getCameraRect()
 	var color = Color(0.25, 0.25, 0.25, 0.25)
 	var lit = isLit(x, y)
+	var explored = isExplored(x, y)
 	var mob = mobPosition()
-	if lit or isExplored(x, y):
+	if lit or explored:
 		if x == mob.x and y == mob.y:
 			color = _colorMob
 		elif (((x >= rect.position.x and x <= rect.size.x) and
@@ -692,9 +694,11 @@ func getMapColor(x: int, y: int) -> Color:
 		elif isDoor(x, y):
 			color = _colorDoor
 		elif isWall(x, y):
-			color = _colorWall
+			color = _colorWallLit if lit else _colorWall
 		elif isFloor(x, y):
 			color = _colorFloorLit if lit else _colorFloor
+		else:
+			color = _colorWallLit if lit else _colorWall
 	return color
 
 const _alphaPath := 0.333

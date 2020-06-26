@@ -20,12 +20,12 @@ func _updateMap() -> void:
 		size.x = _max.x
 		offset.x = at.x - size.x / 2.0
 		if offset.x < 0: offset.x = 0
-		if offset.x > original.x - size.x: offset.x = original.x - size.x
+		if offset.x > original.x - size.x + 2: offset.x = original.x - size.x + 2
 	if size.y > _max.y:
 		size.y = _max.y
 		offset.y = at.y - size.y / 2.0
 		if offset.y < 0: offset.y = 0
-		if offset.y > original.y - size.y: offset.y = original.y - size.y
+		if offset.y > original.y - size.y + 2: offset.y = original.y - size.y + 2
 	_image.create(int(size.x), int(size.y), false, Image.FORMAT_RGBA8)
 	_image.lock()
 	for y in range(size.y):
