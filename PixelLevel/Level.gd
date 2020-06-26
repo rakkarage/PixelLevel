@@ -62,11 +62,11 @@ func generated() -> void:
 	_oldSize = size
 	_drawEdge()
 	_mob.global_position = _world(startAt) + _back.cell_size / 2.0
-	_targetToMob()
 	_pathClear()
 	_addPoints()
 	_connectPoints()
 	_cameraCenter()
+	_targetToMob()
 	_dark()
 	_findTorches()
 	_lightUpdate(mobPosition(), _lightRadius)
