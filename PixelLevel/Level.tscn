@@ -119,9 +119,9 @@ render_target_update_mode = 3
 anchor_mode = 0
 
 [node name="MiniMap" type="TextureRect" parent="Fore/Viewport"]
-margin_left = 32.0
-margin_top = 32.0
-margin_right = 96.0
-margin_bottom = 96.0
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 80.0
+margin_bottom = 80.0
 rect_min_size = Vector2( 64, 64 )
 mouse_filter = 2

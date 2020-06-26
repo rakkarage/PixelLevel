@@ -52,6 +52,7 @@ signal updateMap
 signal generate
 
 func _ready() -> void:
+	_camera.zoom = Vector2(0.75, 0.75)
 	generated()
 	Utility.ok(connect("size_changed", self, "_onResize"))
 	Utility.ok(Gesture.connect("onZoom", self, "_zoomPinch"))
@@ -65,11 +66,11 @@ func generated() -> void:
 	_pathClear()
 	_addPoints()
 	_connectPoints()
-	_camera.zoom = Vector2(0.75, 0.75)
 	_cameraCenter()
 	_dark()
 	_findTorches()
 	_lightUpdate(mobPosition(), _lightRadius)
+	verifyCliff()
 
 func _process(delta) -> void:
 	_time += delta
@@ -98,7 +99,7 @@ func _move(mob: Node2D) -> void:
 			_pathClear()
 
 func _handleStair() -> void:
-	if isStairDownV(mobPosition()):
+	if _pathPoints.size() == 1 and isStairDownV(mobPosition()):
 		emit_signal("generate")
 
 func _handleDoor() -> bool:
@@ -430,8 +431,8 @@ func isBlocked(x: int, y: int) -> bool:
 	var s := _fore.get_cell_autotile_coord(x, y)
 	return w or (not f and not fr) or (d and s == Vector2(0, 0))
 
-const _torchRadius := 5
-const _lightRadius := 8
+const _torchRadius := 8
+const _lightRadius := 16
 const _lightMin := 0
 const _lightMax := 31
 const _lightExplored := 8
@@ -570,6 +571,15 @@ func setWallA(x: int, y: int, flipX := false, flipY := false, rot90 := false) ->
 
 func setWallB(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
 	_setRandomTile(_fore, x, y, Tile.Theme4Wall, flipX, flipY, rot90)
+
+func setCliff(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_back, x, y, Tile.Cliff, flipX, flipY, rot90)
+
+func isCliff(x: int, y: int) -> bool:
+	return _back.get_cell(x, y) == Tile.Cliff
+
+func clearBack(x: int, y: int) -> void:
+	_back.set_cell(x, y, -1)
 
 func setTorchA(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
 	_setRandomTile(_fore, x, y, Tile.Theme0Torch, flipX, flipY, rot90)
@@ -714,3 +724,9 @@ func mobPosition() -> Vector2:
 
 func targetPosition() -> Vector2:
 	return _map(_target.global_position)
+
+func verifyCliff() -> void:
+	for y in range(_rect.size.y):
+		for x in range(_rect.size.x):
+			if isCliff(x, y) and not isFloor(x, y - 1):
+				clearBack(x, y)

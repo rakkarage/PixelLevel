@@ -7,7 +7,7 @@ var _width := 0
 var _height := 0
 var _theme := 0
 var _cliff := 0.0
-var _torch := 0.1
+var _torch := 0.03
 var _wonky := false
 
 func _ready() -> void:
@@ -20,7 +20,7 @@ func _generate() -> void:
 	_width = d * 2 + Random.next(d)
 	_height = d * 2 + Random.next(d)
 	_theme = Random.next(2)
-	_cliff = Random.nextFloat() < 0.2
+	_cliff = Random.nextFloat() < 0.333
 	_wonky = Random.nextBool()
 	match Random.next(1):
 		0: _generateBasic()
@@ -43,14 +43,31 @@ func _fill(wall: bool, wallEdge: bool) -> void:
 				_setWall(x, y)
 			elif wallEdge:
 				if y == 0 or y == _height - 1 or x == 0 or x == _width - 1:
-					_setWall(x, y)
+					if _cliff:
+						_setCliff(x, y)
+					else:
+						_setWall(x, y)
 
 func _start() -> void:
-	var up = Vector2(Random.nextRange(1, _width - 1), Random.nextRange(0, _height - 1))
-	var down = Vector2(Random.nextRange(1, _width - 1), Random.nextRange(0, _height - 1))
+	var up = _findSpot()
+	var down = _findSpot()
 	_level.startAt = up
 	_setStairUpV(up)
 	_setStairDownV(down)
+
+func _findX() -> int:
+	return Random.nextRange(1, _width - 2)
+
+func _findY() -> int:
+	return Random.nextRange(1, _height - 2)
+
+func _findSpot() -> Vector2:
+	var x = _findX()
+	var y = _findY()
+	while _level.isWall(x, y) or not _level.isFloor(x, y):
+		x = _findX()
+		y = _findY()
+	return Vector2(x, y)
 
 func _generateBasic() -> void:
 	_fill(false, Random.nextBool())
@@ -112,7 +129,7 @@ func _setStairUpV(p: Vector2) -> void:
 	_setStairUp(int(p.x), int(p.y))
 
 func _setStairUp(x: int, y: int) -> void:
-	var flipX = Random.nextBool() if _wonky else false
+	var flipX = Random.nextBool()
 	if _theme == 0:
 		_level.setStairUpA(x, y, flipX)
 	else:
@@ -122,8 +139,11 @@ func _setStairDownV(p: Vector2) -> void:
 	_setStairDown(int(p.x), int(p.y))
 
 func _setStairDown(x: int, y: int) -> void:
-	var flipX = Random.nextBool() if _wonky else false
+	var flipX = Random.nextBool()
 	if _theme == 0:
 		_level.setStairDownA(x, y, flipX)
 	else:
 		_level.setStairDownB(x, y, flipX)
+
+func _setCliff(x: int, y: int) -> void:
+	_level.setCliff(x, y, Random.nextBool())

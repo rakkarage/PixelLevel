@@ -4,7 +4,7 @@ onready var _level : Level = $Level/Viewport
 onready var _textureRect : TextureRect = $Fore/Viewport/MiniMap
 onready var _imageTexture := ImageTexture.new()
 onready var _image := Image.new()
-const _max := Vector2(15, 15)
+const _max := Vector2(32, 32)
 
 func _ready() -> void:
 	_textureRect.texture = _imageTexture
@@ -34,7 +34,6 @@ func _updateMap() -> void:
 			var actualY = y + offset.y
 			_image.set_pixel(x, y, _level.getMapColor(actualX, actualY))
 	_image.unlock()
-	_image.expand_x2_hq2x()
 	_image.expand_x2_hq2x()
 	_image.expand_x2_hq2x()
 	_imageTexture.create_from_image(_image)
