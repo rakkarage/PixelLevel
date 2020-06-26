@@ -443,7 +443,7 @@ const _fovOctants = [
 	[0,  1,  1,  0,  0, -1, -1,  0],
 	[1,  0,  0,  1, -1,  0,  0, -1]
 ]
-var _torches := []
+var _torches := {}
 
 func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float, end: float, xx: int, xy: int, yx: int, yy: int) -> void:
 	if start < end: return
@@ -495,13 +495,17 @@ func _lightUpdate(at: Vector2, radius: int) -> void:
 	_lightTorches()
 
 func _findTorches() -> void:
+	_torches.clear()
 	var torch0 := _fore.get_used_cells_by_id(Tile.Theme0Torch)
 	var torch1 := _fore.get_used_cells_by_id(Tile.Theme4Torch)
-	_torches = torch0 + torch1
+	for p in torch0 + torch1:
+		_torches[p] = Random.next(_torchRadius)
 
 func _lightTorches() -> void:
 	for _repeat in range(2, 0, -1):
-		for p in _torches:
+		for p in _torches.keys():
+			_torches[p] = _torches[p] + Random.nextRange(-1, 1)
+			var current = _torches[p]
 			var north := Vector2(p.x, p.y + 1)
 			var east := Vector2(p.x + 1, p.y)
 			var south := Vector2(p.x, p.y - 1)
@@ -511,32 +515,32 @@ func _lightTorches() -> void:
 				var northBlocked = isBlockedV(north)
 				if not northBlocked and isLitV(north):
 					emitted = true
-					_lightEmit(north, Random.next(_torchRadius))
+					_lightEmit(north, current)
 				var eastBlocked = isBlockedV(east)
 				if not eastBlocked and isLitV(east):
 					emitted = true
-					_lightEmit(east, Random.next(_torchRadius))
+					_lightEmit(east, current)
 				var southBlocked = isBlockedV(south)
 				if not southBlocked and isLitV(south):
 					emitted = true
-					_lightEmit(south, Random.next(_torchRadius))
+					_lightEmit(south, current)
 				var westBlocked = isBlockedV(west)
 				if not westBlocked and isLitV(west):
 					emitted = true
-					_lightEmit(west, Random.next(_torchRadius))
+					_lightEmit(west, current)
 				if not emitted:
 					var northEast := Vector2(p.x + 1, p.y + 1)
 					var southEast := Vector2(p.x + 1, p.y - 1)
 					var southWest := Vector2(p.x - 1, p.y - 1)
 					var northWest := Vector2(p.x - 1, p.y + 1)
 					if northBlocked and eastBlocked and not isBlockedV(northEast) and isLitV(northEast):
-						_lightEmit(northEast, Random.next(_torchRadius))
+						_lightEmit(northEast, current)
 					if southBlocked and eastBlocked and not isBlockedV(southEast) and isLitV(southEast):
-						_lightEmit(southEast, Random.next(_torchRadius))
+						_lightEmit(southEast, current)
 					if southBlocked and westBlocked and not isBlockedV(southWest) and isLitV(southWest):
-						_lightEmit(southWest, Random.next(_torchRadius))
+						_lightEmit(southWest, current)
 					if northBlocked and westBlocked and not isBlockedV(northWest) and isLitV(northWest):
-						_lightEmit(northWest, Random.next(_torchRadius))
+						_lightEmit(northWest, current)
 
 func _dark() -> void:
 	for y in range(_rect.size.y):
