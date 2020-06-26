@@ -432,6 +432,7 @@ func isBlocked(x: int, y: int) -> bool:
 	return w or (not f and not fr) or (d and s == Vector2(0, 0))
 
 const _torchRadius := 8
+const _torchRadiusMax := _torchRadius * 2
 const _lightRadius := 16
 const _lightMin := 0
 const _lightMax := 31
@@ -502,45 +503,44 @@ func _findTorches() -> void:
 		_torches[p] = Random.next(_torchRadius)
 
 func _lightTorches() -> void:
-	for _repeat in range(2, 0, -1):
-		for p in _torches.keys():
-			_torches[p] = _torches[p] + Random.nextRange(-1, 1)
-			var current = _torches[p]
-			var north := Vector2(p.x, p.y + 1)
-			var east := Vector2(p.x + 1, p.y)
-			var south := Vector2(p.x, p.y - 1)
-			var west := Vector2(p.x - 1, p.y)
-			var emitted := false
-			if _insideMapV(p):
-				var northBlocked = isBlockedV(north)
-				if not northBlocked and isLitV(north):
-					emitted = true
-					_lightEmit(north, current)
-				var eastBlocked = isBlockedV(east)
-				if not eastBlocked and isLitV(east):
-					emitted = true
-					_lightEmit(east, current)
-				var southBlocked = isBlockedV(south)
-				if not southBlocked and isLitV(south):
-					emitted = true
-					_lightEmit(south, current)
-				var westBlocked = isBlockedV(west)
-				if not westBlocked and isLitV(west):
-					emitted = true
-					_lightEmit(west, current)
-				if not emitted:
-					var northEast := Vector2(p.x + 1, p.y + 1)
-					var southEast := Vector2(p.x + 1, p.y - 1)
-					var southWest := Vector2(p.x - 1, p.y - 1)
-					var northWest := Vector2(p.x - 1, p.y + 1)
-					if northBlocked and eastBlocked and not isBlockedV(northEast) and isLitV(northEast):
-						_lightEmit(northEast, current)
-					if southBlocked and eastBlocked and not isBlockedV(southEast) and isLitV(southEast):
-						_lightEmit(southEast, current)
-					if southBlocked and westBlocked and not isBlockedV(southWest) and isLitV(southWest):
-						_lightEmit(southWest, current)
-					if northBlocked and westBlocked and not isBlockedV(northWest) and isLitV(northWest):
-						_lightEmit(northWest, current)
+	for p in _torches.keys():
+		_torches[p] = clamp(_torches[p] + Random.nextRange(-1, 1), 0, _torchRadiusMax)
+		var current = _torches[p]
+		var north := Vector2(p.x, p.y + 1)
+		var east := Vector2(p.x + 1, p.y)
+		var south := Vector2(p.x, p.y - 1)
+		var west := Vector2(p.x - 1, p.y)
+		var emitted := false
+		if _insideMapV(p):
+			var northBlocked = isBlockedV(north)
+			if not northBlocked and isLitV(north):
+				emitted = true
+				_lightEmit(north, current)
+			var eastBlocked = isBlockedV(east)
+			if not eastBlocked and isLitV(east):
+				emitted = true
+				_lightEmit(east, current)
+			var southBlocked = isBlockedV(south)
+			if not southBlocked and isLitV(south):
+				emitted = true
+				_lightEmit(south, current)
+			var westBlocked = isBlockedV(west)
+			if not westBlocked and isLitV(west):
+				emitted = true
+				_lightEmit(west, current)
+			if not emitted:
+				var northEast := Vector2(p.x + 1, p.y + 1)
+				var southEast := Vector2(p.x + 1, p.y - 1)
+				var southWest := Vector2(p.x - 1, p.y - 1)
+				var northWest := Vector2(p.x - 1, p.y + 1)
+				if northBlocked and eastBlocked and not isBlockedV(northEast) and isLitV(northEast):
+					_lightEmit(northEast, current)
+				if southBlocked and eastBlocked and not isBlockedV(southEast) and isLitV(southEast):
+					_lightEmit(southEast, current)
+				if southBlocked and westBlocked and not isBlockedV(southWest) and isLitV(southWest):
+					_lightEmit(southWest, current)
+				if northBlocked and westBlocked and not isBlockedV(northWest) and isLitV(northWest):
+					_lightEmit(northWest, current)
 
 func _dark() -> void:
 	for y in range(_rect.size.y):
