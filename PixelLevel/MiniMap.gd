@@ -12,7 +12,7 @@ func _ready() -> void:
 	Utility.ok(_level.connect("updateMap", self, "_updateMap"))
 
 func _updateMap() -> void:
-	var at = _level.mobPosition()
+	var at := _level.mobPosition()
 	var original := _level.getMapRect().size
 	var size := original
 	var offset := Vector2.ZERO
@@ -30,8 +30,8 @@ func _updateMap() -> void:
 	_image.lock()
 	for y in range(size.y):
 		for x in range(size.x):
-			var actualX = x + offset.x
-			var actualY = y + offset.y
+			var actualX := int(x + offset.x)
+			var actualY := int(y + offset.y)
 			_image.set_pixel(x, y, _level.getMapColor(actualX, actualY))
 	_image.unlock()
 	_image.expand_x2_hq2x()
