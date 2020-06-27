@@ -178,9 +178,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.button_index == BUTTON_WHEEL_UP:
 			_zoomIn(event.global_position)
 			_cameraUpdate()
+			emit_signal("updateMap")
 		elif event.button_index == BUTTON_WHEEL_DOWN:
 			_zoomOut(event.global_position)
 			_cameraUpdate()
+			emit_signal("updateMap")
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
 			_cameraTo(_camera.global_position - event.relative * _camera.zoom)
@@ -679,7 +681,7 @@ const _colorFloor := Color(0.2, 0.2, 0.2, _alpha)
 const _colorCamera := Color(1, 0, 1, _alpha)
 
 func getMapColor(x: int, y: int) -> Color:
-	var rect = getCameraRect()
+	var camera = getCameraRect()
 	var color = Color(0.25, 0.25, 0.25, 0.25)
 	var lit = isLit(x, y)
 	var explored = isExplored(x, y)
@@ -691,10 +693,10 @@ func getMapColor(x: int, y: int) -> Color:
 			color = _colorStair
 		elif isDoor(x, y):
 			color = _colorDoor
-		elif (((x >= rect.position.x and x <= rect.size.x) and
-			(y == rect.position.y or y == rect.size.y)) or
-			((y >= rect.position.y and y <= rect.size.y) and
-			(x == rect.position.x or x == rect.size.x))):
+		elif (((x >= camera.position.x and x <= camera.size.x) and
+			(y == camera.position.y or y == camera.size.y)) or
+			((y >= camera.position.y and y <= camera.size.y) and
+			(x == camera.position.x or x == camera.size.x))):
 			color = _colorCamera
 		elif isWall(x, y):
 			color = _colorWallLit if lit else _colorWall
