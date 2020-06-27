@@ -32,20 +32,24 @@ const _zoomPinchIn := 0.02
 const _zoomPinchOut := 1.02
 const _pathScene := preload("res://PixelLevel/Path.tscn")
 var startAt := Vector2(4, 4)
+var theme = 0
+const themeCount = 4
+var themeCliff = 0
+const themeCliffCount = 2
 
 enum Tile {
-	BannerA,
-	BannerB,
-	Carpet,
-	Furnature,
-	Theme0Torch, Theme0Wall, Theme0Floor, Theme0FloorRoom, Theme0Stair, Theme0Door,
-	Theme4Torch, Theme4Wall, Theme4Floor, Theme4FloorRoom, Theme4Stair, Theme4Door,
-	WaterDeepBack, WaterDeepFore,
-	WaterShallowBack, WaterShallowFore,
-	Light,
+	Cliff0, Cliff1
+	Banner0, Banner1,
+	Furnature, Carpet,
 	EdgeInside,	EdgeInsideCorner,
 	EdgeOutsideCorner, EdgeOutside,
-	Cliff
+	Light,
+	Theme0Torch, Theme0Wall, Theme0Floor, Theme0FloorRoom, Theme0Stair, Theme0Door,
+	Theme1Torch, Theme1Wall, Theme1Floor, Theme1FloorRoom, Theme1Stair, Theme1Door,
+	Theme2Torch, Theme2Wall, Theme2Floor, Theme2FloorRoom, Theme2Stair, Theme2Door,
+	Theme3Torch, Theme3Wall, Theme3Floor, Theme3FloorRoom, Theme3Stair, Theme3Door,
+	WaterShallowBack, WaterShallowFore,
+	WaterDeepBack, WaterDeepFore
 }
 
 signal updateMap
@@ -432,12 +436,11 @@ func isBlocked(x: int, y: int) -> bool:
 	if not _insideMap(x, y): return true
 	var back := _back.get_cell(x, y)
 	var fore := _fore.get_cell(x, y)
-	var f: bool = back == Tile.Theme0Floor or back == Tile.Theme4Floor
-	var fr: bool = back == Tile.Theme0FloorRoom or back == Tile.Theme4FloorRoom
-	var w: bool = fore == Tile.Theme0Wall or fore == Tile.Theme4Wall or fore == Tile.Theme0Torch or fore == Tile.Theme4Torch
-	var d: bool = fore == Tile.Theme0Door or fore == Tile.Theme4Door
+	var f := isFloorId(back)
+	var w := isWallId(fore)
+	var d := isDoorId(fore)
 	var s := _fore.get_cell_autotile_coord(x, y)
-	return w or (not f and not fr) or (d and s == Vector2(0, 0))
+	return w or not f or (d and s == Vector2(0, 0))
 
 const _torchRadius := 8
 const _torchRadiusMax := _torchRadius * 2
@@ -506,8 +509,10 @@ func _lightUpdate(at: Vector2, radius: int) -> void:
 func _findTorches() -> void:
 	_torches.clear()
 	var torch0 := _fore.get_used_cells_by_id(Tile.Theme0Torch)
-	var torch1 := _fore.get_used_cells_by_id(Tile.Theme4Torch)
-	for p in torch0 + torch1:
+	var torch1 := _fore.get_used_cells_by_id(Tile.Theme1Torch)
+	var torch2 := _fore.get_used_cells_by_id(Tile.Theme2Torch)
+	var torch3 := _fore.get_used_cells_by_id(Tile.Theme3Torch)
+	for p in torch0 + torch1 + torch2 + torch3:
 		_torches[p] = Random.next(_torchRadius)
 
 func _lightTorches() -> void:
@@ -573,38 +578,58 @@ func isLitV(p: Vector2) -> bool:
 func isLit(x: int, y: int) -> bool:
 	return _getLight(x, y) > _lightExplored
 
+func isWallId(id: int) -> bool:
+	return (id == Tile.Theme0Wall or id == Tile.Theme0Torch or
+		id == Tile.Theme1Wall or id == Tile.Theme1Torch or
+		id == Tile.Theme2Wall or id == Tile.Theme2Torch or
+		id == Tile.Theme3Wall or id == Tile.Theme3Torch)
+
 func isWall(x: int, y: int) -> bool:
-	var tile = _fore.get_cell(x, y)
-	return (tile == Tile.Theme0Wall or tile == Tile.Theme4Wall or
-		tile == Tile.Theme0Torch or tile == Tile.Theme4Torch)
+	return isWallId(_fore.get_cell(x, y))
 
-func setWallA(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	_setRandomTile(_fore, x, y, Tile.Theme0Wall, flipX, flipY, rot90)
+func setWall(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	var id
+	match theme:
+		0: id = Tile.Theme0Wall
+		1: id = Tile.Theme1Wall
+		2: id = Tile.Theme2Wall
+		3: id = Tile.Theme3Wall
+	_setRandomTile(_fore, x, y, id, flipX, flipY, rot90)
 
-func setWallB(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	_setRandomTile(_fore, x, y, Tile.Theme4Wall, flipX, flipY, rot90)
-
-func setCliff(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	_setRandomTile(_back, x, y, Tile.Cliff, flipX, flipY, rot90)
+func isCliffId(id: int) -> bool:
+	return id == Tile.Cliff0 or id == Tile.Cliff1
 
 func isCliff(x: int, y: int) -> bool:
-	return _back.get_cell(x, y) == Tile.Cliff
+	return isCliffId(_back.get_cell(x, y))
+
+func setCliff(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	var id
+	match themeCliff:
+		0: id = Tile.Cliff0
+		1: id = Tile.Cliff1
+	_setRandomTile(_back, x, y, id, flipX, flipY, rot90)
 
 func clearBack(x: int, y: int) -> void:
-	_back.set_cell(x, y, -1)
+	_back.set_cell(x, y, TileMap.INVALID_CELL)
 
-func setTorchA(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	_setRandomTile(_fore, x, y, Tile.Theme0Torch, flipX, flipY, rot90)
+func setTorch(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	var id
+	match theme:
+		0: id = Tile.Theme0Torch
+		1: id = Tile.Theme1Torch
+		2: id = Tile.Theme2Torch
+		3: id = Tile.Theme3Torch
+	_setRandomTile(_fore, x, y, id, flipX, flipY, rot90)
 
-func setTorchB(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	_setRandomTile(_fore, x, y, Tile.Theme4Torch, flipX, flipY, rot90)
+func isStairId(id: int) -> bool:
+	return (id == Tile.Theme0Stair or id == Tile.Theme1Stair or
+		id == Tile.Theme2Stair or id == Tile.Theme3Stair)
 
 func isStairV(p: Vector2) -> bool:
 	return isStair(int(p.x), int(p.y))
 
 func isStair(x: int, y: int) -> bool:
-	var tile = _fore.get_cell(x, y)
-	return tile == Tile.Theme0Stair or tile == Tile.Theme4Stair
+	return isStairId(_fore.get_cell(x, y))
 
 func isStairUpV(p: Vector2) -> bool:
 	return isStairUp(int(p.x), int(p.y))
@@ -618,24 +643,33 @@ func isStairDownV(p: Vector2) -> bool:
 func isStairDown(x: int, y: int) -> bool:
 	return isStair(x, y) and _fore.get_cell_autotile_coord(x, y) == Vector2(0, 0)
 
-func setStairDownA(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	_fore.set_cell(x, y, Tile.Theme0Stair, flipX, flipY, rot90, Vector2(0, 0))
+func setStairDown(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	var id
+	match theme:
+		0: id = Tile.Theme0Stair
+		1: id = Tile.Theme1Stair
+		2: id = Tile.Theme2Stair
+		3: id = Tile.Theme3Stair
+	_fore.set_cell(x, y, id, flipX, flipY, rot90, Vector2(0, 0))
 
-func setStairDownB(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	_fore.set_cell(x, y, Tile.Theme4Stair, flipX, flipY, rot90, Vector2(0, 0))
+func setStairUp(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	var id
+	match theme:
+		0: id = Tile.Theme0Stair
+		1: id = Tile.Theme1Stair
+		2: id = Tile.Theme2Stair
+		3: id = Tile.Theme3Stair
+	_fore.set_cell(x, y, id, flipX, flipY, rot90, Vector2(1, 0))
 
-func setStairUpA(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	_fore.set_cell(x, y, Tile.Theme0Stair, flipX, flipY, rot90, Vector2(1, 0))
-
-func setStairUpB(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	_fore.set_cell(x, y, Tile.Theme4Stair, flipX, flipY, rot90, Vector2(1, 0))
+func isDoorId(id: int) -> bool:
+	return (id == Tile.Theme0Door or id == Tile.Theme1Door or
+		id == Tile.Theme2Door or id == Tile.Theme3Door)
 
 func isDoorV(p: Vector2) -> bool:
 	return isDoor(int(p.x), int(p.y))
 
 func isDoor(x: int, y: int) -> bool:
-	var tile = _fore.get_cell(x, y)
-	return tile == Tile.Theme0Door or tile == Tile.Theme4Door
+	return isDoorId(_fore.get_cell(x, y))
 
 func isDoorShutV(p: Vector2) -> bool:
 	return isDoorShut(int(p.x), int(p.y))
@@ -643,16 +677,23 @@ func isDoorShutV(p: Vector2) -> bool:
 func isDoorShut(x: int, y: int) -> bool:
 	return isDoor(x, y) and _fore.get_cell_autotile_coord(x, y) == Vector2.ZERO
 
+func isFloorId(id: int) -> bool:
+	return (id == Tile.Theme0Floor or id == Tile.Theme0FloorRoom or
+		id == Tile.Theme1Floor or id == Tile.Theme1FloorRoom or
+		id == Tile.Theme2Floor or id == Tile.Theme2FloorRoom or
+		id == Tile.Theme3Floor or id == Tile.Theme3FloorRoom)
+
 func isFloor(x: int, y: int) -> bool:
-	var tile = _back.get_cell(x, y)
-	return (tile == Tile.Theme0Floor or tile == Tile.Theme0FloorRoom or
-		tile == Tile.Theme4Floor or tile == Tile.Theme4FloorRoom)
+	return isFloorId(_back.get_cell(x, y))
 
-func setFloorA(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	_setRandomTile(_back, x, y, Tile.Theme0Floor, flipX, flipY, rot90)
-
-func setFloorB(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	_setRandomTile(_back, x, y, Tile.Theme4Floor, flipX, flipY, rot90)
+func setFloor(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	var id
+	match theme:
+		0: id = Tile.Theme0Floor
+		1: id = Tile.Theme1Floor
+		2: id = Tile.Theme2Floor
+		3: id = Tile.Theme3Floor
+	_setRandomTile(_back, x, y, id, flipX, flipY, rot90)
 
 func _getLight(x: int, y: int) -> int:
 	return int(_light.get_cell_autotile_coord(x, y).x)

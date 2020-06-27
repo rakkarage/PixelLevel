@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=2]
+
+[ext_resource path="res://PixelLevel/Sprite/Tile/Theme.png" type="Texture" id=1]
+[ext_resource path="res://PixelLevel/Animation/Animation.shader" type="Shader" id=2]
+
+[resource]
+shader = ExtResource( 2 )
+shader_param/count = 4.0
+shader_param/duration = 0.125
+shader_param/width = 0.0344828
+shader_param/frames = ExtResource( 1 )

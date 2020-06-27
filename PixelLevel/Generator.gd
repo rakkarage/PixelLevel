@@ -22,6 +22,8 @@ func _generate() -> void:
 	_theme = Random.next(2)
 	_cliff = Random.nextFloat() < 0.333
 	_wonky = Random.nextBool()
+	_level.theme = Random.next(_level.themeCount)
+	_level.themeCliff = Random.next(_level.themeCliffCount)
 	_level.rect = Rect2(_level.rect.position, Vector2(_width, _height))
 	match Random.next(1):
 		0: _generateBasic()
@@ -107,44 +109,27 @@ func _setFloor(x: int, y: int) -> void:
 	var flipX := Random.nextBool() if _wonky else false
 	var flipY := Random.nextBool() if _wonky else false
 	var rot90 := Random.nextBool() if _wonky else false
-	if _theme == 0:
-		_level.setFloorA(x, y, flipX, flipY, rot90)
-	else:
-		_level.setFloorB(x, y, flipX, flipY, rot90)
+	_level.setFloor(x, y, flipX, flipY, rot90)
 
 func _setWall(x: int, y: int) -> void:
 	var flipX := Random.nextBool() if _wonky else false
 	var torch := Random.nextFloat() < _torch
-	if _theme == 0:
-		if torch:
-			_level.setTorchA(x, y, flipX)
-		else:
-			_level.setWallA(x, y, flipX)
+	if torch:
+		_level.setTorch(x, y, flipX)
 	else:
-		if torch:
-			_level.setTorchB(x, y, flipX)
-		else:
-			_level.setWallB(x, y, flipX)
+		_level.setWall(x, y, flipX)
 
 func _setStairUpV(p: Vector2) -> void:
 	_setStairUp(int(p.x), int(p.y))
 
 func _setStairUp(x: int, y: int) -> void:
-	var flipX := Random.nextBool()
-	if _theme == 0:
-		_level.setStairUpA(x, y, flipX)
-	else:
-		_level.setStairUpB(x, y, flipX)
+	_level.setStairUp(x, y, Random.nextBool())
 
 func _setStairDownV(p: Vector2) -> void:
 	_setStairDown(int(p.x), int(p.y))
 
 func _setStairDown(x: int, y: int) -> void:
-	var flipX := Random.nextBool()
-	if _theme == 0:
-		_level.setStairDownA(x, y, flipX)
-	else:
-		_level.setStairDownB(x, y, flipX)
+	_level.setStairDown(x, y, Random.nextBool())
 
 func _setCliff(x: int, y: int) -> void:
 	_level.setCliff(x, y, Random.nextBool())
