@@ -54,6 +54,7 @@ signal generate
 func _ready() -> void:
 	_camera.zoom = Vector2(0.75, 0.75)
 	generated()
+	_cameraCenter()
 	Utility.ok(connect("size_changed", self, "_onResize"))
 	Utility.ok(Gesture.connect("onZoom", self, "_zoomPinch"))
 
@@ -65,11 +66,13 @@ func generated() -> void:
 	_pathClear()
 	_addPoints()
 	_connectPoints()
-	_cameraCenter()
 	_targetToMob()
+	_checkCenter()
 	_dark()
 	_findTorches()
 	_lightUpdate(mobPosition(), _lightRadius)
+	_cameraUpdate()
+	emit_signal("updateMap")
 	verifyCliff()
 
 func _process(delta) -> void:
@@ -178,7 +181,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.button_index == BUTTON_WHEEL_DOWN:
 			_zoomOut(event.global_position)
 			_cameraUpdate()
-		emit_signal("updateMap")
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
 			_cameraTo(_camera.global_position - event.relative * _camera.zoom)
@@ -333,7 +335,7 @@ func _pathClear():
 	_target.modulate = Color.transparent
 	for path in _path.get_children():
 		path.free()
-	for i in _pathPoints.size():
+	for i in range(_pathPoints.size() - 1, 0, -1):
 		_pathPoints.remove(i)
 
 func _targetSnapClosest(tile: Vector2) -> Vector2:
@@ -688,15 +690,15 @@ func getMapColor(x: int, y: int) -> Color:
 	if lit or explored:
 		if x == mob.x and y == mob.y:
 			color = _colorMob
+		elif isStair(x, y):
+			color = _colorStair
+		elif isDoor(x, y):
+			color = _colorDoor
 		elif (((x >= rect.position.x and x <= rect.size.x) and
 			(y == rect.position.y or y == rect.size.y)) or
 			((y >= rect.position.y and y <= rect.size.y) and
 			(x == rect.position.x or x == rect.size.x))):
 			color = _colorCamera
-		elif isStair(x, y):
-			color = _colorStair
-		elif isDoor(x, y):
-			color = _colorDoor
 		elif isWall(x, y):
 			color = _colorWallLit if lit else _colorWall
 		elif isFloor(x, y):
