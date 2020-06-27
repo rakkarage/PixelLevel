@@ -14,7 +14,7 @@ onready var _target:     Node2D = $Target
 onready var _path:       Node2D = $Path
 onready var _astar:             = AStar2D.new()
 onready var _tileSet:           = _back.tile_set
-var _rect := Rect2()
+var rect := Rect2()
 var _oldSize = Vector2.ZERO
 var _pathPoints := PoolVector2Array()
 var _dragLeft := false
@@ -52,6 +52,7 @@ signal updateMap
 signal generate
 
 func _ready() -> void:
+	rect = _back.get_used_rect()
 	_camera.zoom = Vector2(0.75, 0.75)
 	generated()
 	_cameraCenter()
@@ -59,7 +60,6 @@ func _ready() -> void:
 	Utility.ok(Gesture.connect("onZoom", self, "_zoomPinch"))
 
 func generated() -> void:
-	_rect = getMapRect()
 	_oldSize = size
 	_drawEdge()
 	_mob.global_position = _world(startAt) + _back.cell_size / 2.0
@@ -136,30 +136,30 @@ func _step(mob: Node2D, direction: Vector2) -> void:
 	mob.global_position += _world(direction)
 
 func _tileIndex(p: Vector2) -> int:
-	return int(p.y * _rect.size.x + p.x)
+	return int(p.y * rect.size.x + p.x)
 
 func _tilePosition(index: int) -> Vector2:
-	var y := index / _rect.size.x
-	var x := index - _rect.size.x * y
+	var y := index / rect.size.x
+	var x := index - rect.size.x * y
 	return Vector2(x, y)
 
 func _addPoints() -> void:
 	_astar.clear()
-	for y in range(_rect.size.y):
-		for x in range(_rect.size.x):
+	for y in range(rect.size.y):
+		for x in range(rect.size.x):
 			var p := Vector2(x, y)
 			_astar.add_point(_tileIndex(p), p)
 
 func _connectPoints() -> void:
-	for y in range(_rect.size.y):
-		for x in range(_rect.size.x):
+	for y in range(rect.size.y):
+		for x in range(rect.size.x):
 			_connect(Vector2(x, y))
 
 func _connect(p: Vector2) -> void:
 	for yy in range(p.y - 1, p.y + 2):
 		for xx in range(p.x - 1, p.x + 2):
 			var pp := Vector2(xx, yy)
-			if (not is_equal_approx(yy, p.y) or not is_equal_approx(xx, p.x)) and _rect.has_point(pp):
+			if (not is_equal_approx(yy, p.y) or not is_equal_approx(xx, p.x)) and rect.has_point(pp):
 				if isDoor(xx, yy) or not isBlocked(xx, yy):
 					_astar.connect_points(_tileIndex(p), _tileIndex(pp), false)
 					if isDoorShut(xx, yy):
@@ -199,7 +199,7 @@ func _map(position: Vector2) -> Vector2:
 	return _back.world_to_map(position)
 
 func _mapSize() -> Vector2:
-	return _rect.size * _back.cell_size
+	return rect.size * _back.cell_size
 
 func mapBounds() -> Rect2:
 	return Rect2(-_camera.global_position, _mapSize())
@@ -362,10 +362,10 @@ func _onResize() -> void:
 	_cameraUpdate()
 
 func _drawEdge() -> void:
-	var minY := _rect.position.y - 1
-	var maxY := _rect.size.y
-	var minX := _rect.position.x - 1
-	var maxX := _rect.size.x
+	var minY := rect.position.y - 1
+	var maxY := rect.size.y
+	var minX := rect.position.x - 1
+	var maxX := rect.size.x
 	for y in range(minY, maxY + 1):
 		for x in range(minX, maxX + 1):
 			if x == minX or x == maxX or y == minY or y == maxY:
@@ -549,13 +549,13 @@ func _lightTorches() -> void:
 					_lightEmit(northWest, current)
 
 func _dark() -> void:
-	for y in range(_rect.size.y):
-		for x in range(_rect.size.x):
+	for y in range(rect.size.y):
+		for x in range(rect.size.x):
 			_setLight(x, y, _lightMin, false)
 
 func _darken() -> void:
-	for y in range(_rect.size.y):
-		for x in range(_rect.size.x):
+	for y in range(rect.size.y):
+		for x in range(rect.size.x):
 			if _getLight(x, y) != _lightMin:
 				_setLight(x, y, _lightExplored, false)
 
@@ -660,13 +660,10 @@ func _setLight(x: int, y: int, light: int, test: bool) -> void:
 		_light.set_cell(x, y, Tile.Light, false, false, false, Vector2(light, 0))
 
 func _insideMapV(p: Vector2) -> bool:
-	return _rect.has_point(p)
+	return rect.has_point(p)
 
 func _insideMap(x: int, y: int) -> bool:
-	return x >= _rect.position.x and y >= _rect.position.y and x < _rect.size.x and y < _rect.size.y
-
-func getMapRect() -> Rect2:
-	return _back.get_used_rect()
+	return x >= rect.position.x and y >= rect.position.y and x < rect.size.x and y < rect.size.y
 
 func getCameraRect() -> Rect2:
 	return Rect2(_map(_camera.global_position), _map(_camera.global_position + _worldSize()))
@@ -740,7 +737,7 @@ func targetPosition() -> Vector2:
 	return _map(_target.global_position)
 
 func verifyCliff() -> void:
-	for y in range(_rect.size.y):
-		for x in range(_rect.size.x):
+	for y in range(rect.size.y):
+		for x in range(rect.size.x):
 			if isCliff(x, y) and not isFloor(x, y - 1):
 				clearBack(x, y)

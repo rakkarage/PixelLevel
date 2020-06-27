@@ -13,19 +13,19 @@ func _ready() -> void:
 
 func _updateMap() -> void:
 	var at := _level.mobPosition()
-	var original := _level.getMapRect().size
+	var original := _level.rect.size
 	var size := original
 	var offset := Vector2.ZERO
 	if size.x > _max.x:
 		size.x = _max.x
 		offset.x = at.x - size.x / 2.0
 		if offset.x < 0: offset.x = 0
-		if offset.x > original.x - size.x + 2: offset.x = original.x - size.x + 2
+		if offset.x > original.x - size.x + 1: offset.x = original.x - size.x + 1
 	if size.y > _max.y:
 		size.y = _max.y
 		offset.y = at.y - size.y / 2.0
 		if offset.y < 0: offset.y = 0
-		if offset.y > original.y - size.y + 2: offset.y = original.y - size.y + 2
+		if offset.y > original.y - size.y + 1: offset.y = original.y - size.y + 1
 	_image.create(int(size.x), int(size.y), false, Image.FORMAT_RGBA8)
 	_image.lock()
 	for y in range(size.y):

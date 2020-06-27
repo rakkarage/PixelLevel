@@ -22,6 +22,7 @@ func _generate() -> void:
 	_theme = Random.next(2)
 	_cliff = Random.nextFloat() < 0.333
 	_wonky = Random.nextBool()
+	_level.rect = Rect2(_level.rect.position, Vector2(_width, _height))
 	match Random.next(1):
 		0: _generateBasic()
 		# 1: _generateDungeon()
