@@ -9,6 +9,7 @@ var _theme := 0
 var _cliff := 0.0
 var _torch := 0.03
 var _wonky := false
+var _room := false
 
 func _ready() -> void:
 	Utility.ok(_level.connect("generate", self, "_generate"))
@@ -22,6 +23,7 @@ func _generate() -> void:
 	_theme = Random.next(2)
 	_cliff = Random.nextFloat() < 0.333
 	_wonky = Random.nextBool()
+	_room = Random.nextBool()
 	_level.theme = Random.next(_level.themeCount)
 	_level.themeCliff = Random.next(_level.themeCliffCount)
 	_level.rect = Rect2(_level.rect.position, Vector2(_width, _height))
@@ -41,7 +43,10 @@ func _clear() -> void:
 func _fill(wall: bool, wallEdge: bool) -> void:
 	for y in _height:
 		for x in _width:
-			_setFloor(x, y)
+			if _room:
+				_setFloorRoom(x, y)
+			else:
+				_setFloor(x, y)
 			if wall:
 				_setWall(x, y)
 			elif wallEdge:
@@ -110,6 +115,12 @@ func _setFloor(x: int, y: int) -> void:
 	var flipY := Random.nextBool() if _wonky else false
 	var rot90 := Random.nextBool() if _wonky else false
 	_level.setFloor(x, y, flipX, flipY, rot90)
+
+func _setFloorRoom(x: int, y: int) -> void:
+	var flipX := Random.nextBool() if _wonky else false
+	var flipY := Random.nextBool() if _wonky else false
+	var rot90 := Random.nextBool() if _wonky else false
+	_level.setFloorRoom(x, y, flipX, flipY, rot90)
 
 func _setWall(x: int, y: int) -> void:
 	var flipX := Random.nextBool() if _wonky else false

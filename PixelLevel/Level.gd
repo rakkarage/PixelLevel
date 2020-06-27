@@ -695,6 +695,15 @@ func setFloor(x: int, y: int, flipX := false, flipY := false, rot90 := false) ->
 		3: id = Tile.Theme3Floor
 	_setRandomTile(_back, x, y, id, flipX, flipY, rot90)
 
+func setFloorRoom(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	var id
+	match theme:
+		0: id = Tile.Theme0FloorRoom
+		1: id = Tile.Theme1FloorRoom
+		2: id = Tile.Theme2FloorRoom
+		3: id = Tile.Theme3FloorRoom
+	_setRandomTile(_back, x, y, id, flipX, flipY, rot90)
+
 func _getLight(x: int, y: int) -> int:
 	return int(_light.get_cell_autotile_coord(x, y).x)
 
