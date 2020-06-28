@@ -44,10 +44,10 @@ enum Tile {
 	EdgeInside,	EdgeInsideCorner,
 	EdgeOutsideCorner, EdgeOutside,
 	Light,
-	Theme0Torch, Theme0Wall, Theme0Floor, Theme0FloorRoom, Theme0Stair, Theme0Door,
-	Theme1Torch, Theme1Wall, Theme1Floor, Theme1FloorRoom, Theme1Stair, Theme1Door,
-	Theme2Torch, Theme2Wall, Theme2Floor, Theme2FloorRoom, Theme2Stair, Theme2Door,
-	Theme3Torch, Theme3Wall, Theme3Floor, Theme3FloorRoom, Theme3Stair, Theme3Door,
+	Theme0Torch, Theme0WallPlain, Theme0Wall, Theme0Floor, Theme0FloorRoom, Theme0Stair, Theme0Door,
+	Theme1Torch, Theme1WallPlain, Theme1Wall, Theme1Floor, Theme1FloorRoom, Theme1Stair, Theme1Door,
+	Theme2Torch, Theme2WallPlain, Theme2Wall, Theme2Floor, Theme2FloorRoom, Theme2Stair, Theme2Door,
+	Theme3Torch, Theme3WallPlain, Theme3Wall, Theme3Floor, Theme3FloorRoom, Theme3Stair, Theme3Door,
 	WaterShallowBack, WaterShallowFore,
 	WaterDeepBack, WaterDeepFore
 }
@@ -135,8 +135,7 @@ func _face(mob: Node2D, direction: Vector2) -> void:
 		mob.scale = Vector2(1, 1)
 
 func _step(mob: Node2D, direction: Vector2) -> void:
-	# TODO: play walk animation which has step sounds!!!!!!!!!!!!!!!!!!!
-	# interpolate global_position
+	# TODO: play walk animation and interpolate global_position
 	mob.global_position += _world(direction)
 
 func _tileIndex(p: Vector2) -> int:
@@ -579,13 +578,25 @@ func isLit(x: int, y: int) -> bool:
 	return _getLight(x, y) > _lightExplored
 
 func isWallId(id: int) -> bool:
-	return (id == Tile.Theme0Wall or id == Tile.Theme0Torch or
-		id == Tile.Theme1Wall or id == Tile.Theme1Torch or
-		id == Tile.Theme2Wall or id == Tile.Theme2Torch or
-		id == Tile.Theme3Wall or id == Tile.Theme3Torch)
+	return (id == Tile.Theme0WallPlain or id == Tile.Theme0Wall or id == Tile.Theme0Torch or
+		id == Tile.Theme1WallPlain or id == Tile.Theme1Wall or id == Tile.Theme1Torch or
+		id == Tile.Theme2WallPlain or id == Tile.Theme2Wall or id == Tile.Theme2Torch or
+		id == Tile.Theme3WallPlain or id == Tile.Theme3Wall or id == Tile.Theme3Torch)
+
+func isWallV(p: Vector2) -> bool:
+	return isWall(int(p.x), int(p.y))
 
 func isWall(x: int, y: int) -> bool:
 	return isWallId(_fore.get_cell(x, y))
+
+func setWallPlain(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	var id
+	match theme:
+		0: id = Tile.Theme0WallPlain
+		1: id = Tile.Theme1WallPlain
+		2: id = Tile.Theme2WallPlain
+		3: id = Tile.Theme3WallPlain
+	_setRandomTile(_fore, x, y, id, flipX, flipY, rot90)
 
 func setWall(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
 	var id
@@ -609,8 +620,17 @@ func setCliff(x: int, y: int, flipX := false, flipY := false, rot90 := false) ->
 		1: id = Tile.Cliff1
 	_setRandomTile(_back, x, y, id, flipX, flipY, rot90)
 
+func clearBackV(p: Vector2) -> void:
+	clearBack(int(p.x), int(p.y))
+
 func clearBack(x: int, y: int) -> void:
 	_back.set_cell(x, y, TileMap.INVALID_CELL)
+
+func clearForeV(p: Vector2) -> void:
+	clearFore(int(p.x), int(p.y))
+
+func clearFore(x: int, y: int) -> void:
+	_fore.set_cell(x, y, TileMap.INVALID_CELL)
 
 func setTorch(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
 	var id
