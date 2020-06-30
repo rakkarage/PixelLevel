@@ -16,8 +16,8 @@ func _ready() -> void:
 	Utility.ok(_level.connect("generate", self, "_generate"))
 
 var _generator = {
-	funcref(self, "_generateBasic"): 10,
-	funcref(self, "_generateSingleRoom"): 1,
+	# funcref(self, "_generateBasic"): 10,
+	# funcref(self, "_generateSingleRoom"): 1,
 	funcref(self, "_generateDungeon"): 1,
 	# funcref(self, "_generateCrossroad"): 1,
 	# funcref(self, "_generateMaze"): 1,
@@ -28,21 +28,21 @@ var _generator = {
 }
 
 func _getGenerator() -> FuncRef:
-	return _getPriorityFunction(_generator)
+	return _getPriority(_generator) as FuncRef
 
-func _getPriorityFunction(d: Dictionary) -> FuncRef:
-	var generator
+func _getPriority(d: Dictionary) -> Object:
+	var o
 	var total := 0
 	for value in d.values():
 		total += value
 	var selected := Random.next(total)
 	var current := 0
 	for key in d.keys():
-		generator = key
+		o = key
 		current += d[key]
-		if current >= selected:
-			return generator
-	return generator
+		if current > selected:
+			return o
+	return o
 
 func _generate() -> void:
 	_clear()
@@ -114,6 +114,9 @@ func _generateSingleRoom() -> void:
 	_level.generated()
 
 func _generateDungeon() -> void:
+	var width = _maxRoomWidth * (1 + Random.next(9))
+	var height = _maxRoomHeight * (1 + Random.next(9))
+	_setLevelRect(width, height)
 	_fill(true, false)
 	var rooms := _placeRooms()
 	_placeTunnels(rooms)
@@ -127,13 +130,6 @@ func _findRoom(rect: Rect2) -> Rect2:
 	var ey := Random.nextRange(py + 4, int(rect.end.y - py))
 	return Rect2(Vector2(px, py), Vector2(ex, ey))
 
-const _maxRoomWidth := 7
-const _maxRoomHeight := 7
-const _minRoomWidth := 3
-const _minRoomHeight := 3
-const _minRoomRatio := 0.3
-const _maxRoomRatio := 0.7
-
 func _drawRoom(rect: Rect2) -> void:
 	for y in range(rect.position.y, rect.end.y):
 		for x in range(rect.position.x, rect.end.x):
@@ -143,62 +139,80 @@ func _drawRoom(rect: Rect2) -> void:
 			else:
 				_level.clearFore(x, y)
 
+const _maxRoomWidth := 7
+const _maxRoomHeight := 7
+const _minRoomWidth := 4
+const _minRoomHeight := 4
+
 func _placeRooms() -> Array:
-	var across := int((_width - 4) / float(_maxRoomWidth))
-	var down := int((_height - 4) / float(_maxRoomHeight))
+	var across := int((_width) / float(_maxRoomWidth))
+	var down := int((_height) / float(_maxRoomHeight))
 	var maxRooms := across * down
 	var used := []
 	for _i in range(maxRooms):
 		used.append(false)
-	var actual := 1 + Random.nextRange(int(maxRooms * _minRoomRatio), int(maxRooms * _maxRoomRatio))
+	var actual := 1 + Random.next(maxRooms - 1)
 	var rooms := []
+	var fill = Random.nextBool()
 	var roomIndex := 0
-	for _i in range(actual):
+	for i in range(actual):
 		var usedRoom := true;
 		while usedRoom:
 			roomIndex = Random.next(maxRooms)
 			usedRoom = used[roomIndex]
 		used[roomIndex] = true
-		var width := Random.nextRange(_minRoomWidth, _maxRoomWidth)
-		var height := Random.nextRange(_minRoomHeight, _maxRoomHeight)
-		var x := (roomIndex % across) * _maxRoomWidth
-		x += Random.next(_maxRoomWidth - width + 2)
-		var y := int((roomIndex / float(across)) * _maxRoomHeight)
-		y += Random.next(_maxRoomHeight - height + 2)
-		var room := Rect2(x, y, width, height)
+		var w := _maxRoomWidth if fill else Random.nextRange(_minRoomWidth, _maxRoomWidth)
+		var h := _maxRoomHeight if fill else Random.nextRange(_minRoomHeight, _maxRoomHeight)
+		var p = _position(i, across) * Vector2(_maxRoomWidth, _maxRoomHeight)
+		if not fill:
+			p.x += _maxRoomWidth - w / 2.0
+			p.y += _maxRoomHeight - h / 2.0
+		var room := Rect2(p.x, p.y, w, h)
 		_drawRoom(room)
 		rooms.append(room)
 	return rooms
 
+func _index(p: Vector2, w: int) -> int:
+	return int(p.y * w + p.x)
+
+func _position(i: int, w: int) -> Vector2:
+	var y := int(i / float(w))
+	var x := int(i - w * y)
+	return Vector2(x, y)
+
+# FIXME: Warrior needs food, badly!
 func _placeTunnels(_rooms: Array) -> void:
-	pass
-	# var deltaXSign := 0
-	# var deltaYSign := 0
-	# var current : Rect2
-	# var delta := Vector2.ZERO
-	# for room in rooms:
-	# 	var currentCenter := current.position + current.size / 2.0
-	# 	var roomCenter : Vector2 = room.position + room.size / 2.0
-	# 	delta = roomCenter - currentCenter
-	# 	if is_equal_approx(delta.x, 0):	deltaXSign = 1
-	# 	else: deltaXSign = int(delta.x / abs(delta.x))
-	# 	if is_equal_approx(delta.y, 0): deltaYSign = 1
-	# 	else: deltaYSign = int(delta.y / abs(delta.y))
-	# 	while not (is_equal_approx(delta.x, 0) and is_equal_approx(delta.y, 0)):
-	# 		var movingX := Random.nextBool()
-	# 		if movingX and is_equal_approx(delta.x, 0): movingX = false
-	# 		if not movingX and is_equal_approx(delta.y, 0): movingX = true
-	# 		var carveLength := Random.nextRange(1, int(abs(delta.x if movingX else delta.y)));
-	# 		for _i in range(carveLength):
-	# 			if movingX: currentCenter.x += deltaXSign * 1
-	# 			else: currentCenter.y += deltaYSign * 1
-	# 			if not is_equal_approx(currentCenter.x, 1) and not is_equal_approx(currentCenter.y, 1):
-	# 				if _level.isWallV(currentCenter):
-	# 					# setFloorV(p)
-	# 					_level.clearForeV(currentCenter)
-	# 		if movingX: delta.x -= deltaXSign * carveLength
-	# 		else: delta.y -= deltaYSign * carveLength
-	# 	current = room;
+	var deltaXSign := 0
+	var deltaYSign := 0
+	var current : Rect2
+	var delta := Vector2.ZERO
+	for room in _rooms:
+		if current.size == Vector2.ZERO:
+			current = room
+			continue
+		var currentCenter := current.position + current.size / 2.0
+		var roomCenter : Vector2 = room.position + room.size / 2.0
+		delta = roomCenter - currentCenter
+		print(delta)
+		if is_equal_approx(delta.x, 0):	deltaXSign = 1
+		else: deltaXSign = int(delta.x / abs(delta.x))
+		if is_equal_approx(delta.y, 0): deltaYSign = 1
+		else: deltaYSign = int(delta.y / abs(delta.y))
+		while not (is_equal_approx(delta.x, 0) and is_equal_approx(delta.y, 0)):
+			var movingX := Random.nextBool()
+			if movingX and is_equal_approx(delta.x, 0): movingX = false
+			if not movingX and is_equal_approx(delta.y, 0): movingX = true
+			var carveLength := Random.nextRange(1, int(abs(delta.x if movingX else delta.y)));
+			for _i in range(carveLength):
+				if movingX: currentCenter.x += deltaXSign * 1
+				else: currentCenter.y += deltaYSign * 1
+				if not is_equal_approx(currentCenter.x, 1) and not is_equal_approx(currentCenter.y, 1):
+					if _level.isWallV(currentCenter):
+						# setFloorV(p)
+						_level.clearForeV(currentCenter)
+			if movingX: delta.x -= deltaXSign * carveLength
+			else: delta.y -= deltaYSign * carveLength
+		current = room;
 
 func _generateCrossroad() -> void:
 	_fill(false, true)
@@ -264,3 +278,164 @@ func _setStairDown(x: int, y: int) -> void:
 
 func _setCliff(x: int, y: int) -> void:
 	_level.setCliff(x, y, Random.nextBool())
+
+func _generateStream() -> void:
+	pass
+
+func _fillStream() -> void:
+	pass
+
+# - (void)generateStream:(BOOL)water grassy:(BOOL)grassy horizontal:(BOOL)horizontal
+# {
+# 	NSUInteger roughness = Random(100);
+# 	NSUInteger windyness = Random(100);
+# 	NSInteger width = (water ? (3 + Random(5)) : (5 + Random(5)));
+# 	NSUInteger halfWidth = width / 2;
+# 	CGPoint start;
+# 	CGRect rect;
+# 	BOOL opposite = RandomBool();
+# 	if (horizontal)
+# 	{
+# 		NSUInteger tempY = 2 + halfWidth + Random(_height - 4 - halfWidth);
+# 		start = ccp(opposite ? _width - 3 : 2, tempY);
+# 		rect = CGRectMake(start.x, tempY - halfWidth, 1, width);
+# 	}
+# 	else
+# 	{
+# 		NSUInteger tempX = 2 + halfWidth + Random(_width - 4 - halfWidth);
+# 		start = ccp(tempX, opposite ? _height - 3 : 2);
+# 		rect = CGRectMake(tempX - halfWidth, start.y, width, 1);
+# 	}
+# 	[self fillStream:rect water:water grassy:grassy];
+
+# 	while (opposite ? (horizontal ? (start.x > 2) : (start.y > 2)) : (horizontal ? (start.x < _width - 3) : (start.y < _height - 3)))
+# 	{
+# 		if (horizontal)
+# 			start.x += (opposite ? -1 : 1);
+# 		else
+# 			start.y += (opposite ? -1 : 1);
+# 		NSUInteger rough = Random(100);
+# 		if (rough <= roughness)
+# 		{
+# 			NSInteger add = -2 + Random(5); // -2 to 2
+# 			width += add;
+# 			if (horizontal)
+# 			{
+# 				if (width > _height)
+# 					width = _height;
+# 			}
+# 			else
+# 			{
+# 				if (width > _width)
+# 					width = _width;
+# 			}
+# 			if (width < 3)
+# 				width = 3;
+# 			halfWidth = width / 2;
+# 		}
+# 		NSUInteger windy = Random(100);
+# 		if (windy <= windyness)
+# 		{
+# 			NSInteger add = -1 + Random(3);
+# 			if (horizontal)
+# 			{
+# 				start.y += add;
+# 				if (start.y > _height - 2)
+# 					start.y = _height - 2;
+# 				else if (start.y < 2)
+# 					start.y = 2;
+# 			}
+# 			else
+# 			{
+# 				start.x += add;
+# 				if (start.x > _width - 2)
+# 					start.x = _width - 2;
+# 				else if (start.x < 2)
+# 					start.x = 2;
+# 			}
+# 		}
+# 		if (horizontal)
+# 		{
+# 			rect = CGRectMake(start.x, start.y - halfWidth, 1, width);
+# 		}
+# 		else
+# 		{
+# 			rect = CGRectMake(start.x - halfWidth, start.y, width, 1);
+# 		}
+# 		[self fillStream:rect water:water grassy:grassy];
+# 	}
+# }
+
+# - (void)fillStream:(CGRect)r water:(BOOL)water grassy:(BOOL)grassy
+# {
+# 	BOOL leaveNone = RandomBool();
+# 	BOOL leavePercent = Random(33);
+# 	BOOL leaveSomeTreeStumps = RandomBool();
+# 	BOOL leaveSomeTreeStumpsPercent = Random(75);
+# 	BOOL horizontal = (r.size.width == 1);
+# 	NSInteger deepWidth = (horizontal ? (r.size.height / 3.0f) : (r.size.width / 3.0f));
+# 	CGFloat n = r.origin.y - (r.size.height - 1.0f);
+# 	CGFloat s = r.origin.y;
+# 	CGFloat w = r.origin.x;
+# 	CGFloat e = r.origin.x + (r.size.width - 1.0f);
+# 	for (NSInteger y = n; y <= s; y++)
+# 	{
+# 		for (NSInteger x = w; x <= e; x++)
+# 		{
+# 			BOOL deep = NO;
+# 			CGPoint p = ccp(x, y);
+# 			if (horizontal)
+# 			{
+# 				if ((p.y >= n + deepWidth) && (p.y < n + r.size.height - deepWidth))
+# 					deep = YES;
+# 			}
+# 			else
+# 			{
+# 				if ((p.x >= w + deepWidth) && (p.x < w + r.size.width - deepWidth))
+# 					deep = YES;
+# 			}
+# 			if ([self pointInMapEdge:p])
+# 			{
+# 				if (water)
+# 				{
+# 					BOOL keepWall = NO;
+# 					BOOL floor = [self isFloor:p];
+# 					if (!floor)
+# 					{
+# 						if ((Random(100) > leavePercent) || leaveNone)
+# 							[self setRubble:p];
+# 						else
+# 							keepWall = YES;
+# 					}
+# 					else if ([self isDoor:p])
+# 						[self setBrokeDoor:p];
+# 					if (!keepWall)
+# 					{
+# 						BOOL alreadyDeep = [self isWaterDeep:p];
+# 						if (deep || alreadyDeep)
+# 						{
+# 							if (!alreadyDeep)
+# 								[self setWaterDeep:p];
+# 						}
+# 						else
+# 							[self setWaterShallow:p];
+# 					}
+# 					if ([self isTree:p])
+# 					{
+# 						if (leaveSomeTreeStumps && (Random(100) > leaveSomeTreeStumpsPercent))
+# 							[self cutTree:p];
+# 						else
+# 							[self clearTree:p];
+# 					}
+# 				}
+# 				else
+# 				{
+# 					if (grassy)
+# 						[self setOldGrass:p];
+# 					else
+# 						[self setFloor:p];
+# 				}
+# 			}
+# 		}
+# 	}
+# }
