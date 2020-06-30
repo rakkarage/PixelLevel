@@ -142,8 +142,8 @@ func _tileIndex(p: Vector2) -> int:
 	return int(p.y * rect.size.x + p.x)
 
 func _tilePosition(index: int) -> Vector2:
-	var y := index / rect.size.x
-	var x := index - rect.size.x * y
+	var y := int(index / rect.size.x)
+	var x := int(index - rect.size.x * y)
 	return Vector2(x, y)
 
 func _addPoints() -> void:
@@ -424,7 +424,7 @@ func _randomTile(id: int) -> Vector2:
 		for x in range(s.x):
 			p = Vector2(x, y)
 			current += _tileSet.autotile_get_subtile_priority(id, p)
-			if current >= selected:
+			if current > selected:
 				return p
 	return p
 
