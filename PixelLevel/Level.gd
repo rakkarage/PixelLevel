@@ -369,9 +369,9 @@ func _onResize() -> void:
 
 func _drawEdge() -> void:
 	var minY := rect.position.y - 1
-	var maxY := rect.size.y
+	var maxY := rect.end.y
 	var minX := rect.position.x - 1
-	var maxX := rect.size.x
+	var maxX := rect.end.x
 	for y in range(minY, maxY + 1):
 		for x in range(minX, maxX + 1):
 			if x == minX or x == maxX or y == minY or y == maxY:

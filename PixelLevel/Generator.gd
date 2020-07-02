@@ -340,19 +340,19 @@ func _generateStream(horizontal: bool) -> void:
 
 func _fillStream(rect: Rect2) -> void:
 	var horizontal = rect.size.x == 1
-	var deepWodth = rect.size.x / 3.0 if horizontal else rect.size.y / 3.0
+	var deepWidth = int(rect.size.y / 3.0 if horizontal else rect.size.x / 3.0)
 	for y in range(rect.position.y, rect.end.y):
 		for x in range(rect.position.x, rect.end.x):
 			var deep = false
 			if horizontal:
-				if y >= deepWodth && y < rect.end.y - deepWodth:
+				if y >= rect.position.y + deepWidth && y < rect.end.y - deepWidth:
 					deep = true
 			else:
-				if x >= deepWodth && x < rect.end.x - deepWodth:
+				if x >= rect.position.x + deepWidth && x < rect.end.x - deepWidth:
 					deep = true
 			if _level.insideMap(x, y):
 				var keep = false
-				if not _level.isWall(x, y):
+				if _level.isWall(x, y):
 					if Random.nextFloat() < 0.333:
 						_level.setRubble(x, y)
 					else:
@@ -364,5 +364,5 @@ func _fillStream(rect: Rect2) -> void:
 					if deep or alreadyDeep:
 						if not alreadyDeep:
 							_level.setWaterDeep(x, y)
-						else:
-							_level.setWaterShallow(x, y)
+					else:
+						_level.setWaterShallow(x, y)
