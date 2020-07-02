@@ -49,7 +49,8 @@ enum Tile {
 	Theme2Torch, Theme2WallPlain, Theme2Wall, Theme2Floor, Theme2FloorRoom, Theme2Stair, Theme2Door,
 	Theme3Torch, Theme3WallPlain, Theme3Wall, Theme3Floor, Theme3FloorRoom, Theme3Stair, Theme3Door,
 	WaterShallowBack, WaterShallowFore,
-	WaterDeepBack, WaterDeepFore
+	WaterDeepBack, WaterDeepFore,
+	Rubble
 }
 
 signal updateMap
@@ -432,7 +433,7 @@ func isBlockedV(p: Vector2) -> bool:
 	return isBlocked(int(p.x), int(p.y))
 
 func isBlocked(x: int, y: int) -> bool:
-	if not _insideMap(x, y): return true
+	if not insideMap(x, y): return true
 	var back := _back.get_cell(x, y)
 	var fore := _fore.get_cell(x, y)
 	var f := isFloorId(back)
@@ -468,7 +469,7 @@ func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float,
 			dx += 1
 			var x := int(at.x + dx * xx + dy * xy)
 			var y := int(at.y + dx * yx + dy * yy)
-			if not _insideMap(x, y): continue
+			if not insideMap(x, y): continue
 			var lSlope := (dx - 0.5) / (dy + 0.5)
 			var rSlope := (dx + 0.5) / (dy - 0.5)
 			if start < rSlope: continue
@@ -523,7 +524,7 @@ func _lightTorches() -> void:
 		var south := Vector2(p.x, p.y - 1)
 		var west := Vector2(p.x - 1, p.y)
 		var emitted := false
-		if _insideMapV(p):
+		if insideMapV(p):
 			var northBlocked = isBlockedV(north)
 			if not northBlocked and isLitV(north):
 				emitted = true
@@ -606,6 +607,9 @@ func setWall(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> 
 		2: id = Tile.Theme2Wall
 		3: id = Tile.Theme3Wall
 	_setRandomTile(_fore, x, y, id, flipX, flipY, rot90)
+
+func setRubble(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_fore, x, y, Tile.Rubble, flipX, flipY, rot90)
 
 func isCliffId(id: int) -> bool:
 	return id == Tile.Cliff0 or id == Tile.Cliff1
@@ -731,10 +735,10 @@ func _setLight(x: int, y: int, light: int, test: bool) -> void:
 	if not test or light > _getLight(x, y):
 		_light.set_cell(x, y, Tile.Light, false, false, false, Vector2(light, 0))
 
-func _insideMapV(p: Vector2) -> bool:
+func insideMapV(p: Vector2) -> bool:
 	return rect.has_point(p)
 
-func _insideMap(x: int, y: int) -> bool:
+func insideMap(x: int, y: int) -> bool:
 	return x >= rect.position.x and y >= rect.position.y and x < rect.size.x and y < rect.size.y
 
 func getCameraRect() -> Rect2:

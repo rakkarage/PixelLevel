@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=12 format=2]
+[gd_resource type="TileSet" load_steps=13 format=2]
 
 [ext_resource path="res://PixelLevel/Sprite/Tile/Light.png" type="Texture" id=1]
 [ext_resource path="res://PixelLevel/Sprite/Tile/Doodad.png" type="Texture" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://PixelLevel/Animation/Banner1.tres" type="Material" id=8]
 [ext_resource path="res://PixelLevel/Animation/WaterBack.tres" type="Material" id=9]
 [ext_resource path="res://PixelLevel/Animation/WaterFore.tres" type="Material" id=10]
+[ext_resource path="res://PixelLevel/Sprite/Tile/Rubble.png" type="Texture" id=11]
 [ext_resource path="res://PixelLevel/Sprite/Tile/Theme.png" type="Texture" id=22]
 
 [resource]
@@ -926,3 +927,24 @@
 42/shape_one_way_margin = 0.0
 42/shapes = [  ]
 42/z_index = 0
+43/name = "Rubble"
+43/texture = ExtResource( 11 )
+43/tex_offset = Vector2( 0, 0 )
+43/modulate = Color( 1, 1, 1, 1 )
+43/region = Rect2( 0, 0, 96, 16 )
+43/tile_mode = 2
+43/autotile/icon_coordinate = Vector2( 0, 0 )
+43/autotile/tile_size = Vector2( 16, 16 )
+43/autotile/spacing = 0
+43/autotile/occluder_map = [  ]
+43/autotile/navpoly_map = [  ]
+43/autotile/priority_map = [  ]
+43/autotile/z_index_map = [  ]
+43/occluder_offset = Vector2( 0, 0 )
+43/navigation_offset = Vector2( 0, 0 )
+43/shape_offset = Vector2( 0, 0 )
+43/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+43/shape_one_way = false
+43/shape_one_way_margin = 0.0
+43/shapes = [  ]
+43/z_index = 0

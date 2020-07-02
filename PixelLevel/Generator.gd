@@ -279,163 +279,86 @@ func _setStairDown(x: int, y: int) -> void:
 func _setCliff(x: int, y: int) -> void:
 	_level.setCliff(x, y, Random.nextBool())
 
-func _generateStream() -> void:
-	pass
+func _generateStream(horizontal: bool) -> void:
+	var roughness = Random.nextFloat()
+	var windyness = Random.nextFloat()
+	var width = 3 + Random.next(5)
+	var half = int(width / 2.0)
+	var start
+	var rect
+	var opposite = Random.nextBool()
+	if horizontal:
+		var tempY = 2 + half + Random.next(_height - 4 - half)
+		start = Vector2(_width - 3 if opposite else 2, tempY)
+		rect = Rect2(start.x, tempY - half, 1, width)
+	else:
+		var tempX = 2 + half + Random.next(_width - 4 - half)
+		start = Vector2(tempX, _height - 3 if opposite else 2)
+		rect = Rect2(tempX - half, start.y, width, 1)
+	_fillStream(rect)
+	while ((start.x > 2.0 if horizontal else start.y > 2.0) if opposite else
+		(start.x < _width - 3 if horizontal else start.y < _height - 3)):
+		if horizontal:
+			start.x += -1 if opposite else 1
+		else:
+			start.y += -1 if opposite else 1
+		if Random.nextFloat() < roughness:
+			var add = -2 + Random.next(5)
+			width += add
+			if horizontal:
+				if width > _height:
+					width = _height
+			else:
+				if width > _width:
+					width = _width
+			if width < 3:
+				width = 3
+			half = int(width / 2.0)
+		if Random.nextFloat() < windyness:
+			var add = -1 + Random.next(3)
+			if horizontal:
+				start.y += add
+				if start.y > _height - 2:
+					start.y = _height - 1
+				elif start.y < 2:
+					start.y = 2
+			else:
+				start.x += add
+				if start.x > _width - 2:
+					start.x = _width - 2
+				elif start.x < 2:
+					start.x = 2
+		if horizontal:
+			rect = Rect2(start.x, start.y - half, 1, width)
+		else:
+			rect = Rect2(start.x - half, start.y, width, 1)
+		_fillStream(rect)
 
-func _fillStream() -> void:
-	pass
-
-# - (void)generateStream:(BOOL)water grassy:(BOOL)grassy horizontal:(BOOL)horizontal
-# {
-# 	NSUInteger roughness = Random(100);
-# 	NSUInteger windyness = Random(100);
-# 	NSInteger width = (water ? (3 + Random(5)) : (5 + Random(5)));
-# 	NSUInteger halfWidth = width / 2;
-# 	CGPoint start;
-# 	CGRect rect;
-# 	BOOL opposite = RandomBool();
-# 	if (horizontal)
-# 	{
-# 		NSUInteger tempY = 2 + halfWidth + Random(_height - 4 - halfWidth);
-# 		start = ccp(opposite ? _width - 3 : 2, tempY);
-# 		rect = CGRectMake(start.x, tempY - halfWidth, 1, width);
-# 	}
-# 	else
-# 	{
-# 		NSUInteger tempX = 2 + halfWidth + Random(_width - 4 - halfWidth);
-# 		start = ccp(tempX, opposite ? _height - 3 : 2);
-# 		rect = CGRectMake(tempX - halfWidth, start.y, width, 1);
-# 	}
-# 	[self fillStream:rect water:water grassy:grassy];
-
-# 	while (opposite ? (horizontal ? (start.x > 2) : (start.y > 2)) : (horizontal ? (start.x < _width - 3) : (start.y < _height - 3)))
-# 	{
-# 		if (horizontal)
-# 			start.x += (opposite ? -1 : 1);
-# 		else
-# 			start.y += (opposite ? -1 : 1);
-# 		NSUInteger rough = Random(100);
-# 		if (rough <= roughness)
-# 		{
-# 			NSInteger add = -2 + Random(5); // -2 to 2
-# 			width += add;
-# 			if (horizontal)
-# 			{
-# 				if (width > _height)
-# 					width = _height;
-# 			}
-# 			else
-# 			{
-# 				if (width > _width)
-# 					width = _width;
-# 			}
-# 			if (width < 3)
-# 				width = 3;
-# 			halfWidth = width / 2;
-# 		}
-# 		NSUInteger windy = Random(100);
-# 		if (windy <= windyness)
-# 		{
-# 			NSInteger add = -1 + Random(3);
-# 			if (horizontal)
-# 			{
-# 				start.y += add;
-# 				if (start.y > _height - 2)
-# 					start.y = _height - 2;
-# 				else if (start.y < 2)
-# 					start.y = 2;
-# 			}
-# 			else
-# 			{
-# 				start.x += add;
-# 				if (start.x > _width - 2)
-# 					start.x = _width - 2;
-# 				else if (start.x < 2)
-# 					start.x = 2;
-# 			}
-# 		}
-# 		if (horizontal)
-# 		{
-# 			rect = CGRectMake(start.x, start.y - halfWidth, 1, width);
-# 		}
-# 		else
-# 		{
-# 			rect = CGRectMake(start.x - halfWidth, start.y, width, 1);
-# 		}
-# 		[self fillStream:rect water:water grassy:grassy];
-# 	}
-# }
-
-# - (void)fillStream:(CGRect)r water:(BOOL)water grassy:(BOOL)grassy
-# {
-# 	BOOL leaveNone = RandomBool();
-# 	BOOL leavePercent = Random(33);
-# 	BOOL leaveSomeTreeStumps = RandomBool();
-# 	BOOL leaveSomeTreeStumpsPercent = Random(75);
-# 	BOOL horizontal = (r.size.width == 1);
-# 	NSInteger deepWidth = (horizontal ? (r.size.height / 3.0f) : (r.size.width / 3.0f));
-# 	CGFloat n = r.origin.y - (r.size.height - 1.0f);
-# 	CGFloat s = r.origin.y;
-# 	CGFloat w = r.origin.x;
-# 	CGFloat e = r.origin.x + (r.size.width - 1.0f);
-# 	for (NSInteger y = n; y <= s; y++)
-# 	{
-# 		for (NSInteger x = w; x <= e; x++)
-# 		{
-# 			BOOL deep = NO;
-# 			CGPoint p = ccp(x, y);
-# 			if (horizontal)
-# 			{
-# 				if ((p.y >= n + deepWidth) && (p.y < n + r.size.height - deepWidth))
-# 					deep = YES;
-# 			}
-# 			else
-# 			{
-# 				if ((p.x >= w + deepWidth) && (p.x < w + r.size.width - deepWidth))
-# 					deep = YES;
-# 			}
-# 			if ([self pointInMapEdge:p])
-# 			{
-# 				if (water)
-# 				{
-# 					BOOL keepWall = NO;
-# 					BOOL floor = [self isFloor:p];
-# 					if (!floor)
-# 					{
-# 						if ((Random(100) > leavePercent) || leaveNone)
-# 							[self setRubble:p];
-# 						else
-# 							keepWall = YES;
-# 					}
-# 					else if ([self isDoor:p])
-# 						[self setBrokeDoor:p];
-# 					if (!keepWall)
-# 					{
-# 						BOOL alreadyDeep = [self isWaterDeep:p];
-# 						if (deep || alreadyDeep)
-# 						{
-# 							if (!alreadyDeep)
-# 								[self setWaterDeep:p];
-# 						}
-# 						else
-# 							[self setWaterShallow:p];
-# 					}
-# 					if ([self isTree:p])
-# 					{
-# 						if (leaveSomeTreeStumps && (Random(100) > leaveSomeTreeStumpsPercent))
-# 							[self cutTree:p];
-# 						else
-# 							[self clearTree:p];
-# 					}
-# 				}
-# 				else
-# 				{
-# 					if (grassy)
-# 						[self setOldGrass:p];
-# 					else
-# 						[self setFloor:p];
-# 				}
-# 			}
-# 		}
-# 	}
-# }
+func _fillStream(rect: Rect2) -> void:
+	var horizontal = rect.size.x == 1
+	var deepWodth = rect.size.x / 3.0 if horizontal else rect.size.y / 3.0
+	for y in range(rect.position.y, rect.end.y):
+		for x in range(rect.position.x, rect.end.x):
+			var deep = false
+			if horizontal:
+				if y >= deepWodth && y < rect.end.y - deepWodth:
+					deep = true
+			else:
+				if x >= deepWodth && x < rect.end.x - deepWodth:
+					deep = true
+			if _level.insideMap(x, y):
+				var keep = false
+				if not _level.isWall(x, y):
+					if Random.nextFloat() < 0.333:
+						_level.setRubble(x, y)
+					else:
+						keep = true
+				elif _level.isDoor(x, y):
+					_level.setDoorBroke(x, y)
+				if not keep:
+					var alreadyDeep = _level.isWaterDeep(x, y)
+					if deep or alreadyDeep:
+						if not alreadyDeep:
+							_level.setWaterDeep(x, y)
+						else:
+							_level.setWaterShallow(x, y)
