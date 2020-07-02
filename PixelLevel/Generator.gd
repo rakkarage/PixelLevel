@@ -6,7 +6,8 @@ var _depth := 0
 var _width := 0
 var _height := 0
 var _theme := 0
-var _cliff := 0.0
+var _cliff := false
+var _stream := false
 const _torch := 0.03
 const _fancy := 0.03
 var _wonky := false
@@ -16,9 +17,9 @@ func _ready() -> void:
 	Utility.ok(_level.connect("generate", self, "_generate"))
 
 var _generator = {
-	# funcref(self, "_generateBasic"): 10,
+	funcref(self, "_generateBasic"): 10,
 	# funcref(self, "_generateSingleRoom"): 1,
-	funcref(self, "_generateDungeon"): 1,
+	# funcref(self, "_generateDungeon"): 1,
 	# funcref(self, "_generateCrossroad"): 1,
 	# funcref(self, "_generateMaze"): 1,
 	# funcref(self, "_generateBuilding"): 1,
@@ -51,6 +52,7 @@ func _generate() -> void:
 	_setLevelRect(d * 2 + Random.next(d), d * 2 + Random.next(d))
 	_theme = Random.next(2)
 	_cliff = Random.nextFloat() < 0.333
+	_stream = Random.nextFloat() < 0.333
 	_wonky = Random.nextBool()
 	_room = Random.nextBool()
 	_level.theme = Random.next(_level.themeCount)
@@ -103,6 +105,8 @@ func _findSpot() -> Vector2:
 
 func _generateBasic() -> void:
 	_fill(false, Random.nextBool())
+	# if _stream:
+	_generateStream(Random.nextBool())
 	_start()
 	_level.generated()
 

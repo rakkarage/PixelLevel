@@ -728,6 +728,32 @@ func setFloorRoom(x: int, y: int, flipX := false, flipY := false, rot90 := false
 		3: id = Tile.Theme3FloorRoom
 	_setRandomTile(_back, x, y, id, flipX, flipY, rot90)
 
+func isWaterId(id: int) -> bool:
+	return isWaterShallowId(id) or isWaterDeepId(id)
+
+func isWaterDeepId(id: int) -> bool:
+	return (id == Tile.WaterDeepBack or id == Tile.WaterDeepFore)
+
+func isWaterShallowId(id: int) -> bool:
+	return (id == Tile.WaterShallowBack or id == Tile.WaterShallowFore)
+
+func isWater(x: int, y: int) -> bool:
+	return isWaterId(_waterBack.get_cell(x, y))
+
+func isWaterShallow(x: int, y: int) -> bool:
+	return isWaterShallowId(_waterBack.get_cell(x, y))
+
+func isWaterDeep(x: int, y: int) -> bool:
+	return isWaterDeepId(_waterBack.get_cell(x, y))
+
+func setWaterShallow(x: int, y: int) -> void:
+	_waterBack.set_cell(x, y, Tile.WaterShallowBack, false, false, false, Vector2.ZERO)
+	_waterFore.set_cell(x, y, Tile.WaterShallowFore, false, false, false, Vector2.ZERO)
+
+func setWaterDeep(x: int, y: int) -> void:
+	_waterBack.set_cell(x, y, Tile.WaterDeepBack, false, false, false, Vector2.ZERO)
+	_waterFore.set_cell(x, y, Tile.WaterDeepFore, false, false, false, Vector2.ZERO)
+
 func _getLight(x: int, y: int) -> int:
 	return int(_light.get_cell_autotile_coord(x, y).x)
 
