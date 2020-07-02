@@ -17,10 +17,10 @@ func _ready() -> void:
 	Utility.ok(_level.connect("generate", self, "_generate"))
 
 var _generator = {
-	funcref(self, "_generateBasic"): 10,
+	# funcref(self, "_generateBasic"): 10,
 	# funcref(self, "_generateSingleRoom"): 1,
 	# funcref(self, "_generateDungeon"): 1,
-	# funcref(self, "_generateCrossroad"): 1,
+	funcref(self, "_generateCrossroad"): 1,
 	# funcref(self, "_generateMaze"): 1,
 	# funcref(self, "_generateBuilding"): 1,
 	# funcref(self, "_generateCave"): 1,
@@ -105,8 +105,8 @@ func _findSpot() -> Vector2:
 
 func _generateBasic() -> void:
 	_fill(false, Random.nextBool())
-	# if _stream:
-	_generateStream(Random.nextBool())
+	if _stream:
+		_generateStreams()
 	_start()
 	_level.generated()
 
@@ -114,6 +114,8 @@ func _generateSingleRoom() -> void:
 	_setLevelRect(10, 10)
 	_fill(true, false)
 	_drawRoom(_findRoom(_level.rect))
+	if _stream:
+		_generateStreams()
 	_start()
 	_level.generated()
 
@@ -124,6 +126,8 @@ func _generateDungeon() -> void:
 	_fill(true, false)
 	var rooms := _placeRooms()
 	_placeTunnels(rooms)
+	if _stream:
+		_generateStreams()
 	_start()
 	_level.generated()
 
@@ -220,26 +224,44 @@ func _placeTunnels(_rooms: Array) -> void:
 
 func _generateCrossroad() -> void:
 	_fill(false, true)
+	if _stream:
+		_generateStreams()
+	_start()
 	_level.generated()
 
 func _generateMaze() -> void:
 	_fill(false, true)
+	if _stream:
+		_generateStreams()
+	_start()
 	_level.generated()
 
 func _generateBuilding() -> void:
 	_fill(false, true)
+	if _stream:
+		_generateStreams()
+	_start()
 	_level.generated()
 
 func _generateCave() -> void:
 	_fill(false, true)
+	if _stream:
+		_generateStreams()
+	_start()
 	_level.generated()
 
 func _generateTemplate() -> void:
 	_fill(false, true)
+	if _stream:
+		_generateStreams()
+	_start()
 	_level.generated()
 
 func _generateTemplateCastle() -> void:
 	_fill(false, true)
+	if _stream:
+		_generateStreams()
+	_start()
 	_level.generated()
 
 func _setFloor(x: int, y: int) -> void:
@@ -283,6 +305,13 @@ func _setStairDown(x: int, y: int) -> void:
 func _setCliff(x: int, y: int) -> void:
 	_level.setCliff(x, y, Random.nextBool())
 
+func _generateStreams() -> void:
+	if Random.nextFloat() < 0.333:
+		_generateStream(true)
+		_generateStream(false)
+	else:
+		_generateStream(Random.nextBool())
+
 func _generateStream(horizontal: bool) -> void:
 	var roughness = Random.nextFloat()
 	var windyness = Random.nextFloat()
@@ -293,15 +322,15 @@ func _generateStream(horizontal: bool) -> void:
 	var opposite = Random.nextBool()
 	if horizontal:
 		var tempY = 2 + half + Random.next(_height - 4 - half)
-		start = Vector2(_width - 3 if opposite else 2, tempY)
+		start = Vector2(_width - 1 if opposite else 0, tempY)
 		rect = Rect2(start.x, tempY - half, 1, width)
 	else:
 		var tempX = 2 + half + Random.next(_width - 4 - half)
-		start = Vector2(tempX, _height - 3 if opposite else 2)
+		start = Vector2(tempX, _height - 1 if opposite else 0)
 		rect = Rect2(tempX - half, start.y, width, 1)
 	_fillStream(rect)
-	while ((start.x > 2.0 if horizontal else start.y > 2.0) if opposite else
-		(start.x < _width - 3 if horizontal else start.y < _height - 3)):
+	while ((start.x > 0 if horizontal else start.y > 0) if opposite else
+		(start.x < _width - 1 if horizontal else start.y < _height - 1)):
 		if horizontal:
 			start.x += -1 if opposite else 1
 		else:
@@ -350,7 +379,7 @@ func _fillStream(rect: Rect2) -> void:
 			else:
 				if x >= rect.position.x + deepWidth && x < rect.end.x - deepWidth:
 					deep = true
-			if _level.insideMap(x, y):
+			if _level.insideMap(x, y) and _level.isFloor(x, y):
 				var keep = false
 				if _level.isWall(x, y):
 					if Random.nextFloat() < 0.333:
