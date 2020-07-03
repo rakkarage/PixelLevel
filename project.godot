@@ -9,6 +9,11 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Object",
+"class": "DisjointSet",
+"language": "GDScript",
+"path": "res://PixelLevel/DisjointSet.gd"
+}, {
 "base": "Viewport",
 "class": "Level",
 "language": "GDScript",
@@ -20,6 +25,7 @@ _global_script_classes=[ {
 "path": "res://Intro/Utility.gd"
 } ]
 _global_script_class_icons={
+"DisjointSet": "",
 "Level": "",
 "Utility": ""
 }
