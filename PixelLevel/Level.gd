@@ -22,8 +22,8 @@ var _turn := false
 var _time := 0.0
 var _turnTotal := 0
 var _timeTotal := 0.0
-const _turnTime := 0.22
-const _duration := 0.4444
+const _turnTime := 0.1
+const _duration := 0.333
 const _zoomMin := Vector2(0.2, 0.2)
 const _zoomMax := Vector2(1.0, 1.0)
 const _zoomFactorIn := 0.90
@@ -667,6 +667,9 @@ func isStairDownV(p: Vector2) -> bool:
 func isStairDown(x: int, y: int) -> bool:
 	return isStair(x, y) and _fore.get_cell_autotile_coord(x, y) == Vector2(0, 0)
 
+func setStairDownV(p: Vector2) -> void:
+	setStairDown(int(p.x), int(p.y))
+
 func setStairDown(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
 	var id
 	match theme:
@@ -675,6 +678,9 @@ func setStairDown(x: int, y: int, flipX := false, flipY := false, rot90 := false
 		2: id = Tile.Theme2Stair
 		3: id = Tile.Theme3Stair
 	_fore.set_cell(x, y, id, flipX, flipY, rot90, Vector2(0, 0))
+
+func setStairUpV(p: Vector2) -> void:
+	setStairUp(int(p.x), int(p.y))
 
 func setStairUp(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
 	var id
@@ -710,6 +716,9 @@ func isFloorId(id: int) -> bool:
 func isFloor(x: int, y: int) -> bool:
 	return isFloorId(_back.get_cell(x, y))
 
+func setFloorV(p: Vector2) -> void:
+	setFloor(int(p.x), int(p.y))
+
 func setFloor(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
 	var id
 	match theme:
@@ -718,6 +727,9 @@ func setFloor(x: int, y: int, flipX := false, flipY := false, rot90 := false) ->
 		2: id = Tile.Theme2Floor
 		3: id = Tile.Theme3Floor
 	_setRandomTile(_back, x, y, id, flipX, flipY, rot90)
+
+func setFloorRoomV(p: Vector2) -> void:
+	setFloorRoom(int(p.x), int(p.y))
 
 func setFloorRoom(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
 	var id

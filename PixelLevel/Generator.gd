@@ -20,11 +20,11 @@ var _generator = {
 	# funcref(self, "_generateBasic"): 10,
 	# funcref(self, "_generateSingleRoom"): 1,
 	# funcref(self, "_generateDungeon"): 1,
-	funcref(self, "_generateCrossroad"): 1,
-	# funcref(self, "_generateMaze"): 1,
+	funcref(self, "_generateMaze"): 1,
 	# funcref(self, "_generateBuilding"): 1,
 	# funcref(self, "_generateCave"): 1,
 	# funcref(self, "_generateTemplate"): 1,
+	# funcref(self, "_generateTemplateCrossroad"): 1,
 	# funcref(self, "_generateTemplateCastle"): 1
 }
 
@@ -83,7 +83,7 @@ func _fill(wall: bool, wallEdge: bool) -> void:
 					else:
 						_setWall(x, y)
 
-func _start() -> void:
+func _stairs() -> void:
 	var up := _findSpot()
 	_level.startAt = up
 	_setStairUpV(up)
@@ -107,7 +107,7 @@ func _generateBasic() -> void:
 	_fill(false, Random.nextBool())
 	if _stream:
 		_generateStreams()
-	_start()
+	_stairs()
 	_level.generated()
 
 func _generateSingleRoom() -> void:
@@ -116,7 +116,7 @@ func _generateSingleRoom() -> void:
 	_drawRoom(_findRoom(_level.rect))
 	if _stream:
 		_generateStreams()
-	_start()
+	_stairs()
 	_level.generated()
 
 func _generateDungeon() -> void:
@@ -128,7 +128,7 @@ func _generateDungeon() -> void:
 	_placeTunnels(rooms)
 	if _stream:
 		_generateStreams()
-	_start()
+	_stairs()
 	_level.generated()
 
 func _findRoom(rect: Rect2) -> Rect2:
@@ -161,17 +161,17 @@ func _placeRooms() -> Array:
 		used.append(false)
 	var actual := 1 + Random.next(maxRooms - 1)
 	var rooms := []
-	var fill = Random.nextBool()
+	var fill := Random.nextBool()
 	var roomIndex := 0
 	for i in range(actual):
-		var usedRoom := true;
+		var usedRoom := true
 		while usedRoom:
 			roomIndex = Random.next(maxRooms)
 			usedRoom = used[roomIndex]
 		used[roomIndex] = true
 		var w := _maxRoomWidth if fill else Random.nextRange(_minRoomWidth, _maxRoomWidth)
 		var h := _maxRoomHeight if fill else Random.nextRange(_minRoomHeight, _maxRoomHeight)
-		var p = _position(i, across) * Vector2(_maxRoomWidth, _maxRoomHeight)
+		var p := _position(i, across) * Vector2(_maxRoomWidth, _maxRoomHeight)
 		if not fill:
 			p.x += _maxRoomWidth - w / 2.0
 			p.y += _maxRoomHeight - h / 2.0
@@ -201,7 +201,6 @@ func _placeTunnels(_rooms: Array) -> void:
 		var currentCenter := current.position + current.size / 2.0
 		var roomCenter : Vector2 = room.position + room.size / 2.0
 		delta = roomCenter - currentCenter
-		print(delta)
 		if is_equal_approx(delta.x, 0):	deltaXSign = 1
 		else: deltaXSign = int(delta.x / abs(delta.x))
 		if is_equal_approx(delta.y, 0): deltaYSign = 1
@@ -210,7 +209,7 @@ func _placeTunnels(_rooms: Array) -> void:
 			var movingX := Random.nextBool()
 			if movingX and is_equal_approx(delta.x, 0): movingX = false
 			if not movingX and is_equal_approx(delta.y, 0): movingX = true
-			var carveLength := Random.nextRange(1, int(abs(delta.x if movingX else delta.y)));
+			var carveLength := Random.nextRange(1, int(abs(delta.x if movingX else delta.y)))
 			for _i in range(carveLength):
 				if movingX: currentCenter.x += deltaXSign * 1
 				else: currentCenter.y += deltaYSign * 1
@@ -220,48 +219,133 @@ func _placeTunnels(_rooms: Array) -> void:
 						_level.clearForeV(currentCenter)
 			if movingX: delta.x -= deltaXSign * carveLength
 			else: delta.y -= deltaYSign * carveLength
-		current = room;
-
-func _generateCrossroad() -> void:
-	_fill(false, true)
-	if _stream:
-		_generateStreams()
-	_start()
-	_level.generated()
+		current = room
 
 func _generateMaze() -> void:
-	_fill(false, true)
+	var depth := _depth + 10
+	var width := Random.nextRangeOdd(depth, depth + Random.next(depth))
+	var height := Random.nextRangeOdd(depth, depth + Random.next(depth))
+	_setLevelRect(width, height)
+	_fill(true, true)
+	_drawMaze()
 	if _stream:
 		_generateStreams()
-	_start()
 	_level.generated()
+
+func _drawMaze() -> void:
+	var start := Vector2.ZERO
+	var end := Vector2.ZERO
+	var generate := Vector2.ZERO
+	var g := Random.next(4)
+	match g:
+		0: generate = Vector2(1, 1)
+		1: generate = Vector2(1, _height - 2)
+		2: generate = Vector2(_width - 2, 1)
+		3: generate = Vector2(_width - 2, _height - 2)
+	_level.clearForeV(generate)
+	var s = Random.next(4)
+	match s:
+		0:
+			start = Vector2(1, 1)
+			end = Vector2(_width - 2, _height - 2)
+		1:
+			start = Vector2(1, _height - 2)
+			end = Vector2(_width - 2, 1)
+		2:
+			start = Vector2(_width - 2, 1)
+			end = Vector2(1, _height - 2)
+		3:
+			start = Vector2(_width - 2, _height - 2)
+			end = Vector2(1, 1)
+	_level.startAt = start
+	_level.setStairUpV(start)
+	_level.setStairDownV(end)
+	var points : PoolVector2Array = []
+	points.append(generate)
+	while points.size():
+		var random := Random.next(points.size())
+		var current : Vector2 = points[random]
+		points.remove(random)
+		var east := Vector2(current.x + 1, current.y)
+		var eastEast := Vector2(current.x + 2, current.y)
+		var west := Vector2(current.x - 1, current.y)
+		var westWest := Vector2(current.x - 2, current.y)
+		var north := Vector2(current.x, current.y + 1)
+		var northNorth := Vector2(current.x, current.y + 2)
+		var south := Vector2(current.x, current.y - 1)
+		var southSouth := Vector2(current.x, current.y - 2)
+		var eastChecked := false
+		var westChecked := false
+		var northChecked := false
+		var southChecked := false
+		while not eastChecked or not westChecked or not northChecked or not southChecked:
+			match Random.next(4):
+				0:
+					eastChecked = true
+					if (_level.isStairV(east) or _level.isWallV(east)) and (_level.isStairV(eastEast) or _level.isWallV(eastEast)):
+						if not _level.isStairV(east):
+							_level.clearForeV(east)
+						if not _level.isStairV(eastEast):
+							_level.clearForeV(eastEast)
+						points.append(eastEast)
+				1:
+					westChecked = true
+					if (_level.isStairV(west) or _level.isWallV(west)) and (_level.isStairV(westWest) or _level.isWallV(westWest)):
+						if not _level.isStairV(west):
+							_level.clearForeV(west)
+						if not _level.isStairV(westWest):
+							_level.clearForeV(westWest)
+						points.append(westWest)
+				2:
+					northChecked = true
+					if (_level.isStairV(north) or _level.isWallV(north)) and (_level.isStairV(northNorth) or _level.isWallV(northNorth)):
+						if not _level.isStairV(north):
+							_level.clearForeV(north)
+						if not _level.isStairV(northNorth):
+							_level.clearForeV(northNorth)
+						points.append(northNorth)
+				3:
+					southChecked = true
+					if (_level.isStairV(south) or _level.isWallV(south)) and (_level.isStairV(southSouth) or _level.isWallV(southSouth)):
+						if not _level.isStairV(south):
+							_level.clearForeV(south)
+						if not _level.isStairV(southSouth):
+							_level.clearForeV(southSouth)
+						points.append(southSouth)
 
 func _generateBuilding() -> void:
 	_fill(false, true)
 	if _stream:
 		_generateStreams()
-	_start()
+	_stairs()
 	_level.generated()
 
 func _generateCave() -> void:
 	_fill(false, true)
 	if _stream:
 		_generateStreams()
-	_start()
+	_stairs()
 	_level.generated()
 
 func _generateTemplate() -> void:
 	_fill(false, true)
 	if _stream:
 		_generateStreams()
-	_start()
+	_stairs()
+	_level.generated()
+
+func _generateTemplateCrossroad() -> void:
+	_fill(false, true)
+	if _stream:
+		_generateStreams()
+	_stairs()
 	_level.generated()
 
 func _generateTemplateCastle() -> void:
 	_fill(false, true)
 	if _stream:
 		_generateStreams()
-	_start()
+	_stairs()
 	_level.generated()
 
 func _setFloor(x: int, y: int) -> void:
@@ -312,7 +396,12 @@ func _generateStreams() -> void:
 	else:
 		_generateStream(Random.nextBool())
 
+const _leaveChance := 0.333
+const _leaveNoneChance := 0.333
+var _leaveNone := false
+
 func _generateStream(horizontal: bool) -> void:
+	_leaveNone = Random.nextFloat() < _leaveNoneChance
 	var roughness = Random.nextFloat()
 	var windyness = Random.nextFloat()
 	var width = 3 + Random.next(5)
@@ -382,7 +471,7 @@ func _fillStream(rect: Rect2) -> void:
 			if _level.insideMap(x, y) and _level.isFloor(x, y):
 				var keep = false
 				if _level.isWall(x, y):
-					if Random.nextFloat() < 0.333:
+					if _leaveNone or Random.nextFloat() < _leaveChance:
 						_level.setRubble(x, y)
 					else:
 						keep = true
