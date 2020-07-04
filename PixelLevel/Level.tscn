@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://PixelLevel/Level.tres" type="TileSet" id=1]
 [ext_resource path="res://PixelLevel/Mob.tscn" type="PackedScene" id=2]
@@ -7,6 +7,11 @@
 [ext_resource path="res://PixelLevel/Back.tscn" type="PackedScene" id=5]
 [ext_resource path="res://PixelLevel/MiniMap.gd" type="Script" id=6]
 [ext_resource path="res://PixelLevel/Generator.gd" type="Script" id=7]
+[ext_resource path="res://PixelLevel/GenerateMaze.gd" type="Script" id=8]
+[ext_resource path="res://PixelLevel/GenerateCave.gd" type="Script" id=9]
+[ext_resource path="res://PixelLevel/GenerateDungeon.gd" type="Script" id=10]
+[ext_resource path="res://PixelLevel/GenerateBasic.gd" type="Script" id=11]
+[ext_resource path="res://PixelLevel/GenerateRoom.gd" type="Script" id=12]
 
 [node name="Level" type="Node"]
 script = ExtResource( 6 )
@@ -85,6 +90,7 @@ format = 1
 tile_data = PoolIntArray( 131072, 536870954, 0, 131073, 536870954, 0, 131074, 536870952, 0, 131086, 536870954, 0, 196608, 536870954, 0, 196609, 536870954, 0, 196610, 536870952, 0, 196621, 536870952, 0, 196622, 536870954, 0, 262144, 536870954, 0, 262145, 536870952, 0, 262146, 536870952, 0, 262157, 536870952, 0, 262158, 536870954, 0, 327680, 536870954, 0, 327681, 536870952, 0, 327693, 536870952, 0, 327694, 536870954, 0, 393216, 536870954, 0, 393217, 536870952, 0, 393228, 536870952, 0, 393229, 536870952, 0, 393230, 536870954, 0, 458752, 536870954, 0, 458753, 536870952, 0, 458764, 536870952, 0, 458765, 536870954, 0, 458766, 536870954, 0, 524288, 536870954, 0, 524300, 536870952, 0, 524301, 536870954, 0, 524302, 536870954, 0 )
 
 [node name="Light" type="TileMap" parent="Level/Viewport"]
+visible = false
 tile_set = ExtResource( 1 )
 cell_size = Vector2( 16, 16 )
 cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
@@ -99,6 +105,23 @@ format = 1
 [node name="Target" parent="Level/Viewport" instance=ExtResource( 3 )]
 
 [node name="Tween" type="Tween" parent="Level/Viewport"]
+
+[node name="Generate" type="Node" parent="Level"]
+
+[node name="GenerateBasic" type="Node" parent="Level/Generate"]
+script = ExtResource( 11 )
+
+[node name="GenerateRoom" type="Node" parent="Level/Generate"]
+script = ExtResource( 12 )
+
+[node name="GenerateDungeon" type="Node" parent="Level/Generate"]
+script = ExtResource( 10 )
+
+[node name="GenerateMaze" type="Node" parent="Level/Generate"]
+script = ExtResource( 8 )
+
+[node name="GenerateCave" type="Node" parent="Level/Generate"]
+script = ExtResource( 9 )
 
 [node name="Fore" type="ViewportContainer" parent="."]
 anchor_right = 1.0

@@ -140,12 +140,10 @@ func _step(mob: Node2D, direction: Vector2) -> void:
 	mob.global_position += _world(direction)
 
 func _tileIndex(p: Vector2) -> int:
-	return int(p.y * rect.size.x + p.x)
+	return Utility.indexV(p, int(rect.size.x))
 
-func _tilePosition(index: int) -> Vector2:
-	var y := int(index / rect.size.x)
-	var x := int(index - rect.size.x * y)
-	return Vector2(x, y)
+func _tilePosition(i: int) -> Vector2:
+	return Utility.position(i, int(rect.size.x))
 
 func _addPoints() -> void:
 	_astar.clear()

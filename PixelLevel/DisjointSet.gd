@@ -1,12 +1,12 @@
 extends Object
 class_name DisjointSet
 
-var _parent : PoolIntArray
-var _rank : PoolIntArray
+var _parent : Array
+var _rank : Array
 
 func _init(count: int) -> void:
-	_parent = _range(0, count)
-	_rank = _repeat(0, count)
+	_parent = Utility.range(0, count)
+	_rank = Utility.repeat(0, count)
 
 func find(i: int) -> int:
 	if _parent[i] == i:
@@ -28,7 +28,9 @@ func union(i: int, j: int) -> void:
 		_parent[fj] = fi
 		_rank[fi] += 1
 
-func split(list: PoolIntArray) -> Dictionary:
+# TODO: test and fix! using _parent instead of list? wtf?
+# does this need to be in here?
+func split(list: Array) -> Dictionary:
 	var groups : Dictionary = {}
 	for i in range(_parent.size()):
 		if list[i]:
@@ -37,15 +39,3 @@ func split(list: PoolIntArray) -> Dictionary:
 				groups[root] = []
 			groups[root].append(i)
 	return groups
-
-static func _range(value: int, count: int) -> PoolIntArray:
-	var array : PoolIntArray = []
-	for i in range(count):
-		array.append(value + i)
-	return array
-
-static func _repeat(value: int, count: int) -> PoolIntArray:
-	var array : PoolIntArray = []
-	for _i in range(count):
-		array.append(value)
-	return array
