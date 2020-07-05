@@ -213,11 +213,11 @@ func _fillStream(rect: Rect2) -> void:
 						_level.setWaterShallow(x, y)
 
 func _findRoom(rect: Rect2) -> Rect2:
-	var px := Random.nextRange(int(rect.position.x), int(rect.size.x / 2.0 - 2))
-	var py := Random.nextRange(int(rect.position.x), int(rect.size.y / 2.0 - 2))
-	var ex := Random.nextRange(px + 4, int(rect.end.x - px))
-	var ey := Random.nextRange(py + 4, int(rect.end.y - py))
-	return Rect2(Vector2(px, py), Vector2(ex, ey))
+	var px := Random.nextRange(int(rect.position.x), int(rect.position.x + rect.size.x / 2.0 - 2))
+	var py := Random.nextRange(int(rect.position.y), int(rect.position.y + rect.size.y / 2.0 - 2))
+	var sx := Random.nextRange(4, int(rect.end.x - px))
+	var sy := Random.nextRange(4, int(rect.end.y - py))
+	return Rect2(px, py, sx, sy)
 
 func _drawRoom(rect: Rect2) -> void:
 	for y in range(rect.position.y, rect.end.y):

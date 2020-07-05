@@ -3,9 +3,9 @@ extends Generate
 func generate() -> void:
 	.generate()
 	_fill(false, true)
+	_stairs()
 	if _stream:
 		_generateStreams()
-	_stairs()
 	_level.generated()
 
 func _getAdjacentCount(list: Array, x: int, y: int) -> int:
