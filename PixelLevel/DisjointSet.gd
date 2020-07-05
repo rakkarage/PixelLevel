@@ -2,34 +2,28 @@ extends Object
 class_name DisjointSet
 
 var _parent : Array
-var _rank : Array
 
 func _init(count: int) -> void:
-	_parent = Utility.range(0, count)
-	_rank = Utility.repeat(0, count)
+	_parent = Utility.repeat(-1, count)
 
 func find(i: int) -> int:
-	if _parent[i] == i:
+	if _parent[i] < 0:
 		return i
 	else:
-		var result := find(_parent[i])
-		_parent[i] = result
-		return result
+		var parent := find(_parent[i])
+		_parent[i] = parent
+		return parent
 
 func union(i: int, j: int) -> void:
-	var fi = find(i)
-	var fj = find(j)
-	var ri = _rank[fi]
-	var rj = _rank[fj]
-	if fi == fj: return
-	if ri < rj: _parent[fi] = fj
-	elif ri > rj: _parent[fj] = fi
-	else:
-		_parent[fj] = fi
-		_rank[fi] += 1
+	var pi = find(i)
+	var pj = find(j)
+	if pi < pj:
+		_parent[pi] -= 1
+		_parent[pj] = pi
+	elif pi > pj:
+		_parent[pi] = pj
+		_parent[pj] -= 1
 
-# TODO: test and fix! using _parent instead of list? wtf?
-# does this need to be in here?
 func split(list: Array) -> Dictionary:
 	var groups : Dictionary = {}
 	for i in range(_parent.size()):
