@@ -38,8 +38,7 @@ func _drawMaze() -> void:
 			start = Vector2(_width - 2, _height - 2)
 			end = Vector2(1, 1)
 	_level.startAt = start
-	_level.setStairUpV(start)
-	_level.setStairDownV(end)
+	_level.clearForeV(generate)
 	var points : PoolVector2Array = []
 	points.append(generate)
 	while points.size():
@@ -62,33 +61,27 @@ func _drawMaze() -> void:
 			match Random.next(4):
 				0:
 					eastChecked = true
-					if (_level.isStairV(east) or _level.isWallV(east)) and (_level.isStairV(eastEast) or _level.isWallV(eastEast)):
-						if not _level.isStairV(east):
-							_level.clearForeV(east)
-						if not _level.isStairV(eastEast):
-							_level.clearForeV(eastEast)
+					if _level.isWallV(east) and _level.isWallV(eastEast):
+						_level.clearForeV(east)
+						_level.clearForeV(eastEast)
 						points.append(eastEast)
 				1:
 					westChecked = true
-					if (_level.isStairV(west) or _level.isWallV(west)) and (_level.isStairV(westWest) or _level.isWallV(westWest)):
-						if not _level.isStairV(west):
-							_level.clearForeV(west)
-						if not _level.isStairV(westWest):
-							_level.clearForeV(westWest)
+					if _level.isWallV(west) and _level.isWallV(westWest):
+						_level.clearForeV(west)
+						_level.clearForeV(westWest)
 						points.append(westWest)
 				2:
 					northChecked = true
-					if (_level.isStairV(north) or _level.isWallV(north)) and (_level.isStairV(northNorth) or _level.isWallV(northNorth)):
-						if not _level.isStairV(north):
-							_level.clearForeV(north)
-						if not _level.isStairV(northNorth):
-							_level.clearForeV(northNorth)
+					if _level.isWallV(north) and _level.isWallV(northNorth):
+						_level.clearForeV(north)
+						_level.clearForeV(northNorth)
 						points.append(northNorth)
 				3:
 					southChecked = true
-					if (_level.isStairV(south) or _level.isWallV(south)) and (_level.isStairV(southSouth) or _level.isWallV(southSouth)):
-						if not _level.isStairV(south):
-							_level.clearForeV(south)
-						if not _level.isStairV(southSouth):
-							_level.clearForeV(southSouth)
+					if _level.isWallV(south) and _level.isWallV(southSouth):
+						_level.clearForeV(south)
+						_level.clearForeV(southSouth)
 						points.append(southSouth)
+	_level.setStairUpV(start)
+	_level.setStairDownV(end)
