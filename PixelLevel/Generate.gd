@@ -61,6 +61,15 @@ func _stairs() -> void:
 	_setStairUpV(up)
 	_setStairDownV(_findSpot())
 
+func _stairsAt(array: Array) -> void:
+	var up = Utility.position(array[Random.next(array.size())], _width)
+	_level.startAt = up
+	_setStairUpV(up)
+	var down = Utility.position(array[Random.next(array.size())], _width)
+	while _level.isStairV(down):
+		down = Utility.position(array[Random.next(array.size())], _width)
+	_setStairDownV(down)
+
 func _findX() -> int:
 	return Random.nextRange(1, _width - 2)
 

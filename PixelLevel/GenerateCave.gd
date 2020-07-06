@@ -9,7 +9,6 @@ func generate() -> void:
 	.generate()
 	_fill(true, true)
 	_drawCaves()
-	_stairs()
 	if _stream:
 		_generateStreams()
 	_level.generated()
@@ -29,6 +28,7 @@ func _drawCaves() -> void:
 				_level.clearFore(x, y)
 	# if Random.nextBool():
 	# 	list = _outlineCaves(list)
+	_stairsAt(_biggest(list))
 
 func _getAdjacentCount(list: Array, x: int, y: int) -> int:
 	var count := 0
@@ -76,7 +76,7 @@ func _biggest(list: Array) -> Array:
 	var disjointSet := _disjointSetup(list)
 	var caves := disjointSet.split(list)
 	_removeSmallCaves(caves)
-	return caves[0]
+	return caves.values()[0]
 
 func _bigEnough(list: Array) -> bool:
 	return _biggest(list).size() > 4
@@ -84,9 +84,9 @@ func _bigEnough(list: Array) -> bool:
 func _unionAdjacent(disjointSet: DisjointSet, list: Array, x: int, y: int) -> void:
 	for yy in range(-1, 2):
 		for xx in range(-1, 2):
-			if not ((xx == 0) and (yy == 0)) and _level.insideMap(xx, yy):
-				var index1 = Utility.index(xx, yy, _width)
-				if list[index1]:
+			if not ((xx == 0) and (yy == 0)) and _level.insideMap(x + xx, y + yy):
+				var index1 = Utility.index(x + xx, y + yy, _width)
+				if not list[index1]:
 					var root1 = disjointSet.find(index1)
 					var index0 = Utility.index(x, y, _width)
 					var root0 = disjointSet.find(index0)
@@ -97,7 +97,7 @@ func _disjointSetup(list: Array) -> DisjointSet:
 	var disjointSet = DisjointSet.new(_width * _height)
 	for y in range(_height):
 		for x in range(_width):
-			if list[Utility.index(x, y, _width)]:
+			if not list[Utility.index(x, y, _width)]:
 				_unionAdjacent(disjointSet, list, x, y)
 	return disjointSet
 

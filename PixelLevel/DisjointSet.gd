@@ -27,7 +27,7 @@ func union(i: int, j: int) -> void:
 func split(list: Array) -> Dictionary:
 	var groups : Dictionary = {}
 	for i in range(_parent.size()):
-		if list[i]:
+		if not list[i]:
 			var root := find(i)
 			if not groups.has(root):
 				groups[root] = []
