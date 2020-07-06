@@ -4,7 +4,7 @@ onready var _level : Level = $Level/Viewport
 onready var _textureRect : TextureRect = $Fore/Viewport/MiniMap
 onready var _imageTexture := ImageTexture.new()
 onready var _image := Image.new()
-const _max := Vector2(32, 32)
+const _max := Vector2(64, 64)
 
 func _ready() -> void:
 	_textureRect.texture = _imageTexture

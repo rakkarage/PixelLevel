@@ -793,6 +793,9 @@ const _colorCamera := Color(1, 0, 1, _alpha)
 func getMapColor(x: int, y: int) -> Color:
 	var camera = getCameraRect()
 	var color = Color(0.25, 0.25, 0.25, 0.25)
+	var on = _onRect(x, y, camera)
+	if on:
+		color = _colorCamera
 	var lit = isLit(x, y)
 	var explored = isExplored(x, y)
 	var mob = mobPosition()
@@ -803,10 +806,7 @@ func getMapColor(x: int, y: int) -> Color:
 			color = _colorStair
 		elif isDoor(x, y):
 			color = _colorDoor
-		elif (((x >= camera.position.x and x <= camera.size.x) and
-			(y == camera.position.y or y == camera.size.y)) or
-			((y >= camera.position.y and y <= camera.size.y) and
-			(x == camera.position.x or x == camera.size.x))):
+		elif on:
 			color = _colorCamera
 		elif isWall(x, y):
 			color = _colorWallLit if lit else _colorWall
@@ -815,6 +815,12 @@ func getMapColor(x: int, y: int) -> Color:
 		else:
 			color = _colorWallLit if lit else _colorWall
 	return color
+
+func _onRect(x, y, r) -> bool:
+	return (((x >= r.position.x and x <= r.size.x) and
+		(y == r.position.y or y == r.size.y)) or
+		((y >= r.position.y and y <= r.size.y) and
+		(x == r.position.x or x == r.size.x)))
 
 const _alphaPath := 0.333
 const _colorPathMob := Color(_colorMob.r, _colorMob.g, _colorMob.b, _alphaPath)
