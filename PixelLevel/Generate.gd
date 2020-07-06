@@ -42,12 +42,11 @@ func _clear() -> void:
 func _fill(wall: bool, wallEdge: bool) -> void:
 	for y in range(_height):
 		for x in range(_width):
-			if _room:
-				_setFloorRoom(x, y)
-			else:
-				_setFloor(x, y)
 			if wall:
-				_setWallPlain(x, y)
+					if _cliff:
+						_setCliff(x, y)
+					else:
+						_setWallPlain(x, y)
 			elif wallEdge:
 				if y == 0 or y == _height - 1 or x == 0 or x == _width - 1:
 					if _cliff:
@@ -241,4 +240,5 @@ func _drawRoom(rect: Rect2) -> void:
 				y == rect.position.y or y == rect.end.y - 1):
 				_setWall(x, y)
 			else:
+				_setFloor(x, y)
 				_level.clearFore(x, y)
