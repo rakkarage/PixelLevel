@@ -29,7 +29,7 @@ func split(list: Array) -> Dictionary:
 	for i in range(_parent.size()):
 		if list[i]:
 			var root := find(i)
-			if not groups.keys().find(root):
+			if not groups.has(root):
 				groups[root] = []
 			groups[root].append(i)
 	return groups
