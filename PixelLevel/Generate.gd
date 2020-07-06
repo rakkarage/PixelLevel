@@ -97,18 +97,24 @@ func _setFloorRoom(x: int, y: int) -> void:
 	_level.setFloorRoom(x, y, flipX, flipY, rot90)
 
 func _setWallPlain(x: int, y: int) -> void:
-	var flipX := Random.nextBool()
-	_level.setWallPlain(x, y, flipX)
+	if _cliff:
+		_setCliff(x, y)
+	else:
+		var flipX := Random.nextBool()
+		_level.setWallPlain(x, y, flipX)
 
 func _setWall(x: int, y: int) -> void:
-	var flipX := Random.nextBool()
-	if Random.nextFloat() < _torch:
-		_level.setTorch(x, y, flipX)
+	if _cliff:
+		_setCliff(x, y)
 	else:
-		if Random.nextFloat() < _fancy:
-			_level.setWall(x, y, flipX)
+		var flipX := Random.nextBool()
+		if Random.nextFloat() < _torch:
+			_level.setTorch(x, y, flipX)
 		else:
-			_level.setWallPlain(x, y, flipX)
+			if Random.nextFloat() < _fancy:
+				_level.setWall(x, y, flipX)
+			else:
+				_level.setWallPlain(x, y, flipX)
 
 func _setStairUpV(p: Vector2) -> void:
 	_setStairUp(int(p.x), int(p.y))

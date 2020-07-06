@@ -23,9 +23,16 @@ func _drawCaves() -> void:
 	for y in range(_height):
 		for x in range(_width):
 			if list[Utility.index(x, y, _width)]:
-				_level.setWallPlain(x, y)
+				if _cliff:
+					_setCliff(x, y)
+				else:
+					_setWallPlain(x, y)
 			else:
 				_level.clearFore(x, y)
+				if _room:
+					_setFloorRoom(x, y)
+				else:
+					_setFloor(x, y)
 	# if Random.nextBool():
 	# 	list = _outlineCaves(list)
 	_stairsAt(_biggest(list))
