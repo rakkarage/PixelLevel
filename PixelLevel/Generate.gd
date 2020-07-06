@@ -83,6 +83,15 @@ func _findSpot() -> Vector2:
 		y = _findY()
 	return Vector2(x, y)
 
+func _setFloorOrRoomV(p: Vector2) -> void:
+	_setFloorOrRoom(int(p.x), int(p.y))
+
+func _setFloorOrRoom(x: int, y: int) -> void:
+	if _room:
+		_setFloorRoom(x, y)
+	else:
+		_setFloor(x, y)
+
 func _setFloor(x: int, y: int) -> void:
 	var flipX := Random.nextBool() if _wonky else false
 	var flipY := Random.nextBool() if _wonky else false
@@ -240,5 +249,5 @@ func _drawRoom(rect: Rect2) -> void:
 				y == rect.position.y or y == rect.end.y - 1):
 				_setWall(x, y)
 			else:
-				_setFloor(x, y)
+				_setFloorOrRoom(x, y)
 				_level.clearFore(x, y)

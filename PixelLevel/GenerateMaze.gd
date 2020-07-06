@@ -22,7 +22,6 @@ func _drawMaze() -> void:
 		1: generate = Vector2(1, _height - 2)
 		2: generate = Vector2(_width - 2, 1)
 		3: generate = Vector2(_width - 2, _height - 2)
-	_level.clearForeV(generate)
 	var s = Random.next(4)
 	match s:
 		0:
@@ -39,6 +38,7 @@ func _drawMaze() -> void:
 			end = Vector2(1, 1)
 	_level.startAt = start
 	_level.clearForeV(generate)
+	_setFloorOrRoomV(generate)
 	var points : PoolVector2Array = []
 	points.append(generate)
 	while points.size():
@@ -63,25 +63,33 @@ func _drawMaze() -> void:
 					eastChecked = true
 					if _level.isWallV(east) and _level.isWallV(eastEast):
 						_level.clearForeV(east)
+						_setFloorOrRoomV(east)
 						_level.clearForeV(eastEast)
+						_setFloorOrRoomV(eastEast)
 						points.append(eastEast)
 				1:
 					westChecked = true
 					if _level.isWallV(west) and _level.isWallV(westWest):
 						_level.clearForeV(west)
+						_setFloorOrRoomV(west)
 						_level.clearForeV(westWest)
+						_setFloorOrRoomV(westWest)
 						points.append(westWest)
 				2:
 					northChecked = true
 					if _level.isWallV(north) and _level.isWallV(northNorth):
 						_level.clearForeV(north)
+						_setFloorOrRoomV(north)
 						_level.clearForeV(northNorth)
+						_setFloorOrRoomV(northNorth)
 						points.append(northNorth)
 				3:
 					southChecked = true
 					if _level.isWallV(south) and _level.isWallV(southSouth):
 						_level.clearForeV(south)
+						_setFloorOrRoomV(south)
 						_level.clearForeV(southSouth)
+						_setFloorOrRoomV(southSouth)
 						points.append(southSouth)
-	_level.setStairUpV(start)
-	_level.setStairDownV(end)
+	_setStairUpV(start)
+	_setStairDownV(end)
