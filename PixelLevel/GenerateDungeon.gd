@@ -66,6 +66,7 @@ func _placeTunnels(_rooms: Array) -> void:
 				if not is_equal_approx(currentCenter.x, 1) and not is_equal_approx(currentCenter.y, 1):
 					if _level.isWallV(currentCenter):
 						_level.clearForeV(currentCenter)
+						_setFloorOrRoomV(currentCenter)
 			if movingX: delta.x -= deltaXSign * carveLength
 			else: delta.y -= deltaYSign * carveLength
 		current = room
