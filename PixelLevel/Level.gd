@@ -433,7 +433,13 @@ func isBlockedV(p: Vector2) -> bool:
 func isBlocked(x: int, y: int) -> bool:
 	if not insideMap(x, y): return true
 	var fore := _fore.get_cell(x, y)
-	var w := isWallId(fore) or isCliffId(fore)
+	var back := _back.get_cell(x, y)
+	return isCliffId(fore) or (isInvalidId(fore) and not isFloorId(back)) or isBlockedLight(x, y)
+
+func isBlockedLight(x: int, y: int) -> bool:
+	if not insideMap(x, y): return true
+	var fore := _fore.get_cell(x, y)
+	var w := isWallId(fore)
 	var d := isDoorId(fore)
 	var s := _fore.get_cell_autotile_coord(x, y)
 	return w or (d and s == Vector2(0, 0))
@@ -478,7 +484,7 @@ func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float,
 					var intensity := intensity2 / (1.0 - 1.0 / (1.0 + rSquared))
 					var light := int(intensity * _lightCount)
 					_setLight(x, y, _lightExplored + light, true)
-				var blockedAt := isBlocked(x, y)
+				var blockedAt := isBlockedLight(x, y)
 				if blocked:
 					if blockedAt:
 						newStart = rSlope
@@ -606,6 +612,9 @@ func setWall(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> 
 
 func setRubble(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
 	_setRandomTile(_fore, x, y, Tile.Rubble, flipX, flipY, rot90)
+
+func isInvalidId(id: int) -> bool:
+	return id == TileMap.INVALID_CELL
 
 func isCliffId(id: int) -> bool:
 	return id == Tile.Cliff0 or id == Tile.Cliff1
