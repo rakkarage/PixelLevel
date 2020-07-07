@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://PixelLevel/Level.tres" type="TileSet" id=1]
 [ext_resource path="res://PixelLevel/Mob.tscn" type="PackedScene" id=2]
@@ -12,6 +12,7 @@
 [ext_resource path="res://PixelLevel/GenerateDungeon.gd" type="Script" id=10]
 [ext_resource path="res://PixelLevel/GenerateBasic.gd" type="Script" id=11]
 [ext_resource path="res://PixelLevel/GenerateRoom.gd" type="Script" id=12]
+[ext_resource path="res://PixelLevel/GenerateTemplate.gd" type="Script" id=13]
 
 [node name="Level" type="Node"]
 script = ExtResource( 6 )
@@ -121,6 +122,9 @@ script = ExtResource( 8 )
 
 [node name="GenerateCave" type="Node" parent="Level/Generate"]
 script = ExtResource( 9 )
+
+[node name="GenerateTemplate" type="Node" parent="Level/Generate"]
+script = ExtResource( 13 )
 
 [node name="Fore" type="ViewportContainer" parent="."]
 anchor_right = 1.0
