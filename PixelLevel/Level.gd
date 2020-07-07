@@ -613,6 +613,12 @@ func setWall(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> 
 func setRubble(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
 	_setRandomTile(_fore, x, y, Tile.Rubble, flipX, flipY, rot90)
 
+func isInvalidV(p: Vector2) -> bool:
+	return isInvalid(int(p.x), int(p.y))
+
+func isInvalid(x: int, y: int) -> bool:
+	return isInvalidId(_back.get_cell(x, y))
+
 func isInvalidId(id: int) -> bool:
 	return id == TileMap.INVALID_CELL
 

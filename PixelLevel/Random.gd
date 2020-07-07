@@ -6,7 +6,7 @@ func _init() -> void:
 	_rng.randomize()
 
 func next(n: int) -> int:
-	return _rng.randi() % n
+	return 0 if n == 0 else _rng.randi() % n
 
 func nextRange(from: int, to: int) -> int:
 	return _rng.randi_range(from, to)
