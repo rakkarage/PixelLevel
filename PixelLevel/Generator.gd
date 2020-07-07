@@ -12,7 +12,7 @@ func _ready() -> void:
 		_g[funcref(i, "generate")] = i.priority
 
 func _generate() -> void:
-	Utility.priority(_g).call_func()
+	Random.priority(_g).call_func()
 
 # func _generateTemplate() -> void:
 # 	_fill(false, true)

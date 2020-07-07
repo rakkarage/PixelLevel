@@ -23,17 +23,22 @@ func nextBool() -> bool:
 func nextFloat() -> float:
 	return _rng.randf()
 
+# returns priority value:
+# { "test0", { "name": "Test 0", "priority": 2 },
+#   "test1", { "name": "Test 1", "priority": 1 } }
+# or returns priority key:
+# { funcref(self, "test0"): 2, funcref(self, "test1"): 1 }
 func priority(d: Dictionary) -> Object:
 	var o
 	var total := 0
 	for value in d.values():
-		total += value.priority if "priority" in value else value
+		total += value.priority if value is Dictionary and "priority" in value else value
 	var selected := next(total)
 	var current := 0
 	for key in d.keys():
 		var value = d[key]
-		o = value if "priority" in value else key
-		current += value.priority if "priority" in value else value
+		o = value if value is Dictionary and "priority" in value else key
+		current += value.priority if value is Dictionary and "priority" in value else value
 		if current > selected:
 			break
 	return o
