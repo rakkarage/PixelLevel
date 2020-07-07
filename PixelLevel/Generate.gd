@@ -158,6 +158,10 @@ func _generateStreams() -> void:
 	if Random.nextFloat() < 0.333:
 		_generateStream(true)
 		_generateStream(false)
+	elif Random.nextBool():
+		_generateStream(Random.nextBool())
+		if Random.nextBool():
+			_generateStream(Random.nextBool())
 	else:
 		_generateStream(Random.nextBool())
 
