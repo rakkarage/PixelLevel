@@ -39,7 +39,7 @@ func _drawMaze() -> void:
 	_level.startAt = start
 	_level.clearForeV(generate)
 	_setFloorOrRoomV(generate)
-	var points : PoolVector2Array = []
+	var points := []
 	points.append(generate)
 	while points.size():
 		var random := Random.next(points.size())
@@ -61,7 +61,8 @@ func _drawMaze() -> void:
 			match Random.next(4):
 				0:
 					eastChecked = true
-					if _level.isWallV(east) and _level.isWallV(eastEast):
+					if ((_level.isWallV(east) or _level.isCliffV(east)) and
+						(_level.isWallV(eastEast) or _level.isCliffV(eastEast))):
 						_level.clearForeV(east)
 						_setFloorOrRoomV(east)
 						_level.clearForeV(eastEast)
@@ -69,7 +70,8 @@ func _drawMaze() -> void:
 						points.append(eastEast)
 				1:
 					westChecked = true
-					if _level.isWallV(west) and _level.isWallV(westWest):
+					if ((_level.isWallV(west) or _level.isCliffV(west)) and
+						(_level.isWallV(westWest) or _level.isCliffV(westWest))):
 						_level.clearForeV(west)
 						_setFloorOrRoomV(west)
 						_level.clearForeV(westWest)
@@ -77,7 +79,8 @@ func _drawMaze() -> void:
 						points.append(westWest)
 				2:
 					northChecked = true
-					if _level.isWallV(north) and _level.isWallV(northNorth):
+					if ((_level.isWallV(north) or _level.isCliffV(north)) and
+						(_level.isWallV(northNorth) or _level.isCliffV(northNorth))):
 						_level.clearForeV(north)
 						_setFloorOrRoomV(north)
 						_level.clearForeV(northNorth)
@@ -85,7 +88,8 @@ func _drawMaze() -> void:
 						points.append(northNorth)
 				3:
 					southChecked = true
-					if _level.isWallV(south) and _level.isWallV(southSouth):
+					if ((_level.isWallV(south) or _level.isCliffV(south)) and
+						(_level.isWallV(southSouth) or _level.isCliffV(southSouth))):
 						_level.clearForeV(south)
 						_setFloorOrRoomV(south)
 						_level.clearForeV(southSouth)

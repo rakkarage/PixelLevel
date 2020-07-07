@@ -433,7 +433,7 @@ func isBlockedV(p: Vector2) -> bool:
 func isBlocked(x: int, y: int) -> bool:
 	if not insideMap(x, y): return true
 	var fore := _fore.get_cell(x, y)
-	var w := isWallId(fore)
+	var w := isWallId(fore) or isCliffId(fore)
 	var d := isDoorId(fore)
 	var s := _fore.get_cell_autotile_coord(x, y)
 	return w or (d and s == Vector2(0, 0))
@@ -609,6 +609,9 @@ func setRubble(x: int, y: int, flipX := false, flipY := false, rot90 := false) -
 
 func isCliffId(id: int) -> bool:
 	return id == Tile.Cliff0 or id == Tile.Cliff1
+
+func isCliffV(p: Vector2) -> bool:
+	return isCliff(int(p.x), int(p.y))
 
 func isCliff(x: int, y: int) -> bool:
 	return isCliffId(_fore.get_cell(x, y))
