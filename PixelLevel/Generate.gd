@@ -230,7 +230,7 @@ func _fillStream(rect: Rect2) -> void:
 			if _level.insideMap(x, y) and _level.isFloor(x, y) or _level.isWall(x, y):
 				var keep = false
 				if _level.isWall(x, y):
-					if _leaveNone or Random.nextFloat() < _leaveChance:
+					if _leaveNone or Random.nextFloat() > _leaveChance:
 						_level.setRubble(x, y)
 						_setFloorOrRoom(x, y)
 					else:
