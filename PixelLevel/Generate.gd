@@ -42,17 +42,20 @@ func _clear() -> void:
 func _fill(wall: bool, wallEdge: bool) -> void:
 	for y in range(_height):
 		for x in range(_width):
+			_setFloorOrRoom(x, y)
 			if wall:
 					if _cliff:
 						_setCliff(x, y)
 					else:
 						_setWallPlain(x, y)
+					_level.clearBack(x, y)
 			elif wallEdge:
 				if y == 0 or y == _height - 1 or x == 0 or x == _width - 1:
 					if _cliff:
 						_setCliff(x, y)
 					else:
 						_setWall(x, y)
+					_level.clearBack(x, y)
 
 func _stairs() -> void:
 	var up := _findSpot()
@@ -139,6 +142,12 @@ func _setStairDown(x: int, y: int) -> void:
 func _setCliff(x: int, y: int) -> void:
 	_level.setCliff(x, y, Random.nextBool())
 
+func _setDoor(x: int, y: int) -> void:
+	_level.setDoor(x, y, Random.nextBool())
+
+func _setDoorBroke(x: int, y: int) -> void:
+	_level.setDoorBroke(x, y, Random.nextBool())
+
 func _generateStreams() -> void:
 	if Random.nextFloat() < 0.333:
 		_generateStream(true)
@@ -218,15 +227,16 @@ func _fillStream(rect: Rect2) -> void:
 			else:
 				if x >= rect.position.x + deepWidth && x < rect.end.x - deepWidth:
 					deep = true
-			if _level.insideMap(x, y) and _level.isFloor(x, y):
+			if _level.insideMap(x, y) and _level.isFloor(x, y) or _level.isWall(x, y):
 				var keep = false
 				if _level.isWall(x, y):
 					if _leaveNone or Random.nextFloat() < _leaveChance:
 						_level.setRubble(x, y)
+						_setFloorOrRoom(x, y)
 					else:
 						keep = true
 				elif _level.isDoor(x, y):
-					_level.setDoorBroke(x, y)
+					_setDoorBroke(x, y)
 				if not keep:
 					var alreadyDeep = _level.isWaterDeep(x, y)
 					if deep or alreadyDeep:
@@ -249,5 +259,5 @@ func _drawRoom(rect: Rect2) -> void:
 				y == rect.position.y or y == rect.end.y - 1):
 				_setWall(x, y)
 			else:
-				_setFloorOrRoom(x, y)
 				_level.clearFore(x, y)
+				_setFloorOrRoom(x, y)

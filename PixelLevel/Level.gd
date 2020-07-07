@@ -432,13 +432,11 @@ func isBlockedV(p: Vector2) -> bool:
 
 func isBlocked(x: int, y: int) -> bool:
 	if not insideMap(x, y): return true
-	var back := _back.get_cell(x, y)
 	var fore := _fore.get_cell(x, y)
-	var f := isFloorId(back)
 	var w := isWallId(fore)
 	var d := isDoorId(fore)
 	var s := _fore.get_cell_autotile_coord(x, y)
-	return w or not f or (d and s == Vector2(0, 0))
+	return w or (d and s == Vector2(0, 0))
 
 const _torchRadius := 8
 const _torchRadiusMax := _torchRadius * 2
@@ -613,14 +611,14 @@ func isCliffId(id: int) -> bool:
 	return id == Tile.Cliff0 or id == Tile.Cliff1
 
 func isCliff(x: int, y: int) -> bool:
-	return isCliffId(_back.get_cell(x, y))
+	return isCliffId(_fore.get_cell(x, y))
 
 func setCliff(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
 	var id
 	match themeCliff:
 		0: id = Tile.Cliff0
 		1: id = Tile.Cliff1
-	_setRandomTile(_back, x, y, id, flipX, flipY, rot90)
+	_setRandomTile(_fore, x, y, id, flipX, flipY, rot90)
 
 func clearBackV(p: Vector2) -> void:
 	clearBack(int(p.x), int(p.y))
@@ -704,6 +702,24 @@ func isDoorShutV(p: Vector2) -> bool:
 
 func isDoorShut(x: int, y: int) -> bool:
 	return isDoor(x, y) and _fore.get_cell_autotile_coord(x, y) == Vector2.ZERO
+
+func setDoor(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	var id
+	match theme:
+		0: id = Tile.Theme0Door
+		1: id = Tile.Theme1Door
+		2: id = Tile.Theme2Door
+		3: id = Tile.Theme3Door
+	_setRandomTile(_fore, x, y, id, flipX, flipY, rot90)
+
+func setDoorBroke(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	var id
+	match theme:
+		0: id = Tile.Theme0Door
+		1: id = Tile.Theme1Door
+		2: id = Tile.Theme2Door
+		3: id = Tile.Theme3Door
+	_fore.set_cell(x, y, id, flipX, flipY, rot90, Vector2(2, 0))
 
 func isFloorId(id: int) -> bool:
 	return (id == Tile.Theme0Floor or id == Tile.Theme0FloorRoom or
@@ -858,4 +874,4 @@ func verifyCliff() -> void:
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
 			if isCliff(x, y) and not isFloor(x, y - 1):
-				clearBack(x, y)
+				clearFore(x, y)
