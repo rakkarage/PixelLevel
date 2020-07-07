@@ -33,8 +33,8 @@ func _drawCaves() -> void:
 					_setFloorRoom(x, y)
 				else:
 					_setFloor(x, y)
-	# if Random.nextBool():
-	# 	list = _outlineCaves(list)
+	if Random.nextBool():
+		_outlineCaves(list)
 	_stairsAt(_biggest(list))
 
 func _getAdjacentCount(list: Array, x: int, y: int) -> int:
@@ -67,9 +67,8 @@ func _getCellularList(steps: int, chance: float, birth: int, death: int) -> Arra
 					value = value or adjacent > birth
 				temp[index] = value
 		list = temp.duplicate()
-	# TODO: !?
-	# if steps > 0 and Random.nextBool():
-	# 	_removeSmall(list)
+	if steps > 0 and Random.nextBool():
+		_removeSmall(list)
 	return list
 
 func _combineLists(destination: Array, source: Array) -> void:
@@ -82,7 +81,7 @@ func _combineLists(destination: Array, source: Array) -> void:
 func _biggest(list: Array) -> Array:
 	var disjointSet := _disjointSetup(list)
 	var caves := disjointSet.split(list)
-	_removeSmallCaves(caves)
+	_removeSmallCaves(caves, list)
 	return caves.values()[0]
 
 func _bigEnough(list: Array) -> bool:
@@ -108,7 +107,10 @@ func _disjointSetup(list: Array) -> DisjointSet:
 				_unionAdjacent(disjointSet, list, x, y)
 	return disjointSet
 
-func _removeSmallCaves(caves: Dictionary) -> void:
+func _removeSmall(list: Array) -> void:
+	_removeSmallCaves(_disjointSetup(list).split(list), list)
+
+func _removeSmallCaves(caves: Dictionary, list: Array) -> void:
 	var biggest = 0
 	var biggestKey = 0
 	for key in caves.keys():
@@ -121,50 +123,28 @@ func _removeSmallCaves(caves: Dictionary) -> void:
 		if key != biggestKey:
 			delete.append(key)
 	for key in delete:
+		if list != null:
+			var cave = caves[key]
+			for i in cave:
+				list[i] = true
 		Utility.stfu(caves.erase(key))
 
-# bool IsCaveEdge(ref List<bool> list, Vector2 p)
-# {
-# 	var edge = false;
-# 	for (var y = -1; y <= 1; y++)
-# 	{
-# 		for (var x = -1; x <= 1; x++)
-# 		{
-# 			if (!((x == 0) && (y == 0)))
-# 			{
-# 				var point = new Vector2(p.x + x, p.y + y);
-# 				if (InsideMap(point))
-# 				{
-# 					var index = TileIndex(point);
-# 					if (!list[index])
-# 					{
-# 						edge = true;
-# 					}
-# 				}
-# 			}
-# 		}
-# 	}
-# 	return edge;
-# }
-# void OutlineCaves(ref List<bool> list)
-# {
-# 	var disjoint = DisjointSetup(ref list);
-# 	var caves = disjoint.Split(ref list);
-# 	foreach (var cave in caves)
-# 	{
-# 		foreach (var i in cave.Value)
-# 		{
-# 			var p = TilePosition(i);
-# 			if (InsideEdge(p))
-# 			{
-# 				if (IsCaveEdge(ref list, p))
-# 				{
-# 					SetCaveEdge(p);
-# 				}
-# 			}
-# 		}
-# 	}
-# }
+func _isCaveEdge(list: Array, x: int, y: int) -> bool:
+	var edge = false
+	for yy in range(-1, 2):
+		for xx in range(-1, 2):
+			if not ((xx == 0) and (yy == 0)):
+				var new = Vector2(x + xx, y + yy)
+				if _level.insideMapV(new) and not list[Utility.indexV(new, _width)]:
+					edge = true
+	return edge
+
+func _outlineCaves(list: Array) -> void:
+	for y in range(_height):
+		for x in range(_width):
+			if list[Utility.index(x, y, _width)]:
+				if _isCaveEdge(list, x, y):
+					_setWall(x, y)
 
 func _printArray(array: Array) -> void:
 	var output := ""

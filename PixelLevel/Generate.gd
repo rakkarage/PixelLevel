@@ -107,12 +107,18 @@ func _setFloorRoom(x: int, y: int) -> void:
 	var rot90 := Random.nextBool() if _wonky else false
 	_level.setFloorRoom(x, y, flipX, flipY, rot90)
 
+func _setWallPlainV(p: Vector2) -> void:
+	_setWallPlain(int(p.x), int(p.y))
+
 func _setWallPlain(x: int, y: int) -> void:
 	if _cliff:
 		_setCliff(x, y)
 	else:
 		var flipX := Random.nextBool()
 		_level.setWallPlain(x, y, flipX)
+
+func _setWallV(p: Vector2) -> void:
+	_setWall(int(p.x), int(p.y))
 
 func _setWall(x: int, y: int) -> void:
 	if _cliff:
