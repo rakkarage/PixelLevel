@@ -22,3 +22,18 @@ func nextBool() -> bool:
 
 func nextFloat() -> float:
 	return _rng.randf()
+
+func priority(d: Dictionary) -> Object:
+	var o
+	var total := 0
+	for value in d.values():
+		total += value.priority if "priority" in value else value
+	var selected := next(total)
+	var current := 0
+	for key in d.keys():
+		var value = d[key]
+		o = value if "priority" in value else key
+		current += value.priority if "priority" in value else value
+		if current > selected:
+			break
+	return o
