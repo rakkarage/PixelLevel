@@ -28,8 +28,8 @@ func nextFloat() -> float:
 #   "test1", { "name": "Test 1", "priority": 1 } }
 # or returns priority key:
 # { funcref(self, "test0"): 2, funcref(self, "test1"): 1 }
-func priority(d: Dictionary) -> Object:
-	var o
+func priority(d: Dictionary):
+	var r
 	var total := 0
 	for value in d.values():
 		total += value.priority if value is Dictionary and "priority" in value else value
@@ -37,8 +37,8 @@ func priority(d: Dictionary) -> Object:
 	var current := 0
 	for key in d.keys():
 		var value = d[key]
-		o = value if value is Dictionary and "priority" in value else key
+		r = value if value is Dictionary and "priority" in value else key
 		current += value.priority if value is Dictionary and "priority" in value else value
 		if current > selected:
 			break
-	return o
+	return r
