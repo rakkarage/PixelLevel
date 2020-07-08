@@ -15,8 +15,8 @@ func find(i: int) -> int:
 		return parent
 
 func union(i: int, j: int) -> void:
-	var pi = find(i)
-	var pj = find(j)
+	var pi := find(i)
+	var pj := find(j)
 	if pi < pj:
 		_parent[pi] -= 1
 		_parent[pj] = pi
@@ -25,7 +25,7 @@ func union(i: int, j: int) -> void:
 		_parent[pj] -= 1
 
 func split(list: Array) -> Dictionary:
-	var groups : Dictionary = {}
+	var groups := {}
 	for i in range(_parent.size()):
 		if not list[i]:
 			var root := find(i)
