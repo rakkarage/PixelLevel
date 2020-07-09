@@ -50,7 +50,15 @@ enum Tile {
 	Theme3Torch, Theme3WallPlain, Theme3Wall, Theme3Floor, Theme3FloorRoom, Theme3Stair, Theme3Door,
 	WaterShallowBack, WaterShallowFore,
 	WaterDeepBack, WaterDeepFore,
-	Rubble
+	WaterShallowBackPurple, WaterShallowForePurple,
+	WaterDeepBackPurple, WaterDeepForePurple,
+	Rubble,
+	OutsideDay, OutsideDayRubble, OutsideDayStair, OutsideFlower,
+	OutsideDayDesert, OutsideDayDoodad, OutsideDayGrassDry, OutsideDayDesertStair, OutsideDayGrassGreen,
+	OutsideDayHedge, OutsideDayWall, OutsideDayFloor
+	OutsideNight, OutsideNightRubble, OutsideNightStair,
+	OutsideNightDesert, OutsideNightDoodad, OutsideNightGrassDry, OutsideNightDesertStair, OutsideNightGrassGreen,
+	OutsideBightHedge, OutsideNightWall, OutsideNightFloor
 }
 
 signal updateMap
