@@ -6,7 +6,6 @@ export var priority = 1
 var _depth := 0
 var _width := 0
 var _height := 0
-var _theme := 0
 var _cliff := false
 var _stream := false
 const _torch := 0.03
@@ -23,12 +22,14 @@ func generate() -> void:
 	_depth += 1
 	var d := 10 + _depth
 	_setLevelRect(d * 2 + Random.next(d), d * 2 + Random.next(d))
-	_theme = Random.next(2)
+	_theme = Random.next(_level.themeCount)
+	_day = Random.nextBool()
+	_desert = Random.nextBool()
+	_themeCliff = Random.next(_level.themeCliffCount)
 	_cliff = Random.nextFloat() < 0.333
 	_stream = Random.nextFloat() < 0.333
 	_wonky = Random.nextBool()
 	_room = Random.nextBool()
-	_level.theme = Random.next(_level.themeCount)
 	_level.themeCliff = Random.next(_level.themeCliffCount)
 
 func _setLevelRect(width: int, height: int) -> void:
@@ -44,18 +45,10 @@ func _fill(wall: bool, wallEdge: bool) -> void:
 		for x in range(_width):
 			_setFloorOrRoom(x, y)
 			if wall:
-					if _cliff:
-						_setCliff(x, y)
-					else:
-						_setWallPlain(x, y)
-					_level.clearBack(x, y)
+					_setWallPlain(x, y)
 			elif wallEdge:
 				if y == 0 or y == _height - 1 or x == 0 or x == _width - 1:
-					if _cliff:
-						_setCliff(x, y)
-					else:
-						_setWall(x, y)
-					_level.clearBack(x, y)
+					_setWall(x, y)
 
 func _stairs() -> void:
 	var up := _findSpot()
@@ -116,6 +109,7 @@ func _setWallPlain(x: int, y: int) -> void:
 	else:
 		var flipX := Random.nextBool()
 		_level.setWallPlain(x, y, flipX)
+	_level.clearBack(x, y)
 
 func _setWallV(p: Vector2) -> void:
 	_setWall(int(p.x), int(p.y))
@@ -132,6 +126,7 @@ func _setWall(x: int, y: int) -> void:
 				_level.setWall(x, y, flipX)
 			else:
 				_level.setWallPlain(x, y, flipX)
+	_level.clearBack(x, y)
 
 func _setStairUpV(p: Vector2) -> void:
 	_setStairUp(int(p.x), int(p.y))

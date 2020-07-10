@@ -5,8 +5,11 @@ onready var _tween:       Tween = $Tween
 onready var _camera:   Camera2D = $Camera
 onready var _back:      TileMap = $Back
 onready var _fore:      TileMap = $Fore
+onready var _flower:    TileMap = $Flower
 onready var _waterBack: TileMap = $WaterBack
+onready var _itemBack:  TileMap = $ItemBack
 onready var _mob:        Node2D = $Mob
+onready var _itemFore:  TileMap = $ItemFore
 onready var _waterFore: TileMap = $WaterFore
 onready var _light:     TileMap = $Light
 onready var _edge:      TileMap = $Edge
@@ -32,12 +35,17 @@ const _zoomPinchIn := 0.02
 const _zoomPinchOut := 1.02
 const _pathScene := preload("res://PixelLevel/Path.tscn")
 var startAt := Vector2(4, 4)
-var theme = 0
-const themeCount = 4
-var themeCliff = 0
-const themeCliffCount = 2
+var theme := 0
+var day := true
+var desert := false
+const themeCount := 4
+var themeCliff := 0
+const themeCliffCount := 2
 
-enum Tile {
+signal updateMap
+signal generate
+
+enum Tile { # match id in tileSet
 	Cliff0, Cliff1
 	Banner0, Banner1,
 	Furnature, Carpet,
@@ -61,8 +69,30 @@ enum Tile {
 	OutsideBightHedge, OutsideNightWall, OutsideNightFloor
 }
 
-signal updateMap
-signal generate
+const _floorTiles := [Tile.Theme0Floor, Tile.Theme0FloorRoom,
+	Tile.Theme1Floor, Tile.Theme1FloorRoom,
+	Tile.Theme2Floor, Tile.Theme2FloorRoom,
+	Tile.Theme3Floor, Tile.Theme3FloorRoom,
+	Tile.OutsideDay, Tile.OutsideNight,
+	Tile.OutsideDayDesert, Tile.OutsideNightDesert,
+	Tile.OutsideDayFloor, Tile.OutsideNightFloor]
+
+const _wallTiles := [Tile.Theme0WallPlain, Tile.Theme0Wall,
+	Tile.Theme1WallPlain, Tile.Theme1Wall,
+	Tile.Theme2WallPlain, Tile.Theme2Wall,
+	Tile.Theme3WallPlain, Tile.Theme3Wall,
+	Tile.OutsideDayWall, Tile.OutsideNightWall,
+	Tile.OutsideDayHedge, Tile.OutsideBightHedge]
+
+const _cliffTiles := [Tile.Cliff0, Tile.Cliff1]
+
+const _stairTiles := [Tile.Theme0Stair, Tile.Theme1Stair,
+	Tile.Theme2Stair, Tile.Theme3Stair,
+	Tile.OutsideDayStair, Tile.OutsideNightStair,
+	Tile.OutsideDayDesertStair, Tile.OutsideNightDesertStair]
+
+const _doorTiles := [Tile.Theme0Door, Tile.Theme1Door,
+	Tile.Theme2Door, Tile.Theme3Door]
 
 func _ready() -> void:
 	rect = _back.get_used_rect()
@@ -373,48 +403,6 @@ func _onResize() -> void:
 	_oldSize = size
 	_cameraUpdate()
 
-func _drawEdge() -> void:
-	var minY := rect.position.y - 1
-	var maxY := rect.end.y
-	var minX := rect.position.x - 1
-	var maxX := rect.end.x
-	for y in range(minY, maxY + 1):
-		for x in range(minX, maxX + 1):
-			if x == minX or x == maxX or y == minY or y == maxY:
-				if x == minX and y == minY: # nw
-					_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(1, 0))
-				elif x == minX and y == maxY: # sw
-					_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(2, 0))
-				elif x == maxX and y == minY: # ne
-					_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(0, 0))
-				elif x == maxX and y == maxY: # se
-					_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(3, 0))
-				elif x == minX: # w
-					_setRandomTile(_edge, x, y, Tile.EdgeOutside, false, Random.nextBool(), true)
-				elif x == maxX: # e
-					_setRandomTile(_edge, x, y, Tile.EdgeOutside, true, Random.nextBool(), true)
-				elif y == minY: # n
-					_setRandomTile(_edge, x, y, Tile.EdgeOutside, Random.nextBool(), false, false)
-				elif y == maxY: # s
-					_setRandomTile(_edge, x, y, Tile.EdgeOutside, Random.nextBool(), true, false)
-			elif (x == minX + 1) or (x == maxX - 1) or (y == minY + 1) or (y == maxY - 1):
-				if x == minX + 1 and y == minY + 1: # nw
-					_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, false, false, false)
-				elif x == minX + 1 and y == maxY - 1: # sw
-					_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, false, true, false)
-				elif x == maxX - 1 and y == minY + 1: # ne
-					_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, true, false, true)
-				elif x == maxX - 1 and y == maxY - 1: # se
-					_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, true, true, false)
-				elif x == minX + 1: # w
-					_setRandomTile(_edge, x, y, Tile.EdgeInside, false, Random.nextBool(), true)
-				elif x == maxX - 1: # e
-					_setRandomTile(_edge, x, y, Tile.EdgeInside, true, Random.nextBool(), true)
-				elif y == minY + 1: # n
-					_setRandomTile(_edge, x, y, Tile.EdgeInside, Random.nextBool(), false, false)
-				elif y == maxY - 1: # s
-					_setRandomTile(_edge, x, y, Tile.EdgeInside, Random.nextBool(), true, false)
-
 func _setRandomTile(map: TileMap, x: int, y: int, id: int, flipX: bool = false, flipY: bool = false, rot90: bool = false) -> void:
 	map.set_cell(x, y, id, flipX, flipY, rot90, _randomTile(id))
 
@@ -588,39 +576,6 @@ func isLitV(p: Vector2) -> bool:
 func isLit(x: int, y: int) -> bool:
 	return _getLight(x, y) > _lightExplored
 
-func isWallId(id: int) -> bool:
-	return (id == Tile.Theme0WallPlain or id == Tile.Theme0Wall or id == Tile.Theme0Torch or
-		id == Tile.Theme1WallPlain or id == Tile.Theme1Wall or id == Tile.Theme1Torch or
-		id == Tile.Theme2WallPlain or id == Tile.Theme2Wall or id == Tile.Theme2Torch or
-		id == Tile.Theme3WallPlain or id == Tile.Theme3Wall or id == Tile.Theme3Torch)
-
-func isWallV(p: Vector2) -> bool:
-	return isWall(int(p.x), int(p.y))
-
-func isWall(x: int, y: int) -> bool:
-	return isWallId(_fore.get_cell(x, y))
-
-func setWallPlain(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	var id
-	match theme:
-		0: id = Tile.Theme0WallPlain
-		1: id = Tile.Theme1WallPlain
-		2: id = Tile.Theme2WallPlain
-		3: id = Tile.Theme3WallPlain
-	_setRandomTile(_fore, x, y, id, flipX, flipY, rot90)
-
-func setWall(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	var id
-	match theme:
-		0: id = Tile.Theme0Wall
-		1: id = Tile.Theme1Wall
-		2: id = Tile.Theme2Wall
-		3: id = Tile.Theme3Wall
-	_setRandomTile(_fore, x, y, id, flipX, flipY, rot90)
-
-func setRubble(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	_setRandomTile(_fore, x, y, Tile.Rubble, flipX, flipY, rot90)
-
 func isInvalidV(p: Vector2) -> bool:
 	return isInvalid(int(p.x), int(p.y))
 
@@ -630,188 +585,38 @@ func isInvalid(x: int, y: int) -> bool:
 func isInvalidId(id: int) -> bool:
 	return id == TileMap.INVALID_CELL
 
-func isCliffId(id: int) -> bool:
-	return id == Tile.Cliff0 or id == Tile.Cliff1
+# func isWaterId(id: int) -> bool:
+# 	return isWaterShallowId(id) or isWaterDeepId(id)
 
-func isCliffV(p: Vector2) -> bool:
-	return isCliff(int(p.x), int(p.y))
+# func isWaterDeepId(id: int) -> bool:
+# 	return (id == Tile.WaterDeepBack or id == Tile.WaterDeepFore)
 
-func isCliff(x: int, y: int) -> bool:
-	return isCliffId(_fore.get_cell(x, y))
+# func isWaterShallowId(id: int) -> bool:
+# 	return (id == Tile.WaterShallowBack or id == Tile.WaterShallowFore)
 
-func setCliff(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	var id
-	match themeCliff:
-		0: id = Tile.Cliff0
-		1: id = Tile.Cliff1
-	_setRandomTile(_fore, x, y, id, flipX, flipY, rot90)
+# func isWater(x: int, y: int) -> bool:
+# 	return isWaterId(_waterBack.get_cell(x, y))
 
-func clearBackV(p: Vector2) -> void:
-	clearBack(int(p.x), int(p.y))
+# func isWaterShallow(x: int, y: int) -> bool:
+# 	return isWaterShallowId(_waterBack.get_cell(x, y))
 
-func clearBack(x: int, y: int) -> void:
-	_back.set_cell(x, y, TileMap.INVALID_CELL)
+# func isWaterDeep(x: int, y: int) -> bool:
+# 	return isWaterDeepId(_waterBack.get_cell(x, y))
 
-func clearForeV(p: Vector2) -> void:
-	clearFore(int(p.x), int(p.y))
+# func setWaterShallow(x: int, y: int) -> void:
+# 	_waterBack.set_cell(x, y, Tile.WaterShallowBack, false, false, false, Vector2.ZERO)
+# 	_waterFore.set_cell(x, y, Tile.WaterShallowFore, false, false, false, Vector2.ZERO)
 
-func clearFore(x: int, y: int) -> void:
-	_fore.set_cell(x, y, TileMap.INVALID_CELL)
+# func setWaterDeep(x: int, y: int) -> void:
+# 	_waterBack.set_cell(x, y, Tile.WaterDeepBack, false, false, false, Vector2.ZERO)
+# 	_waterFore.set_cell(x, y, Tile.WaterDeepFore, false, false, false, Vector2.ZERO)
 
-func setTorch(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	var id
-	match theme:
-		0: id = Tile.Theme0Torch
-		1: id = Tile.Theme1Torch
-		2: id = Tile.Theme2Torch
-		3: id = Tile.Theme3Torch
-	_setRandomTile(_fore, x, y, id, flipX, flipY, rot90)
+# func _getLight(x: int, y: int) -> int:
+# 	return int(_light.get_cell_autotile_coord(x, y).x)
 
-func isStairId(id: int) -> bool:
-	return (id == Tile.Theme0Stair or id == Tile.Theme1Stair or
-		id == Tile.Theme2Stair or id == Tile.Theme3Stair)
-
-func isStairV(p: Vector2) -> bool:
-	return isStair(int(p.x), int(p.y))
-
-func isStair(x: int, y: int) -> bool:
-	return isStairId(_fore.get_cell(x, y))
-
-func isStairUpV(p: Vector2) -> bool:
-	return isStairUp(int(p.x), int(p.y))
-
-func isStairUp(x: int, y: int) -> bool:
-	return isStair(x, y) and _fore.get_cell_autotile_coord(x, y) == Vector2(1, 0)
-
-func isStairDownV(p: Vector2) -> bool:
-	return isStairDown(int(p.x), int(p.y))
-
-func isStairDown(x: int, y: int) -> bool:
-	return isStair(x, y) and _fore.get_cell_autotile_coord(x, y) == Vector2(0, 0)
-
-func setStairDownV(p: Vector2) -> void:
-	setStairDown(int(p.x), int(p.y))
-
-func setStairDown(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	var id
-	match theme:
-		0: id = Tile.Theme0Stair
-		1: id = Tile.Theme1Stair
-		2: id = Tile.Theme2Stair
-		3: id = Tile.Theme3Stair
-	_fore.set_cell(x, y, id, flipX, flipY, rot90, Vector2(0, 0))
-
-func setStairUpV(p: Vector2) -> void:
-	setStairUp(int(p.x), int(p.y))
-
-func setStairUp(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	var id
-	match theme:
-		0: id = Tile.Theme0Stair
-		1: id = Tile.Theme1Stair
-		2: id = Tile.Theme2Stair
-		3: id = Tile.Theme3Stair
-	_fore.set_cell(x, y, id, flipX, flipY, rot90, Vector2(1, 0))
-
-func isDoorId(id: int) -> bool:
-	return (id == Tile.Theme0Door or id == Tile.Theme1Door or
-		id == Tile.Theme2Door or id == Tile.Theme3Door)
-
-func isDoorV(p: Vector2) -> bool:
-	return isDoor(int(p.x), int(p.y))
-
-func isDoor(x: int, y: int) -> bool:
-	return isDoorId(_fore.get_cell(x, y))
-
-func isDoorShutV(p: Vector2) -> bool:
-	return isDoorShut(int(p.x), int(p.y))
-
-func isDoorShut(x: int, y: int) -> bool:
-	return isDoor(x, y) and _fore.get_cell_autotile_coord(x, y) == Vector2.ZERO
-
-func setDoor(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	var id
-	match theme:
-		0: id = Tile.Theme0Door
-		1: id = Tile.Theme1Door
-		2: id = Tile.Theme2Door
-		3: id = Tile.Theme3Door
-	_setRandomTile(_fore, x, y, id, flipX, flipY, rot90)
-
-func setDoorBroke(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	var id
-	match theme:
-		0: id = Tile.Theme0Door
-		1: id = Tile.Theme1Door
-		2: id = Tile.Theme2Door
-		3: id = Tile.Theme3Door
-	_fore.set_cell(x, y, id, flipX, flipY, rot90, Vector2(2, 0))
-
-func isFloorId(id: int) -> bool:
-	return (id == Tile.Theme0Floor or id == Tile.Theme0FloorRoom or
-		id == Tile.Theme1Floor or id == Tile.Theme1FloorRoom or
-		id == Tile.Theme2Floor or id == Tile.Theme2FloorRoom or
-		id == Tile.Theme3Floor or id == Tile.Theme3FloorRoom)
-
-func isFloor(x: int, y: int) -> bool:
-	return isFloorId(_back.get_cell(x, y))
-
-func setFloorV(p: Vector2) -> void:
-	setFloor(int(p.x), int(p.y))
-
-func setFloor(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	var id
-	match theme:
-		0: id = Tile.Theme0Floor
-		1: id = Tile.Theme1Floor
-		2: id = Tile.Theme2Floor
-		3: id = Tile.Theme3Floor
-	_setRandomTile(_back, x, y, id, flipX, flipY, rot90)
-
-func setFloorRoomV(p: Vector2) -> void:
-	setFloorRoom(int(p.x), int(p.y))
-
-func setFloorRoom(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
-	var id
-	match theme:
-		0: id = Tile.Theme0FloorRoom
-		1: id = Tile.Theme1FloorRoom
-		2: id = Tile.Theme2FloorRoom
-		3: id = Tile.Theme3FloorRoom
-	_setRandomTile(_back, x, y, id, flipX, flipY, rot90)
-
-func isWaterId(id: int) -> bool:
-	return isWaterShallowId(id) or isWaterDeepId(id)
-
-func isWaterDeepId(id: int) -> bool:
-	return (id == Tile.WaterDeepBack or id == Tile.WaterDeepFore)
-
-func isWaterShallowId(id: int) -> bool:
-	return (id == Tile.WaterShallowBack or id == Tile.WaterShallowFore)
-
-func isWater(x: int, y: int) -> bool:
-	return isWaterId(_waterBack.get_cell(x, y))
-
-func isWaterShallow(x: int, y: int) -> bool:
-	return isWaterShallowId(_waterBack.get_cell(x, y))
-
-func isWaterDeep(x: int, y: int) -> bool:
-	return isWaterDeepId(_waterBack.get_cell(x, y))
-
-func setWaterShallow(x: int, y: int) -> void:
-	_waterBack.set_cell(x, y, Tile.WaterShallowBack, false, false, false, Vector2.ZERO)
-	_waterFore.set_cell(x, y, Tile.WaterShallowFore, false, false, false, Vector2.ZERO)
-
-func setWaterDeep(x: int, y: int) -> void:
-	_waterBack.set_cell(x, y, Tile.WaterDeepBack, false, false, false, Vector2.ZERO)
-	_waterFore.set_cell(x, y, Tile.WaterDeepFore, false, false, false, Vector2.ZERO)
-
-func _getLight(x: int, y: int) -> int:
-	return int(_light.get_cell_autotile_coord(x, y).x)
-
-func _setLight(x: int, y: int, light: int, test: bool) -> void:
-	if not test or light > _getLight(x, y):
-		_light.set_cell(x, y, Tile.Light, false, false, false, Vector2(light, 0))
+# func _setLight(x: int, y: int, light: int, test: bool) -> void:
+# 	if not test or light > _getLight(x, y):
+# 		_light.set_cell(x, y, Tile.Light, false, false, false, Vector2(light, 0))
 
 func insideMapV(p: Vector2) -> bool:
 	return rect.has_point(p)
@@ -835,7 +640,7 @@ const _colorCamera := Color(1, 0, 1, _alpha)
 func getMapColor(x: int, y: int) -> Color:
 	var camera = getCameraRect()
 	var color = Color(0.25, 0.25, 0.25, 0.25)
-	var on = _onRect(x, y, camera)
+	var on = _isRect(x, y, camera)
 	if on:
 		color = _colorCamera
 	var lit = isLit(x, y)
@@ -858,7 +663,7 @@ func getMapColor(x: int, y: int) -> Color:
 			color = _colorWallLit if lit else _colorWall
 	return color
 
-func _onRect(x, y, r) -> bool:
+func _isRect(x, y, r) -> bool:
 	return (((x >= r.position.x and x <= r.size.x) and
 		(y == r.position.y or y == r.size.y)) or
 		((y >= r.position.y and y <= r.size.y) and
@@ -901,3 +706,327 @@ func verifyCliff() -> void:
 		for x in range(rect.size.x):
 			if isCliff(x, y) and not isFloor(x, y - 1):
 				clearFore(x, y)
+
+# Tile
+
+func isTileId(tile: int, tiles: Array) -> bool:
+	for id in tiles:
+		if tile == id:
+			return true
+	return false
+
+## Back
+
+func _setBack(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
+	_back.set_cell(x, y, tile, flipX, flipY, rot90, coord)
+
+func _setBackRandom(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_back, x, y, tile, flipX, flipY, rot90)
+
+func setFloorV(p: Vector2) -> void:	setFloor(int(p.x), int(p.y))
+
+func setFloor(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	var id
+	match theme:
+		0: id = Tile.Theme0Floor
+		1: id = Tile.Theme1Floor
+		2: id = Tile.Theme2Floor
+		3: id = Tile.Theme3Floor
+	_setBackRandom(x, y, id, flipX, flipY, rot90)
+
+func setFloorRoomV(p: Vector2) -> void:	setFloorRoom(int(p.x), int(p.y))
+
+func setFloorRoom(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	var id
+	match theme:
+		0: id = Tile.Theme0FloorRoom
+		1: id = Tile.Theme1FloorRoom
+		2: id = Tile.Theme2FloorRoom
+		3: id = Tile.Theme3FloorRoom
+	_setBackRandom(x, y, id, flipX, flipY, rot90)
+
+func _setOutside(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	if desert:
+		_setBackRandom(x, y, Tile.OutsideDayDesert if day else Tile.OutsideNightDesert, flipX, flipY, rot90)
+	else:
+		_setBackRandom(x, y, Tile.OutsideDayDesert if day else Tile.OutsideNightDesert, flipX, flipY, rot90)
+
+func setOutsideFloor(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setBackRandom(x, y, Tile.OutsideDayFloor if day else Tile.OutsideNightFloor, flipX, flipY, rot90)
+
+func _isBackTile(x: int, y: int, tiles: Array) -> bool:
+	return isTileId(_back.get_cell(x, y), tiles)
+
+func isFloorV(p: Vector2) -> bool: return isFloor(int(p.x), int(p.y))
+
+func isFloor(x: int, y: int) -> bool:
+	return _isBackTile(x, y, _floorTiles)
+
+func clearBackV(p: Vector2) -> void: clearBack(int(p.x), int(p.y))
+
+func clearBack(x: int, y: int) -> void:
+	_back.set_cell(x, y, TileMap.INVALID_CELL)
+
+## Fore
+
+func _setFore(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
+	_fore.set_cell(x, y, tile, flipX, flipY, rot90, coord)
+
+func _setForeRandom(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_fore, x, y, tile, flipX, flipY, rot90)
+
+func setWallPlainV(p: Vector2) -> void: return setWallPlain(int(p.x), int(p.y))
+
+func setWallPlain(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	var id
+	match theme:
+		0: id = Tile.Theme0WallPlain
+		1: id = Tile.Theme1WallPlain
+		2: id = Tile.Theme2WallPlain
+		3: id = Tile.Theme3WallPlain
+	_setForeRandom(x, y, id, flipX, flipY, rot90)
+
+func setWallV(p: Vector2) -> void: return setWall(int(p.x), int(p.y))
+
+func setWall(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	var id
+	match theme:
+		0: id = Tile.Theme0Wall
+		1: id = Tile.Theme1Wall
+		2: id = Tile.Theme2Wall
+		3: id = Tile.Theme3Wall
+	_setForeRandom(x, y, id, flipX, flipY, rot90)
+
+func setTorchV(p: Vector2) -> void: return setTorch(int(p.x), int(p.y))
+
+func setTorch(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	var id
+	match theme:
+		0: id = Tile.Theme0Torch
+		1: id = Tile.Theme1Torch
+		2: id = Tile.Theme2Torch
+		3: id = Tile.Theme3Torch
+	_setForeRandom(x, y, id, flipX, flipY, rot90)
+
+func setRubble(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_fore, x, y, Tile.Rubble, flipX, flipY, rot90)
+
+func setOutsideWall(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_fore, x, y, Tile.OutsideDayWall if day else Tile.OutsideNightWall, flipX, flipY, rot90)
+
+func setOutsideHedge(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_fore, x, y, Tile.OutsideDayHedge if day else Tile.OutsideNightHedge, flipX, flipY, rot90)
+
+func setCliff(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+	var id
+	match themeCliff:
+		0: id = Tile.Cliff0
+		1: id = Tile.Cliff1
+	_setForeRandom(x, y, id, flipX, flipY, rot90)
+
+func _isForeTile(x: int, y: int, tiles: Array) -> bool:
+	return isTileId(_fore.get_cell(x, y), tiles)
+
+func isWallV(p: Vector2) -> bool: return isWall(int(p.x), int(p.y))
+
+func isWall(x: int, y: int) -> bool:
+	return _isForeTile(x, y, _wallTiles)
+
+func isCliffV(p: Vector2) -> bool:
+	return isCliff(int(p.x), int(p.y))
+
+func isCliff(x: int, y: int) -> bool:
+	return isForeTile(_fore.get_cell(x, y), _cliffTiles)
+
+func clearForeV(p: Vector2) -> void: clearFore(int(p.x), int(p.y))
+
+func clearFore(x: int, y: int) -> void:
+	_fore.set_cell(x, y, TileMap.INVALID_CELL)
+
+# func isStairId(id: int) -> bool:
+# 	return (id == Tile.Theme0Stair or id == Tile.Theme1Stair or
+# 		id == Tile.Theme2Stair or id == Tile.Theme3Stair)
+
+# func isStairV(p: Vector2) -> bool:
+# 	return isStair(int(p.x), int(p.y))
+
+# func isStair(x: int, y: int) -> bool:
+# 	return isStairId(_fore.get_cell(x, y))
+
+# func isStairUpV(p: Vector2) -> bool:
+# 	return isStairUp(int(p.x), int(p.y))
+
+# func isStairUp(x: int, y: int) -> bool:
+# 	return isStair(x, y) and _fore.get_cell_autotile_coord(x, y) == Vector2(1, 0)
+
+# func isStairDownV(p: Vector2) -> bool:
+# 	return isStairDown(int(p.x), int(p.y))
+
+# func isStairDown(x: int, y: int) -> bool:
+# 	return isStair(x, y) and _fore.get_cell_autotile_coord(x, y) == Vector2(0, 0)
+
+# func setStairDownV(p: Vector2) -> void:
+# 	setStairDown(int(p.x), int(p.y))
+
+# func setStairDown(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+# 	var id
+# 	match theme:
+# 		0: id = Tile.Theme0Stair
+# 		1: id = Tile.Theme1Stair
+# 		2: id = Tile.Theme2Stair
+# 		3: id = Tile.Theme3Stair
+# 	_fore.set_cell(x, y, id, flipX, flipY, rot90, Vector2(0, 0))
+
+# func setStairUpV(p: Vector2) -> void:
+# 	setStairUp(int(p.x), int(p.y))
+
+# func setStairUp(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+# 	var id
+# 	match theme:
+# 		0: id = Tile.Theme0Stair
+# 		1: id = Tile.Theme1Stair
+# 		2: id = Tile.Theme2Stair
+# 		3: id = Tile.Theme3Stair
+# 	_fore.set_cell(x, y, id, flipX, flipY, rot90, Vector2(1, 0))
+
+# func isDoorId(id: int) -> bool:
+# 	return (id == Tile.Theme0Door or id == Tile.Theme1Door or
+# 		id == Tile.Theme2Door or id == Tile.Theme3Door)
+
+# func isDoorV(p: Vector2) -> bool:
+# 	return isDoor(int(p.x), int(p.y))
+
+# func isDoor(x: int, y: int) -> bool:
+# 	return isDoorId(_fore.get_cell(x, y))
+
+# func isDoorShutV(p: Vector2) -> bool:
+# 	return isDoorShut(int(p.x), int(p.y))
+
+# func isDoorShut(x: int, y: int) -> bool:
+# 	return isDoor(x, y) and _fore.get_cell_autotile_coord(x, y) == Vector2.ZERO
+
+# func setDoor(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+# 	var id
+# 	match theme:
+# 		0: id = Tile.Theme0Door
+# 		1: id = Tile.Theme1Door
+# 		2: id = Tile.Theme2Door
+# 		3: id = Tile.Theme3Door
+# 	_setRandomTile(_fore, x, y, id, flipX, flipY, rot90)
+
+# func setDoorBroke(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+# 	var id
+# 	match theme:
+# 		0: id = Tile.Theme0Door
+# 		1: id = Tile.Theme1Door
+# 		2: id = Tile.Theme2Door
+# 		3: id = Tile.Theme3Door
+# 	_fore.set_cell(x, y, id, flipX, flipY, rot90, Vector2(2, 0))
+
+## Flower
+
+func setFlower(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
+	_flower.set_cell(x, y, tile, flipX, flipY, rot90, coord)
+
+func setFlowerRandom(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_flower, x, y, tile, flipX, flipY, rot90)
+
+func isFlowerTile(x: int, y: int, tiles: Array) -> bool:
+	return isTileId(_flower.get_cell(x, y), tiles)
+
+## WaterBack
+
+func setWaterBack(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
+	_waterBack.set_cell(x, y, tile, flipX, flipY, rot90, coord)
+
+func setWaterBackRandom(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_waterBack, x, y, tile, flipX, flipY, rot90)
+
+func isWaterBackTile(x: int, y: int, tiles: Array) -> bool:
+	return isTileId(_waterBack.get_cell(x, y), tiles)
+
+## ItemBack
+
+func setItemBack(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
+	_itemBack.set_cell(x, y, tile, flipX, flipY, rot90, coord)
+
+func setItemBackRandom(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_itemBack, x, y, tile, flipX, flipY, rot90)
+
+func isItemBackTile(x: int, y: int, tiles: Array) -> bool:
+	return isTileId(_itemBack.get_cell(x, y), tiles)
+
+## ItemFore
+
+func setItemFore(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
+	_itemFore.set_cell(x, y, tile, flipX, flipY, rot90, coord)
+
+func setItemForeRandom(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_itemFore, x, y, tile, flipX, flipY, rot90)
+
+func isItemForeTile(x: int, y: int, tiles: Array) -> bool:
+	return isTileId(_itemFore.get_cell(x, y), tiles)
+
+## WaterFore
+
+func setWaterFore(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
+	_waterFore.set_cell(x, y, tile, flipX, flipY, rot90, coord)
+
+func setWaterForeRandom(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_waterFore, x, y, tile, flipX, flipY, rot90)
+
+func isWaterForeTile(x: int, y: int, tiles: Array) -> bool:
+	return isTileId(_waterFore.get_cell(x, y), tiles)
+
+## Light
+
+func _getLight(x: int, y: int) -> int:
+	return int(_light.get_cell_autotile_coord(x, y).x)
+
+func _setLight(x: int, y: int, light: int, test: bool) -> void:
+	if not test or light > _getLight(x, y):
+		_light.set_cell(x, y, Tile.Light, false, false, false, Vector2(light, 0))
+
+## Edge
+
+func _drawEdge() -> void:
+	var minY := rect.position.y - 1
+	var maxY := rect.end.y
+	var minX := rect.position.x - 1
+	var maxX := rect.end.x
+	for y in range(minY, maxY + 1):
+		for x in range(minX, maxX + 1):
+			if x == minX or x == maxX or y == minY or y == maxY:
+				if x == minX and y == minY: # nw
+					_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(1, 0))
+				elif x == minX and y == maxY: # sw
+					_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(2, 0))
+				elif x == maxX and y == minY: # ne
+					_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(0, 0))
+				elif x == maxX and y == maxY: # se
+					_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(3, 0))
+				elif x == minX: # w
+					_setRandomTile(_edge, x, y, Tile.EdgeOutside, false, Random.nextBool(), true)
+				elif x == maxX: # e
+					_setRandomTile(_edge, x, y, Tile.EdgeOutside, true, Random.nextBool(), true)
+				elif y == minY: # n
+					_setRandomTile(_edge, x, y, Tile.EdgeOutside, Random.nextBool(), false, false)
+				elif y == maxY: # s
+					_setRandomTile(_edge, x, y, Tile.EdgeOutside, Random.nextBool(), true, false)
+			elif (x == minX + 1) or (x == maxX - 1) or (y == minY + 1) or (y == maxY - 1):
+				if x == minX + 1 and y == minY + 1: # nw
+					_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, false, false, false)
+				elif x == minX + 1 and y == maxY - 1: # sw
+					_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, false, true, false)
+				elif x == maxX - 1 and y == minY + 1: # ne
+					_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, true, false, true)
+				elif x == maxX - 1 and y == maxY - 1: # se
+					_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, true, true, false)
+				elif x == minX + 1: # w
+					_setRandomTile(_edge, x, y, Tile.EdgeInside, false, Random.nextBool(), true)
+				elif x == maxX - 1: # e
+					_setRandomTile(_edge, x, y, Tile.EdgeInside, true, Random.nextBool(), true)
+				elif y == minY + 1: # n
+					_setRandomTile(_edge, x, y, Tile.EdgeInside, Random.nextBool(), false, false)
+				elif y == maxY - 1: # s
+					_setRandomTile(_edge, x, y, Tile.EdgeInside, Random.nextBool(), true, false)
