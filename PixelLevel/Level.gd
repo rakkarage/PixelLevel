@@ -49,6 +49,7 @@ enum Tile { # match id in tileSet
 	Cliff0, Cliff1
 	Banner0, Banner1,
 	Furnature, Carpet,
+	Fountain, Chest, ChestOpenFull, ChestOpenEmpty, ChestBroke, Loot
 	EdgeInside,	EdgeInsideCorner,
 	EdgeOutsideCorner, EdgeOutside,
 	Light,
