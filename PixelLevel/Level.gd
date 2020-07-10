@@ -171,8 +171,7 @@ func _handleDoor() -> bool:
 			return true
 	return false
 
-func _toggleDoorV(p: Vector2) -> void:
-	_toggleDoor(int(p.x), int(p.y))
+func _toggleDoorV(p: Vector2) -> void: _toggleDoor(int(p.x), int(p.y))
 
 func _toggleDoor(x: int, y: int) -> void:
 	var door := _fore.get_cell_autotile_coord(x, y)
@@ -426,8 +425,7 @@ func _onResize() -> void:
 	_oldSize = size
 	_cameraUpdate()
 
-func isBlockedV(p: Vector2) -> bool:
-	return isBlocked(int(p.x), int(p.y))
+func isBlockedV(p: Vector2) -> bool: return isBlocked(int(p.x), int(p.y))
 
 func isBlocked(x: int, y: int) -> bool:
 	if not insideMap(x, y): return true
@@ -740,8 +738,7 @@ func clearBackV(p: Vector2) -> void: clearBack(int(p.x), int(p.y))
 func clearBack(x: int, y: int) -> void:
 	_setBack(x, y, TileMap.INVALID_CELL)
 
-func isInvalidBackV(p: Vector2) -> bool:
-	return isInvalidBack(int(p.x), int(p.y))
+func isInvalidBackV(p: Vector2) -> bool: return isInvalidBack(int(p.x), int(p.y))
 
 func isInvalidBack(x: int, y: int) -> bool:
 	return _back.get_cell(x, y) == TileMap.INVALID_CELL
@@ -860,38 +857,32 @@ func isWallV(p: Vector2) -> bool: return isWall(int(p.x), int(p.y))
 func isWall(x: int, y: int) -> bool:
 	return _isForeTile(x, y, _wallTiles)
 
-func isCliffV(p: Vector2) -> bool:
-	return isCliff(int(p.x), int(p.y))
+func isCliffV(p: Vector2) -> bool: return isCliff(int(p.x), int(p.y))
 
 func isCliff(x: int, y: int) -> bool:
 	return _isForeTile(x, y, _cliffTiles)
 
-func isStairV(p: Vector2) -> bool:
-	return isStair(int(p.x), int(p.y))
+func isStairV(p: Vector2) -> bool: return isStair(int(p.x), int(p.y))
 
 func isStair(x: int, y: int) -> bool:
 	return _isForeTile(x, y, _stairTiles)
 
-func isStairUpV(p: Vector2) -> bool:
-	return isStairUp(int(p.x), int(p.y))
+func isStairUpV(p: Vector2) -> bool: return isStairUp(int(p.x), int(p.y))
 
 func isStairUp(x: int, y: int) -> bool:
 	return isStair(x, y) and _fore.get_cell_autotile_coord(x, y) == Vector2(1, 0)
 
-func isStairDownV(p: Vector2) -> bool:
-	return isStairDown(int(p.x), int(p.y))
+func isStairDownV(p: Vector2) -> bool: return isStairDown(int(p.x), int(p.y))
 
 func isStairDown(x: int, y: int) -> bool:
 	return isStair(x, y) and _fore.get_cell_autotile_coord(x, y) == Vector2(0, 0)
 
-func isDoorV(p: Vector2) -> bool:
-	return isDoor(int(p.x), int(p.y))
+func isDoorV(p: Vector2) -> bool: return isDoor(int(p.x), int(p.y))
 
 func isDoor(x: int, y: int) -> bool:
 	return _isForeTile(x, y, _doorTiles)
 
-func isDoorShutV(p: Vector2) -> bool:
-	return isDoorShut(int(p.x), int(p.y))
+func isDoorShutV(p: Vector2) -> bool: return isDoorShut(int(p.x), int(p.y))
 
 func isDoorShut(x: int, y: int) -> bool:
 	return isDoor(x, y) and _fore.get_cell_autotile_coord(x, y) == Vector2(0, 0)
@@ -901,8 +892,7 @@ func clearForeV(p: Vector2) -> void: clearFore(int(p.x), int(p.y))
 func clearFore(x: int, y: int) -> void:
 	_setFore(x, y, TileMap.INVALID_CELL)
 
-func isInvalidForeV(p: Vector2) -> bool:
-	return isInvalidFore(int(p.x), int(p.y))
+func isInvalidForeV(p: Vector2) -> bool: return isInvalidFore(int(p.x), int(p.y))
 
 func isInvalidFore(x: int, y: int) -> bool:
 	return _fore.get_cell(x, y) == TileMap.INVALID_CELL
@@ -955,14 +945,12 @@ func _setLight(x: int, y: int, light: int, test: bool) -> void:
 	if not test or light > _getLight(x, y):
 		_light.set_cell(x, y, Tile.Light, false, false, false, Vector2(light, 0))
 
-func isExploredV(p: Vector2) -> bool:
-	return isExplored(int(p.x), int(p.y))
+func isExploredV(p: Vector2) -> bool: return isExplored(int(p.x), int(p.y))
 
 func isExplored(x: int, y: int) -> bool:
 	return _getLight(x, y) == _lightExplored
 
-func isLitV(p: Vector2) -> bool:
-	return isLit(int(p.x), int(p.y))
+func isLitV(p: Vector2) -> bool: return isLit(int(p.x), int(p.y))
 
 func isLit(x: int, y: int) -> bool:
 	return _getLight(x, y) > _lightExplored

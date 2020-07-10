@@ -82,13 +82,13 @@ func _findSpot() -> Vector2:
 func _setFloorV(p: Vector2) -> void: _setFloor(int(p.x), int(p.y))
 
 func _setFloor(x: int, y: int) -> void:
-	_level.setFloor(x, y)
+	_level.setFloor(x, y, _wonky)
 	_level.clearFore(x, y)
 
 func _setFloorRoomV(p: Vector2) -> void: _setFloorRoom(int(p.x), int(p.y))
 
 func _setFloorRoom(x: int, y: int) -> void:
-	_level.setFloorRoom(x, y)
+	_level.setFloorRoom(x, y, _wonky)
 	_level.clearFore(x, y)
 
 func _setOutsideV(p: Vector2) -> void: _setOutside(int(p.x), int(p.y))
@@ -101,9 +101,9 @@ func _setFloorOrRoomV(p: Vector2) -> void: _setFloorOrRoom(int(p.x), int(p.y))
 
 func _setFloorOrRoom(x: int, y: int) -> void:
 	if _room:
-		_level.setFloorRoom(x, y)
+		_level.setFloorRoom(x, y, _wonky)
 	else:
-		_level.setFloor(x, y)
+		_level.setFloor(x, y, _wonky)
 	_level.clearFore(x, y)
 
 func _setWallPlainV(p: Vector2) -> void: _setWallPlain(int(p.x), int(p.y))
