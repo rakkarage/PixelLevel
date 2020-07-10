@@ -79,27 +79,43 @@ func _findSpot() -> Vector2:
 		y = _findY()
 	return Vector2(x, y)
 
-func _setFloorOrRoomV(p: Vector2) -> void:
-	_setFloorOrRoom(int(p.x), int(p.y))
+func _setFloorV(p: Vector2) -> void: _setFloor(int(p.x), int(p.y))
+
+func _setFloor(x: int, y: int) -> void:
+	_level.setFloor(x, y)
+	_level.clearFore(x, y)
+
+func _setFloorRoomV(p: Vector2) -> void: _setFloorRoom(int(p.x), int(p.y))
+
+func _setFloorRoom(x: int, y: int) -> void:
+	_level.setFloorRoom(x, y)
+	_level.clearFore(x, y)
+
+func _setOutsideV(p: Vector2) -> void: _setOutside(int(p.x), int(p.y))
+
+func _setOutside(x: int, y: int) -> void:
+	_level.setOutside(x, y)
+	_level.clearFore(x, y)
+
+func _setFloorOrRoomV(p: Vector2) -> void: _setFloorOrRoom(int(p.x), int(p.y))
 
 func _setFloorOrRoom(x: int, y: int) -> void:
 	if _room:
 		_level.setFloorRoom(x, y)
 	else:
 		_level.setFloor(x, y)
+	_level.clearFore(x, y)
 
-func _setWallPlainV(p: Vector2) -> void:
-	_setWallPlain(int(p.x), int(p.y))
+func _setWallPlainV(p: Vector2) -> void: _setWallPlain(int(p.x), int(p.y))
 
 func _setWallPlain(x: int, y: int) -> void:
 	if _cliff:
 		_level.setCliff(x, y)
 	else:
 		_level.setWallPlain(x, y)
-	_level.clearBack(x, y)
+	_level.clearFore(x, y)
 
-func _setWallV(p: Vector2) -> void:
-	_setWall(int(p.x), int(p.y))
+func _setWallV(p: Vector2) -> void: _setWall(int(p.x), int(p.y))
 
 func _setWall(x: int, y: int) -> void:
 	if _cliff:

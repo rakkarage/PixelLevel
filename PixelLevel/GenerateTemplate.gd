@@ -47,8 +47,10 @@ func _applyTemplate(template: Dictionary) -> void:
 	_applyTemplateAt(template, Vector2.ZERO)
 
 func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
-	var width = template.back.size().x / template.size
-	var height = template.back.size().y / template.size
+	template.back.lock()
+	template.fore.lock()
+	var width = template.back.get_size().x / template.size
+	var height = template.back.get_size().y / template.size
 	var randomX = Random.next(width)
 	var randomY = Random.next(height)
 	for y in range(height):
@@ -65,23 +67,15 @@ func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 			var ignore = false
 			var grass = false
 			if backColor == _backFloor:
-				_level.clearForeV(write)
-				_level.setFloorV(write)
+				_setFloorV(write)
 			elif backColor == _backWall:
-				_level.clearBackV(write)
 				_setWallV(write)
 				wall = true
 			elif backColor == _backFloorRoom:
-				_level.clearForeV(write)
-				_level.setFloorRoomV(write)
+				_setFloorRoomV(write)
 			elif backColor == _backGrass:
-				# _setOutside()
+				_setOutsideV(write)
 				grass = true
-# 			else if ((backColor.r == colorGrass.r) && (backColor.g == colorGrass.g) && (backColor.b == colorGrass.b) && (backColor.a == colorGrass.a))
-# 			{
-# 				SetOutside(writePosition);
-# 				grass = true;
-# 			}
 # 			else ignore |= ((backColor.r == colorIgnore.r) && (backColor.g == colorIgnore.g) && (backColor.b == colorIgnore.b) && (backColor.a == colorIgnore.a));
 # 			if (!ignore)
 # 			{
@@ -122,6 +116,8 @@ func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 # 		}
 # 	}
 # }
+	template.back.unlock()
+	template.fore.unlock()
 
 # func _loadTemplates() -> void:
 # 	_aBack.lock()

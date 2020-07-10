@@ -13,25 +13,3 @@ func _ready() -> void:
 
 func _generate() -> void:
 	Random.priority(_g).call_func()
-
-# func _generateTemplate() -> void:
-# 	_fill(false, true)
-# 	if _stream:
-# 		_generateStreams()
-# 	_stairs()
-# 	_level.generated()
-
-# func _generateTemplateCrossroad() -> void:
-# 	_fill(false, true)
-# 	if _stream:
-# 		_generateStreams()
-# 	_stairs()
-# 	_level.generated()
-
-# func _generateTemplateCastle() -> void:
-# 	_fill(false, true)
-# 	if _stream:
-# 		_generateStreams()
-# 	_stairs()
-# 	_level.generated()
-
