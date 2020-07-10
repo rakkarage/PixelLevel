@@ -77,10 +77,10 @@ const _floorTiles := [Tile.Theme0Floor, Tile.Theme0FloorRoom,
 	Tile.OutsideDayDesert, Tile.OutsideNightDesert,
 	Tile.OutsideDayFloor, Tile.OutsideNightFloor]
 
-const _wallTiles := [Tile.Theme0WallPlain, Tile.Theme0Wall,
-	Tile.Theme1WallPlain, Tile.Theme1Wall,
-	Tile.Theme2WallPlain, Tile.Theme2Wall,
-	Tile.Theme3WallPlain, Tile.Theme3Wall,
+const _wallTiles := [Tile.Theme0WallPlain, Tile.Theme0Wall, Tile.Theme0Torch,
+	Tile.Theme1WallPlain, Tile.Theme1Wall, Tile.Theme1Torch,
+	Tile.Theme2WallPlain, Tile.Theme2Wall, Tile.Theme2Torch,
+	Tile.Theme3WallPlain, Tile.Theme3Wall, Tile.Theme3Torch,
 	Tile.OutsideDayWall, Tile.OutsideNightWall,
 	Tile.OutsideDayHedge, Tile.OutsideBightHedge]
 
@@ -689,33 +689,42 @@ func _setBackRandom(x: int, y: int, tile: int, flipX := false, flipY := false, r
 
 func setFloorV(p: Vector2) -> void:	setFloor(int(p.x), int(p.y))
 
-func setFloor(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+func setFloor(x: int, y: int, wonky := false) -> void:
 	var id
 	match theme:
 		0: id = Tile.Theme0Floor
 		1: id = Tile.Theme1Floor
 		2: id = Tile.Theme2Floor
 		3: id = Tile.Theme3Floor
+	var flipX := Random.nextBool() if wonky else false
+	var flipY := Random.nextBool() if wonky else false
+	var rot90 := Random.nextBool() if wonky else false
 	_setBackRandom(x, y, id, flipX, flipY, rot90)
 
 func setFloorRoomV(p: Vector2) -> void:	setFloorRoom(int(p.x), int(p.y))
 
-func setFloorRoom(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+func setFloorRoom(x: int, y: int, wonky := false) -> void:
 	var id
 	match theme:
 		0: id = Tile.Theme0FloorRoom
 		1: id = Tile.Theme1FloorRoom
 		2: id = Tile.Theme2FloorRoom
 		3: id = Tile.Theme3FloorRoom
+	var flipX := Random.nextBool() if wonky else false
+	var flipY := Random.nextBool() if wonky else false
+	var rot90 := Random.nextBool() if wonky else false
 	_setBackRandom(x, y, id, flipX, flipY, rot90)
 
-func _setOutside(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+func _setOutside(x: int, y: int) -> void:
 	if desert:
-		_setBackRandom(x, y, Tile.OutsideDayDesert if day else Tile.OutsideNightDesert, flipX, flipY, rot90)
+		_setBackRandom(x, y, Tile.OutsideDayDesert if day else Tile.OutsideNightDesert)
 	else:
-		_setBackRandom(x, y, Tile.OutsideDay if day else Tile.OutsideNight, flipX, flipY, rot90)
+		_setBackRandom(x, y, Tile.OutsideDay if day else Tile.OutsideNight, Random.nextBool(), Random.nextBool(), Random.nextBool())
 
-func setOutsideFloor(x: int, y: int, flipX := false, flipY := false, rot90 := false) -> void:
+func setOutsideFloor(x: int, y: int, wonky := false) -> void:
+	var flipX := Random.nextBool() if wonky else false
+	var flipY := Random.nextBool() if wonky else false
+	var rot90 := Random.nextBool() if wonky else false
 	_setBackRandom(x, y, Tile.OutsideDayFloor if day else Tile.OutsideNightFloor, flipX, flipY, rot90)
 
 func _isBackTile(x: int, y: int, tiles: Array) -> bool:

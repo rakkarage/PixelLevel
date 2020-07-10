@@ -95,5 +95,5 @@ func _drawMaze() -> void:
 						_level.clearForeV(southSouth)
 						_setFloorOrRoomV(southSouth)
 						points.append(southSouth)
-	_setStairUpV(start)
-	_setStairDownV(end)
+	_level.setStairUpV(start)
+	_level.setStairDownV(end)

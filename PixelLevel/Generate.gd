@@ -53,17 +53,17 @@ func _fill(wall: bool, wallEdge: bool) -> void:
 func _stairs() -> void:
 	var up := _findSpot()
 	_level.startAt = up
-	_setStairUpV(up)
-	_setStairDownV(_findSpot())
+	_level.setStairUpV(up)
+	_level.setStairDownV(_findSpot())
 
 func _stairsAt(array: Array) -> void:
 	var up = Utility.position(array[Random.next(array.size())], _width)
 	_level.startAt = up
-	_setStairUpV(up)
+	_level.setStairUpV(up)
 	var down = Utility.position(array[Random.next(array.size())], _width)
 	while _level.isStairV(down):
 		down = Utility.position(array[Random.next(array.size())], _width)
-	_setStairDownV(down)
+	_level.setStairDownV(down)
 
 func _findX() -> int:
 	return Random.nextRange(1, _width - 2)
@@ -84,28 +84,16 @@ func _setFloorOrRoomV(p: Vector2) -> void:
 
 func _setFloorOrRoom(x: int, y: int) -> void:
 	if _room:
-		_setFloorRoom(x, y)
+		_level.setFloorRoom(x, y)
 	else:
-		_setFloor(x, y)
-
-func _setFloor(x: int, y: int) -> void:
-	var flipX := Random.nextBool() if _wonky else false
-	var flipY := Random.nextBool() if _wonky else false
-	var rot90 := Random.nextBool() if _wonky else false
-	_level.setFloor(x, y, flipX, flipY, rot90)
-
-func _setFloorRoom(x: int, y: int) -> void:
-	var flipX := Random.nextBool() if _wonky else false
-	var flipY := Random.nextBool() if _wonky else false
-	var rot90 := Random.nextBool() if _wonky else false
-	_level.setFloorRoom(x, y, flipX, flipY, rot90)
+		_level.setFloor(x, y)
 
 func _setWallPlainV(p: Vector2) -> void:
 	_setWallPlain(int(p.x), int(p.y))
 
 func _setWallPlain(x: int, y: int) -> void:
 	if _cliff:
-		_setCliff(x, y)
+		_level.setCliff(x, y)
 	else:
 		_level.setWallPlain(x, y)
 	_level.clearBack(x, y)
@@ -115,7 +103,7 @@ func _setWallV(p: Vector2) -> void:
 
 func _setWall(x: int, y: int) -> void:
 	if _cliff:
-		_setCliff(x, y)
+		_level.setCliff(x, y)
 	else:
 		if Random.nextFloat() < _torch:
 			_level.setTorch(x, y)
@@ -125,27 +113,6 @@ func _setWall(x: int, y: int) -> void:
 			else:
 				_level.setWallPlain(x, y)
 	_level.clearBack(x, y)
-
-func _setStairUpV(p: Vector2) -> void:
-	_setStairUp(int(p.x), int(p.y))
-
-func _setStairUp(x: int, y: int) -> void:
-	_level.setStairUp(x, y)
-
-func _setStairDownV(p: Vector2) -> void:
-	_setStairDown(int(p.x), int(p.y))
-
-func _setStairDown(x: int, y: int) -> void:
-	_level.setStairDown(x, y)
-
-func _setCliff(x: int, y: int) -> void:
-	_level.setCliff(x, y)
-
-func _setDoor(x: int, y: int) -> void:
-	_level.setDoor(x, y)
-
-func _setDoorBroke(x: int, y: int) -> void:
-	_level.setDoorBroke(x, y)
 
 func _generateStreams() -> void:
 	if Random.nextFloat() < 0.333:
@@ -239,7 +206,7 @@ func _fillStream(rect: Rect2) -> void:
 					else:
 						keep = true
 				elif _level.isDoor(x, y):
-					_setDoorBroke(x, y)
+					_level.setDoorBroke(x, y)
 				if not keep:
 					var alreadyDeep = _level.isWaterDeep(x, y)
 					if deep or alreadyDeep:

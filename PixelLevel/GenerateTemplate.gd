@@ -66,14 +66,14 @@ func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 			var grass = false
 			if backColor == _backFloor:
 				_level.clearForeV(write)
-				_setFloorV(write)
+				_level.setFloorV(write)
 			elif backColor == _backWall:
 				_level.clearBackV(write)
 				_setWallV(write)
 				wall = true
 			elif backColor == _backFloorRoom:
 				_level.clearForeV(write)
-				_setFloorRoomV(write)
+				_level.setFloorRoomV(write)
 			elif backColor == _backGrass:
 				# _setOutside()
 				grass = true
