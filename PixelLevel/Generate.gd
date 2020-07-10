@@ -22,10 +22,10 @@ func generate() -> void:
 	_depth += 1
 	var d := 10 + _depth
 	_setLevelRect(d * 2 + Random.next(d), d * 2 + Random.next(d))
-	_theme = Random.next(_level.themeCount)
-	_day = Random.nextBool()
-	_desert = Random.nextBool()
-	_themeCliff = Random.next(_level.themeCliffCount)
+	_level.theme = Random.next(_level.themeCount)
+	_level.day = Random.nextBool()
+	_level.desert = Random.nextBool()
+	_level.themeCliff = Random.next(_level.themeCliffCount)
 	_cliff = Random.nextFloat() < 0.333
 	_stream = Random.nextFloat() < 0.333
 	_wonky = Random.nextBool()
@@ -107,8 +107,7 @@ func _setWallPlain(x: int, y: int) -> void:
 	if _cliff:
 		_setCliff(x, y)
 	else:
-		var flipX := Random.nextBool()
-		_level.setWallPlain(x, y, flipX)
+		_level.setWallPlain(x, y)
 	_level.clearBack(x, y)
 
 func _setWallV(p: Vector2) -> void:
@@ -118,36 +117,35 @@ func _setWall(x: int, y: int) -> void:
 	if _cliff:
 		_setCliff(x, y)
 	else:
-		var flipX := Random.nextBool()
 		if Random.nextFloat() < _torch:
-			_level.setTorch(x, y, flipX)
+			_level.setTorch(x, y)
 		else:
 			if Random.nextFloat() < _fancy:
-				_level.setWall(x, y, flipX)
+				_level.setWall(x, y)
 			else:
-				_level.setWallPlain(x, y, flipX)
+				_level.setWallPlain(x, y)
 	_level.clearBack(x, y)
 
 func _setStairUpV(p: Vector2) -> void:
 	_setStairUp(int(p.x), int(p.y))
 
 func _setStairUp(x: int, y: int) -> void:
-	_level.setStairUp(x, y, Random.nextBool())
+	_level.setStairUp(x, y)
 
 func _setStairDownV(p: Vector2) -> void:
 	_setStairDown(int(p.x), int(p.y))
 
 func _setStairDown(x: int, y: int) -> void:
-	_level.setStairDown(x, y, Random.nextBool())
+	_level.setStairDown(x, y)
 
 func _setCliff(x: int, y: int) -> void:
-	_level.setCliff(x, y, Random.nextBool())
+	_level.setCliff(x, y)
 
 func _setDoor(x: int, y: int) -> void:
-	_level.setDoor(x, y, Random.nextBool())
+	_level.setDoor(x, y)
 
 func _setDoorBroke(x: int, y: int) -> void:
-	_level.setDoorBroke(x, y, Random.nextBool())
+	_level.setDoorBroke(x, y)
 
 func _generateStreams() -> void:
 	if Random.nextFloat() < 0.333:
