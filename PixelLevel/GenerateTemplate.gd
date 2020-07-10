@@ -7,8 +7,8 @@ const _backGrass := Color8(193, 255, 113, 255)
 
 const _colorWaterShallow := Color8(128, 255, 248, 255)
 const _colorWaterDeep := Color8(128, 200, 255, 255)
-const _colorWaterPurpleShallow := Color8(196, 110, 255, 255)
-const _colorWaterPurpleDeep := Color8(156, 82, 255, 255)
+const _colorWaterShallowPurple := Color8(196, 110, 255, 255)
+const _colorWaterDeepPurple := Color8(156, 82, 255, 255)
 const _colorTileRed := Color8(255, 41, 157, 255)
 const _colorTileYellow := Color8(255, 200, 33, 255)
 const _colorTilePurple := Color8(132, 41, 255, 255)
@@ -64,7 +64,6 @@ func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 			var backColor : Color = template.back.get_pixel(x, y)
 			var foreColor : Color = template.fore.get_pixel(x, y)
 			var wall = false
-			var ignore = false
 			var grass = false
 			if backColor == _backFloor:
 				_setFloorV(write)
@@ -76,37 +75,19 @@ func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 			elif backColor == _backGrass:
 				_setOutsideV(write)
 				grass = true
-# 			else ignore |= ((backColor.r == colorIgnore.r) && (backColor.g == colorIgnore.g) && (backColor.b == colorIgnore.b) && (backColor.a == colorIgnore.a));
-# 			if (!ignore)
-# 			{
-# 				if (!wall) ClearForeground(writePosition);
-# 				if (!grass)
-# 				{
-# 					ClearFlora(writePosition);
-# 					ClearFog(writePosition);
-# 					ClearWater(writePosition);
-# 				}
-# 			}
-# 			if (!wall && (foreColor.r == colorWaterShallow.r) && (foreColor.g == colorWaterShallow.g) && (foreColor.b == colorWaterShallow.b) && (foreColor.a == colorWaterShallow.a))
-# 			{
-# 				SetWater(writePosition, false);
-# 				SetRubble(writePosition);
-# 			}
-# 			else if (!wall && (foreColor.r == colorWaterDeep.r) && (foreColor.g == colorWaterDeep.g) && (foreColor.b == colorWaterDeep.b) && (foreColor.a == colorWaterDeep.a))
-# 			{
-# 				SetWater(writePosition, true);
-# 				SetRubble(writePosition);
-# 			}
-# 			else if (!wall && (foreColor.r == colorWaterPurpleShallow.r) && (foreColor.g == colorWaterPurpleShallow.g) && (foreColor.b == colorWaterPurpleShallow.b) && (foreColor.a == colorWaterPurpleShallow.a))
-# 			{
-# 				SetWater(writePosition, false, true);
-# 				SetRubble(writePosition);
-# 			}
-# 			else if (!wall && (foreColor.r == colorWaterPurpleDeep.r) && (foreColor.g == colorWaterPurpleDeep.g) && (foreColor.b == colorWaterPurpleDeep.b) && (foreColor.a == colorWaterPurpleDeep.a))
-# 			{
-# 				SetWater(writePosition, true, true);
-# 				SetRubble(writePosition);
-# 			}
+			_level.clearForeV(write)
+			if foreColor == _colorWaterShallow:
+				_level.setWaterShallowV(write)
+				_level.setRubbleV(write)
+			elif foreColor == _colorWaterDeep:
+				_level.setWaterDeepV(write)
+				_level.setRubbleV(write)
+			elif foreColor == _colorWaterShallowPurple:
+				_level.setWaterShallowPurpleV(write)
+				_level.setRubbleV(write)
+			elif foreColor == _colorWaterDeepPurple:
+				_level.setWaterDeepPurpleV(write)
+				_level.setRubbleV(write)
 # 			else if ((foreColor.r == colorTileRed.r) && (foreColor.g == colorTileRed.g) && (foreColor.b == colorTileRed.b) && (foreColor.a == colorTileRed.a))
 # 				SetDoor(writePosition);
 # 			else if ((foreColor.r == colorTilePurple.r) && (foreColor.g == colorTilePurple.g) && (foreColor.b == colorTilePurple.b) && (foreColor.a == colorTilePurple.a))
