@@ -519,7 +519,7 @@ func _findTorches() -> void:
 
 func _lightTorches() -> void:
 	for p in _torches.keys():
-		_torches[p] = clamp(_torches[p] + Random.nextRange(-1, 1), 0, _torchRadiusMax)
+		_torches[p] = clamp(_torches[p] + Random.nextRange(-1, 1), 2, _torchRadiusMax)
 		var current = _torches[p]
 		var north := Vector2(p.x, p.y + 1)
 		var east := Vector2(p.x + 1, p.y)
@@ -619,7 +619,7 @@ const _colorPathDoor := Color(_colorDoor.r, _colorDoor.g, _colorDoor.b, _alphaPa
 const _colorPathWall := Color(_colorWall.r, _colorWall.g, _colorWall.b, _alphaPath)
 
 func _getPathColor(x: int, y: int) -> Color:
-	var color = Color(0.25, 0.25, 0.25, 0.25)
+	var color = Color(0.25, 0.25, 0.25, 0.75)
 	if isStair(x, y):
 		color = _colorPathStair
 	elif isDoor(x, y):
@@ -815,12 +815,12 @@ func _setStair(x: int, y: int, coord: Vector2) -> void:
 func setStairDownV(p: Vector2) -> void: setStairDown(int(p.x), int(p.y))
 
 func setStairDown(x: int, y: int) -> void:
-	_setStairOutside(x, y, Vector2(0, 0))
+	_setStair(x, y, Vector2(0, 0))
 
 func setStairUpV(p: Vector2) -> void: setStairUp(int(p.x), int(p.y))
 
 func setStairUp(x: int, y: int) -> void:
-	_setStairOutside(x, y, Vector2(1, 0))
+	_setStair(x, y, Vector2(1, 0))
 
 func _setStairOutside(x: int, y: int, coord: Vector2) -> void:
 	if desert:
