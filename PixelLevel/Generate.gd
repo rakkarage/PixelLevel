@@ -45,7 +45,7 @@ func _fill(wall: bool, wallEdge: bool) -> void:
 		for x in range(_width):
 			_setFloorOrRoom(x, y)
 			if wall:
-					_setWallPlain(x, y)
+				_setWallPlain(x, y)
 			elif wallEdge:
 				if y == 0 or y == _height - 1 or x == 0 or x == _width - 1:
 					_setWall(x, y)
