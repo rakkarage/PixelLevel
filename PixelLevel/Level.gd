@@ -121,7 +121,7 @@ func generated() -> void:
 	_pathClear()
 	_addPoints()
 	_connectPoints()
-	_targetToMob()
+	_target.modulate = Color.transparent
 	_checkCenter()
 	_dark()
 	_findTorches()

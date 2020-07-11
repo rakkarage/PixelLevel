@@ -113,7 +113,7 @@ func _setWallPlain(x: int, y: int) -> void:
 		_level.setCliff(x, y)
 	else:
 		_level.setWallPlain(x, y)
-	_level.clearFore(x, y)
+	_level.clearBack(x, y)
 
 func _setWallV(p: Vector2) -> void: _setWall(int(p.x), int(p.y))
 
