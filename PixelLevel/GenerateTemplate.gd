@@ -36,7 +36,7 @@ var _data := {
 
 func generate() -> void:
 	.generate()
-	_fill(false, true)
+	_fill(true, true)
 	_applyTemplate(Random.priority(_data))
 	_stairs()
 	if _stream:

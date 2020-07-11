@@ -26,8 +26,8 @@ func generate() -> void:
 	_level.day = Random.nextBool()
 	_level.desert = Random.nextBool()
 	_level.themeCliff = Random.next(_level.themeCliffCount)
-	_cliff = Random.nextFloat() < 0.333
-	_stream = Random.nextFloat() < 0.333
+	_cliff = Random.nextFloat() <= 0.333
+	_stream = Random.nextFloat() <= 0.333
 	_wonky = Random.nextBool()
 	_room = Random.nextBool()
 	_level.themeCliff = Random.next(_level.themeCliffCount)
@@ -121,17 +121,17 @@ func _setWall(x: int, y: int) -> void:
 	if _cliff:
 		_level.setCliff(x, y)
 	else:
-		if Random.nextFloat() < _torch:
+		if Random.nextFloat() <= _torch:
 			_level.setTorch(x, y)
 		else:
-			if Random.nextFloat() < _fancy:
+			if Random.nextFloat() <= _fancy:
 				_level.setWall(x, y)
 			else:
 				_level.setWallPlain(x, y)
 	_level.clearBack(x, y)
 
 func _generateStreams() -> void:
-	if Random.nextFloat() < 0.333:
+	if Random.nextFloat() <= 0.333:
 		_generateStream(true)
 		_generateStream(false)
 	elif Random.nextBool():
@@ -146,7 +146,7 @@ const _leaveNoneChance := 0.333
 var _leaveNone := false
 
 func _generateStream(horizontal: bool) -> void:
-	_leaveNone = Random.nextFloat() < _leaveNoneChance
+	_leaveNone = Random.nextFloat() <= _leaveNoneChance
 	var roughness = Random.nextFloat()
 	var windyness = Random.nextFloat()
 	var width = 3 + Random.next(5)
@@ -169,7 +169,7 @@ func _generateStream(horizontal: bool) -> void:
 			start.x += -1 if opposite else 1
 		else:
 			start.y += -1 if opposite else 1
-		if Random.nextFloat() < roughness:
+		if Random.nextFloat() <= roughness:
 			var add = -2 + Random.next(5)
 			width += add
 			if horizontal:
@@ -181,7 +181,7 @@ func _generateStream(horizontal: bool) -> void:
 			if width < 3:
 				width = 3
 			half = int(width / 2.0)
-		if Random.nextFloat() < windyness:
+		if Random.nextFloat() <= windyness:
 			var add = -1 + Random.next(3)
 			if horizontal:
 				start.y += add
