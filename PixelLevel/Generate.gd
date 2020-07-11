@@ -218,7 +218,7 @@ func _fillStream(rect: Rect2) -> void:
 				if _level.isWall(x, y):
 					if _leaveNone or Random.nextFloat() > _leaveChance:
 						_level.setRubble(x, y)
-						_setFloorOrRoom(x, y)
+						_level.clearFore(x, y)
 					else:
 						keep = true
 				elif _level.isDoor(x, y):

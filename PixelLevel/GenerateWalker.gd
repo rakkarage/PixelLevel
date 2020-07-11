@@ -28,6 +28,7 @@ func _drawWalk() -> void:
 		_level.clearForeV(step)
 
 func _walk(steps: int) -> Array:
+	_steps.clear()
 	for _step in range(steps):
 		if Random.nextFloat() <= _changeChance or _stepCount > _stepsChange:
 			_changeDirection()
