@@ -739,9 +739,9 @@ func clearBackV(p: Vector2) -> void: clearBack(int(p.x), int(p.y))
 func clearBack(x: int, y: int) -> void:
 	_setBack(x, y, TileMap.INVALID_CELL)
 
-func isInvalidBackV(p: Vector2) -> bool: return isInvalidBack(int(p.x), int(p.y))
+func isBackInvalidV(p: Vector2) -> bool: return isBackInvalid(int(p.x), int(p.y))
 
-func isInvalidBack(x: int, y: int) -> bool:
+func isBackInvalid(x: int, y: int) -> bool:
 	return _back.get_cell(x, y) == TileMap.INVALID_CELL
 
 ## Fore
@@ -916,9 +916,9 @@ func clearForeV(p: Vector2) -> void: clearFore(int(p.x), int(p.y))
 func clearFore(x: int, y: int) -> void:
 	_setFore(x, y, TileMap.INVALID_CELL)
 
-func isInvalidForeV(p: Vector2) -> bool: return isInvalidFore(int(p.x), int(p.y))
+func isForeInvalidV(p: Vector2) -> bool: return isForeInvalid(int(p.x), int(p.y))
 
-func isInvalidFore(x: int, y: int) -> bool:
+func isForeInvalid(x: int, y: int) -> bool:
 	return _fore.get_cell(x, y) == TileMap.INVALID_CELL
 
 ## Flower
