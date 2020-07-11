@@ -51,8 +51,8 @@ func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 	template.fore.lock()
 	var width = template.back.get_size().x / template.size
 	var height = template.back.get_size().y / template.size
-	var randomX = Random.next(width)
-	var randomY = Random.next(height)
+	# var randomX = Random.next(width)
+	# var randomY = Random.next(height)
 	for y in range(height):
 		for x in range(width):
 			var write : Vector2
@@ -63,18 +63,14 @@ func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 				3: write = Vector2(p.x + width - y - 1, p.y + x)
 			var backColor : Color = template.back.get_pixel(x, y)
 			var foreColor : Color = template.fore.get_pixel(x, y)
-			var wall = false
-			var grass = false
 			if backColor == _backFloor:
 				_setFloorV(write)
 			elif backColor == _backWall:
 				_setWallV(write)
-				wall = true
 			elif backColor == _backFloorRoom:
 				_setFloorRoomV(write)
 			elif backColor == _backGrass:
 				_setOutsideV(write)
-				grass = true
 			_level.clearForeV(write)
 			if foreColor == _colorWaterShallow:
 				_level.setWaterShallowV(write)
@@ -88,24 +84,14 @@ func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 			elif foreColor == _colorWaterDeepPurple:
 				_level.setWaterDeepPurpleV(write)
 				_level.setRubbleV(write)
-# 			else if ((foreColor.r == colorTileRed.r) && (foreColor.g == colorTileRed.g) && (foreColor.b == colorTileRed.b) && (foreColor.a == colorTileRed.a))
-# 				SetDoor(writePosition);
-# 			else if ((foreColor.r == colorTilePurple.r) && (foreColor.g == colorTilePurple.g) && (foreColor.b == colorTilePurple.b) && (foreColor.a == colorTilePurple.a))
-# 				SetFountain(writePosition);
-# 			else if ((foreColor.r == colorTileYellow.r) && (foreColor.g == colorTileYellow.g) && (foreColor.b == colorTileYellow.b) && (foreColor.a == colorTileYellow.a))
-# 				SetLoot(writePosition);
-# 		}
-# 	}
-# }
+			elif foreColor == _colorTileRed:
+				_level.setDoorV(write)
+				_setFloorV(write)
+			elif foreColor == _colorTilePurple:
+				_level.setFountainV(write)
+				_setFloorV(write)
+			elif foreColor == _colorTileYellow:
+				_level.setLootV(write)
+				_setFloorV(write)
 	template.back.unlock()
 	template.fore.unlock()
-
-# func _loadTemplates() -> void:
-# 	_aBack.lock()
-# 	var size = _aBack.get_size()
-# 	for y in range(size.y):
-# 		for x in range(size.x):
-# 			var color = _aBack.get_pixel(x, y)
-# 			if color != Color(0, 0, 0, 1):
-# 				print(color)
-# 	_aBack.unlock()

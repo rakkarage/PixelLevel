@@ -850,6 +850,23 @@ func setDoorBroke(x: int, y: int) -> void:
 		3: id = Tile.Theme3Door
 	_setFore(x, y, id, Random.nextBool(), false, false, Vector2(2, 0))
 
+func setFountainV(p: Vector2) -> void: setFountain(int(p.x), int(p.y))
+
+func setFountain(x: int, y: int) -> void:
+	_setForeRandom(x, y, Tile.Fountain, Random.nextBool())
+
+func setLootV(p: Vector2) -> void: setLoot(int(p.x), int(p.y))
+
+func setLoot(x: int, y: int) -> void:
+	var id
+	match Random.next(4):
+		0: id = Tile.Chest
+		1: id = Tile.ChestBroke
+		2: id = Tile.ChestOpenEmpty
+		3: id = Tile.ChestOpenFull
+	_setItemBackRandom(x, y, id, Random.nextBool())
+	_setItemFore(x, y, Tile.Loot)
+
 func _isForeTile(x: int, y: int, tiles: Array) -> bool:
 	return isTileId(_fore.get_cell(x, y), tiles)
 
@@ -926,6 +943,18 @@ func isWaterPurple(x: int, y: int) -> bool:
 	return _isWaterTile(x, y, _waterPurpleTiles)
 
 ## Item
+
+func _setItemFore(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
+	_itemFore.set_cell(x, y, tile, flipX, flipY, rot90, coord)
+
+func _setItemForeRandom(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_itemFore, x, y, tile, flipX, flipY, rot90)
+
+func _setItemBack(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
+	_itemBack.set_cell(x, y, tile, flipX, flipY, rot90, coord)
+
+func _setItemBackRandom(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_itemBack, x, y, tile, flipX, flipY, rot90)
 
 func _setGrassDry(x: int, y: int) -> void:
 	var flipX = Random.nextBool()
