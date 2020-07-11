@@ -1,4 +1,5 @@
 extends Generate
+class_name GenerateWalker
 
 const _stepsMax = 500
 const _stepsChange = 5
@@ -8,6 +9,8 @@ var _position := Vector2.ZERO
 var _direction := Vector2.UP
 var _steps := []
 var _stepCount := 0
+
+func _init(level: Level).(level) -> void: pass
 
 func generate() -> void:
 	.generate()

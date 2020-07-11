@@ -1,4 +1,4 @@
-extends Node
+extends Object
 class_name Generate
 
 var _level : Level
@@ -13,7 +13,7 @@ const _fancy := 0.03
 var _wonky := false
 var _room := false
 
-func setup(level: Level) -> void:
+func _init(level: Level) -> void:
 	_level = level
 
 func generate() -> void:

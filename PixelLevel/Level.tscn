@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://PixelLevel/Level.tres" type="TileSet" id=1]
 [ext_resource path="res://PixelLevel/Mob.tscn" type="PackedScene" id=2]
@@ -7,12 +7,6 @@
 [ext_resource path="res://PixelLevel/Back.tscn" type="PackedScene" id=5]
 [ext_resource path="res://PixelLevel/MiniMap.gd" type="Script" id=6]
 [ext_resource path="res://PixelLevel/Generator.gd" type="Script" id=7]
-[ext_resource path="res://PixelLevel/GenerateMaze.gd" type="Script" id=8]
-[ext_resource path="res://PixelLevel/GenerateCave.gd" type="Script" id=9]
-[ext_resource path="res://PixelLevel/GenerateDungeon.gd" type="Script" id=10]
-[ext_resource path="res://PixelLevel/GenerateBasic.gd" type="Script" id=11]
-[ext_resource path="res://PixelLevel/GenerateRoom.gd" type="Script" id=12]
-[ext_resource path="res://PixelLevel/GenerateTemplate.gd" type="Script" id=13]
 
 [node name="Level" type="Node"]
 script = ExtResource( 6 )
@@ -122,27 +116,6 @@ format = 1
 [node name="Target" parent="Level/Viewport" instance=ExtResource( 3 )]
 
 [node name="Tween" type="Tween" parent="Level/Viewport"]
-
-[node name="Generate" type="Node" parent="Level"]
-
-[node name="GenerateBasic" type="Node" parent="Level/Generate"]
-script = ExtResource( 11 )
-
-[node name="GenerateRoom" type="Node" parent="Level/Generate"]
-script = ExtResource( 12 )
-
-[node name="GenerateDungeon" type="Node" parent="Level/Generate"]
-script = ExtResource( 10 )
-
-[node name="GenerateMaze" type="Node" parent="Level/Generate"]
-script = ExtResource( 8 )
-
-[node name="GenerateCave" type="Node" parent="Level/Generate"]
-script = ExtResource( 9 )
-
-[node name="GenerateTemplate" type="Node" parent="Level/Generate"]
-script = ExtResource( 13 )
-priority = 888
 
 [node name="Fore" type="ViewportContainer" parent="."]
 anchor_right = 1.0

@@ -1,4 +1,7 @@
 extends Generate
+class_name GenerateTemplateCrossroad
+
+func _init(level: Level).(level) -> void: pass
 
 # func _generateTemplateCrossroad() -> void:
 # 	_fill(false, true)

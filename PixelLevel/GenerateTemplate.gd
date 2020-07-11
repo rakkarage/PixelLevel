@@ -1,4 +1,5 @@
 extends Generate
+class_name GenerateTemplate
 
 const _backFloor := Color8(0, 0, 0, 0)
 const _backFloorRoom := Color8(255, 255, 255, 255)
@@ -33,6 +34,8 @@ var _data := {
 		"priority": 1
 	}
 }
+
+func _init(level: Level).(level) -> void: pass
 
 func generate() -> void:
 	.generate()

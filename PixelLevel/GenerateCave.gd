@@ -1,9 +1,12 @@
 extends Generate
+class_name GenerateCave
 
 const _standardChance := 0.4
 const _standardBirth := 4
 const _standardDeath := 3
 const _standardSteps := 10
+
+func _init(level: Level).(level) -> void: pass
 
 func generate() -> void:
 	.generate()

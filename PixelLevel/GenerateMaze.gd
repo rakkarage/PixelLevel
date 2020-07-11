@@ -1,4 +1,7 @@
 extends Generate
+class_name GenerateMaze
+
+func _init(level: Level).(level) -> void: pass
 
 func generate() -> void:
 	.generate()

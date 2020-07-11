@@ -1,9 +1,12 @@
 extends Generate
+class_name GenerateDungeon
 
 const _maxRoomWidth := 7
 const _maxRoomHeight := 7
 const _minRoomWidth := 4
 const _minRoomHeight := 4
+
+func _init(level: Level).(level) -> void: pass
 
 func generate() -> void:
 	.generate()
