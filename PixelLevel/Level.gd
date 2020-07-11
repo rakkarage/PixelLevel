@@ -785,6 +785,8 @@ func setTorch(x: int, y: int) -> void:
 		3: id = Tile.Theme3Torch
 	_setForeRandom(x, y, id, Random.nextBool())
 
+func setRubbleV(p: Vector2) -> void: setRubble(int(p.x), int(p.y))
+
 func setRubble(x: int, y: int) -> void:
 	_setRandomTile(_fore, x, y, Tile.Rubble, Random.nextBool(), Random.nextBool(), Random.nextBool())
 
@@ -832,6 +834,8 @@ func setStairOutsideUp(x: int, y: int) -> void:
 func setStairOutsideDown(x: int, y: int) -> void:
 	_setStairOutside(x, y, Vector2(1, 0))
 
+func setDoorV(p: Vector2) -> void: setDoor(int(p.x), int(p.y))
+
 func setDoor(x: int, y: int) -> void:
 	var id
 	match theme:
@@ -840,6 +844,8 @@ func setDoor(x: int, y: int) -> void:
 		2: id = Tile.Theme2Door
 		3: id = Tile.Theme3Door
 	_setRandomTile(_fore, x, y, id, Random.nextBool())
+
+func setDoorBrokeV(p: Vector2) -> void: setDoorBroke(int(p.x), int(p.y))
 
 func setDoorBroke(x: int, y: int) -> void:
 	var id
@@ -922,9 +928,13 @@ func setFlower(x: int, y: int) -> void:
 
 ## Water
 
+func setWaterShallowV(p: Vector2) -> void: setWaterShallow(int(p.x), int(p.y))
+
 func setWaterShallow(x: int, y: int) -> void:
 	_waterBack.set_cell(x, y, Tile.WaterShallowBack, false, false, false, Vector2.ZERO)
 	_waterFore.set_cell(x, y, Tile.WaterShallowFore, false, false, false, Vector2.ZERO)
+
+func setWaterDeepV(p: Vector2) -> void: setWaterDeep(int(p.x), int(p.y))
 
 func setWaterDeep(x: int, y: int) -> void:
 	_waterBack.set_cell(x, y, Tile.WaterDeepBack, false, false, false, Vector2.ZERO)
