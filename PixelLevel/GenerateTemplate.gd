@@ -77,23 +77,18 @@ func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 				_setFloorRoomV(write)
 			elif backColor == _backGrass:
 				_setOutsideV(write)
-			_level.clearForeV(write)
 			if foreColor == _colorWaterShallow:
 				_level.setWaterShallowV(write)
 				_level.setRubbleV(write)
-				_level.clearForeV(write)
 			elif foreColor == _colorWaterDeep:
 				_level.setWaterDeepV(write)
 				_level.setRubbleV(write)
-				_level.clearForeV(write)
 			elif foreColor == _colorWaterShallowPurple:
 				_level.setWaterShallowPurpleV(write)
 				_level.setRubbleV(write)
-				_level.clearForeV(write)
 			elif foreColor == _colorWaterDeepPurple:
 				_level.setWaterDeepPurpleV(write)
 				_level.setRubbleV(write)
-				_level.clearForeV(write)
 			elif foreColor == _colorTileRed:
 				_level.setDoorV(write)
 				_setFloorOrRoomV(write)
