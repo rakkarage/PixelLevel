@@ -1,7 +1,7 @@
 extends Generate
 class_name GenerateTemplate
 
-const _backFloor := Color8(0, 0, 0, 0)
+const _backFloor := Color.transparent
 const _backFloorRoom := Color8(255, 255, 255, 255)
 const _backWall := Color8(0, 0, 0, 255)
 const _backGrass := Color8(193, 255, 113, 255)
@@ -16,18 +16,21 @@ const _colorTilePurple := Color8(132, 41, 255, 255)
 
 var _data := {
 	"a": {
+		"name": "a",
 		"back": load("res://PixelLevel/Sprite/Template/ABack.png"),
 		"fore": load("res://PixelLevel/Sprite/Template/AFore.png"),
 		"size": 15,
 		"priority": 33
 	},
 	"b": {
+		"name": "b",
 		"back": load("res://PixelLevel/Sprite/Template/BasicBack.png"),
 		"fore": load("res://PixelLevel/Sprite/Template/BasicFore.png"),
 		"size": 15,
 		"priority": 100
 	},
 	"c": {
+		"name": "c",
 		"back": load("res://PixelLevel/Sprite/Template/CastleBack.png"),
 		"fore": load("res://PixelLevel/Sprite/Template/CastleFore.png"),
 		"size": 75,
@@ -39,6 +42,7 @@ func _init(level: Level).(level) -> void: pass
 
 func generate() -> void:
 	.generate()
+	_cliff = false
 	_fill(true, true)
 	_applyTemplate(Random.priority(_data))
 	_stairs()
@@ -61,18 +65,21 @@ func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 	var rotate := Random.next(4)
 	for y in range(template.size):
 		for x in range(template.size):
-			var write : Vector2
+			var write: Vector2
 			match rotate:
 				0: write = Vector2(p.x + x, p.y + y)
 				1: write = Vector2(p.x + y, p.y + template.size - x - 1)
 				2: write = Vector2(p.x + template.size - x - 1, p.y + template.size - y - 1)
 				3: write = Vector2(p.x + template.size - y - 1, p.y + x)
-			var backColor : Color = template.back.get_pixel(readX * template.size + x, readY * template.size + y)
-			var foreColor : Color = template.fore.get_pixel(readX * template.size + x, readY * template.size + y)
+			var backColor: Color = template.back.get_pixel(readX * template.size + x, readY * template.size + y)
+			var foreColor: Color = template.fore.get_pixel(readX * template.size + x, readY * template.size + y)
 			if backColor == _backFloor:
 				_setFloorV(write)
 			elif backColor == _backWall:
-				_setWallV(write)
+				if template.name == "b":
+					_setWallPlainV(write)
+				else:
+					_setWallV(write)
 			elif backColor == _backFloorRoom:
 				_setFloorRoomV(write)
 			elif backColor == _backGrass:
@@ -90,13 +97,13 @@ func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 				_level.setWaterDeepPurpleV(write)
 				_level.setRubbleV(write)
 			elif foreColor == _colorTileRed:
+				_setFloorRoomV(write)
 				_level.setDoorV(write)
-				_setFloorOrRoomV(write)
 			elif foreColor == _colorTilePurple:
+				_setFloorRoomV(write)
 				_level.setFountainV(write)
-				_setFloorOrRoomV(write)
 			elif foreColor == _colorTileYellow:
+				_setFloorRoomV(write)
 				_level.setLootV(write)
-				_setFloorOrRoomV(write)
 	template.back.unlock()
 	template.fore.unlock()
