@@ -224,6 +224,8 @@ func _fillStream(rect: Rect2) -> void:
 				elif _level.isDoor(x, y):
 					_level.setDoorBroke(x, y)
 				if not keep:
+					if not _level.isStair(x, y):
+						_level.clearFore(x, y)
 					var alreadyDeep = _level.isWaterDeep(x, y)
 					if deep or alreadyDeep:
 						if not alreadyDeep:

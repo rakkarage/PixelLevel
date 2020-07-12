@@ -76,7 +76,8 @@ const _floorTiles := [Tile.Theme0Floor, Tile.Theme0FloorRoom,
 	Tile.Theme3Floor, Tile.Theme3FloorRoom,
 	Tile.OutsideDay, Tile.OutsideNight,
 	Tile.OutsideDayDesert, Tile.OutsideNightDesert,
-	Tile.OutsideDayFloor, Tile.OutsideNightFloor]
+	Tile.OutsideDayFloor, Tile.OutsideNightFloor,
+	Tile.Rubble, Tile.OutsideDayRubble, Tile.OutsideNightRubble]
 
 const _wallTiles := [Tile.Theme0WallPlain, Tile.Theme0Wall, Tile.Theme0Torch,
 	Tile.Theme1WallPlain, Tile.Theme1Wall, Tile.Theme1Torch,
@@ -788,7 +789,10 @@ func setTorch(x: int, y: int) -> void:
 func setRubbleV(p: Vector2) -> void: setRubble(int(p.x), int(p.y))
 
 func setRubble(x: int, y: int) -> void:
-	_setRandomTile(_fore, x, y, Tile.Rubble, Random.nextBool(), Random.nextBool(), Random.nextBool())
+	_setRandomTile(_back, x, y, Tile.Rubble, Random.nextBool(), Random.nextBool(), Random.nextBool())
+
+func setOutsideRubble(x: int, y: int) -> void:
+	_setRandomTile(_back, x, y, Tile.OutsideDayRubble if day else Tile.OutsideNightRubble, Random.nextBool(), Random.nextBool(), Random.nextBool())
 
 func setOutsideWall(x: int, y: int) -> void:
 	_setRandomTile(_fore, x, y, Tile.OutsideDayWall if day else Tile.OutsideNightWall, Random.nextBool())
