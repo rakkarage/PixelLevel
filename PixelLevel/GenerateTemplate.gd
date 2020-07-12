@@ -3,7 +3,7 @@ class_name GenerateTemplate
 
 const _backFloor := Color.transparent
 const _backFloorRoom := Color8(255, 255, 255, 255)
-const _backWall := Color8(0, 0, 0, 255)
+const _backWall := Color8(71, 112, 76, 255)
 const _backGrass := Color8(193, 255, 113, 255)
 
 const _colorWaterShallow := Color8(128, 255, 248, 255)
