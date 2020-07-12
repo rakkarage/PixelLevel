@@ -45,7 +45,7 @@ func _getAdjacentCount(list: Array, x: int, y: int) -> int:
 	for yy in range(-1, 2):
 		for xx in range(-1, 2):
 			if not ((xx == 0) and (yy == 0)):
-				var new = Vector2(xx + x, yy + y)
+				var new := Vector2(xx + x, yy + y)
 				if _level.insideMapV(new):
 					if list[Utility.indexV(new, _width)]:
 						count += 1
@@ -61,9 +61,9 @@ func _getCellularList(steps: int, chance: float, birth: int, death: int) -> Arra
 		var temp := Utility.repeat(false, _width * _height)
 		for y in range(_height):
 			for x in range(_width):
-				var adjacent = _getAdjacentCount(list, x, y)
-				var index = Utility.index(x, y, _width)
-				var value = list[index]
+				var adjacent := _getAdjacentCount(list, x, y)
+				var index := Utility.index(x, y, _width)
+				var value: bool = list[index]
 				if value:
 					value = value and adjacent >= death
 				else:
@@ -75,10 +75,10 @@ func _getCellularList(steps: int, chance: float, birth: int, death: int) -> Arra
 	return list
 
 func _combineLists(destination: Array, source: Array) -> void:
-	var random = Random.nextBool()
+	var random := Random.nextBool()
 	for y in range(_height):
 		for x in range(_width):
-			var index = Utility.index(x, y, _width)
+			var index := Utility.index(x, y, _width)
 			destination[index] = (destination[index] and source[index]) if random else (destination[index] or source[index])
 
 func _biggest(list: Array) -> Array:
@@ -94,16 +94,16 @@ func _unionAdjacent(disjointSet: DisjointSet, list: Array, x: int, y: int) -> vo
 	for yy in range(-1, 2):
 		for xx in range(-1, 2):
 			if not ((xx == 0) and (yy == 0)) and _level.insideMap(x + xx, y + yy):
-				var index1 = Utility.index(x + xx, y + yy, _width)
+				var index1 := Utility.index(x + xx, y + yy, _width)
 				if not list[index1]:
-					var root1 = disjointSet.find(index1)
-					var index0 = Utility.index(x, y, _width)
-					var root0 = disjointSet.find(index0)
+					var root1 := disjointSet.find(index1)
+					var index0 := Utility.index(x, y, _width)
+					var root0 := disjointSet.find(index0)
 					if root0 != root1:
 						disjointSet.union(root0, root1)
 
 func _disjointSetup(list: Array) -> DisjointSet:
-	var disjointSet = DisjointSet.new(_width * _height)
+	var disjointSet := DisjointSet.new(_width * _height)
 	for y in range(_height):
 		for x in range(_width):
 			if not list[Utility.index(x, y, _width)]:
@@ -114,10 +114,10 @@ func _removeSmall(list: Array) -> void:
 	_removeSmallCaves(_disjointSetup(list).split(list), list)
 
 func _removeSmallCaves(caves: Dictionary, list: Array) -> void:
-	var biggest = 0
-	var biggestKey = 0
+	var biggest := 0
+	var biggestKey := 0
 	for key in caves.keys():
-		var size = caves[key].size()
+		var size: int = caves[key].size()
 		if size > biggest:
 			biggest = size
 			biggestKey = key
@@ -127,17 +127,17 @@ func _removeSmallCaves(caves: Dictionary, list: Array) -> void:
 			delete.append(key)
 	for key in delete:
 		if list != null:
-			var cave = caves[key]
+			var cave: int = caves[key]
 			for i in cave:
 				list[i] = true
 		Utility.stfu(caves.erase(key))
 
 func _isCaveEdge(list: Array, x: int, y: int) -> bool:
-	var edge = false
+	var edge := false
 	for yy in range(-1, 2):
 		for xx in range(-1, 2):
 			if not ((xx == 0) and (yy == 0)):
-				var new = Vector2(x + xx, y + yy)
+				var new := Vector2(x + xx, y + yy)
 				if _level.insideMapV(new) and not list[Utility.indexV(new, _width)]:
 					edge = true
 	return edge

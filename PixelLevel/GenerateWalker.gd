@@ -1,9 +1,9 @@
 extends Generate
 class_name GenerateWalker
 
-const _stepsMax = 500
-const _stepsChange = 5
-const _changeChance = 0.25
+const _stepsMax := 500
+const _stepsChange := 5
+const _changeChance := 0.25
 const _directions := [Vector2.UP, Vector2.RIGHT, Vector2.LEFT, Vector2.DOWN]
 var _position := Vector2.ZERO
 var _direction := Vector2.UP
@@ -22,7 +22,7 @@ func generate() -> void:
 	_level.generated()
 
 func _drawWalk() -> void:
-	var steps = _walk(_stepsMax)
+	var steps := _walk(_stepsMax)
 	for step in steps:
 		_setFloorV(step)
 		_level.clearForeV(step)
@@ -39,7 +39,7 @@ func _walk(steps: int) -> Array:
 	return _steps
 
 func _step() -> bool:
-	var newPosition = _position + _direction
+	var newPosition := _position + _direction
 	if _level.insideMapV(newPosition):
 		_stepCount += 1
 		_position = newPosition

@@ -52,13 +52,13 @@ func _applyTemplate(template: Dictionary) -> void:
 func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 	template.back.lock()
 	template.fore.lock()
-	var w = template.back.get_size().x
-	var h = template.back.get_size().y
-	var countX = w / template.size
-	var countY = h / template.size
-	var readX = Random.next(countX)
-	var readY = Random.next(countY)
-	var rotate = Random.next(4)
+	var width: int = template.back.get_size().x
+	var height: int = template.back.get_size().y
+	var countX := int(width / template.size)
+	var countY := int(height / template.size)
+	var readX := Random.next(countX)
+	var readY := Random.next(countY)
+	var rotate := Random.next(4)
 	for y in range(template.size):
 		for x in range(template.size):
 			var write : Vector2
