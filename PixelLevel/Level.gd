@@ -715,7 +715,7 @@ func setFloorRoom(x: int, y: int, wonky := false) -> void:
 	var rot90 := Random.nextBool() if wonky else false
 	_setBackRandom(x, y, id, flipX, flipY, rot90)
 
-func _setOutside(x: int, y: int) -> void:
+func setOutside(x: int, y: int) -> void:
 	if desert:
 		_setBackRandom(x, y, Tile.OutsideDayDesert if day else Tile.OutsideNightDesert)
 	else:

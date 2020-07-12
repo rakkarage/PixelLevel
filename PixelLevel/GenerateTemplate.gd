@@ -52,20 +52,23 @@ func _applyTemplate(template: Dictionary) -> void:
 func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 	template.back.lock()
 	template.fore.lock()
-	var width = template.back.get_size().x / template.size
-	var height = template.back.get_size().y / template.size
-	# var randomX = Random.next(width)
-	# var randomY = Random.next(height)
-	for y in range(height):
-		for x in range(width):
+	var w = template.back.get_size().x
+	var h = template.back.get_size().y
+	var countX = w / template.size
+	var countY = h / template.size
+	var readX = Random.next(countX)
+	var readY = Random.next(countY)
+	var rotate = Random.next(4)
+	for y in range(template.size):
+		for x in range(template.size):
 			var write : Vector2
-			match Random.next(4):
+			match rotate:
 				0: write = Vector2(p.x + x, p.y + y)
-				1: write = Vector2(p.x + y, p.y + height - x - 1)
-				2: write = Vector2(p.x + width - x - 1, p.y + height - y - 1)
-				3: write = Vector2(p.x + width - y - 1, p.y + x)
-			var backColor : Color = template.back.get_pixel(x, y)
-			var foreColor : Color = template.fore.get_pixel(x, y)
+				1: write = Vector2(p.x + y, p.y + template.size - x - 1)
+				2: write = Vector2(p.x + template.size - x - 1, p.y + template.size - y - 1)
+				3: write = Vector2(p.x + template.size - y - 1, p.y + x)
+			var backColor : Color = template.back.get_pixel(readX * template.size + x, readY * template.size + y)
+			var foreColor : Color = template.fore.get_pixel(readX * template.size + x, readY * template.size + y)
 			if backColor == _backFloor:
 				_setFloorV(write)
 			elif backColor == _backWall:
@@ -78,23 +81,27 @@ func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 			if foreColor == _colorWaterShallow:
 				_level.setWaterShallowV(write)
 				_level.setRubbleV(write)
+				_level.clearForeV(write)
 			elif foreColor == _colorWaterDeep:
 				_level.setWaterDeepV(write)
 				_level.setRubbleV(write)
+				_level.clearForeV(write)
 			elif foreColor == _colorWaterShallowPurple:
 				_level.setWaterShallowPurpleV(write)
 				_level.setRubbleV(write)
+				_level.clearForeV(write)
 			elif foreColor == _colorWaterDeepPurple:
 				_level.setWaterDeepPurpleV(write)
 				_level.setRubbleV(write)
+				_level.clearForeV(write)
 			elif foreColor == _colorTileRed:
 				_level.setDoorV(write)
-				_setFloorV(write)
+				_setFloorOrRoomV(write)
 			elif foreColor == _colorTilePurple:
 				_level.setFountainV(write)
-				_setFloorV(write)
+				_setFloorOrRoomV(write)
 			elif foreColor == _colorTileYellow:
 				_level.setLootV(write)
-				_setFloorV(write)
+				_setFloorOrRoomV(write)
 	template.back.unlock()
 	template.fore.unlock()
