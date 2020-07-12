@@ -62,10 +62,10 @@ enum Tile { # match id in tileSet
 	WaterShallowBackPurple, WaterShallowForePurple,
 	WaterDeepBackPurple, WaterDeepForePurple,
 	Rubble,
-	OutsideDay, OutsideDayRubble, OutsideDayStair, OutsideFlower,
+	OutsideDay, OutsideDayPillar, OutsideDayRubble, OutsideDayStair, OutsideFlower,
 	OutsideDayDesert, OutsideDayDoodad, OutsideDayGrassDry, OutsideDayDesertStair, OutsideDayGrassGreen,
 	OutsideDayHedge, OutsideDayWall, OutsideDayFloor
-	OutsideNight, OutsideNightRubble, OutsideNightStair,
+	OutsideNight, OutsideNightPillar, OutsideNightRubble, OutsideNightStair,
 	OutsideNightDesert, OutsideNightDoodad, OutsideNightGrassDry, OutsideNightDesertStair, OutsideNightGrassGreen,
 	OutsideBightHedge, OutsideNightWall, OutsideNightFloor
 }
