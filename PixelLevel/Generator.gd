@@ -17,4 +17,4 @@ func _ready() -> void:
 	Utility.ok(_level.connect("generate", self, "_generate"))
 
 func _generate() -> void:
-	Random.priority(_g).call("generate")
+	Random.priority(_g).generate()
