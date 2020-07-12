@@ -1,9 +1,9 @@
 extends Generate
 class_name GenerateTemplate
 
-const _backFloor := Color.transparent
+const _backFloor := Color8(71, 112, 76, 0)
 const _backFloorRoom := Color8(255, 255, 255, 255)
-const _backWall := Color8(71, 112, 76, 255)
+const _backWall := Color8(0, 0, 0, 255)
 const _backGrass := Color8(193, 255, 113, 255)
 
 const _colorWaterShallow := Color8(128, 255, 248, 255)
@@ -101,9 +101,16 @@ func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 				_level.setDoorV(write)
 			elif foreColor == _colorTilePurple:
 				_setFloorRoomV(write)
-				_level.setFountainV(write)
+				if Random.nextBool():
+					if Random.nextBool():
+						_level.setBanner0V(write)
+					else:
+						_level.setBanner1V(write)
+				else:
+					_level.setFountainV(write)
 			elif foreColor == _colorTileYellow:
-				_setFloorRoomV(write)
-				_level.setLootV(write)
+				if Random.nextBool():
+					_setFloorRoomV(write)
+					_level.setLootV(write)
 	template.back.unlock()
 	template.fore.unlock()

@@ -865,6 +865,16 @@ func setFountainV(p: Vector2) -> void: setFountain(int(p.x), int(p.y))
 func setFountain(x: int, y: int) -> void:
 	_setForeRandom(x, y, Tile.Fountain, Random.nextBool())
 
+func setBanner0V(p: Vector2) -> void: setBanner0(int(p.x), int(p.y))
+
+func setBanner0(x: int, y: int) -> void:
+	_setForeRandom(x, y, Tile.Banner0, Random.nextBool())
+
+func setBanner1V(p: Vector2) -> void: setBanner1(int(p.x), int(p.y))
+
+func setBanner1(x: int, y: int) -> void:
+	_setForeRandom(x, y, Tile.Banner1, Random.nextBool())
+
 func setLootV(p: Vector2) -> void: setLoot(int(p.x), int(p.y))
 
 func setLoot(x: int, y: int) -> void:
@@ -875,7 +885,8 @@ func setLoot(x: int, y: int) -> void:
 		2: id = Tile.ChestOpenEmpty
 		3: id = Tile.ChestOpenFull
 	_setItemBackRandom(x, y, id, Random.nextBool())
-	_setItemFore(x, y, Tile.Loot)
+	if Random.nextBool():
+		_setItemFore(x, y, Tile.Loot)
 
 func _isForeTile(x: int, y: int, tiles: Array) -> bool:
 	return isTileId(_fore.get_cell(x, y), tiles)
