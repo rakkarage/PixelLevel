@@ -50,16 +50,6 @@ _global_script_classes=[ {
 "path": "res://PixelLevel/GenerateTemplate.gd"
 }, {
 "base": "Generate",
-"class": "GenerateTemplateCastle",
-"language": "GDScript",
-"path": "res://PixelLevel/GenerateTemplateCastle.gd"
-}, {
-"base": "Generate",
-"class": "GenerateTemplateCrossroad",
-"language": "GDScript",
-"path": "res://PixelLevel/GenerateTemplateCrossroad.gd"
-}, {
-"base": "Generate",
 "class": "GenerateWalker",
 "language": "GDScript",
 "path": "res://PixelLevel/GenerateWalker.gd"
@@ -83,8 +73,6 @@ _global_script_class_icons={
 "GenerateMaze": "",
 "GenerateRoom": "",
 "GenerateTemplate": "",
-"GenerateTemplateCastle": "",
-"GenerateTemplateCrossroad": "",
 "GenerateWalker": "",
 "Level": "",
 "Utility": ""

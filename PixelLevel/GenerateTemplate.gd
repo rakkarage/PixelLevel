@@ -14,6 +14,8 @@ const _colorTileRed := Color8(255, 41, 157, 255)
 const _colorTileYellow := Color8(255, 200, 33, 255)
 const _colorTilePurple := Color8(132, 41, 255, 255)
 
+var _single := true
+
 var _data := {
 	"a": {
 		"name": "a",
@@ -45,9 +47,29 @@ func generate() -> void:
 	var template = Random.priority(_data)
 	if template.name == "c":
 		_cliff = false
-	_setLevelRect(template.size + 10, template.size + 10)
-	_fill(true, true)
-	_applyTemplateAt(template, Vector2(5, 5))
+		_single = true
+	else:
+		_single = Random.nextBool()
+	if _single:
+		_setLevelRect(template.size + 10, template.size + 10)
+		_fill(true, true)
+		_applyTemplateAt(template, Vector2(5, 5))
+	else:
+		# TODO: ensure connections
+		if Random.nextBool():
+			_setLevelRect(template.size * 3 + 10, template.size * 3 + 10)
+			_fill(true, true)
+			for y in range(3):
+				for x in range(3):
+					if x == 1 or y == 1:
+						_applyTemplateAt(template, Vector2(x * template.size + 5, y * template.size + 5))
+		else:
+			var width = Random.next(10)
+			var height = Random.next(10)
+			_setLevelRect(template.size * width, template.size * height)
+			for y in range(3):
+				for x in range(3):
+					_applyTemplateAt(template, Vector2(x * template.size, y * template.size))
 	_stairs()
 	if _stream:
 		_generateStreams()
@@ -111,3 +133,29 @@ func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 					_level.setLootV(write)
 	template.back.unlock()
 	template.fore.unlock()
+
+func _selectTemplateWith(template: Dictionary, connections: Array) -> Vector2:
+	var width: int = template.back.get_size().x
+	var height: int = template.back.get_size().y
+	var countX := int(width / template.size)
+	var countY := int(height / template.size)
+	var readX := Random.next(countX)
+	var readY := Random.next(countY)
+	# var rotate := Random.next(4)
+	# var write: Vector2
+	# match rotate:
+	# 	0: write = Vector2(p.x + x, p.y + y)
+	# 	1: write = Vector2(p.x + y, p.y + template.size - x - 1)
+	# 	2: write = Vector2(p.x + template.size - x - 1, p.y + template.size - y - 1)
+	# 	3: write = Vector2(p.x + template.size - y - 1, p.y + x)
+	var up: bool = template.back.get_pixel(int(readX * template.size + width / 2.0), int(readY * template.size + height / 2.0)) != Color.black
+	var right: bool = template.back.get_pixel(int(readX * template.size + width / 2.0), int(readY * template.size + height / 2.0)) != Color.black
+	var down: bool = template.back.get_pixel(int(readX * template.size + width / 2.0), readY * int(template.size + height / 2.0)) != Color.black
+	var left: bool = template.back.get_pixel(int(readX * template.size + width / 2.0), readY * int(template.size + height / 2.0)) != Color.black
+	while (connections.has(Vector2.UP) and not up or
+		connections.has(Vector2.RIGHT) and not right or
+		connections.has(Vector2.DOWN) and not down or
+		connections.has(Vector2.LEFT) and not left):
+		readX = Random.next(countX)
+		readY = Random.next(countY)
+	return Vector2.ZERO
