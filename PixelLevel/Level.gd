@@ -946,14 +946,26 @@ func setFlower(x: int, y: int) -> void:
 func setWaterShallowV(p: Vector2) -> void: setWaterShallow(int(p.x), int(p.y))
 
 func setWaterShallow(x: int, y: int) -> void:
-	_waterBack.set_cell(x, y, Tile.WaterShallowBack, false, false, false, Vector2.ZERO)
-	_waterFore.set_cell(x, y, Tile.WaterShallowFore, false, false, false, Vector2.ZERO)
+	_waterBack.set_cell(x, y, Tile.WaterShallowBack)
+	_waterFore.set_cell(x, y, Tile.WaterShallowFore)
 
 func setWaterDeepV(p: Vector2) -> void: setWaterDeep(int(p.x), int(p.y))
 
 func setWaterDeep(x: int, y: int) -> void:
-	_waterBack.set_cell(x, y, Tile.WaterDeepBack, false, false, false, Vector2.ZERO)
-	_waterFore.set_cell(x, y, Tile.WaterDeepFore, false, false, false, Vector2.ZERO)
+	_waterBack.set_cell(x, y, Tile.WaterDeepBack)
+	_waterFore.set_cell(x, y, Tile.WaterDeepFore)
+
+func setWaterShallowPurpleV(p: Vector2) -> void: setWaterShallowPurple(int(p.x), int(p.y))
+
+func setWaterShallowPurple(x: int, y: int) -> void:
+	_waterBack.set_cell(x, y, Tile.WaterShallowBackPurple)
+	_waterFore.set_cell(x, y, Tile.WaterShallowForePurple)
+
+func setWaterDeepPurpleV(p: Vector2) -> void: setWaterDeepPurple(int(p.x), int(p.y))
+
+func setWaterDeepPurple(x: int, y: int) -> void:
+	_waterBack.set_cell(x, y, Tile.WaterDeepBackPurple)
+	_waterFore.set_cell(x, y, Tile.WaterDeepForePurple)
 
 func _isWaterTile(x: int, y: int, tiles: Array) -> bool:
 	return isTileId(_waterBack.get_cell(x, y), tiles)

@@ -86,21 +86,16 @@ func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 				_setOutsideV(write)
 			if foreColor == _colorWaterShallow:
 				_level.setWaterShallowV(write)
-				_level.setRubbleV(write)
 			elif foreColor == _colorWaterDeep:
 				_level.setWaterDeepV(write)
-				_level.setRubbleV(write)
 			elif foreColor == _colorWaterShallowPurple:
 				_level.setWaterShallowPurpleV(write)
-				_level.setRubbleV(write)
 			elif foreColor == _colorWaterDeepPurple:
 				_level.setWaterDeepPurpleV(write)
-				_level.setRubbleV(write)
 			elif foreColor == _colorTileRed:
 				_setFloorRoomV(write)
 				_level.setDoorV(write)
 			elif foreColor == _colorTilePurple:
-				_setFloorRoomV(write)
 				if Random.nextBool():
 					if Random.nextBool():
 						_level.setBanner0V(write)
@@ -110,7 +105,6 @@ func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 					_level.setFountainV(write)
 			elif foreColor == _colorTileYellow:
 				if Random.nextBool():
-					_setFloorRoomV(write)
 					_level.setLootV(write)
 	template.back.unlock()
 	template.fore.unlock()
