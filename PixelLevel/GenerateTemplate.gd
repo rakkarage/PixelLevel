@@ -42,9 +42,12 @@ func _init(level: Level).(level) -> void: pass
 
 func generate() -> void:
 	.generate()
-	_cliff = false
+	var template = Random.priority(_data)
+	if template.name == "c":
+		_cliff = false
+	_setLevelRect(template.size + 10, template.size + 10)
 	_fill(true, true)
-	_applyTemplate(Random.priority(_data))
+	_applyTemplateAt(template, Vector2(5, 5))
 	_stairs()
 	if _stream:
 		_generateStreams()

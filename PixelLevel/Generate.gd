@@ -8,8 +8,10 @@ var _width := 0
 var _height := 0
 var _cliff := false
 var _stream := false
-const _torch := 0.03
-const _fancy := 0.03
+const _torchChance := 0.01
+const _fancyChance := 0.02
+const _cliffChance := 0.333
+const _streamChance := 0.22
 var _wonky := false
 var _room := false
 
@@ -26,8 +28,8 @@ func generate() -> void:
 	_level.day = Random.nextBool()
 	_level.desert = Random.nextBool()
 	_level.themeCliff = Random.next(_level.themeCliffCount)
-	_cliff = Random.nextFloat() <= 0.333
-	_stream = Random.nextFloat() <= 0.333
+	_cliff = Random.nextFloat() <= _cliffChance
+	_stream = Random.nextFloat() <= _streamChance
 	_wonky = Random.nextBool()
 	_room = Random.nextBool()
 	_level.themeCliff = Random.next(_level.themeCliffCount)
@@ -121,10 +123,10 @@ func _setWall(x: int, y: int) -> void:
 	if _cliff:
 		_level.setCliff(x, y)
 	else:
-		if Random.nextFloat() <= _torch:
+		if Random.nextFloat() <= _torchChance:
 			_level.setTorch(x, y)
 		else:
-			if Random.nextFloat() <= _fancy:
+			if Random.nextFloat() <= _fancyChance:
 				_level.setWall(x, y)
 			else:
 				_level.setWallPlain(x, y)
