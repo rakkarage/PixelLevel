@@ -17,22 +17,22 @@ const _colorTilePurple := Color8(132, 41, 255, 255)
 var _select = Vector2.ZERO
 var _rotate = 0
 
-var _connectAll := [Vector2.UP, Vector2.RIGHT, Vector2.DOWN, Vector2.LEFT]
-var _connectWestEast := [Vector2.UP, Vector2.RIGHT, Vector2.DOWN, Vector2.LEFT]
-var _connectNorthSouth := [Vector2.UP, Vector2.RIGHT, Vector2.DOWN, Vector2.LEFT]
-var _connectNorh := [Vector2.UP]
-var _connectEast := [Vector2.RIGHT]
-var _connectSouth := [Vector2.DOWN]
-var _connectWest := [Vector2.LEFT]
+var _connectAll := [0, 1, 2, 3]
+var _connectWestEast := [1, 3]
+var _connectNorthSouth := [0, 2]
+var _connectNorh := [0]
+var _connectEast := [1]
+var _connectSouth := [2]
+var _connectWest := [3]
 
 var _data := {
-	"a": {
-		"name": "a",
-		"back": load("res://PixelLevel/Sprite/Template/ABack.png"),
-		"fore": load("res://PixelLevel/Sprite/Template/AFore.png"),
-		"size": 15,
-		"priority": 33
-	},
+	# "a": {
+	# 	"name": "a",
+	# 	"back": load("res://PixelLevel/Sprite/Template/ABack.png"),
+	# 	"fore": load("res://PixelLevel/Sprite/Template/AFore.png"),
+	# 	"size": 15,
+	# 	"priority": 33
+	# },
 	"b": {
 		"name": "b",
 		"back": load("res://PixelLevel/Sprite/Template/BasicBack.png"),
@@ -40,24 +40,36 @@ var _data := {
 		"size": 15,
 		"priority": 100
 	},
-	"c": {
-		"name": "c",
-		"back": load("res://PixelLevel/Sprite/Template/CastleBack.png"),
-		"fore": load("res://PixelLevel/Sprite/Template/CastleFore.png"),
-		"size": 75,
-		"priority": 1
-	}
+	# "c": {
+	# 	"name": "c",
+	# 	"back": load("res://PixelLevel/Sprite/Template/CastleBack.png"),
+	# 	"fore": load("res://PixelLevel/Sprite/Template/CastleFore.png"),
+	# 	"size": 75,
+	# 	"priority": 1
+	# }
 }
 
 func _init(level: Level).(level) -> void:
-	print(_applyRotate(1, 0, 2, 0)) # north
-	print(_applyRotate(1, 0, 2, 1)) # west
-	print(_applyRotate(1, 0, 2, 2)) # south
-	print(_applyRotate(1, 0, 2, 3)) # east
+	print(_applyRotate(2, 0, 5, 0)) # north
+	print(_applyRotate(2, 0, 5, 1)) # east
+	print(_applyRotate(2, 0, 5, 2)) # south
+	print(_applyRotate(2, 0, 5, 3)) # west
 	# (1, 0)
-	# (0, 0)
+	# -x-
+	# ---
+	# ---
+	# (2, 1)
+	# ---
+	# --x
+	# ---
+	# (1, 2)
+	# ---
+	# ---
+	# -x-
 	# (0, 1)
-	# (1, 1)
+	# ---
+	# x--
+	# ---
 	pass
 
 func generate() -> void:
@@ -70,13 +82,12 @@ func generate() -> void:
 	else:
 		single = true#Random.nextBool()
 	if single:
-		# ensure _findTemplate works!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		_setLevelRect(template.size + 10, template.size + 10)
 		_fill(true, true)
 		_findTemplateWith(template, _connectSouth)
 		_applyTemplateAt(template, Vector2(5, 5))
 	else:
-		if Random.nextBool():
+		if true:#Random.nextBool():
 			_setLevelRect(template.size * 3 + 10, template.size * 3 + 10)
 			_fill(true, true)
 			for y in range(3):
@@ -93,7 +104,7 @@ func generate() -> void:
 						elif x == 1 and y == 1:
 							_findTemplateWith(template, _connectWest)
 						_applyTemplateAt(template, Vector2(x * template.size + 5, y * template.size + 5))
-		else: # how to connect this big? loop!!! or crossroad or walker?
+		else: # TODO: how to connect this big? loop!!! or crossroad or walker?
 			var width = Random.next(7)
 			var height = Random.next(7)
 			_setLevelRect(template.size * width, template.size * height)
@@ -102,35 +113,16 @@ func generate() -> void:
 				for x in range(height):
 					_applyTemplateAt(template, Vector2(x * template.size, y * template.size))
 	_stairs()
-	if _stream:
-		_generateStreams()
+	# if _stream:
+	# 	_generateStreams()
 	_level.generated()
 
-# need to pass in sub template so that can find appropriate one first
-# they are passed in by globals
-# need to use the set value instead of rolling again and ignori it!!!!!!
 func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 	template.back.lock()
 	template.fore.lock()
-	# var width: int = template.back.get_size().x
-	# var height: int = template.back.get_size().y
-	# var countX := int(width / template.size)
-	# var countY := int(height / template.size)
-	# var readX := Random.next(countX)
-	# var readY := Random.next(countY)
-	# var rotate := Random.next(4)
 	for y in range(template.size):
 		for x in range(template.size):
 			var write := p + _applyRotate(x, y, template.size, _rotate)
-			# match rotate:
-			# 	# north
-			# 	0: write = Vector2(p.x + x, p.y + y)
-			# 	# west
-			# 	1: write = Vector2(p.x + y, p.y + template.size - x - 1)
-			# 	# south
-			# 	2: write = Vector2(p.x + template.size - x - 1, p.y + template.size - y - 1)
-			# 	# east
-			# 	3: write = Vector2(p.x + template.size - y - 1, p.y + x)
 			var backColor: Color = template.back.get_pixel(_select.x * template.size + x, _select.y * template.size + y)
 			var foreColor: Color = template.fore.get_pixel(_select.x * template.size + x, _select.y * template.size + y)
 			if backColor == _backFloor:
@@ -171,42 +163,47 @@ func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 
 func _findTemplateWith(template: Dictionary, connections: Array) -> void:
 	template.back.lock()
-	var width: int = template.back.get_size().x
-	var height: int = template.back.get_size().y
-	var countX := int(width / template.size)
-	var countY := int(height / template.size)
+	var size: int = template.size
+	var countX := int(template.back.get_size().x / size)
+	var countY := int(template.back.get_size().y / size)
 	_select = Vector2(Random.next(countX), Random.next(countY))
-	_rotate = Random.next(4)
+	_rotate = 0#Random.next(4)
+	# TODO: check rotate by selecting 0,0 and see how it rotates
 	print(template.name)
-	var up := Vector2(int(_select.x * template.size + width / 2.0), int(_select.y * template.size + height / 2.0))
+	var up := Vector2(int(_select.x * size + size / 2.0), int(_select.y * size))
 	print(up)
-	up = _applyRotateV(up, template.size, _rotate)
+	up = _applyRotateV(up, size, _rotate)
 	print(up)
-	var right := Vector2(int(_select.x * template.size + width / 2.0), int(_select.y * template.size + height / 2.0))
-	right = _applyRotateV(right, template.size, _rotate)
-	var down := Vector2(int(_select.x * template.size + width / 2.0), int(_select.y * template.size + height / 2.0))
-	down = _applyRotateV(down, template.size, _rotate)
-	var left := Vector2(int(_select.x * template.size + width / 2.0), int(_select.y * template.size + height / 2.0))
-	left = _applyRotateV(left, template.size, _rotate)
-	var connectUp: bool = template.back.get_pixelv(up) != Color.black
+	var right := Vector2(int(_select.x * size + size), int(_select.y * size + size / 2.0))
+	right = _applyRotateV(right, size, _rotate)
+	var down := Vector2(int(_select.x * size + size / 2.0), int(_select.y * size + size))
+	down = _applyRotateV(down, size, _rotate)
+	var left := Vector2(int(_select.x * size), int(_select.y * size + size / 2.0))
+	left = _applyRotateV(left, size, _rotate)
+	var upColor: Color = template.back.get_pixelv(up)
+	print(upColor)
+	var connectUp: bool = upColor != Color.black
 	print(connectUp)
-	var connectRight: bool = template.back.get_pixelv(right) != Color.black
-	var connectDown: bool = template.back.get_pixelv(down) != Color.black
-	var connectLeft: bool = template.back.get_pixelv(left) != Color.black
-	while (connections.has(Vector2.UP) and not connectUp or
-		connections.has(Vector2.RIGHT) and not connectRight or
-		connections.has(Vector2.DOWN) and not connectDown or
-		connections.has(Vector2.LEFT) and not connectLeft):
+	var rightColor: Color = template.back.get_pixelv(right)
+	var connectRight: bool = rightColor != Color.black
+	var downColor: Color = template.back.get_pixelv(down)
+	var connectDown: bool = downColor != Color.black
+	var leftColor: Color = template.back.get_pixelv(left)
+	var connectLeft: bool = leftColor != Color.black
+	while ((connections.has(0) and not connectUp) or
+		(connections.has(1) and not connectRight) or
+		(connections.has(2) and not connectDown) or
+		(connections.has(3) and not connectLeft)):
 		_select = Vector2(Random.next(countX), Random.next(countY))
-		_rotate = Random.next(4)
-		up = Vector2(int(_select.x * template.size + width / 2.0), int(_select.y * template.size + height / 2.0))
-		up = _applyRotateV(up, template.size, _rotate)
-		right = Vector2(int(_select.x * template.size + width / 2.0), int(_select.y * template.size + height / 2.0))
-		right = _applyRotateV(right, template.size, _rotate)
-		down = Vector2(int(_select.x * template.size + width / 2.0), int(_select.y * template.size + height / 2.0))
-		down = _applyRotateV(down, template.size, _rotate)
-		left = Vector2(int(_select.x * template.size + width / 2.0), int(_select.y * template.size + height / 2.0))
-		left = _applyRotateV(left, template.size, _rotate)
+		_rotate = 0#Random.next(4)
+		up = Vector2(int(_select.x * size + size / 2.0), int(_select.y * size))
+		up = _applyRotateV(up, size, _rotate)
+		right = Vector2(int(_select.x * size + size), int(_select.y * size + size / 2.0))
+		right = _applyRotateV(right, size, _rotate)
+		down = Vector2(int(_select.x * size + size / 2.0), int(_select.y * size + size))
+		down = _applyRotateV(down, size, _rotate)
+		left = Vector2(int(_select.x * size), int(_select.y * size + size / 2.0))
+		left = _applyRotateV(left, size, _rotate)
 	template.back.unlock()
 
 func _applyRotateV(p: Vector2, size: int, rotate: int) -> Vector2:
@@ -216,7 +213,7 @@ func _applyRotate(x: int, y: int, size: int, rotate: int) -> Vector2:
 	var value: Vector2
 	match rotate:
 		0: value = Vector2(x, y) # north
-		1: value = Vector2(y, size - x - 1) # west
+		1: value = Vector2(size - y - 1, x) # east
 		2: value = Vector2(size - x - 1, size - y - 1) # south
-		3: value = Vector2(size - y - 1, x) # east
+		3: value = Vector2(y, size - x - 1) # west
 	return value
