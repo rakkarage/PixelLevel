@@ -21,7 +21,11 @@ func _drawCaves() -> void:
 	while list.size() == 0 or not _bigEnough(list):
 		list = _getCellularList(Random.next(_standardSteps), _standardChance, _standardBirth, _standardDeath)
 		if Random.nextBool():
+			_removeSmall(list)
+		if Random.nextBool():
 			var other := _getCellularList(Random.next(_standardSteps), _standardChance, _standardBirth, _standardDeath)
+			if Random.nextBool():
+				_removeSmall(other)
 			_combineLists(list, other)
 	for y in range(_height):
 		for x in range(_width):
@@ -127,7 +131,7 @@ func _removeSmallCaves(caves: Dictionary, list: Array) -> void:
 			delete.append(key)
 	for key in delete:
 		if list != null:
-			var cave: int = caves[key]
+			var cave: Array = caves[key]
 			for i in cave:
 				list[i] = true
 		Utility.stfu(caves.erase(key))
