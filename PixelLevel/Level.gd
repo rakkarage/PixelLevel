@@ -575,12 +575,12 @@ func _darken() -> void:
 
 # Map
 
-const _alpha := 0.75
+const _alpha := 0.8
 const _colorMob := Color(0, 1, 0, _alpha)
 const _colorStair := Color(1, 1, 0, _alpha)
 const _colorDoor := Color(0, 0, 1, _alpha)
-const _colorWallLit := Color(0.8, 0.8, 0.8, _alpha)
-const _colorWall := Color(0.6, 0.6, 0.6, _alpha)
+const _colorWallLit := Color(1, 1, 1, _alpha)
+const _colorWall := Color(0.8, 0.8, 0.8, _alpha)
 const _colorFloorLit := Color(0.4, 0.4, 0.4, _alpha)
 const _colorFloor := Color(0.2, 0.2, 0.2, _alpha)
 const _colorCamera := Color(1, 0, 1, _alpha)
@@ -624,7 +624,7 @@ const _colorPathDoor := Color(_colorDoor.r, _colorDoor.g, _colorDoor.b, _alphaPa
 const _colorPathWall := Color(_colorWall.r, _colorWall.g, _colorWall.b, _alphaPath)
 
 func _getPathColor(x: int, y: int) -> Color:
-	var color = Color(0.25, 0.25, 0.25, 0.75)
+	var color = Color.red
 	if isStair(x, y):
 		color = _colorPathStair
 	elif isDoor(x, y):
