@@ -9,8 +9,6 @@ onready var _g := {
 	GenerateCave.new(_level): 1,
 	GenerateWalker.new(_level): 1,
 	GenerateTemplate.new(_level): 1,
-	GenerateTemplateCrossroad.new(_level): 1,
-	GenerateTemplateCastle.new(_level): 1,
 }
 
 func _ready() -> void:
