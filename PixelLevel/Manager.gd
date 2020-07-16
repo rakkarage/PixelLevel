@@ -1,6 +1,7 @@
 extends Node
 
 onready var _level : Level = $Level/Viewport
+onready var _mask : AnimationPlayer = $Fore/Viewport/Mask/AnimationPlayer
 onready var _textureRect : TextureRect = $Fore/Viewport/MiniMap
 onready var _imageTexture := ImageTexture.new()
 onready var _image := Image.new()
@@ -10,6 +11,7 @@ func _ready() -> void:
 	_textureRect.texture = _imageTexture
 	_updateMap()
 	Utility.ok(_level.connect("updateMap", self, "_updateMap"))
+	Utility.ok(_level.connect("generate", self, "_generate"))
 
 func _updateMap() -> void:
 	var at := _level.mobPosition()
@@ -37,3 +39,23 @@ func _updateMap() -> void:
 	_image.expand_x2_hq2x()
 	_image.expand_x2_hq2x()
 	_imageTexture.create_from_image(_image)
+
+onready var _g := {
+	GenerateBasic.new(_level): 100,
+	GenerateRoom.new(_level): 100,
+	GenerateDungeon.new(_level): 33,
+	GenerateMaze.new(_level): 33,
+	GenerateCave.new(_level): 10,
+	GenerateWalker.new(_level): 10,
+	GenerateTemplate.new(_level): 1,
+}
+
+func _generate() -> void:
+	yield(get_tree(), "idle_frame")
+	_mask.play("Mask")
+	Utility.ok(_mask.connect("animation_finished", self, "_finished"))
+
+func _finished(name: String) -> void:
+	Random.priority(_g).generate()
+	_mask.play_backwards(name)
+	_mask.disconnect("animation_finished", self, "_finished")

@@ -1,12 +1,14 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://PixelLevel/Level.tres" type="TileSet" id=1]
 [ext_resource path="res://PixelLevel/Mob.tscn" type="PackedScene" id=2]
 [ext_resource path="res://PixelLevel/Target.tscn" type="PackedScene" id=3]
 [ext_resource path="res://PixelLevel/Level.gd" type="Script" id=4]
 [ext_resource path="res://PixelLevel/Back.tscn" type="PackedScene" id=5]
-[ext_resource path="res://PixelLevel/MiniMap.gd" type="Script" id=6]
-[ext_resource path="res://PixelLevel/Generator.gd" type="Script" id=7]
+[ext_resource path="res://PixelLevel/Manager.gd" type="Script" id=6]
+[ext_resource path="res://PixelLevel/MaskAnimation.tres" type="Animation" id=7]
+[ext_resource path="res://PixelLevel/MaskMaterial.tres" type="Material" id=8]
+
 
 [node name="Level" type="Node"]
 script = ExtResource( 6 )
@@ -35,7 +37,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 stretch = true
-script = ExtResource( 7 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -141,3 +142,15 @@ margin_right = 80.0
 margin_bottom = 80.0
 rect_min_size = Vector2( 64, 64 )
 mouse_filter = 2
+
+[node name="Mask" type="ColorRect" parent="Fore/Viewport"]
+material = ExtResource( 8 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Fore/Viewport/Mask"]
+anims/Mask = ExtResource( 7 )
