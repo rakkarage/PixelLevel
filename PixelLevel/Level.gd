@@ -21,6 +21,7 @@ var rect := Rect2()
 var _oldSize = Vector2.ZERO
 var _pathPoints := PoolVector2Array()
 var _dragLeft := false
+var _dragged := false
 var _turn := false
 var _time := 0.0
 var _turnTotal := 0
@@ -215,11 +216,13 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT:
 			if event.pressed:
-				_targetTo(event.global_position)
 				_dragLeft = true
+				_dragged = false
 			else:
-				_targetUpdate()
-				_cameraUpdate()
+				if !_dragged:
+					_targetTo(event.global_position)
+					_targetUpdate()
+					_cameraUpdate()
 				_dragLeft = false
 		elif event.button_index == BUTTON_WHEEL_UP:
 			_zoomIn(event.global_position)
@@ -231,6 +234,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			emit_signal("updateMap")
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
+			_dragged = true
 			_cameraTo(_camera.global_position - event.relative * _camera.zoom)
 			emit_signal("updateMap")
 
