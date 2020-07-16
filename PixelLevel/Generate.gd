@@ -42,10 +42,13 @@ func _setLevelRect(width: int, height: int) -> void:
 func _clear() -> void:
 	_level.clear()
 
-func _fill(wall: bool, wallEdge: bool) -> void:
+func _fill(wall: bool, wallEdge: bool, outside: bool = false) -> void:
 	for y in range(_height):
 		for x in range(_width):
-			_setFloorOrRoom(x, y)
+			if outside:
+				_setOutside(x, y)
+			else:
+				_setFloorOrRoom(x, y)
 			if wall:
 				_setWallPlain(x, y)
 			elif wallEdge:

@@ -31,13 +31,13 @@ var _connectSW := [0, 1]
 var _connectNW := [2, 1]
 
 var _data := {
-	# "a": {
-	# 	"name": "a",
-	# 	"back": load("res://PixelLevel/Sprite/Template/ABack.png"),
-	# 	"fore": load("res://PixelLevel/Sprite/Template/AFore.png"),
-	# 	"size": 15,
-	# 	"priority": 33
-	# },
+	"a": {
+		"name": "a",
+		"back": load("res://PixelLevel/Sprite/Template/ABack.png"),
+		"fore": load("res://PixelLevel/Sprite/Template/AFore.png"),
+		"size": 15,
+		"priority": 33
+	},
 	"b": {
 		"name": "b",
 		"back": load("res://PixelLevel/Sprite/Template/BasicBack.png"),
@@ -45,13 +45,13 @@ var _data := {
 		"size": 15,
 		"priority": 100
 	},
-	# "c": {
-	# 	"name": "c",
-	# 	"back": load("res://PixelLevel/Sprite/Template/CastleBack.png"),
-	# 	"fore": load("res://PixelLevel/Sprite/Template/CastleFore.png"),
-	# 	"size": 75,
-	# 	"priority": 1
-	# }
+	"c": {
+		"name": "c",
+		"back": load("res://PixelLevel/Sprite/Template/CastleBack.png"),
+		"fore": load("res://PixelLevel/Sprite/Template/CastleFore.png"),
+		"size": 75,
+		"priority": 1
+	}
 }
 
 func _init(level: Level).(level) -> void: pass
@@ -67,11 +67,14 @@ func generate() -> void:
 		single = Random.nextBool()
 	if single:
 		_setLevelRect(template.size + 10, template.size + 10)
-		_fill(true, true)
+		if template.name == "c":
+			_fill(false, false, true)
+		else:
+			_fill(true, true)
 		_findTemplateWith(template, _connectAny)
 		_applyTemplateAt(template, Vector2(5, 5))
 	else:
-		if Random.nextBool():
+		if Random.nextBool(): # crossroad
 			_setLevelRect(template.size * 3 + 10, template.size * 3 + 10)
 			_fill(true, true)
 			for y in range(3):
@@ -108,28 +111,33 @@ func generate() -> void:
 						for x in range(width):
 							if x == 0 and y == 0:
 								_findTemplateWith(template, _connectNW)
+								_applyTemplateAt(template, Vector2(x * template.size, y * template.size))
 							elif x == width - 1 and y == 0:
 								_findTemplateWith(template, _connectNE)
+								_applyTemplateAt(template, Vector2(x * template.size, y * template.size))
 							elif x == width - 1 and y == height - 1:
 								_findTemplateWith(template, _connectSE)
+								_applyTemplateAt(template, Vector2(x * template.size, y * template.size))
 							elif x == 0 and y == height - 1:
 								_findTemplateWith(template, _connectSW)
+								_applyTemplateAt(template, Vector2(x * template.size, y * template.size))
 							elif x == 0 or x == width - 1:
 								_findTemplateWith(template, _connectNorthSouth)
+								_applyTemplateAt(template, Vector2(x * template.size, y * template.size))
 							elif y == 0 or y == height - 1:
 								_findTemplateWith(template, _connectWestEast)
-							_applyTemplateAt(template, Vector2(x * template.size, y * template.size))
+								_applyTemplateAt(template, Vector2(x * template.size, y * template.size))
 				2: # tunnel
 					var width: int
 					var height: int
 					var connections: Array
 					if Random.nextBool():
-						width = Random.next(1)
-						height = Random.next(7)
+						width = 1
+						height = 1 + Random.next(7)
 						connections = _connectNorthSouth
 					else:
-						width = Random.next(7)
-						height = Random.next(1)
+						width = 1 + Random.next(7)
+						height = 1
 						connections = _connectWestEast
 					_setLevelRect(template.size * width, template.size * height)
 					_fill(true, true)
