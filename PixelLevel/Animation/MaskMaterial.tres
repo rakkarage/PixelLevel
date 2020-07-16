@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=3 format=2]
 
-[ext_resource path="res://PixelLevel/Mask.shader" type="Shader" id=1]
+[ext_resource path="res://PixelLevel/Animation/Mask.shader" type="Shader" id=1]
 [ext_resource path="res://PixelLevel/Sprite/MaskGate.png" type="Texture" id=2]
 
 [resource]
