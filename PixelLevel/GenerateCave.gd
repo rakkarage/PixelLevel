@@ -5,12 +5,16 @@ const _standardChance := 0.4
 const _standardBirth := 4
 const _standardDeath := 3
 const _standardSteps := 10
+var _outside := false
+var _outsideWall := false
 
 func _init(level: Level).(level) -> void: pass
 
 func generate() -> void:
 	.generate()
-	_fill(true, true)
+	_outside = Random.nextBool()
+	_outsideWall = Random.nextBool()
+	_fill(true, true, _outside)
 	_drawCaves()
 	if _stream:
 		_generateStreams()
@@ -33,14 +37,20 @@ func _drawCaves() -> void:
 				if _cliff:
 					_level.setCliff(x, y)
 				else:
-					_setWallPlain(x, y)
+					if _outside and _outsideWall:
+						_setOutsideWall(x, y)
+					else:
+						_setWallPlain(x, y)
 			else:
 				_level.clearFore(x, y)
-				if _room:
-					_level.setFloorRoom(x, y)
+				if _outside:
+					_setOutside(x, y)
 				else:
-					_level.setFloor(x, y)
-	if Random.nextBool():
+					if _room:
+						_level.setFloorRoom(x, y)
+					else:
+						_level.setFloor(x, y)
+	if not _outside or not _outsideWall:
 		_outlineCaves(list)
 	_stairsAt(_biggest(list))
 

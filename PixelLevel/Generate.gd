@@ -111,6 +111,12 @@ func _setFloorOrRoom(x: int, y: int) -> void:
 		_level.setFloor(x, y, _wonky)
 	_level.clearFore(x, y)
 
+func _setOutsideWallV(p: Vector2) -> void: _setOutsideWall(int(p.x), int(p.y))
+
+func _setOutsideWall(x: int, y: int) -> void:
+	_level.setOutsideWall(x, y)
+	_level.clearBack(x, y)
+
 func _setWallPlainV(p: Vector2) -> void: _setWallPlain(int(p.x), int(p.y))
 
 func _setWallPlain(x: int, y: int) -> void:
