@@ -1029,15 +1029,16 @@ func _setItemBack(x: int, y: int, tile: int, flipX := false, flipY := false, rot
 func _setItemBackRandom(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
 	_setRandomTile(_itemBack, x, y, tile, flipX, flipY, rot90)
 
-func _setGrassDry(x: int, y: int) -> void:
-	var flipX = Random.nextBool()
-	_itemBack.set_cell(x, y, Tile.OutsideDayGrassDry if day else Tile.OutsideNightGrassDry, flipX, false, false, Vector2(0, 0))
-	_itemFore.set_cell(x, y, Tile.OutsideDayGrassDry if day else Tile.OutsideNightGrassDry, flipX, false, false, Vector2(1, 0))
+## Split
 
-func _setGrassGreen(x: int, y: int) -> void:
+func setGrass(x: int, y: int) -> void:
 	var flipX = Random.nextBool()
-	_itemBack.set_cell(x, y, Tile.OutsideDayGrassGreen if day else Tile.OutsideNightGrassGreen, flipX, false, false, Vector2(0, 0))
-	_itemFore.set_cell(x, y, Tile.OutsideDayGrassGreen if day else Tile.OutsideNightGrassGreen, flipX, false, false, Vector2(1, 0))
+	if desert:
+		_splitBack.set_cell(x, y, Tile.OutsideDayGrassDry if day else Tile.OutsideNightGrassDry, flipX, false, false, Vector2(0, 0))
+		_splitFore.set_cell(x, y, Tile.OutsideDayGrassDry if day else Tile.OutsideNightGrassDry, flipX, false, false, Vector2(1, 0))
+	else:
+		_splitBack.set_cell(x, y, Tile.OutsideDayGrassGreen if day else Tile.OutsideNightGrassGreen, flipX, false, false, Vector2(0, 0))
+		_splitFore.set_cell(x, y, Tile.OutsideDayGrassGreen if day else Tile.OutsideNightGrassGreen, flipX, false, false, Vector2(1, 0))
 
 ## Light
 

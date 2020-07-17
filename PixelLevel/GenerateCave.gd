@@ -200,7 +200,6 @@ func _drawTrees() -> void:
 		_cutTrees(array)
 
 func _cutTrees(array: Array) -> void:
-	_printArray(array)
 	var disjointSet := _disjointSetup(array)
 	var caves := disjointSet.split(array)
 	for key in caves:
@@ -208,12 +207,10 @@ func _cutTrees(array: Array) -> void:
 		if Random.next(3) == 0: # cut
 			if Random.next(4) == 0: # all
 				for i in cave:
-					var p := Utility.position(i, _width)
-					print(p)
-					_level.cutTreeV(p)
+					_level.cutTreeV(Utility.position(i, _width))
 			elif Random.nextBool(): # some
 				var direction := Random.next(4)
-				var test := Utility.position(cave[Random.next(cave.count())], _width)
+				var test := Utility.position(cave[Random.next(cave.size())], _width)
 				for i in cave:
 					var p := Utility.position(i, _width)
 					match direction:
@@ -243,8 +240,13 @@ func _cutTrees(array: Array) -> void:
 									_level.cutTreeV(p)
 
 func _drawGrass() -> void:
-	# TODO: !!!
-	pass
+	var array := _getCellularList(Random.next(_standardSteps), _standardChance, _standardBirth, _standardDeath)
+	if Random.nextBool():
+		_removeSmall(array)
+	for y in _height:
+		for x in _width:
+			if not array[Utility.index(x, y, _width)] and (not _level.isWall(x, y) and not _level.isBackInvalid(x, y) and not _level.isStair(x, y)):
+				_level.setGrass(x, y)
 
 func _printArray(array: Array) -> void:
 	var output := ""
