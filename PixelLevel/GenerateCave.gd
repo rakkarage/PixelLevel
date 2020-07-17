@@ -16,6 +16,8 @@ func generate() -> void:
 	_outsideWall = Random.nextBool()
 	_fill(true, true, _outside)
 	_drawCaves()
+	if _outside:
+		_drawOutside()
 	if _stream:
 		_generateStreams()
 	_level.generated()
@@ -162,6 +164,87 @@ func _outlineCaves(list: Array) -> void:
 			if list[Utility.index(x, y, _width)]:
 				if _isCaveEdge(list, x, y):
 					_setWall(x, y)
+
+func _drawOutside() -> void:
+	if not _level.desert:
+		if Random.nextBool():
+			_drawFlowers()
+		if Random.nextBool():
+			_drawTrees()
+		if Random.nextBool():
+			_drawGrass()
+
+func _drawFlowers() -> void:
+	var array := _getCellularList(Random.next(_standardSteps), _standardChance, _standardBirth, _standardDeath)
+	if Random.nextBool():
+		_removeSmall(array)
+	for y in _height:
+		for x in _width:
+			if not array[Utility.index(x, y, _width)] and (not _level.isWall(x, y) and not _level.isBackInvalid(x, y) and not _level.isStair(x, y)):
+				_level.setFlower(x, y)
+
+func _drawTrees() -> void:
+	var steps := Random.next(_standardSteps)
+	var array := _getCellularList(steps, _standardChance, _standardBirth, _standardDeath)
+	if Random.nextBool():
+		_removeSmall(array)
+	for y in _height:
+		for x in _width:
+			var index = Utility.index(x, y, _width)
+			if not array[index] and (not _level.isWall(x, y) and not _level.isBackInvalid(x, y) and not _level.isStair(x, y)):
+				if steps == 0 and Random.nextBool():
+					_level.setTreeStump(x, y)
+				else:
+					_level.setTree(x, y)
+	if steps > 0 and Random.nextBool():
+		_cutTrees(array)
+
+func _cutTrees(array: Array) -> void:
+	_printArray(array)
+	var disjointSet := _disjointSetup(array)
+	var caves := disjointSet.split(array)
+	for key in caves:
+		var cave = caves[key]
+		if Random.next(3) == 0: # cut
+			if Random.next(4) == 0: # all
+				for i in cave:
+					var p := Utility.position(i, _width)
+					print(p)
+					_level.cutTreeV(p)
+			elif Random.nextBool(): # some
+				var direction := Random.next(4)
+				var test := Utility.position(cave[Random.next(cave.count())], _width)
+				for i in cave:
+					var p := Utility.position(i, _width)
+					match direction:
+						0:
+							if p.x > test.x:
+								_level.cutTreeV(p)
+							elif is_equal_approx(p.x, test.x):
+								if Random.nextBool():
+									_level.cutTreeV(p)
+						1:
+							if p.x < test.x:
+								_level.cutTreeV(p)
+							elif is_equal_approx(p.x, test.x):
+								if Random.nextBool():
+									_level.cutTreeV(p)
+						2:
+							if p.y > test.y:
+								_level.cutTreeV(p)
+							elif is_equal_approx(p.y, test.y):
+								if Random.nextBool():
+									_level.cutTreeV(p)
+						3:
+							if p.y < test.y:
+								_level.cutTreeV(p)
+							elif is_equal_approx(p.y, test.y):
+								if Random.nextBool():
+									_level.cutTreeV(p)
+
+func _drawGrass() -> void:
+	# TODO: !!!
+	pass
 
 func _printArray(array: Array) -> void:
 	var output := ""

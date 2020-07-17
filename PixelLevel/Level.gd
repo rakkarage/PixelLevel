@@ -7,14 +7,18 @@ onready var _back:      TileMap = $Back
 onready var _fore:      TileMap = $Fore
 onready var _flower:    TileMap = $Flower
 onready var _waterBack: TileMap = $WaterBack
+onready var _splitBack: TileMap = $SplitBack
 onready var _itemBack:  TileMap = $ItemBack
+onready var _tree:      TileMap = $Tree
+onready var _path:       Node2D = $Path
 onready var _mob:        Node2D = $Mob
 onready var _itemFore:  TileMap = $ItemFore
+onready var _splitFore: TileMap = $SplitFore
 onready var _waterFore: TileMap = $WaterFore
+onready var _top:       TileMap = $Top
 onready var _light:     TileMap = $Light
 onready var _edge:      TileMap = $Edge
 onready var _target:     Node2D = $Target
-onready var _path:       Node2D = $Path
 onready var _astar:             = AStar2D.new()
 onready var _tileSet:           = _back.tile_set
 var rect := Rect2()
@@ -51,6 +55,7 @@ enum Tile { # match id in tileSet
 	Banner0, Banner1,
 	Furnature, Carpet,
 	Fountain, Chest, ChestOpenFull, ChestOpenEmpty, ChestBroke, Loot
+	TreeStump, TreeBack, TreeFore,
 	EdgeInside,	EdgeInsideCorner,
 	EdgeOutsideCorner, EdgeOutside,
 	Light,
@@ -624,7 +629,7 @@ const _colorPathDoor := Color(_colorDoor.r, _colorDoor.g, _colorDoor.b, _alphaPa
 const _colorPathWall := Color(_colorWall.r, _colorWall.g, _colorWall.b, _alphaPath)
 
 func _getPathColor(x: int, y: int) -> Color:
-	var color = Color.red
+	var color = _colorPathWall
 	if isStair(x, y):
 		color = _colorPathStair
 	elif isDoor(x, y):
@@ -638,8 +643,15 @@ func _getPathColor(x: int, y: int) -> Color:
 func clear() -> void:
 	_back.clear()
 	_fore.clear()
+	_flower.clear()
 	_waterBack.clear()
+	_splitBack.clear()
+	_itemBack.clear()
+	_tree.clear()
+	_itemFore.clear()
+	_splitFore.clear()
 	_waterFore.clear()
+	_top.clear()
 	_light.clear()
 	_edge.clear()
 
@@ -943,7 +955,27 @@ func isForeInvalid(x: int, y: int) -> bool:
 ## Flower
 
 func setFlower(x: int, y: int) -> void:
-	_setRandomTile(_flower, x, y, Tile.OutsideFlower, Random.nextBool(), Random.nextBool(), Random.nextBool())
+	_setRandomTile(_flower, x, y, Tile.OutsideFlower, Random.nextBool())
+
+## Tree
+
+func setTree(x: int, y: int) -> void:
+	var p := Vector2(Random.next(3), 0)
+	_tree.set_cell(x, y, Tile.TreeBack, false, false, false, p)
+	_top.set_cell(x, y - 1, Tile.TreeFore, false, false, false, p)
+
+func setTreeStump(x: int, y: int) -> void:
+	_setRandomTile(_tree, x, y, Tile.TreeStump, Random.nextBool())
+
+func clearTree(x: int, y: int) -> void:
+	_tree.set_cell(x, y, TileMap.INVALID_CELL)
+	_top.set_cell(x, y - 1, TileMap.INVALID_CELL)
+
+func cutTreeV(p: Vector2) -> void: cutTree(int(p.x), int(p.y))
+
+func cutTree(x: int, y: int) -> void:
+	clearTree(x, y)
+	setTreeStump(x, y)
 
 ## Water
 

@@ -20,13 +20,13 @@ func _init(level: Level) -> void:
 
 func generate() -> void:
 	assert(_level != null)
-	_clear()
+	_level.clear()
 	_depth += 1
 	var d := 10 + _depth
 	_setLevelRect(d * 2 + Random.next(d), d * 2 + Random.next(d))
 	_level.theme = Random.next(_level.themeCount)
 	_level.day = Random.nextBool()
-	_level.desert = Random.nextBool()
+	_level.desert = Random.next(5) == 0
 	_level.themeCliff = Random.next(_level.themeCliffCount)
 	_cliff = Random.nextFloat() <= _cliffChance
 	_stream = Random.nextFloat() <= _streamChance
@@ -38,9 +38,6 @@ func _setLevelRect(width: int, height: int) -> void:
 	_width = width
 	_height = height
 	_level.rect = Rect2(_level.rect.position, Vector2(_width, _height))
-
-func _clear() -> void:
-	_level.clear()
 
 func _fill(wall: bool, wallEdge: bool, outside: bool = false) -> void:
 	for y in range(_height):
