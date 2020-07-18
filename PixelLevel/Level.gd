@@ -224,10 +224,11 @@ func _unhandled_input(event: InputEvent) -> void:
 				_dragLeft = true
 				_dragged = false
 			else:
-				if !_dragged:
+				if _dragged:
+					_cameraUpdate()
+				else:
 					_targetTo(event.global_position)
 					_targetUpdate()
-					_cameraUpdate()
 				_dragLeft = false
 		elif event.button_index == BUTTON_WHEEL_UP:
 			_zoomIn(event.global_position)
