@@ -457,7 +457,7 @@ func isBlockedLight(x: int, y: int) -> bool:
 
 const _torchRadius := 8
 const _torchRadiusMax := _torchRadius * 2
-const _lightRadius := 16
+var _lightRadius := 16
 const _lightMin := 0
 const _lightMax := 31
 const _lightExplored := 8
@@ -469,6 +469,17 @@ const _fovOctants = [
 	[1,  0,  0,  1, -1,  0,  0, -1]
 ]
 var _torches := {}
+
+func lightToggle() -> void:
+	_light.visible = not _light.visible
+
+func lightIncrease() -> void:
+	_lightRadius += 1
+	_lightUpdate(mobPosition(), _lightRadius)
+
+func lightDecrease() -> void:
+	_lightRadius -= 1
+	_lightUpdate(mobPosition(), _lightRadius)
 
 func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float, end: float, xx: int, xy: int, yx: int, yy: int) -> void:
 	if start < end: return

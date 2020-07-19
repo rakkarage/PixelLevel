@@ -3,6 +3,9 @@ extends Node
 onready var _level : Level = $Level/Viewport
 onready var _mask : AnimationPlayer = $Fore/Viewport/Mask/AnimationPlayer
 onready var _textureRect : TextureRect = $Fore/Viewport/MiniMap
+onready var _minus : Button = $Fore/Viewport/Panel/VBox/HBox/Minus
+onready var _toggle : Button = $Fore/Viewport/Panel/VBox/HBox/Toggle
+onready var _plus : Button = $Fore/Viewport/Panel/VBox/HBox/Plus
 onready var _imageTexture := ImageTexture.new()
 onready var _image := Image.new()
 const _max := Vector2(64, 64)
@@ -12,6 +15,9 @@ func _ready() -> void:
 	_updateMap()
 	Utility.ok(_level.connect("updateMap", self, "_updateMap"))
 	Utility.ok(_level.connect("generate", self, "_generate"))
+	Utility.ok(_minus.connect("pressed", self, "_lightMinus"))
+	Utility.ok(_toggle.connect("pressed", self, "_lightToggle"))
+	Utility.ok(_plus.connect("pressed", self, "_lightPlus"))
 
 func _updateMap() -> void:
 	var at := _level.mobPosition()
@@ -59,3 +65,12 @@ func _finished(name: String) -> void:
 	Random.priority(_g).generate()
 	_mask.play_backwards(name)
 	_mask.disconnect("animation_finished", self, "_finished")
+
+func _lightMinus() -> void:
+	_level.lightDecrease()
+
+func _lightToggle() -> void:
+	_level.lightToggle()
+
+func _lightPlus() -> void:
+	_level.lightIncrease()
