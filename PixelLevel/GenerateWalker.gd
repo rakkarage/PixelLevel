@@ -1,6 +1,8 @@
 extends Generate
 class_name GenerateWalker
 
+# Thanks! https://www.youtube.com/watch?v=2nk6bJBTtlA
+
 const _stepsMax := 500
 const _stepsChange := 5
 const _changeChance := 0.25
@@ -12,8 +14,8 @@ var _stepCount := 0
 
 func _init(level: Level).(level) -> void: pass
 
-func generate() -> void:
-	.generate()
+func generate(delta: int = 1) -> void:
+	.generate(delta)
 	_fill(true, false)
 	_drawWalk()
 	_stairs()

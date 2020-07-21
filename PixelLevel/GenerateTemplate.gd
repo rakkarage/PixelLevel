@@ -56,8 +56,8 @@ var _data := {
 
 func _init(level: Level).(level) -> void: pass
 
-func generate() -> void:
-	.generate()
+func generate(delta: int = 1) -> void:
+	.generate(delta)
 	var template = Random.priority(_data)
 	var single := true
 	if template.name == "c":

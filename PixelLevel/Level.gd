@@ -47,8 +47,14 @@ const themeCount := 4
 var themeCliff := 0
 const themeCliffCount := 2
 
+var state := {
+	"depth": 0
+}
+
 signal updateMap
 signal generate
+signal generateUp
+signal regenerate
 
 enum Tile { # match id in tileSet
 	Cliff0, Cliff1
@@ -168,6 +174,15 @@ func _handleStair() -> bool:
 		emit_signal("generate")
 		return true
 	return false
+
+func up() -> void:
+	emit_signal("generateUp")
+
+func down() -> void:
+	emit_signal("generate")
+
+func regen() -> void:
+	emit_signal("regenerate")
 
 func _handleDoor() -> bool:
 	var from := mobPosition()

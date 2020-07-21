@@ -3,9 +3,13 @@ extends Node
 onready var _level : Level = $Level/Viewport
 onready var _mask : AnimationPlayer = $Fore/Viewport/Mask/AnimationPlayer
 onready var _textureRect : TextureRect = $Fore/Viewport/MiniMap
-onready var _minus : Button = $Fore/Viewport/Panel/VBox/HBox/Minus
-onready var _toggle : Button = $Fore/Viewport/Panel/VBox/HBox/Toggle
-onready var _plus : Button = $Fore/Viewport/Panel/VBox/HBox/Plus
+onready var _up : Button = $Fore/Viewport/Panel/VBox/HBoxLevel/Up
+onready var _regen : Button = $Fore/Viewport/Panel/VBox/HBoxLevel/Regen
+onready var _down : Button = $Fore/Viewport/Panel/VBox/HBoxLevel/Down
+onready var _minus : Button = $Fore/Viewport/Panel/VBox/HBoxLight/Minus
+onready var _toggle : Button = $Fore/Viewport/Panel/VBox/HBoxLight/Toggle
+onready var _plus : Button = $Fore/Viewport/Panel/VBox/HBoxLight/Plus
+onready var _depth : Label = $Fore/Viewport/Panel/VBox/Status/Value
 onready var _imageTexture := ImageTexture.new()
 onready var _image := Image.new()
 const _max := Vector2(64, 64)
@@ -18,6 +22,9 @@ func _ready() -> void:
 	Utility.ok(_minus.connect("pressed", self, "_lightMinus"))
 	Utility.ok(_toggle.connect("pressed", self, "_lightToggle"))
 	Utility.ok(_plus.connect("pressed", self, "_lightPlus"))
+	Utility.ok(_up.connect("pressed", self, "_levelUp"))
+	Utility.ok(_regen.connect("pressed", self, "_levelRegen"))
+	Utility.ok(_down.connect("pressed", self, "_levelDown"))
 
 func _updateMap() -> void:
 	var at := _level.mobPosition()
@@ -56,15 +63,17 @@ onready var _g := {
 	GenerateTemplate.new(_level): 1,
 }
 
-func _generate() -> void:
+var _selected: Generate
+
+func _generate(delta: int = 1) -> void:
 	yield(get_tree(), "idle_frame")
 	_mask.play("Mask")
-	Utility.ok(_mask.connect("animation_finished", self, "_finished"))
-
-func _finished(name: String) -> void:
-	Random.priority(_g).generate()
-	_mask.play_backwards(name)
-	_mask.disconnect("animation_finished", self, "_finished")
+	yield(_mask, "animation_finished")
+	if delta != 0:
+		_selected = Random.priority(_g)
+	_selected.generate(delta)
+	_depth.text = str(_level.state.depth)
+	_mask.play_backwards("Mask")
 
 func _lightMinus() -> void:
 	_level.lightDecrease()
@@ -74,3 +83,15 @@ func _lightToggle() -> void:
 
 func _lightPlus() -> void:
 	_level.lightIncrease()
+
+func _levelUp() -> void:
+	_generate(-1)
+	_depth.text = str(_level.state.depth)
+
+func _levelRegen() -> void:
+	_generate(0)
+	_depth.text = str(_level.state.depth)
+
+func _levelDown() -> void:
+	_generate()
+	_depth.text = str(_level.state.depth)

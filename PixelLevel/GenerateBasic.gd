@@ -3,8 +3,8 @@ class_name GenerateBasic
 
 func _init(level: Level).(level) -> void: pass
 
-func generate() -> void:
-	.generate()
+func generate(delta: int = 1) -> void:
+	.generate(delta)
 	_fill(false, Random.nextBool())
 	_stairs()
 	if _stream:

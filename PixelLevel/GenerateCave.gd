@@ -10,8 +10,8 @@ var _outsideWall := false
 
 func _init(level: Level).(level) -> void: pass
 
-func generate() -> void:
-	.generate()
+func generate(delta: int = 1) -> void:
+	.generate(delta)
 	_outside = Random.nextBool()
 	_outsideWall = Random.nextBool()
 	_fill(true, true, _outside)

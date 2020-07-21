@@ -179,13 +179,13 @@ __meta__ = {
 anims/Mask = ExtResource( 7 )
 
 [node name="Panel" type="PanelContainer" parent="Fore/Viewport"]
-anchor_left = 0.5
+modulate = Color( 1, 1, 1, 0.498039 )
+anchor_left = 1.0
 anchor_top = 1.0
-anchor_right = 0.5
+anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = -82.5
-margin_top = -52.0
-margin_right = 82.5
+margin_left = -165.0
+margin_top = -112.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -194,33 +194,95 @@ __meta__ = {
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 158.0
-margin_bottom = 45.0
+margin_bottom = 105.0
 
-[node name="Label" type="Label" parent="Fore/Viewport/Panel/VBox"]
+[node name="Status" type="HBoxContainer" parent="Fore/Viewport/Panel/VBox"]
 margin_right = 151.0
 margin_bottom = 14.0
+
+[node name="Depth" type="Label" parent="Fore/Viewport/Panel/VBox/Status"]
+margin_right = 73.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Depth:"
+
+[node name="Value" type="Label" parent="Fore/Viewport/Panel/VBox/Status"]
+margin_left = 77.0
+margin_right = 151.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "0"
+
+[node name="LabelLevel" type="Label" parent="Fore/Viewport/Panel/VBox"]
+margin_top = 18.0
+margin_right = 151.0
+margin_bottom = 32.0
+text = "Level"
+align = 1
+valign = 1
+
+[node name="HBoxLevel" type="HBoxContainer" parent="Fore/Viewport/Panel/VBox"]
+margin_top = 36.0
+margin_right = 151.0
+margin_bottom = 56.0
+
+[node name="Down" type="Button" parent="Fore/Viewport/Panel/VBox/HBoxLevel"]
+margin_right = 48.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Down"
+
+[node name="Regen" type="Button" parent="Fore/Viewport/Panel/VBox/HBoxLevel"]
+margin_left = 52.0
+margin_right = 103.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Regen"
+
+[node name="Up" type="Button" parent="Fore/Viewport/Panel/VBox/HBoxLevel"]
+margin_left = 107.0
+margin_right = 151.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Up"
+
+[node name="LabelLight" type="Label" parent="Fore/Viewport/Panel/VBox"]
+margin_top = 60.0
+margin_right = 151.0
+margin_bottom = 74.0
 text = "Light"
 align = 1
 valign = 1
 
-[node name="HBox" type="HBoxContainer" parent="Fore/Viewport/Panel/VBox"]
-margin_top = 18.0
+[node name="HBoxLight" type="HBoxContainer" parent="Fore/Viewport/Panel/VBox"]
+margin_top = 78.0
 margin_right = 151.0
-margin_bottom = 38.0
+margin_bottom = 98.0
 
-[node name="Minus" type="Button" parent="Fore/Viewport/Panel/VBox/HBox"]
+[node name="Minus" type="Button" parent="Fore/Viewport/Panel/VBox/HBoxLight"]
 margin_right = 51.0
 margin_bottom = 20.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 text = "Minus"
 
-[node name="Toggle" type="Button" parent="Fore/Viewport/Panel/VBox/HBox"]
+[node name="Toggle" type="Button" parent="Fore/Viewport/Panel/VBox/HBoxLight"]
 margin_left = 55.0
 margin_right = 108.0
 margin_bottom = 20.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 text = "Toggle"
 
-[node name="Plus" type="Button" parent="Fore/Viewport/Panel/VBox/HBox"]
+[node name="Plus" type="Button" parent="Fore/Viewport/Panel/VBox/HBoxLight"]
 margin_left = 112.0
 margin_right = 151.0
 margin_bottom = 20.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 text = "Plus"
