@@ -71,12 +71,6 @@ cell_size = Vector2( 16, 16 )
 cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
 format = 1
 
-[node name="WaterBack" type="TileMap" parent="Level/Viewport"]
-tile_set = ExtResource( 1 )
-cell_size = Vector2( 16, 16 )
-cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
-format = 1
-
 [node name="SplitBack" type="TileMap" parent="Level/Viewport"]
 tile_set = ExtResource( 1 )
 cell_size = Vector2( 16, 16 )
@@ -84,6 +78,12 @@ cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
 format = 1
 
 [node name="ItemBack" type="TileMap" parent="Level/Viewport"]
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 16, 16 )
+cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
+format = 1
+
+[node name="WaterBack" type="TileMap" parent="Level/Viewport"]
 tile_set = ExtResource( 1 )
 cell_size = Vector2( 16, 16 )
 cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
@@ -100,13 +100,13 @@ position = Vector2( 8, 8 )
 
 [node name="Mob" parent="Level/Viewport" instance=ExtResource( 2 )]
 
-[node name="ItemFore" type="TileMap" parent="Level/Viewport"]
+[node name="SplitFore" type="TileMap" parent="Level/Viewport"]
 tile_set = ExtResource( 1 )
 cell_size = Vector2( 16, 16 )
 cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
 format = 1
 
-[node name="SplitFore" type="TileMap" parent="Level/Viewport"]
+[node name="ItemFore" type="TileMap" parent="Level/Viewport"]
 tile_set = ExtResource( 1 )
 cell_size = Vector2( 16, 16 )
 cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )

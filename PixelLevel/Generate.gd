@@ -26,16 +26,15 @@ func generate(delta: int = 1) -> void:
 	_level.state.depth += delta
 	var d: int = 10 + _level.state.depth
 	_setLevelRect(d * 2 + Random.next(d), d * 2 + Random.next(d))
-	if delta != 0:
-		_level.theme = Random.next(_level.themeCount)
-		_level.day = Random.nextBool()
-		_level.desert = Random.next(5) == 0
-		_level.themeCliff = Random.next(_level.themeCliffCount)
-		_cliff = Random.nextFloat() <= _cliffChance
-		_stream = Random.nextFloat() <= _streamChance
-		_wonky = Random.nextBool()
-		_room = Random.nextBool()
-		_level.themeCliff = Random.next(_level.themeCliffCount)
+	_level.theme = Random.next(_level.themeCount)
+	_level.day = Random.nextBool()
+	_level.desert = Random.next(5) == 0
+	_level.themeCliff = Random.next(_level.themeCliffCount)
+	_cliff = Random.nextFloat() <= _cliffChance
+	_stream = Random.nextFloat() <= _streamChance
+	_wonky = Random.nextBool()
+	_room = Random.nextBool()
+	_level.themeCliff = Random.next(_level.themeCliffCount)
 
 func regenerate() -> void:
 	generate(0)
