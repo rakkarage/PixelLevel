@@ -196,9 +196,12 @@ func _handleDoor() -> bool:
 
 func _toggleDoorV(p: Vector2) -> void: _toggleDoor(int(p.x), int(p.y))
 
+const _doorBreakChance = 0.02
+
 func _toggleDoor(x: int, y: int) -> void:
 	var door := _fore.get_cell_autotile_coord(x, y)
-	_fore.set_cell(x, y, _fore.get_cell(x, y), false, false, false, Vector2(0 if door.x == 1 else 1, 0))
+	var broke = Random.nextFloat() <= _doorBreakChance
+	_fore.set_cell(x, y, _fore.get_cell(x, y), false, false, false, Vector2(2 if broke else 0 if door.x == 1 else 1, 0))
 
 func _face(mob: Node2D, direction: Vector2) -> void:
 	if direction.x > 0:
