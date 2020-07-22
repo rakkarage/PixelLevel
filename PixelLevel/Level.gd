@@ -274,7 +274,7 @@ func _wasd(direction: Vector2) -> void:
 		_toggleDoorV(p)
 	if not isBlockedV(p):
 		_face(_mob, direction)
-		_mob.global_position += _world(direction)
+		_step(_mob, direction)
 		_pathClear()
 		if not isStairDownV(p):
 			_lightUpdate(p, _lightRadius)
