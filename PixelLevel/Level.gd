@@ -258,6 +258,30 @@ func _unhandled_input(event: InputEvent) -> void:
 			_dragged = true
 			_cameraTo(_camera.global_position - event.relative * _camera.zoom)
 			emit_signal("updateMap")
+	else:
+		if event.is_action_pressed("ui_up"):
+			_wasd(Vector2.UP)
+		if event.is_action_pressed("ui_right"):
+			_wasd(Vector2.RIGHT)
+		if event.is_action_pressed("ui_down"):
+			_wasd(Vector2.DOWN)
+		if event.is_action_pressed("ui_left"):
+			_wasd(Vector2.LEFT)
+
+func _wasd(direction: Vector2) -> void:
+	var p := mobPosition() + direction
+	if isDoorShutV(p):
+		_toggleDoorV(p)
+	if not isBlockedV(p):
+		_face(_mob, direction)
+		_mob.global_position += _world(direction)
+		_pathClear()
+		if not isStairDownV(p):
+			_lightUpdate(p, _lightRadius)
+			_checkCenter()
+			emit_signal("updateMap")
+		else:
+			emit_signal("generate")
 
 func _tileIndex(p: Vector2) -> int:
 	return Utility.indexV(p, int(rect.size.x))
