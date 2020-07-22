@@ -267,14 +267,26 @@ func _processWasd() -> bool:
 	if Input.is_action_pressed("ui_up"):
 		_wasd(Vector2.UP)
 		done = true
+	if Input.is_action_pressed("ui_ne"):
+		_wasd(Vector2.UP + Vector2.RIGHT)
+		done = true
 	if Input.is_action_pressed("ui_right"):
 		_wasd(Vector2.RIGHT)
+		done = true
+	if Input.is_action_pressed("ui_se"):
+		_wasd(Vector2.DOWN + Vector2.RIGHT)
 		done = true
 	if Input.is_action_pressed("ui_down"):
 		_wasd(Vector2.DOWN)
 		done = true
+	if Input.is_action_pressed("ui_sw"):
+		_wasd(Vector2.DOWN + Vector2.LEFT)
+		done = true
 	if Input.is_action_pressed("ui_left"):
 		_wasd(Vector2.LEFT)
+		done = true
+	if Input.is_action_pressed("ui_nw"):
+		_wasd(Vector2.UP + Vector2.LEFT)
 		done = true
 	return done
 
