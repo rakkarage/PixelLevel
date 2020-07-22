@@ -43,11 +43,10 @@ func _mirrorTouch(event: InputEvent) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.scancode == KEY_ALT:
+		_mirrorClear()
 		_alt = event.pressed
 		if _alt:
 			_mirror()
-		else:
-			_mirrorClear()
 	if event is InputEventScreenDrag:
 		_touch[event.index].p = event.position
 		if _alt:
