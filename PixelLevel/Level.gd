@@ -264,11 +264,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	else:
 		if event.is_action_pressed("ui_up"):
 			_wasd(Vector2.UP)
-		if event.is_action_pressed("ui_right"):
+		elif event.is_action_pressed("ui_right"):
 			_wasd(Vector2.RIGHT)
-		if event.is_action_pressed("ui_down"):
+		elif event.is_action_pressed("ui_down"):
 			_wasd(Vector2.DOWN)
-		if event.is_action_pressed("ui_left"):
+		elif event.is_action_pressed("ui_left"):
 			_wasd(Vector2.LEFT)
 
 func _wasd(direction: Vector2) -> void:

@@ -5,7 +5,7 @@ func _init(level: Level).(level) -> void: pass
 
 func generate(delta: int = 1) -> void:
 	.generate(delta)
-	var depth: int = _level.state.depth + 10
+	var depth: int = _level.state.depth.abs() + 10
 	var width := Random.nextRangeOdd(depth, depth + Random.next(depth))
 	var height := Random.nextRangeOdd(depth, depth + Random.next(depth))
 	_setLevelRect(width, height)
