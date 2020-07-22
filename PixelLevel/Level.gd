@@ -30,7 +30,7 @@ var _turn := false
 var _time := 0.0
 var _turnTotal := 0
 var _timeTotal := 0.0
-const _turnTime := 0.1
+const _turnTime := 0.22
 const _duration := 0.333
 const _zoomMin := Vector2(0.2, 0.2)
 const _zoomMax := Vector2(1.0, 1.0)
@@ -143,9 +143,9 @@ func generated() -> void:
 	emit_signal("updateMap")
 	verifyCliff()
 
-func _process(delta) -> void:
+func _process(delta: float) -> void:
 	_time += delta
-	if _turn and _time > _turnTime:
+	if _time > _turnTime and (_turn or _processWasd()):
 		_turn = false
 		_timeTotal += _time
 		_turnTotal += 1
@@ -261,15 +261,22 @@ func _unhandled_input(event: InputEvent) -> void:
 			_dragged = true
 			_cameraTo(_camera.global_position - event.relative * _camera.zoom)
 			emit_signal("updateMap")
-	else:
-		if event.is_action_pressed("ui_up"):
-			_wasd(Vector2.UP)
-		elif event.is_action_pressed("ui_right"):
-			_wasd(Vector2.RIGHT)
-		elif event.is_action_pressed("ui_down"):
-			_wasd(Vector2.DOWN)
-		elif event.is_action_pressed("ui_left"):
-			_wasd(Vector2.LEFT)
+
+func _processWasd() -> bool:
+	var done := false
+	if Input.is_action_pressed("ui_up"):
+		_wasd(Vector2.UP)
+		done = true
+	if Input.is_action_pressed("ui_right"):
+		_wasd(Vector2.RIGHT)
+		done = true
+	if Input.is_action_pressed("ui_down"):
+		_wasd(Vector2.DOWN)
+		done = true
+	if Input.is_action_pressed("ui_left"):
+		_wasd(Vector2.LEFT)
+		done = true
+	return done
 
 func _wasd(direction: Vector2) -> void:
 	var p := mobPosition() + direction
