@@ -3,13 +3,20 @@ extends Node
 onready var _level : Level = $Level/Viewport
 onready var _mask : AnimationPlayer = $Fore/Viewport/Mask/AnimationPlayer
 onready var _textureRect : TextureRect = $Fore/Viewport/MiniMap
+
+onready var _depth : Label = $Fore/Viewport/Panel/VBox/Level/Value
+
 onready var _up : Button = $Fore/Viewport/Panel/VBox/HBoxLevel/Up
 onready var _regen : Button = $Fore/Viewport/Panel/VBox/HBoxLevel/Regen
 onready var _down : Button = $Fore/Viewport/Panel/VBox/HBoxLevel/Down
+
+onready var _light : Label = $Fore/Viewport/Panel/VBox/Light/Value
+
 onready var _minus : Button = $Fore/Viewport/Panel/VBox/HBoxLight/Minus
 onready var _toggle : Button = $Fore/Viewport/Panel/VBox/HBoxLight/Toggle
 onready var _plus : Button = $Fore/Viewport/Panel/VBox/HBoxLight/Plus
-onready var _depth : Label = $Fore/Viewport/Panel/VBox/Status/Value
+
+
 onready var _imageTexture := ImageTexture.new()
 onready var _image := Image.new()
 const _max := Vector2(64, 64)
@@ -25,6 +32,7 @@ func _ready() -> void:
 	Utility.ok(_up.connect("pressed", self, "_levelUp"))
 	Utility.ok(_regen.connect("pressed", self, "_levelRegen"))
 	Utility.ok(_down.connect("pressed", self, "_levelDown"))
+	_light.text = str(_level.lightRadius)
 
 func _updateMap() -> void:
 	var at := _level.mobPosition()
@@ -73,16 +81,19 @@ func _generate(delta: int = 1) -> void:
 		_selected = Random.priority(_g)
 	_selected.generate(delta)
 	_depth.text = str(_level.state.depth)
+	_light.text = str(_level.lightRadius)
 	_mask.play_backwards("Mask")
 
 func _lightMinus() -> void:
 	_level.lightDecrease()
+	_light.text = str(_level.lightRadius)
 
 func _lightToggle() -> void:
 	_level.lightToggle()
 
 func _lightPlus() -> void:
 	_level.lightIncrease()
+	_light.text = str(_level.lightRadius)
 
 func _levelUp() -> void:
 	_generate(-1)
@@ -90,7 +101,6 @@ func _levelUp() -> void:
 
 func _levelRegen() -> void:
 	_generate(0)
-	_depth.text = str(_level.state.depth)
 
 func _levelDown() -> void:
 	_generate()

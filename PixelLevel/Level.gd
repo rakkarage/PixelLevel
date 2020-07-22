@@ -138,7 +138,7 @@ func generated() -> void:
 	_checkCenter()
 	_dark()
 	_findTorches()
-	_lightUpdate(mobPosition(), _lightRadius)
+	_lightUpdate(mobPosition(), lightRadius)
 	_cameraUpdate()
 	emit_signal("updateMap")
 	verifyCliff()
@@ -152,7 +152,7 @@ func _process(delta: float) -> void:
 		if not _handleDoor():
 			_move(_mob)
 		if not _handleStair():
-			_lightUpdate(mobPosition(), _lightRadius)
+			_lightUpdate(mobPosition(), lightRadius)
 			_checkCenter()
 			emit_signal("updateMap")
 		_time = 0.0
@@ -299,7 +299,7 @@ func _wasd(direction: Vector2) -> void:
 		_step(_mob, direction)
 		_pathClear()
 		if not isStairDownV(p):
-			_lightUpdate(p, _lightRadius)
+			_lightUpdate(p, lightRadius)
 			_checkCenter()
 			emit_signal("updateMap")
 		else:
@@ -518,7 +518,7 @@ func isBlockedLight(x: int, y: int) -> bool:
 
 const _torchRadius := 8
 const _torchRadiusMax := _torchRadius * 2
-var _lightRadius := 16
+var lightRadius := 16
 const _lightMin := 0
 const _lightMax := 31
 const _lightExplored := 8
@@ -535,12 +535,12 @@ func lightToggle() -> void:
 	_light.visible = not _light.visible
 
 func lightIncrease() -> void:
-	_lightRadius += 1
-	_lightUpdate(mobPosition(), _lightRadius)
+	lightRadius += 1
+	_lightUpdate(mobPosition(), lightRadius)
 
 func lightDecrease() -> void:
-	_lightRadius -= 1
-	_lightUpdate(mobPosition(), _lightRadius)
+	lightRadius -= 1
+	_lightUpdate(mobPosition(), lightRadius)
 
 func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float, end: float, xx: int, xy: int, yx: int, yy: int) -> void:
 	if start < end: return
