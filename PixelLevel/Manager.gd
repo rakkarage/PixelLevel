@@ -3,20 +3,14 @@ extends Node
 onready var _level : Level = $Level/Viewport
 onready var _mask : AnimationPlayer = $Fore/Viewport/Mask/AnimationPlayer
 onready var _textureRect : TextureRect = $Fore/Viewport/MiniMap
-
 onready var _depth : Label = $Fore/Viewport/Panel/VBox/Level/Value
-
 onready var _up : Button = $Fore/Viewport/Panel/VBox/HBoxLevel/Up
 onready var _regen : Button = $Fore/Viewport/Panel/VBox/HBoxLevel/Regen
 onready var _down : Button = $Fore/Viewport/Panel/VBox/HBoxLevel/Down
-
 onready var _light : Label = $Fore/Viewport/Panel/VBox/Light/Value
-
 onready var _minus : Button = $Fore/Viewport/Panel/VBox/HBoxLight/Minus
 onready var _toggle : Button = $Fore/Viewport/Panel/VBox/HBoxLight/Toggle
 onready var _plus : Button = $Fore/Viewport/Panel/VBox/HBoxLight/Plus
-
-
 onready var _imageTexture := ImageTexture.new()
 onready var _image := Image.new()
 const _max := Vector2(64, 64)
