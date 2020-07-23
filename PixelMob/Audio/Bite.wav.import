@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/Bite.wav-a1f979864a8ca6303686fcab82d7291b.sample"
+
+[deps]
+
+source_file="res://PixelMob/Audio/Bite.wav"
+dest_files=[ "res://.import/Bite.wav-a1f979864a8ca6303686fcab82d7291b.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

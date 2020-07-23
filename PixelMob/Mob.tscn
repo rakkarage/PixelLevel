@@ -1,13 +1,14 @@
-[gd_scene load_steps=24 format=2]
+[gd_scene load_steps=25 format=2]
 
-[ext_resource path="res://PixelMob/Animation/Idle2.tres" type="Animation" id=1]
-[ext_resource path="res://PixelMob/Animation/idle0.tres" type="Animation" id=2]
-[ext_resource path="res://PixelMob/Audio/167075__drminky__slime-land.tres" type="AudioStream" id=3]
-[ext_resource path="res://PixelMob/Sprite/SlimeA.png" type="Texture" id=4]
-[ext_resource path="res://PixelMob/Animation/Walk.tres" type="Animation" id=5]
-[ext_resource path="res://PixelMob/Animation/Attack.tres" type="Animation" id=6]
-[ext_resource path="res://PixelMob/Animation/Idle1.tres" type="Animation" id=7]
-[ext_resource path="res://PixelMob/Audio/Bite.tres" type="AudioStream" id=8]
+[ext_resource path="res://PixelMob/Animation/Idle1.tres" type="Animation" id=1]
+[ext_resource path="res://PixelMob/Animation/Attack.tres" type="Animation" id=2]
+[ext_resource path="res://PixelMob/Animation/Walk.tres" type="Animation" id=3]
+[ext_resource path="res://PixelMob/Animation/Idle2.tres" type="Animation" id=4]
+[ext_resource path="res://PixelMob/Animation/idle0.tres" type="Animation" id=5]
+[ext_resource path="res://PixelMob/Sprite/SlimeA.png" type="Texture" id=6]
+[ext_resource path="res://PixelMob/Mob.gd" type="Script" id=7]
+[ext_resource path="res://PixelMob/Audio/167075__drminky__slime-land.tres" type="AudioStream" id=8]
+[ext_resource path="res://PixelMob/Audio/Bite.tres" type="AudioStream" id=9]
 
 [sub_resource type="AnimationNodeAnimation" id=1]
 animation = "Attack"
@@ -72,19 +73,27 @@ graph_offset = Vector2( 88, -35 )
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id=15]
 
-[node name="Mob" type="Node2D"]
+[node name="Mob" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 7 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Sprite" type="Sprite" parent="."]
-texture = ExtResource( 4 )
+position = Vector2( 320, 240 )
+scale = Vector2( 10, 10 )
+texture = ExtResource( 6 )
 flip_h = true
 hframes = 16
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Sprite"]
-anims/Attack = ExtResource( 6 )
-anims/Idle0 = ExtResource( 2 )
-anims/Idle1 = ExtResource( 7 )
-anims/Idle2 = ExtResource( 1 )
-anims/Walk = ExtResource( 5 )
+anims/Attack = ExtResource( 2 )
+anims/Idle0 = ExtResource( 5 )
+anims/Idle1 = ExtResource( 1 )
+anims/Idle2 = ExtResource( 4 )
+anims/Walk = ExtResource( 3 )
 
 [node name="AnimationTree" type="AnimationTree" parent="Sprite"]
 tree_root = SubResource( 14 )
@@ -96,7 +105,43 @@ parameters/conditions/walk = false
 parameters/Idle/BlendSpace1D/blend_position = 0
 
 [node name="AudioWalk" type="AudioStreamPlayer" parent="Sprite"]
-stream = ExtResource( 3 )
+stream = ExtResource( 8 )
 
 [node name="AudioAttack" type="AudioStreamPlayer" parent="Sprite"]
-stream = ExtResource( 8 )
+stream = ExtResource( 9 )
+
+[node name="Panel" type="PanelContainer" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -78.5
+margin_right = 78.5
+margin_bottom = 34.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBox" type="HBoxContainer" parent="Panel"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 150.0
+margin_bottom = 27.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Attack" type="Button" parent="Panel/HBox"]
+margin_right = 52.0
+margin_bottom = 20.0
+text = "Attack"
+
+[node name="Walk" type="Button" parent="Panel/HBox"]
+margin_left = 56.0
+margin_right = 99.0
+margin_bottom = 20.0
+text = "Walk"
+
+[node name="Turn" type="Button" parent="Panel/HBox"]
+margin_left = 103.0
+margin_right = 143.0
+margin_bottom = 20.0
+text = "Turn"
