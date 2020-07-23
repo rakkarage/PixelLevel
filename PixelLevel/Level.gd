@@ -140,7 +140,6 @@ func generated() -> void:
 	_findTorches()
 	_lightUpdate(mobPosition(), lightRadius)
 	_cameraUpdate()
-	emit_signal("updateMap")
 	verifyCliff()
 
 func _process(delta: float) -> void:
@@ -149,12 +148,12 @@ func _process(delta: float) -> void:
 		_turn = false
 		_timeTotal += _time
 		_turnTotal += 1
-		if not _handleDoor():
-			_move(_mob)
-		if not _handleStair():
-			_lightUpdate(mobPosition(), lightRadius)
-			_checkCenter()
-			emit_signal("updateMap")
+		if _turn:
+			if not _handleDoor():
+				_move(_mob)
+			if not _handleStair():
+				_lightUpdate(mobPosition(), lightRadius)
+				_checkCenter()
 		_time = 0.0
 
 func _move(mob: Node2D) -> void:
@@ -251,11 +250,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.button_index == BUTTON_WHEEL_UP:
 			_zoomIn(event.global_position)
 			_cameraUpdate()
-			emit_signal("updateMap")
 		elif event.button_index == BUTTON_WHEEL_DOWN:
 			_zoomOut(event.global_position)
 			_cameraUpdate()
-			emit_signal("updateMap")
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
 			_dragged = true
@@ -301,7 +298,6 @@ func _wasd(direction: Vector2) -> void:
 		if not isStairDownV(p):
 			_lightUpdate(p, lightRadius)
 			_checkCenter()
-			emit_signal("updateMap")
 		else:
 			emit_signal("generate")
 
@@ -366,6 +362,8 @@ func _cameraUpdate() -> void:
 	var world := _worldBounds().grow(-_back.cell_size.x)
 	if not world.intersects(map):
 		_cameraSnap(_camera.global_position + _constrainRect(world, map))
+	else:
+		emit_signal("updateMap")
 
 func _cameraSnap(to: Vector2) -> void:
 	_cameraStop()
@@ -386,6 +384,8 @@ func _checkCenter() -> void:
 	if ((test.x > size.x - edge.x) or (test.x < edge.x) or
 		(test.y > size.y - edge.y) or (test.y < edge.y)):
 		_cameraSnap(-(_worldSize() / 2.0) + _mob.global_position)
+	else:
+		emit_signal("updateMap")
 
 func _zoomPinch(at: Vector2, amount: float) -> void:
 	if amount > 0: _zoom(at, _zoomFactorOut)
