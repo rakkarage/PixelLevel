@@ -145,7 +145,6 @@ func generated() -> void:
 func _process(delta: float) -> void:
 	_time += delta
 	if _time > _turnTime and (_turn or _processWasd()):
-		_turn = false
 		_timeTotal += _time
 		_turnTotal += 1
 		if _turn:
@@ -154,6 +153,7 @@ func _process(delta: float) -> void:
 			if not _handleStair():
 				_lightUpdate(mobPosition(), lightRadius)
 				_checkCenter()
+		_turn = false
 		_time = 0.0
 
 func _move(mob: Node2D) -> void:
