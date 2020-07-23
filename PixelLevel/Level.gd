@@ -147,13 +147,14 @@ func _process(delta: float) -> void:
 	if _time > _turnTime and (_turn or _processWasd()):
 		_timeTotal += _time
 		_turnTotal += 1
-		if _turn:
+		var test = _turn
+		_turn = false
+		if test:
 			if not _handleDoor():
 				_move(_mob)
 			if not _handleStair():
 				_lightUpdate(mobPosition(), lightRadius)
 				_checkCenter()
-		_turn = false
 		_time = 0.0
 
 func _move(mob: Node2D) -> void:
