@@ -211,8 +211,8 @@ func _face(mob: Node2D, direction: Vector2) -> void:
 
 func _step(mob: Node2D, direction: Vector2) -> void:
 	mob.walk()
-	# TODO: interpolate global_position!!!!!!!!!!!!!!!!!!!!
-	mob.global_position += _world(direction)
+	Utility.stfu(_tween.interpolate_property(mob, "global_position", null, mob.global_position + _world(direction), _turnTime, Tween.TRANS_CIRC, Tween.EASE_IN_OUT))
+	Utility.stfu(_tween.start())
 
 func _addPoints() -> void:
 	_astar.clear()
