@@ -1,10 +1,10 @@
 [gd_resource type="Animation" load_steps=2 format=2]
 
-[ext_resource path="res://PixelMob/Audio/Bite.tres" type="AudioStream" id=1]
+[ext_resource path="res://PixelMob/Audio/167075__drminky__slime-land.tres" type="AudioStream" id=1]
 
 [resource]
-resource_name = "Attack"
-length = 1.5
+resource_name = "Walk"
+length = 1.875
 loop = true
 step = 0.125
 tracks/0/type = "value"
@@ -14,13 +14,13 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1, 1.125, 1.25 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.25, 0.375, 0.5, 0.625, 0.75, 1, 1.125, 1.25, 1.375, 1.5, 1.625 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
 "update": 1,
-"values": [ 2, 7, 8, 9, 10, 11, 12, 13, 14, 8 ]
+"values": [ 1, 0, 1, 2, 3, 4, 5, 2, 1, 0, 1, 6 ]
 }
 tracks/1/type = "audio"
-tracks/1/path = NodePath("AudioAttack")
+tracks/1/path = NodePath("AudioWalk")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
@@ -31,5 +31,5 @@ tracks/1/keys = {
 "start_offset": 0.0,
 "stream": ExtResource( 1 )
 } ],
-"times": PoolRealArray( 0.625 )
+"times": PoolRealArray( 1.125 )
 }

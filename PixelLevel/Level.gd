@@ -205,9 +205,9 @@ func _toggleDoor(x: int, y: int) -> void:
 
 func _face(mob: Node2D, direction: Vector2) -> void:
 	if direction.x > 0:
-		mob.scale = Vector2(-1, 1)
-	else:
 		mob.scale = Vector2(1, 1)
+	else:
+		mob.scale = Vector2(-1, 1)
 
 func _step(mob: Node2D, direction: Vector2) -> void:
 	# TODO: play walk animation and interpolate global_position
