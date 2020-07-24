@@ -4,9 +4,9 @@
 
 [resource]
 resource_name = "Attack"
-length = 1.5
+length = 0.625
 loop = true
-step = 0.125
+step = 0.0625
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:frame")
 tracks/0/interp = 0
@@ -14,7 +14,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.375, 0.5, 0.625, 0.875, 1, 1.125 ),
+"times": PoolRealArray( 0, 0.125, 0.1875, 0.25, 0.375, 0.4375, 0.5 ),
 "transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1 ),
 "update": 1,
 "values": [ 1, 0, 1, 2, 1, 0, 1 ]
@@ -31,5 +31,5 @@ tracks/1/keys = {
 "start_offset": 0.0,
 "stream": ExtResource( 1 )
 } ],
-"times": PoolRealArray( 0.875 )
+"times": PoolRealArray( 0.25 )
 }
