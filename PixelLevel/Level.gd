@@ -11,7 +11,7 @@ onready var _splitBack: TileMap = $SplitBack
 onready var _itemBack:  TileMap = $ItemBack
 onready var _tree:      TileMap = $Tree
 onready var _path:       Node2D = $Path
-onready var _mob:        Node2D = $Mob
+onready var _mob:        Sprite = $Mob
 onready var _itemFore:  TileMap = $ItemFore
 onready var _splitFore: TileMap = $SplitFore
 onready var _waterFore: TileMap = $WaterFore
@@ -141,6 +141,7 @@ func generated() -> void:
 	_lightUpdate(mobPosition(), lightRadius)
 	_cameraUpdate()
 	verifyCliff()
+	_mob.idle()
 
 func _process(delta: float) -> void:
 	_time += delta
@@ -205,12 +206,13 @@ func _toggleDoor(x: int, y: int) -> void:
 
 func _face(mob: Node2D, direction: Vector2) -> void:
 	if direction.x > 0:
-		mob.scale = Vector2(1, 1)
-	else:
 		mob.scale = Vector2(-1, 1)
+	else:
+		mob.scale = Vector2(1, 1)
 
 func _step(mob: Node2D, direction: Vector2) -> void:
-	# TODO: play walk animation and interpolate global_position
+	mob.walk()
+	# TODO: interpolate global_position!!!!!!!!!!!!!!!!!!!!
 	mob.global_position += _world(direction)
 
 func _addPoints() -> void:
