@@ -141,7 +141,6 @@ func generated() -> void:
 	_lightUpdate(mobPosition(), lightRadius)
 	_cameraUpdate()
 	verifyCliff()
-	_mob.idle()
 
 func _process(delta: float) -> void:
 	_time += delta

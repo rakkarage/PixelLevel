@@ -10,16 +10,16 @@ const _idleAnimationPriority := {
 }
 
 func _ready():
-	idle()
+	_machine.start("Idle")
 
 func randomIdle() -> void:
 	_tree[_key] = Random.priority(_idleAnimationPriority)
 
 func idle():
-	_machine.start("Idle")
+	_machine.travel("Idle")
 
 func walk():
-	_machine.start("Walk")
+	_machine.travel("Walk")
 
 func attack():
-	_machine.start("Attack")
+	_machine.travel("Attack")
