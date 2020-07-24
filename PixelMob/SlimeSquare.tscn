@@ -16,7 +16,6 @@
 [node name="SlimeSquare" type="Sprite"]
 texture = ExtResource( 2 )
 hframes = 5
-frame = 1
 script = ExtResource( 9 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
