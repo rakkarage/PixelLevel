@@ -151,7 +151,7 @@ func _process(delta: float) -> void:
 		_turn = false
 		if test:
 			if not _handleDoor():
-				_move(_mob)
+				yield(_move(_mob), "completed")
 			if not _handleStair():
 				_lightUpdate(mobPosition(), lightRadius)
 				_checkCenter()
@@ -162,12 +162,20 @@ func _move(mob: Node2D) -> void:
 		var delta := _delta(_pathPoints[0], _pathPoints[1])
 		_face(mob, delta)
 		_step(mob, delta)
-		_pathPoints.remove(0)
-		_path.get_child(0).free()
-		if _pathPoints.size() > 1:
-			_turn = true
-		else:
-			_pathClear()
+		yield(_fadeAndFree(), "completed")
+
+func _fadeAndFree() -> void:
+	_pathPoints.remove(0)
+	var node = _path.get_child(0)
+	Utility.stfu(_tween.stop(node, "modulate"))
+	Utility.stfu(_tween.interpolate_property(node, "modulate", null, Color.transparent, _turnTime, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT))
+	Utility.stfu(_tween.start())
+	yield(_tween, "tween_all_completed")
+	node.queue_free()
+	if _pathPoints.size() > 1:
+		_turn = true
+	else:
+		_pathClear()
 
 func _handleStair() -> bool:
 	if _pathPoints.size() == 1 and isStairDownV(mobPosition()):
