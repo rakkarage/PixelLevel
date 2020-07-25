@@ -157,6 +157,7 @@ func _process(delta: float) -> void:
 		_time = 0.0
 
 func _move(mob: Node2D) -> void:
+	yield(get_tree(), "idle_frame")
 	if _pathPoints.size() > 1:
 		var delta := _delta(_pathPoints[0], _pathPoints[1])
 		_face(mob, delta)
