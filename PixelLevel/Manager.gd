@@ -20,6 +20,7 @@ func _ready() -> void:
 	_updateMap()
 	Utility.ok(_level.connect("updateMap", self, "_updateMap"))
 	Utility.ok(_level.connect("generate", self, "_generate"))
+	Utility.ok(_level.connect("generateUp", self, "_levelUp"))
 	Utility.ok(_minus.connect("pressed", self, "_lightMinus"))
 	Utility.ok(_toggle.connect("pressed", self, "_lightToggle"))
 	Utility.ok(_plus.connect("pressed", self, "_lightPlus"))

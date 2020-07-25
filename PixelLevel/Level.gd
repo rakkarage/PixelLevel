@@ -54,7 +54,6 @@ var state := {
 signal updateMap
 signal generate
 signal generateUp
-signal regenerate
 
 enum Tile { # match id in tileSet
 	Cliff0, Cliff1
@@ -178,19 +177,15 @@ func _fadeAndFree() -> void:
 		_pathClear()
 
 func _handleStair() -> bool:
-	if _pathPoints.size() == 1 and isStairDownV(mobPosition()):
-		emit_signal("generate")
-		return true
+	if _pathPoints.size() == 1:
+		var p = mobPosition()
+		if isStairDownV(p):
+			emit_signal("generate")
+			return true
+		elif isStairUpV(p):
+			emit_signal("generateUp")
+			return true
 	return false
-
-func up() -> void:
-	emit_signal("generateUp")
-
-func down() -> void:
-	emit_signal("generate")
-
-func regen() -> void:
-	emit_signal("regenerate")
 
 func _handleDoor() -> bool:
 	var from := mobPosition()
@@ -305,11 +300,14 @@ func _wasd(direction: Vector2) -> void:
 		_face(_mob, direction)
 		_step(_mob, direction)
 		_pathClear()
-		if not isStairDownV(p):
+		if not isStairV(p):
 			_lightUpdate(p, lightRadius)
 			_checkCenter()
 		else:
-			emit_signal("generate")
+			if isStairDownV(p):
+				emit_signal("generate")
+			elif isStairUpV(p):
+				emit_signal("generateUp")
 
 func _tileIndex(p: Vector2) -> int:
 	return Utility.indexV(p, int(rect.size.x))
