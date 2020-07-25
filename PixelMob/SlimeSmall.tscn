@@ -18,24 +18,25 @@ texture = ExtResource( 6 )
 hframes = 15
 script = ExtResource( 9 )
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-anims/Attack = ExtResource( 5 )
-anims/Idle0 = ExtResource( 2 )
-anims/Idle1 = ExtResource( 1 )
-anims/Idle2 = ExtResource( 4 )
-anims/Walk = ExtResource( 3 )
-
-[node name="AnimationTree" type="AnimationTree" parent="."]
+[node name="Tree" type="AnimationTree" parent="."]
 tree_root = ExtResource( 10 )
-anim_player = NodePath("../AnimationPlayer")
+anim_player = NodePath("Animation")
 active = true
 parameters/playback = SubResource( 1 )
 parameters/conditions/attack = false
 parameters/conditions/walk = false
 parameters/Idle/BlendSpace1D/blend_position = 0
 
-[node name="AudioWalk" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 8 )
+[node name="Animation" type="AnimationPlayer" parent="Tree"]
+root_node = NodePath("../..")
+anims/Attack = ExtResource( 5 )
+anims/Idle0 = ExtResource( 2 )
+anims/Idle1 = ExtResource( 1 )
+anims/Idle2 = ExtResource( 4 )
+anims/Walk = ExtResource( 3 )
 
-[node name="AudioAttack" type="AudioStreamPlayer" parent="."]
+[node name="Attack" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 7 )
+
+[node name="Walk" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 8 )

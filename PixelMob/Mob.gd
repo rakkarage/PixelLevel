@@ -1,6 +1,6 @@
 extends Sprite
 
-onready var _tree: AnimationTree = $AnimationTree
+onready var _tree: AnimationTree = $Tree
 onready var _machine: AnimationNodeStateMachinePlayback = _tree.get("parameters/playback")
 const _key := "parameters/Idle/BlendSpace1D/blend_position"
 const _idleAnimationPriority := {

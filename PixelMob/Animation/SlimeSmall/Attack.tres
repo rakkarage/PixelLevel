@@ -20,7 +20,7 @@ tracks/0/keys = {
 "values": [ 1, 0, 1, 2, 10, 11, 12, 13, 14, 0, 1 ]
 }
 tracks/1/type = "audio"
-tracks/1/path = NodePath("AudioAttack")
+tracks/1/path = NodePath("Attack")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
