@@ -135,7 +135,7 @@ func generated() -> void:
 	_addPoints()
 	_connectPoints()
 	_target.modulate = Color.transparent
-	_checkCenter()
+	_cameraToMob()
 	_dark()
 	_findTorches()
 	_lightUpdate(mobPosition(), lightRadius)
@@ -352,6 +352,9 @@ func _cameraCenter() -> void:
 func _cameraTo(to: Vector2) -> void:
 	_cameraStop()
 	_camera.global_position = to
+
+func _cameraToMob() -> void:
+	_cameraTo(-(_worldSize() / 2.0) + _mob.global_position)
 
 func _cameraBy(by: Vector2) -> void:
 	_cameraTo(_camera.global_position + by)
