@@ -32,20 +32,16 @@ animation = "Walk"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=8]
 switch_mode = 2
-advance_condition = "walk"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=9]
-advance_condition = "attack"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=10]
 switch_mode = 2
 auto_advance = true
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=11]
-advance_condition = "walk"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=12]
-advance_condition = "attack"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=13]
 switch_mode = 2

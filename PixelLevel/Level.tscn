@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://PixelLevel/Level.tres" type="TileSet" id=1]
-[ext_resource path="res://PixelMob/Slime.tscn" type="PackedScene" id=2]
+[ext_resource path="res://PixelMob/Mob/Slime.tscn" type="PackedScene" id=2]
 [ext_resource path="res://PixelLevel/Target.tscn" type="PackedScene" id=3]
 [ext_resource path="res://PixelLevel/Level.gd" type="Script" id=4]
 [ext_resource path="res://PixelLevel/Back.tscn" type="PackedScene" id=5]

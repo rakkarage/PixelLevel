@@ -1,0 +1,40 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://PixelMob/Mob/Mob.gd" type="Script" id=1]
+[ext_resource path="res://PixelMob/Animation/Tree.tres" type="AnimationNodeStateMachine" id=2]
+[ext_resource path="res://PixelMob/Audio/167075__drminky__slime-land.tres" type="AudioStream" id=3]
+[ext_resource path="res://PixelMob/Audio/Bite.tres" type="AudioStream" id=4]
+[ext_resource path="res://PixelMob/Animation/SlimeSquare/Walk.tres" type="Animation" id=5]
+[ext_resource path="res://PixelMob/Animation/SlimeSquare/Attack.tres" type="Animation" id=6]
+[ext_resource path="res://PixelMob/Animation/SlimeSquare/Idle1.tres" type="Animation" id=7]
+[ext_resource path="res://PixelMob/Animation/SlimeSquare/Idle2.tres" type="Animation" id=8]
+[ext_resource path="res://PixelMob/Animation/SlimeSquare/Idle0.tres" type="Animation" id=9]
+[ext_resource path="res://PixelMob/Sprite/SlimeSquareA.png" type="Texture" id=10]
+
+[sub_resource type="AnimationNodeStateMachinePlayback" id=1]
+
+[node name="SlimeSquare" type="Sprite"]
+texture = ExtResource( 10 )
+hframes = 5
+script = ExtResource( 1 )
+
+[node name="Tree" type="AnimationTree" parent="."]
+tree_root = ExtResource( 2 )
+anim_player = NodePath("Animation")
+active = true
+parameters/playback = SubResource( 1 )
+parameters/Idle/BlendSpace1D/blend_position = 0
+
+[node name="Animation" type="AnimationPlayer" parent="Tree"]
+root_node = NodePath("../..")
+anims/Attack = ExtResource( 6 )
+anims/Idle0 = ExtResource( 9 )
+anims/Idle1 = ExtResource( 7 )
+anims/Idle2 = ExtResource( 8 )
+anims/Walk = ExtResource( 5 )
+
+[node name="Attack" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 4 )
+
+[node name="Walk" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 3 )
