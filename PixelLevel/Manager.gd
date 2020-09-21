@@ -18,15 +18,15 @@ const _max := Vector2(64, 64)
 func _ready() -> void:
 	_textureRect.texture = _imageTexture
 	_updateMap()
-	Utility.ok(_level.connect("updateMap", self, "_updateMap"))
-	Utility.ok(_level.connect("generate", self, "_generate"))
-	Utility.ok(_level.connect("generateUp", self, "_levelUp"))
-	Utility.ok(_minus.connect("pressed", self, "_lightMinus"))
-	Utility.ok(_toggle.connect("pressed", self, "_lightToggle"))
-	Utility.ok(_plus.connect("pressed", self, "_lightPlus"))
-	Utility.ok(_up.connect("pressed", self, "_levelUp"))
-	Utility.ok(_regen.connect("pressed", self, "_levelRegen"))
-	Utility.ok(_down.connect("pressed", self, "_levelDown"))
+	assert(_level.connect("updateMap", self, "_updateMap") == OK)
+	assert(_level.connect("generate", self, "_generate") == OK)
+	assert(_level.connect("generateUp", self, "_levelUp") == OK)
+	assert(_minus.connect("pressed", self, "_lightMinus") == OK)
+	assert(_toggle.connect("pressed", self, "_lightToggle") == OK)
+	assert(_plus.connect("pressed", self, "_lightPlus") == OK)
+	assert(_up.connect("pressed", self, "_levelUp") == OK)
+	assert(_regen.connect("pressed", self, "_levelRegen") == OK)
+	assert(_down.connect("pressed", self, "_levelDown") == OK)
 	_light.text = str(_level.lightRadius)
 
 func _updateMap() -> void:
@@ -57,12 +57,12 @@ func _updateMap() -> void:
 	_imageTexture.create_from_image(_image)
 
 onready var _g := {
-	GenerateBasic.new(_level): 7,
-	GenerateRoom.new(_level): 6,
-	GenerateDungeon.new(_level): 5,
-	GenerateMaze.new(_level): 4,
-	GenerateCave.new(_level): 3,
-	GenerateWalker.new(_level): 2,
+	# GenerateBasic.new(_level): 1,
+	# GenerateRoom.new(_level): 1,
+	GenerateDungeon.new(_level): 1,
+	GenerateMaze.new(_level): 1,
+	GenerateCave.new(_level): 1,
+	GenerateWalker.new(_level): 1,
 	GenerateTemplate.new(_level): 1,
 }
 
@@ -85,6 +85,7 @@ func _lightMinus() -> void:
 
 func _lightToggle() -> void:
 	_level.lightToggle()
+	_updateMap()
 
 func _lightPlus() -> void:
 	_level.lightIncrease()

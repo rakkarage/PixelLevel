@@ -47,5 +47,5 @@ Lighting combines these two algorithms using sets of 32 gradient light tiles.
 
 ## TODO
 
-- need to fix mob animation states!? and use walk animation
-- level generation and templates and loading tmx
+- fix walking? fucked up!!!
+- add mobs and battle

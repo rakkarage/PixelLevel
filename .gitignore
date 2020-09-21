@@ -3,4 +3,4 @@
 *.csproj
 *.sln
 Properties/
-android/
+export_presets.cfg

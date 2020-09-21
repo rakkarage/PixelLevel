@@ -123,8 +123,8 @@ func _ready() -> void:
 	_camera.zoom = Vector2(0.75, 0.75)
 	generated()
 	_cameraCenter()
-	Utility.ok(connect("size_changed", self, "_onResize"))
-	Utility.ok(Gesture.connect("onZoom", self, "_zoomPinch"))
+	assert(connect("size_changed", self, "_onResize") == OK)
+	assert(Gesture.connect("onZoom", self, "_zoomPinch") == OK)
 
 func generated() -> void:
 	_oldSize = size
@@ -684,7 +684,7 @@ func getMapColor(x: int, y: int) -> Color:
 	var lit = isLit(x, y)
 	var explored = isExplored(x, y)
 	var mob = mobPosition()
-	if lit or explored:
+	if not _light.visible or (lit or explored):
 		if x == mob.x and y == mob.y:
 			color = _colorMob
 		elif isStair(x, y):
