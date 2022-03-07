@@ -6,31 +6,21 @@
 [ext_resource path="res://PixelMob/Sprite/SlimeC.png" type="Texture" id=4]
 [ext_resource path="res://PixelMob/Sprite/SlimeA.png" type="Texture" id=5]
 
-
 [node name="TestFour" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Grid" type="GridContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 columns = 2
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="A" type="Control" parent="Grid"]
-margin_right = 318.0
-margin_bottom = 238.0
+margin_right = 510.0
+margin_bottom = 298.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Slime" parent="Grid/A" instance=ExtResource( 3 )]
 position = Vector2( 160, 125 )
@@ -43,18 +33,12 @@ anchor_right = 0.5
 margin_left = -78.5
 margin_right = 78.5
 margin_bottom = 34.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="HBox" type="HBoxContainer" parent="Grid/A/Panel"]
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 150.0
 margin_bottom = 27.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Attack" type="Button" parent="Grid/A/Panel/HBox"]
 margin_right = 52.0
@@ -74,15 +58,12 @@ margin_bottom = 20.0
 text = "Turn"
 
 [node name="B" type="Control" parent="Grid"]
-margin_left = 322.0
-margin_right = 640.0
-margin_bottom = 238.0
+margin_left = 514.0
+margin_right = 1024.0
+margin_bottom = 298.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Slime" parent="Grid/B" instance=ExtResource( 3 )]
 position = Vector2( 160, 125 )
@@ -94,18 +75,12 @@ anchor_right = 0.5
 margin_left = -78.5
 margin_right = 78.5
 margin_bottom = 34.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="HBox" type="HBoxContainer" parent="Grid/B/Panel"]
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 150.0
 margin_bottom = 27.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Attack" type="Button" parent="Grid/B/Panel/HBox"]
 margin_right = 52.0
@@ -125,15 +100,12 @@ margin_bottom = 20.0
 text = "Turn"
 
 [node name="C" type="Control" parent="Grid"]
-margin_top = 242.0
-margin_right = 318.0
-margin_bottom = 480.0
+margin_top = 302.0
+margin_right = 510.0
+margin_bottom = 600.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Slime" parent="Grid/C" instance=ExtResource( 3 )]
 position = Vector2( 160, 125 )
@@ -146,18 +118,12 @@ anchor_right = 0.5
 margin_left = -78.5
 margin_right = 78.5
 margin_bottom = 34.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="HBox" type="HBoxContainer" parent="Grid/C/Panel"]
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 150.0
 margin_bottom = 27.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Attack" type="Button" parent="Grid/C/Panel/HBox"]
 margin_right = 52.0
@@ -177,16 +143,13 @@ margin_bottom = 20.0
 text = "Turn"
 
 [node name="P" type="Control" parent="Grid"]
-margin_left = 322.0
-margin_top = 242.0
-margin_right = 640.0
-margin_bottom = 480.0
+margin_left = 514.0
+margin_top = 302.0
+margin_right = 1024.0
+margin_bottom = 600.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Slime" parent="Grid/P" instance=ExtResource( 3 )]
 position = Vector2( 160, 125 )
@@ -199,18 +162,12 @@ anchor_right = 0.5
 margin_left = -78.5
 margin_right = 78.5
 margin_bottom = 34.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="HBox" type="HBoxContainer" parent="Grid/P/Panel"]
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 150.0
 margin_bottom = 27.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Attack" type="Button" parent="Grid/P/Panel/HBox"]
 margin_right = 52.0

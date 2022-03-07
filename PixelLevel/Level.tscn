@@ -17,9 +17,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 stretch = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Viewport" type="Viewport" parent="Back"]
 size = Vector2( 640, 480 )
@@ -36,9 +33,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 stretch = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Viewport" type="Viewport" parent="Level"]
 size = Vector2( 640, 480 )
@@ -145,9 +139,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 stretch = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Viewport" type="Viewport" parent="Fore"]
 size = Vector2( 640, 480 )
@@ -171,9 +162,6 @@ material = ExtResource( 8 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Fore/Viewport/Mask"]
 anims/Mask = ExtResource( 7 )
@@ -186,9 +174,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = -165.0
 margin_top = -94.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="VBox" type="VBoxContainer" parent="Fore/Viewport/Panel"]
 margin_left = 7.0

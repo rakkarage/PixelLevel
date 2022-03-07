@@ -6,9 +6,9 @@ onready var _turn := $Panel/HBox/Turn
 onready var _mob := $Slime
 
 func _ready() -> void:
-	assert(_attack.connect("pressed", self, "_attackPressed") == OK)
-	assert(_walk.connect("pressed", self, "_walkPressed") == OK)
-	assert(_turn.connect("pressed", self, "_turnPressed") == OK)
+	_attack.connect("pressed", self, "_attackPressed")
+	_walk.connect("pressed", self, "_walkPressed")
+	_turn.connect("pressed", self, "_turnPressed")
 
 func _attackPressed() -> void:
 	_mob.attack()

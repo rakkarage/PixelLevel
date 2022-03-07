@@ -1,7 +1,7 @@
 [gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://PixelMob/Animation/Slime/Idle0.tres" type="Animation" id=1]
-[ext_resource path="res://PixelMob/Mob/Mob.gd" type="Script" id=2]
+[ext_resource path="res://PixelMob/Mob.gd" type="Script" id=2]
 [ext_resource path="res://PixelMob/Animation/Slime/Attack.tres" type="Animation" id=3]
 [ext_resource path="res://PixelMob/Animation/Slime/Walk.tres" type="Animation" id=4]
 [ext_resource path="res://PixelMob/Animation/Slime/Idle2.tres" type="Animation" id=5]
@@ -23,7 +23,7 @@ tree_root = ExtResource( 6 )
 anim_player = NodePath("Animation")
 active = true
 parameters/playback = SubResource( 1 )
-parameters/Idle/BlendSpace1D/blend_position = 0
+parameters/Idle/blend_position = 0
 
 [node name="Animation" type="AnimationPlayer" parent="Tree"]
 root_node = NodePath("../..")

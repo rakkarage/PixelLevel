@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=2]
 
-[ext_resource path="res://PixelMob/Mob/Mob.gd" type="Script" id=1]
+[ext_resource path="res://PixelMob/Mob.gd" type="Script" id=1]
 [ext_resource path="res://PixelMob/Animation/SlimeSmaller/Attack.tres" type="Animation" id=2]
 [ext_resource path="res://PixelMob/Animation/Tree.tres" type="AnimationNodeStateMachine" id=3]
 [ext_resource path="res://PixelMob/Audio/167075__drminky__slime-land.tres" type="AudioStream" id=4]
@@ -23,7 +23,7 @@ tree_root = ExtResource( 3 )
 anim_player = NodePath("Animation")
 active = true
 parameters/playback = SubResource( 1 )
-parameters/Idle/BlendSpace1D/blend_position = 0
+parameters/Idle/blend_position = 0
 
 [node name="Animation" type="AnimationPlayer" parent="Tree"]
 root_node = NodePath("../..")

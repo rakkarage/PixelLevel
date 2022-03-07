@@ -11,31 +11,21 @@
 [ext_resource path="res://PixelMob/Mob/SlimeSquareSmaller.tscn" type="PackedScene" id=9]
 [ext_resource path="res://PixelMob/Mob/SlimeSquare.tscn" type="PackedScene" id=10]
 
-
 [node name="TestAll" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Grid" type="GridContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 columns = 5
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="SquareSmaller" type="Control" parent="Grid"]
-margin_right = 124.0
-margin_bottom = 238.0
+margin_right = 201.0
+margin_bottom = 298.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Mob" parent="Grid/SquareSmaller" instance=ExtResource( 9 )]
 position = Vector2( 62, 119 )
@@ -45,20 +35,14 @@ scale = Vector2( 10, 10 )
 modulate = Color( 1, 1, 1, 0 )
 anchor_right = 1.0
 anchor_bottom = 1.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="SquareSmall" type="Control" parent="Grid"]
-margin_left = 128.0
-margin_right = 252.0
-margin_bottom = 238.0
+margin_left = 205.0
+margin_right = 406.0
+margin_bottom = 298.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Mob" parent="Grid/SquareSmall" instance=ExtResource( 8 )]
 position = Vector2( 62, 119 )
@@ -68,20 +52,14 @@ scale = Vector2( 10, 10 )
 modulate = Color( 1, 1, 1, 0 )
 anchor_right = 1.0
 anchor_bottom = 1.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Square" type="Control" parent="Grid"]
-margin_left = 256.0
-margin_right = 380.0
-margin_bottom = 238.0
+margin_left = 410.0
+margin_right = 611.0
+margin_bottom = 298.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Mob" parent="Grid/Square" instance=ExtResource( 10 )]
 position = Vector2( 62, 119 )
@@ -91,20 +69,14 @@ scale = Vector2( 10, 10 )
 modulate = Color( 1, 1, 1, 0 )
 anchor_right = 1.0
 anchor_bottom = 1.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Smaller" type="Control" parent="Grid"]
-margin_left = 384.0
-margin_right = 508.0
-margin_bottom = 238.0
+margin_left = 615.0
+margin_right = 816.0
+margin_bottom = 298.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Mob" parent="Grid/Smaller" instance=ExtResource( 6 )]
 position = Vector2( 62, 119 )
@@ -114,20 +86,14 @@ scale = Vector2( 10, 10 )
 modulate = Color( 1, 1, 1, 0 )
 anchor_right = 1.0
 anchor_bottom = 1.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Small" type="Control" parent="Grid"]
-margin_left = 512.0
-margin_right = 636.0
-margin_bottom = 238.0
+margin_left = 820.0
+margin_right = 1021.0
+margin_bottom = 298.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Mob" parent="Grid/Small" instance=ExtResource( 7 )]
 position = Vector2( 62, 119 )
@@ -137,20 +103,14 @@ scale = Vector2( 10, 10 )
 modulate = Color( 1, 1, 1, 0 )
 anchor_right = 1.0
 anchor_bottom = 1.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="A" type="Control" parent="Grid"]
-margin_top = 242.0
-margin_right = 124.0
-margin_bottom = 480.0
+margin_top = 302.0
+margin_right = 201.0
+margin_bottom = 600.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Mob" parent="Grid/A" instance=ExtResource( 3 )]
 position = Vector2( 62, 119 )
@@ -161,21 +121,15 @@ texture = ExtResource( 5 )
 modulate = Color( 1, 1, 1, 0 )
 anchor_right = 1.0
 anchor_bottom = 1.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="B" type="Control" parent="Grid"]
-margin_left = 128.0
-margin_top = 242.0
-margin_right = 252.0
-margin_bottom = 480.0
+margin_left = 205.0
+margin_top = 302.0
+margin_right = 406.0
+margin_bottom = 600.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Mob" parent="Grid/B" instance=ExtResource( 3 )]
 position = Vector2( 62, 119 )
@@ -185,21 +139,15 @@ scale = Vector2( 10, 10 )
 modulate = Color( 1, 1, 1, 0 )
 anchor_right = 1.0
 anchor_bottom = 1.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="C" type="Control" parent="Grid"]
-margin_left = 256.0
-margin_top = 242.0
-margin_right = 380.0
-margin_bottom = 480.0
+margin_left = 410.0
+margin_top = 302.0
+margin_right = 611.0
+margin_bottom = 600.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Mob" parent="Grid/C" instance=ExtResource( 3 )]
 position = Vector2( 62, 119 )
@@ -210,21 +158,15 @@ texture = ExtResource( 4 )
 modulate = Color( 1, 1, 1, 0 )
 anchor_right = 1.0
 anchor_bottom = 1.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="P" type="Control" parent="Grid"]
-margin_left = 384.0
-margin_top = 242.0
-margin_right = 508.0
-margin_bottom = 480.0
+margin_left = 615.0
+margin_top = 302.0
+margin_right = 816.0
+margin_bottom = 600.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Mob" parent="Grid/P" instance=ExtResource( 3 )]
 position = Vector2( 62, 119 )
@@ -235,6 +177,3 @@ texture = ExtResource( 1 )
 modulate = Color( 1, 1, 1, 0 )
 anchor_right = 1.0
 anchor_bottom = 1.0
-__meta__ = {
-"_edit_use_anchors_": false
-}

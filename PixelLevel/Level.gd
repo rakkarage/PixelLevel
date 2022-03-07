@@ -123,8 +123,8 @@ func _ready() -> void:
 	_camera.zoom = Vector2(0.75, 0.75)
 	generated()
 	_cameraCenter()
-	assert(connect("size_changed", self, "_onResize") == OK)
-	assert(Gesture.connect("onZoom", self, "_zoomPinch") == OK)
+	connect("size_changed", self, "_onResize")
+	Gesture.connect("onZoom", self, "_zoomPinch")
 
 func generated() -> void:
 	_oldSize = size

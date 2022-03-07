@@ -21,7 +21,6 @@ func generateUp() -> void:
 	generate(-1)
 
 func generate(delta: int = 1) -> void:
-	assert(_level != null)
 	_level.clear()
 	_level.state.depth += delta
 	var d: int = 10 + int(abs(_level.state.depth))
