@@ -19,7 +19,7 @@ mouse_filter = 2
 stretch = true
 
 [node name="Viewport" type="Viewport" parent="Back"]
-size = Vector2( 640, 480 )
+size = Vector2( 1024, 600 )
 handle_input_locally = false
 render_target_update_mode = 3
 
@@ -35,7 +35,7 @@ mouse_filter = 2
 stretch = true
 
 [node name="Viewport" type="Viewport" parent="Level"]
-size = Vector2( 640, 480 )
+size = Vector2( 1024, 600 )
 transparent_bg = true
 handle_input_locally = false
 render_target_update_mode = 3
@@ -141,7 +141,7 @@ mouse_filter = 2
 stretch = true
 
 [node name="Viewport" type="Viewport" parent="Fore"]
-size = Vector2( 640, 480 )
+size = Vector2( 1024, 600 )
 transparent_bg = true
 handle_input_locally = false
 render_target_update_mode = 3
