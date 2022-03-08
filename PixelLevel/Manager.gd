@@ -3,6 +3,7 @@ extends Node
 onready var _level : Level = $Level/Viewport
 onready var _mask : AnimationPlayer = $Fore/Viewport/Mask/AnimationPlayer
 onready var _textureRect : TextureRect = $Fore/Viewport/MiniMap
+onready var _position : Label = $Fore/Viewport/Panel/VBox/Mouse/Value
 onready var _depth : Label = $Fore/Viewport/Panel/VBox/Level/Value
 onready var _up : Button = $Fore/Viewport/Panel/VBox/HBoxLevel/Up
 onready var _regen : Button = $Fore/Viewport/Panel/VBox/HBoxLevel/Regen
@@ -28,6 +29,12 @@ func _ready() -> void:
 	_regen.connect("pressed", self, "_levelRegen")
 	_down.connect("pressed", self, "_levelDown")
 	_light.text = str(_level.lightRadius)
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion:
+		var x := str(stepify(event.position.x, 0.001))
+		var y := str(stepify(event.position.y, 0.001))
+		_position.text = "({0}, {1})".format([x, y])
 
 func _updateMap() -> void:
 	var at := _level.mobPosition()

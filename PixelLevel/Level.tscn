@@ -173,17 +173,38 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = -165.0
-margin_top = -94.0
+margin_top = -112.0
 
 [node name="VBox" type="VBoxContainer" parent="Fore/Viewport/Panel"]
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 158.0
-margin_bottom = 87.0
+margin_bottom = 105.0
 
-[node name="Level" type="HBoxContainer" parent="Fore/Viewport/Panel/VBox"]
+[node name="Mouse" type="HBoxContainer" parent="Fore/Viewport/Panel/VBox"]
 margin_right = 151.0
 margin_bottom = 14.0
+
+[node name="Label" type="Label" parent="Fore/Viewport/Panel/VBox/Mouse"]
+margin_right = 73.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Mouse:"
+align = 1
+
+[node name="Value" type="Label" parent="Fore/Viewport/Panel/VBox/Mouse"]
+margin_left = 77.0
+margin_right = 151.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "(0, 0)"
+
+[node name="Level" type="HBoxContainer" parent="Fore/Viewport/Panel/VBox"]
+margin_top = 18.0
+margin_right = 151.0
+margin_bottom = 32.0
 
 [node name="Label" type="Label" parent="Fore/Viewport/Panel/VBox/Level"]
 margin_right = 73.0
@@ -202,9 +223,9 @@ size_flags_vertical = 3
 text = "0"
 
 [node name="HBoxLevel" type="HBoxContainer" parent="Fore/Viewport/Panel/VBox"]
-margin_top = 18.0
+margin_top = 36.0
 margin_right = 151.0
-margin_bottom = 38.0
+margin_bottom = 56.0
 
 [node name="Down" type="Button" parent="Fore/Viewport/Panel/VBox/HBoxLevel"]
 margin_right = 48.0
@@ -230,9 +251,9 @@ size_flags_vertical = 3
 text = "Up"
 
 [node name="Light" type="HBoxContainer" parent="Fore/Viewport/Panel/VBox"]
-margin_top = 42.0
+margin_top = 60.0
 margin_right = 151.0
-margin_bottom = 56.0
+margin_bottom = 74.0
 
 [node name="Label" type="Label" parent="Fore/Viewport/Panel/VBox/Light"]
 margin_right = 73.0
@@ -251,9 +272,9 @@ size_flags_vertical = 3
 text = "0"
 
 [node name="HBoxLight" type="HBoxContainer" parent="Fore/Viewport/Panel/VBox"]
-margin_top = 60.0
+margin_top = 78.0
 margin_right = 151.0
-margin_bottom = 80.0
+margin_bottom = 98.0
 
 [node name="Minus" type="Button" parent="Fore/Viewport/Panel/VBox/HBoxLight"]
 margin_right = 51.0
