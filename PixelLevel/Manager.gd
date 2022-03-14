@@ -41,8 +41,6 @@ func _input(event: InputEvent) -> void:
 		_position.text = "({0}, {1})".format([x, y])
 
 func _limitedUpdateMap() -> void:
-	if not _timerUpdateMap.is_stopped():
-		_timerUpdateMap.stop()
 	_timerUpdateMap.start(_updateMapDelay)
 
 func _updateMap() -> void:
