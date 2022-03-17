@@ -132,8 +132,6 @@ format = 1
 
 [node name="Target" parent="Level/Viewport" instance=ExtResource( 3 )]
 
-[node name="Tween" type="Tween" parent="Level/Viewport"]
-
 [node name="Fore" type="ViewportContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0

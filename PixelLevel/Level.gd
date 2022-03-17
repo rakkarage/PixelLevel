@@ -1,7 +1,8 @@
 extends Viewport
 class_name Level
 
-onready var _tween:       Tween = $Tween
+#region var
+
 onready var _camera:   Camera2D = $Camera
 onready var _back:      TileMap = $Back
 onready var _fore:      TileMap = $Fore
@@ -46,6 +47,9 @@ var desert := false
 const themeCount := 4
 var themeCliff := 0
 const themeCliffCount := 2
+var _tweenCamera := Tween.new()
+var _tweenStep := Tween.new()
+var _tweenTarget := Tween.new()
 
 var state := {
 	"depth": 0
@@ -118,9 +122,14 @@ const _waterDeepTiles := [Tile.WaterDeepFore, Tile.WaterDeepBack,
 const _waterPurpleTiles := [Tile.WaterShallowForePurple, Tile.WaterShallowBackPurple,
 	Tile.WaterDeepForePurple, Tile.WaterDeepBackPurple]
 
+#endregion
+
 func _ready() -> void:
 	rect = _back.get_used_rect()
 	_camera.zoom = Vector2(0.75, 0.75)
+	add_child(_tweenCamera)
+	add_child(_tweenStep)
+	add_child(_tweenTarget)
 	generated()
 	_cameraCenter()
 	connect("size_changed", self, "_onResize")
@@ -161,16 +170,17 @@ func _move(mob: Node2D) -> void:
 	if _pathPoints.size() > 1:
 		var delta := _delta(_pathPoints[0], _pathPoints[1])
 		_face(mob, delta)
-		_step(mob, delta)
+		yield(_step(mob, delta), "completed")
 		yield(_fadeAndFree(), "completed")
 
 func _fadeAndFree() -> void:
 	_pathPoints.remove(0)
 	var node = _path.get_child(0)
-	Utility.stfu(_tween.stop(node, "modulate"))
-	Utility.stfu(_tween.interpolate_property(node, "modulate", null, Color.transparent, _turnTime, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT))
-	Utility.stfu(_tween.start())
-	yield(_tween, "tween_all_completed")
+	var t = Tween.new()
+	add_child(t)
+	Utility.stfu(t.interpolate_property(node, "modulate", null, Color.transparent, _turnTime, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT))
+	Utility.stfu(t.start())
+	yield(t, "tween_all_completed")
 	node.queue_free()
 	if _pathPoints.size() > 1:
 		_turn = true
@@ -215,8 +225,9 @@ func _face(mob: Node2D, direction: Vector2) -> void:
 
 func _step(mob: Node2D, direction: Vector2) -> void:
 	mob.walk()
-	Utility.stfu(_tween.interpolate_property(mob, "global_position", null, mob.global_position + _world(direction), _turnTime, Tween.TRANS_CIRC, Tween.EASE_IN_OUT))
-	Utility.stfu(_tween.start())
+	Utility.stfu(_tweenStep.interpolate_property(mob, "global_position", null, mob.global_position + _world(direction), _turnTime, Tween.TRANS_CIRC, Tween.EASE_IN_OUT))
+	Utility.stfu(_tweenStep.start())
+	yield(_tweenStep, "tween_all_completed")
 
 func _addPoints() -> void:
 	_astar.clear()
@@ -243,6 +254,7 @@ func _connect(p: Vector2) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT:
+			_turn = false
 			if event.pressed:
 				_dragLeft = true
 				_capture = false
@@ -250,8 +262,9 @@ func _unhandled_input(event: InputEvent) -> void:
 				if _capture:
 					_cameraUpdate()
 				else:
-					_targetTo(event.global_position)
-					_targetUpdate()
+					_targetTo(event.global_position, not _tweenStep.is_active())
+					if not _tweenTarget.is_active():
+						_targetUpdate()
 				_dragLeft = false
 		elif event.button_index == BUTTON_WHEEL_UP:
 			_zoomIn(event.global_position)
@@ -299,7 +312,7 @@ func _wasd(direction: Vector2) -> void:
 		_toggleDoorV(p)
 	if not isBlockedV(p):
 		_face(_mob, direction)
-		_step(_mob, direction)
+		yield(_step(_mob, direction), "completed")
 		_pathClear()
 		if not isStairV(p):
 			_lightUpdate(p, lightRadius)
@@ -379,13 +392,13 @@ func _cameraUpdate() -> void:
 
 func _cameraSnap(to: Vector2) -> void:
 	_cameraStop()
-	Utility.stfu(_tween.interpolate_property(_camera, "global_position", null, to, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
-	Utility.stfu(_tween.start())
-	yield(_tween, "tween_all_completed")
+	Utility.stfu(_tweenCamera.interpolate_property(_camera, "global_position", null, to, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
+	Utility.stfu(_tweenCamera.start())
+	yield(_tweenCamera, "tween_all_completed")
 	emit_signal("updateMap")
 
 func _cameraStop() -> void:
-	Utility.stfu(_tween.stop(_camera, "global_position"))
+	Utility.stfu(_tweenCamera.stop(_camera, "global_position"))
 
 const _edgeOffset := 1.5
 const _edgeOffsetV := Vector2(_edgeOffset, _edgeOffset)
@@ -418,7 +431,7 @@ func _zoom(at: Vector2, factor: float) -> void:
 func _zoomClamp(z: Vector2) -> Vector2:
 	return _zoomMin if z < _zoomMin else _zoomMax if z > _zoomMax else z
 
-# Path
+#region Path
 
 func _drawPath(from: Vector2, to: Vector2) -> void:
 	var color := _getPathColor(int(to.x), int(to.y))
@@ -467,16 +480,18 @@ func _pathClear():
 	for i in range(_pathPoints.size() - 1, 0, -1):
 		_pathPoints.remove(i)
 
-# Target
+#endregion
+
+#region Target
 
 func _targetToMob() -> void:
-	_targetTo(_mob.global_position)
+	_targetTo(_mob.global_position, true)
 
-func _targetTo(to: Vector2) -> void:
+func _targetTo(to: Vector2, turn: bool) -> void:
 	_targetStop()
 	var tile := _map(_camera.global_position + to * _camera.zoom)
 	if tile == targetPosition():
-		_turn = true
+		_turn = turn
 	else:
 		_target.global_position = _world(tile)
 
@@ -496,11 +511,11 @@ func _targetSnap(tile: Vector2) -> void:
 	var p := _world(tile)
 	if not _target.global_position.is_equal_approx(p):
 		_targetStop()
-		Utility.stfu(_tween.interpolate_property(_target, "global_position", null, p, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
-		Utility.stfu(_tween.start())
+		Utility.stfu(_tweenTarget.interpolate_property(_target, "global_position", null, p, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
+		Utility.stfu(_tweenTarget.start())
 
 func _targetStop() -> void:
-	Utility.stfu(_tween.stop(_target, "global_position"))
+	Utility.stfu(_tweenTarget.stop(_target, "global_position"))
 
 func _normalize() -> Vector2:
 	return (_camera.global_position - _mapSize() / 2.0) / _oldSize
@@ -526,7 +541,9 @@ func isBlockedLight(x: int, y: int) -> bool:
 	var s := _fore.get_cell_autotile_coord(x, y)
 	return w or (d and s == Vector2(0, 0))
 
-# Light
+#endregion
+
+#region Light
 
 const _torchRadius := 8
 const _torchRadiusMax := _torchRadius * 2
@@ -663,7 +680,9 @@ func _darken() -> void:
 			if _getLight(x, y) != _lightMin:
 				_setLight(x, y, _lightExplored, false)
 
-# Map
+#endregion
+
+#region Map
 
 const _alpha := 0.8
 const _colorMob := Color(0, 1, 0, _alpha)
@@ -746,13 +765,9 @@ func mobPosition() -> Vector2:
 func targetPosition() -> Vector2:
 	return _map(_target.global_position)
 
-func verifyCliff() -> void:
-	for y in range(rect.size.y):
-		for x in range(rect.size.x):
-			if isCliff(x, y) and not isFloor(x, y - 1):
-				clearFore(x, y)
+#endregion
 
-# Tile
+#region Tile
 
 func _setRandomTile(map: TileMap, x: int, y: int, id: int, flipX: bool = false, flipY: bool = false, rot90: bool = false) -> void:
 	map.set_cell(x, y, id, flipX, flipY, rot90, _randomTile(id))
@@ -780,7 +795,9 @@ func isTileId(tile: int, tiles: Array) -> bool:
 			return true
 	return false
 
-## Back
+#endregion
+
+#region Back
 
 func _setBack(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
 	_back.set_cell(x, y, tile, flipX, flipY, rot90, coord)
@@ -846,7 +863,9 @@ func isBackInvalidV(p: Vector2) -> bool: return isBackInvalid(int(p.x), int(p.y)
 func isBackInvalid(x: int, y: int) -> bool:
 	return _back.get_cell(x, y) == TileMap.INVALID_CELL
 
-## Fore
+#endregion
+
+#region Fore
 
 func _setFore(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
 	_fore.set_cell(x, y, tile, flipX, flipY, rot90, coord)
@@ -1037,12 +1056,22 @@ func isForeInvalidV(p: Vector2) -> bool: return isForeInvalid(int(p.x), int(p.y)
 func isForeInvalid(x: int, y: int) -> bool:
 	return _fore.get_cell(x, y) == TileMap.INVALID_CELL
 
-## Flower
+func verifyCliff() -> void:
+	for y in range(rect.size.y):
+		for x in range(rect.size.x):
+			if isCliff(x, y) and not isFloor(x, y - 1):
+				clearFore(x, y)
+
+#endregion
+
+#region Flower
 
 func setFlower(x: int, y: int) -> void:
 	_setRandomTile(_flower, x, y, Tile.OutsideFlower, Random.nextBool())
 
-## Tree
+#endregion
+
+#region Tree
 
 func setTree(x: int, y: int) -> void:
 	var p := Vector2(Random.next(3), 0)
@@ -1062,7 +1091,9 @@ func cutTree(x: int, y: int) -> void:
 	clearTree(x, y)
 	setTreeStump(x, y)
 
-## Water
+#endregion
+
+#region Water
 
 func setWaterShallowV(p: Vector2) -> void: setWaterShallow(int(p.x), int(p.y))
 
@@ -1100,7 +1131,9 @@ func isWaterDeep(x: int, y: int) -> bool:
 func isWaterPurple(x: int, y: int) -> bool:
 	return _isWaterTile(x, y, _waterPurpleTiles)
 
-## Item
+#endregion
+
+#region Item
 
 func _setItemFore(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
 	_itemFore.set_cell(x, y, tile, flipX, flipY, rot90, coord)
@@ -1114,7 +1147,9 @@ func _setItemBack(x: int, y: int, tile: int, flipX := false, flipY := false, rot
 func _setItemBackRandom(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
 	_setRandomTile(_itemBack, x, y, tile, flipX, flipY, rot90)
 
-## Split
+#endregion
+
+#region Split
 
 func setGrass(x: int, y: int) -> void:
 	var flipX = Random.nextBool()
@@ -1125,7 +1160,9 @@ func setGrass(x: int, y: int) -> void:
 		_splitBack.set_cell(x, y, Tile.OutsideDayGrassGreen if day else Tile.OutsideNightGrassGreen, flipX, false, false, Vector2(0, 0))
 		_splitFore.set_cell(x, y, Tile.OutsideDayGrassGreen if day else Tile.OutsideNightGrassGreen, flipX, false, false, Vector2(1, 0))
 
-## Light
+#endregion
+
+#region Light
 
 func _getLight(x: int, y: int) -> int:
 	return int(_light.get_cell_autotile_coord(x, y).x)
@@ -1144,7 +1181,9 @@ func isLitV(p: Vector2) -> bool: return isLit(int(p.x), int(p.y))
 func isLit(x: int, y: int) -> bool:
 	return _getLight(x, y) > _lightExplored
 
-## Edge
+#endregion
+
+#region Edge
 
 func _drawEdge() -> void:
 	var minY := rect.position.y - 1
@@ -1187,3 +1226,5 @@ func _drawEdge() -> void:
 					_setRandomTile(_edge, x, y, Tile.EdgeInside, Random.nextBool(), false, false)
 				elif y == maxY - 1: # s
 					_setRandomTile(_edge, x, y, Tile.EdgeInside, Random.nextBool(), true, false)
+
+#endregion
