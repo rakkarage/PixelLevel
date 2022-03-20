@@ -1,49 +1,36 @@
 extends TestLevelBase
 class_name TestLevel
 
-# TODO: make 3 mobs selectable
-# add undo and redo buttons
-# step 1: create new version of level with scoll and zoom working etc
-# put in base class?
-# working with commands and undo
-
+onready var _undoButton: Button = $Fore/Viewport/Panel/VBox/Buttons/Undo
+onready var _selectButton: Button = $Fore/Viewport/Panel/VBox/Buttons/Select
+onready var _redoButton: Button = $Fore/Viewport/Panel/VBox/Buttons/Redo
+onready var _list: ItemList = $Fore/Viewport/Panel/VBox/ItemList
+onready var _level: TestLevel = $Level/Viewport
 onready var _path: Node2D = $Path
 onready var _mob: Sprite = $Mob
 onready var _target: Node2D = $Target
 var _startAt := Vector2(4, 4)
-var _turn := false
 var _time := 0.0
 const _turnTime := 0.22
 
-var _commands: Array
-var _commandIndex: int
+var _commands: CommandQueue = CommandQueue.new()
 
 func _ready() -> void:
+	Utility.srfu(_commands.connect("changed", self, "_commandsChanged"))
 	_mob.global_position = _world(_startAt) + _back.cell_size / 2.0
 	_target.modulate = Color.transparent
 
-func _unhandled_input(event: InputEvent) -> void:
-	# if (isPressed(BUTTON_X)) return buttonX_;
-	# if (isPressed(BUTTON_Y)) return buttonY_;
-	# if (isPressed(BUTTON_A)) return buttonA_;
-	# if (isPressed(BUTTON_B)) return buttonB_;
-	# print(event)
-	pass
+func _process(_delta: float) -> void:
+	_commands.execute(_processWasd())
 
-func _process(delta: float) -> void:
-	_time += delta
-	if (_time > _turnTime) and _turn:
-		_turn = false
-		var command = _processWasd()
-		if command:
-			command.execute()
-		# if test:
-		# 	if not _handleDoor():
-		# 		yield(_move(_mob), "completed")
-		# 	if not _handleStair():
-		# 		_lightUpdate(mobPosition(), lightRadius)
-		# 		_checkCenter()
-		_time = 0.0
+func _undo() -> void:
+	_commands.undo()
+
+func _redo() -> void:
+	_commands.redo()
+
+func _commandsChanged() -> void:
+	pass
 
 func _processWasd() -> CommandMove:
 	if Input.is_action_pressed("ui_up"):

@@ -4,7 +4,7 @@ onready var _random := $Button
 onready var _mob := $Mob
 
 func _ready() -> void:
-	_random.connect("pressed", self, "_randomPressed")
+	Utility.srfu(_random.connect("pressed", self, "_randomPressed"))
 
 func _randomPressed() -> void:
 	match Random.next(3):
