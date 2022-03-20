@@ -170,8 +170,8 @@ func _move(mob: Node2D) -> void:
 	if _pathPoints.size() > 1:
 		var delta := _delta(_pathPoints[0], _pathPoints[1])
 		_face(mob, delta)
+		_fadeAndFree()
 		yield(_step(mob, delta), "completed")
-		yield(_fadeAndFree(), "completed")
 
 func _fadeAndFree() -> void:
 	_pathPoints.remove(0)
@@ -263,8 +263,7 @@ func _unhandled_input(event: InputEvent) -> void:
 					_cameraUpdate()
 				else:
 					_targetTo(event.global_position, not _tweenStep.is_active())
-					if not _tweenTarget.is_active():
-						_targetUpdate()
+					_targetUpdate()
 				_dragLeft = false
 		elif event.button_index == BUTTON_WHEEL_UP:
 			_zoomIn(event.global_position)

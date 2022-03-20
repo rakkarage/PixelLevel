@@ -36,8 +36,8 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
-		var x := str(stepify(event.position.x, 0.001))
-		var y := str(stepify(event.position.y, 0.001))
+		var x := str(stepify(event.position.x, 0.01))
+		var y := str(stepify(event.position.y, 0.01))
 		_position.text = "({0}, {1})".format([x, y])
 
 func _limitedUpdateMap() -> void:

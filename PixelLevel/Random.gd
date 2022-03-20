@@ -23,11 +23,15 @@ func nextBool() -> bool:
 func nextFloat() -> float:
 	return _rng.randf()
 
+func nextColor() -> Color:
+	return Color(nextFloat(), nextFloat(), nextFloat())
+
 # returns priority value:
 # { "test0", { "name": "Test 0", "priority": 2 },
 #   "test1", { "name": "Test 1", "priority": 1 } }
 # or returns priority key:
 # { funcref(self, "test0"): 2, funcref(self, "test1"): 1 }
+# https://www.codeproject.com/Articles/420046/Loot-Tables-Random-Maps-and-Monsters-Part-I
 func priority(d: Dictionary):
 	var r
 	var total := 0
