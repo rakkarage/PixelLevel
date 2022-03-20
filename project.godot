@@ -12,12 +12,17 @@ _global_script_classes=[ {
 "base": "Reference",
 "class": "Command",
 "language": "GDScript",
-"path": "res://PixelLevel/Command.gd"
+"path": "res://PixelLevel/Command/Command.gd"
 }, {
 "base": "Command",
 "class": "CommandMove",
 "language": "GDScript",
-"path": "res://PixelLevel/CommandMove.gd"
+"path": "res://PixelLevel/Command/CommandMove.gd"
+}, {
+"base": "Node",
+"class": "CommandQueue",
+"language": "GDScript",
+"path": "res://PixelLevel/Command/CommandQueue.gd"
 }, {
 "base": "Object",
 "class": "DisjointSet",
@@ -77,12 +82,12 @@ _global_script_classes=[ {
 "base": "TestLevelBase",
 "class": "TestLevel",
 "language": "GDScript",
-"path": "res://PixelLevel/TestLevel.gd"
+"path": "res://PixelLevel/Command/TestLevel.gd"
 }, {
 "base": "Viewport",
 "class": "TestLevelBase",
 "language": "GDScript",
-"path": "res://PixelLevel/TestLevelBase.gd"
+"path": "res://PixelLevel/Command/TestLevelBase.gd"
 }, {
 "base": "Object",
 "class": "Utility",
@@ -92,6 +97,7 @@ _global_script_classes=[ {
 _global_script_class_icons={
 "Command": "",
 "CommandMove": "",
+"CommandQueue": "",
 "DisjointSet": "",
 "Generate": "",
 "GenerateBasic": "",
@@ -112,7 +118,7 @@ _global_script_class_icons={
 
 config/name="PixelLevel"
 config/description="Pixel-perfect dungeon and environment sprites."
-run/main_scene="res://PixelLevel/TestLevel.tscn"
+run/main_scene="res://PixelLevel/Command/TestLevel.tscn"
 config/icon="res://icon.png"
 
 [autoload]
