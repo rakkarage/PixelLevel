@@ -9,6 +9,16 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Reference",
+"class": "Command",
+"language": "GDScript",
+"path": "res://PixelLevel/Command.gd"
+}, {
+"base": "Command",
+"class": "CommandMove",
+"language": "GDScript",
+"path": "res://PixelLevel/CommandMove.gd"
+}, {
 "base": "Object",
 "class": "DisjointSet",
 "language": "GDScript",
@@ -64,12 +74,24 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://PixelMob/Mob.gd"
 }, {
+"base": "TestLevelBase",
+"class": "TestLevel",
+"language": "GDScript",
+"path": "res://PixelLevel/TestLevel.gd"
+}, {
+"base": "Viewport",
+"class": "TestLevelBase",
+"language": "GDScript",
+"path": "res://PixelLevel/TestLevelBase.gd"
+}, {
 "base": "Object",
 "class": "Utility",
 "language": "GDScript",
 "path": "res://PixelLevel/Utility.gd"
 } ]
 _global_script_class_icons={
+"Command": "",
+"CommandMove": "",
 "DisjointSet": "",
 "Generate": "",
 "GenerateBasic": "",
@@ -81,6 +103,8 @@ _global_script_class_icons={
 "GenerateWalker": "",
 "Level": "",
 "Mob": "",
+"TestLevel": "",
+"TestLevelBase": "",
 "Utility": ""
 }
 
@@ -88,7 +112,7 @@ _global_script_class_icons={
 
 config/name="PixelLevel"
 config/description="Pixel-perfect dungeon and environment sprites."
-run/main_scene="res://Demo.tscn"
+run/main_scene="res://PixelLevel/TestLevel.tscn"
 config/icon="res://icon.png"
 
 [autoload]
