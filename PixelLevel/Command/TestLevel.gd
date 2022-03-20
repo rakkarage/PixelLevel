@@ -32,23 +32,23 @@ func _redo() -> void:
 func _commandsChanged() -> void:
 	pass
 
-func _processWasd() -> CommandMove:
+func _processWasd() -> Command:
 	if Input.is_action_pressed("ui_up"):
-		return CommandMove.new(_mob, CommandMove.Direction.North)
+		return CommandMove.new(_mob, CommandMove.Direction.North, _level)
 	if Input.is_action_pressed("ui_ne"):
-		return CommandMove.new(_mob, CommandMove.Direction.NorthEast)
+		return CommandMove.new(_mob, CommandMove.Direction.NorthEast, _level)
 	if Input.is_action_pressed("ui_right"):
-		return CommandMove.new(_mob, CommandMove.Direction.East)
+		return CommandMove.new(_mob, CommandMove.Direction.East, _level)
 	if Input.is_action_pressed("ui_se"):
-		return CommandMove.new(_mob, CommandMove.Direction.SouthEast)
+		return CommandMove.new(_mob, CommandMove.Direction.SouthEast, _level)
 	if Input.is_action_pressed("ui_down"):
-		return CommandMove.new(_mob, CommandMove.Direction.South)
+		return CommandMove.new(_mob, CommandMove.Direction.South, _level)
 	if Input.is_action_pressed("ui_sw"):
-		return CommandMove.new(_mob, CommandMove.Direction.SouthWest)
+		return CommandMove.new(_mob, CommandMove.Direction.SouthWest, _level)
 	if Input.is_action_pressed("ui_left"):
-		return CommandMove.new(_mob, CommandMove.Direction.West)
+		return CommandMove.new(_mob, CommandMove.Direction.West, _level)
 	if Input.is_action_pressed("ui_nw"):
-		return CommandMove.new(_mob, CommandMove.Direction.NorthWest)
+		return CommandMove.new(_mob, CommandMove.Direction.NorthWest, _level)
 	return null
 
 # func _wasd(direction: Vector2) -> void:

@@ -19,13 +19,15 @@ const Directions := {
 
 var _d: Vector2
 var _old: Vector2
+var _level: TestLevel
 
-func _init(mob: Mob, d: int).(mob) -> void:
+func _init(mob: Mob, level: TestLevel, d: int).(mob) -> void:
 	_d = Directions[d]
+	_level = level
 
 func execute() -> void:
 	_old = _mob.global_position
-	_mob.global_position += _d
+	_mob.global_position += _level.world(_d)
 
 func undo() -> void:
 	_mob.global_position = _old

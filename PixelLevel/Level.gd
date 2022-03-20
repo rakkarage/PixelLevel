@@ -138,7 +138,7 @@ func _ready() -> void:
 func generated() -> void:
 	_oldSize = size
 	_drawEdge()
-	_mob.global_position = _world(startAt) + _back.cell_size / 2.0
+	_mob.global_position = world(startAt) + _back.cell_size / 2.0
 	_pathClear()
 	_addPoints()
 	_connectPoints()
@@ -225,7 +225,7 @@ func _face(mob: Node2D, direction: Vector2) -> void:
 
 func _step(mob: Node2D, direction: Vector2) -> void:
 	mob.walk()
-	Utility.stfu(_tweenStep.interpolate_property(mob, "global_position", null, mob.global_position + _world(direction), _turnTime, Tween.TRANS_CIRC, Tween.EASE_IN_OUT))
+	Utility.stfu(_tweenStep.interpolate_property(mob, "global_position", null, mob.global_position + world(direction), _turnTime, Tween.TRANS_CIRC, Tween.EASE_IN_OUT))
 	Utility.stfu(_tweenStep.start())
 	yield(_tweenStep, "tween_all_completed")
 
@@ -336,7 +336,7 @@ func insideMap(x: int, y: int) -> bool:
 func getCameraRect() -> Rect2:
 	return Rect2(_map(_camera.global_position), _map(_camera.global_position + _worldSize()))
 
-func _world(tile: Vector2) -> Vector2:
+func world(tile: Vector2) -> Vector2:
 	return _back.map_to_world(tile)
 
 func _worldSize() -> Vector2:
@@ -403,7 +403,7 @@ const _edgeOffset := 1.5
 const _edgeOffsetV := Vector2(_edgeOffset, _edgeOffset)
 
 func _checkCenter() -> void:
-	var edge = _world(_edgeOffsetV) / _camera.zoom
+	var edge = world(_edgeOffsetV) / _camera.zoom
 	var test = -(_camera.global_position - _mob.global_position) / _camera.zoom
 	if ((test.x > size.x - edge.x) or (test.x < edge.x) or
 		(test.y > size.y - edge.y) or (test.y < edge.y)):
@@ -445,7 +445,7 @@ func _drawPath(from: Vector2, to: Vector2) -> void:
 		var child := _pathScene.instance()
 		child.modulate = color
 		child.global_rotation_degrees = rotation
-		child.global_position = _world(tile)
+		child.global_position = world(tile)
 		_path.add_child(child)
 
 func _delta(from: Vector2, to: Vector2) -> Vector2:
@@ -492,7 +492,7 @@ func _targetTo(to: Vector2, turn: bool) -> void:
 	if tile == targetPosition():
 		_turn = turn
 	else:
-		_target.global_position = _world(tile)
+		_target.global_position = world(tile)
 
 func _targetUpdate() -> void:
 	var from := mobPosition()
@@ -507,7 +507,7 @@ func _targetSnapClosest(tile: Vector2) -> Vector2:
 	return p
 
 func _targetSnap(tile: Vector2) -> void:
-	var p := _world(tile)
+	var p := world(tile)
 	if not _target.global_position.is_equal_approx(p):
 		_targetStop()
 		Utility.stfu(_tweenTarget.interpolate_property(_target, "global_position", null, p, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
