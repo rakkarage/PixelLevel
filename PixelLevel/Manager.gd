@@ -21,17 +21,17 @@ const _updateMapDelay = 0.1
 func _ready() -> void:
 	_textureRect.texture = _imageTexture
 	_updateMap()
-	Utility.srfu(_level.connect("updateMap", self, "_limitedUpdateMap"))
+	Utility.stfu(_level.connect("updateMap", self, "_limitedUpdateMap"))
 	_timerUpdateMap.connect("timeout", self, "_updateMap")
 	add_child(_timerUpdateMap)
-	Utility.srfu(_level.connect("generate", self, "_generate"))
-	Utility.srfu(_level.connect("generateUp", self, "_levelUp"))
-	Utility.srfu(_minus.connect("pressed", self, "_lightMinus"))
-	Utility.srfu(_toggle.connect("pressed", self, "_lightToggle"))
-	Utility.srfu(_plus.connect("pressed", self, "_lightPlus"))
-	Utility.srfu(_up.connect("pressed", self, "_levelUp"))
-	Utility.srfu(_regen.connect("pressed", self, "_levelRegen"))
-	Utility.srfu(_down.connect("pressed", self, "_levelDown"))
+	Utility.stfu(_level.connect("generate", self, "_generate"))
+	Utility.stfu(_level.connect("generateUp", self, "_levelUp"))
+	Utility.stfu(_minus.connect("pressed", self, "_lightMinus"))
+	Utility.stfu(_toggle.connect("pressed", self, "_lightToggle"))
+	Utility.stfu(_plus.connect("pressed", self, "_lightPlus"))
+	Utility.stfu(_up.connect("pressed", self, "_levelUp"))
+	Utility.stfu(_regen.connect("pressed", self, "_levelRegen"))
+	Utility.stfu(_down.connect("pressed", self, "_levelDown"))
 	_light.text = str(_level.lightRadius)
 
 func _input(event: InputEvent) -> void:

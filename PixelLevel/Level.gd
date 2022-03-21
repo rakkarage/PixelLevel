@@ -132,8 +132,8 @@ func _ready() -> void:
 	add_child(_tweenTarget)
 	generated()
 	_cameraCenter()
-	Utility.srfu(connect("size_changed", self, "_onResize"))
-	Utility.srfu(Gesture.connect("onZoom", self, "_zoomPinch"))
+	Utility.stfu(connect("size_changed", self, "_onResize"))
+	Utility.stfu(Gesture.connect("onZoom", self, "_zoomPinch"))
 
 func generated() -> void:
 	_oldSize = size

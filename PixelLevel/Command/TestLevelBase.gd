@@ -21,8 +21,8 @@ func _ready() -> void:
 	_camera.zoom = Vector2(0.75, 0.75)
 	add_child(_tweenCamera)
 	_cameraCenter()
-	Utility.srfu(connect("size_changed", self, "_onResize"))
-	Utility.srfu(Gesture.connect("onZoom", self, "_zoomPinch"))
+	Utility.stfu(connect("size_changed", self, "_onResize"))
+	Utility.stfu(Gesture.connect("onZoom", self, "_zoomPinch"))
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
