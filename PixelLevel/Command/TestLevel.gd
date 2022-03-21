@@ -13,14 +13,16 @@ const _turnTime := 0.22
 
 var _commands := CommandQueue.new()
 
-# buggy when go fullscreen???? works in normal level?
-
 func _ready() -> void:
 	Utility.stfu(_undoButton.connect("pressed", self, "_undoPressed"))
 	Utility.stfu(_redoButton.connect("pressed", self, "_redoPressed"))
 	Utility.stfu(_commands.connect("changed", self, "_commandsChanged"))
 	_mob.global_position = _world(_startAt) + _back.cell_size / 2.0
 	_target.modulate = Color.transparent
+	_cameraToMob()
+
+func _cameraToMob() -> void:
+	_cameraTo(-(_worldSize() / 2.0) + _mob.global_position)
 
 func _process(_delta: float) -> void:
 	_commands.execute(_processWasd())

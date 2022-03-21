@@ -20,6 +20,7 @@ const _zoomPinchOut := 1.02
 func _ready() -> void:
 	_rect = _back.get_used_rect()
 	_camera.zoom = Vector2(0.75, 0.75)
+	_oldSize = _viewport.size
 	add_child(_tweenCamera)
 	_cameraCenter()
 	Utility.stfu(_viewport.connect("size_changed", self, "_onResize"))
