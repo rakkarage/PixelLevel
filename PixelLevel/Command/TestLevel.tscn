@@ -7,6 +7,7 @@
 [ext_resource path="res://PixelLevel/Level.tres" type="TileSet" id=6]
 
 [node name="Level" type="Node"]
+script = ExtResource( 4 )
 
 [node name="Back" type="ViewportContainer" parent="."]
 anchor_right = 1.0
@@ -35,7 +36,6 @@ size = Vector2( 1024, 600 )
 transparent_bg = true
 handle_input_locally = false
 render_target_update_mode = 3
-script = ExtResource( 4 )
 
 [node name="Camera" type="Camera2D" parent="Level/Viewport"]
 anchor_mode = 0
@@ -185,7 +185,16 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Redo"
 
-[node name="ItemList" type="ItemList" parent="Fore/Viewport/Panel/VBox"]
+[node name="Scroll" type="ScrollContainer" parent="Fore/Viewport/Panel/VBox"]
 margin_top = 24.0
 margin_right = 151.0
-margin_bottom = 24.0
+margin_bottom = 98.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ItemList" type="ItemList" parent="Fore/Viewport/Panel/VBox/Scroll"]
+margin_right = 151.0
+margin_bottom = 74.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+items = [ "Item 0", null, false, "Item 1", null, false, "Item 2", null, false, "Item 3", null, false, "Item 4", null, false ]

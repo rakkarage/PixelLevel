@@ -84,7 +84,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://PixelLevel/Command/TestLevel.gd"
 }, {
-"base": "Viewport",
+"base": "Node",
 "class": "TestLevelBase",
 "language": "GDScript",
 "path": "res://PixelLevel/Command/TestLevelBase.gd"

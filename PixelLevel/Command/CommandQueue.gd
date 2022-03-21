@@ -2,7 +2,7 @@ extends Node
 class_name CommandQueue
 
 var _list: Array
-var _index: int = 0
+var _index := 0
 signal changed
 
 func execute(c: Command) -> void:
@@ -10,6 +10,7 @@ func execute(c: Command) -> void:
 	if not _atEnd():
 		_list.resize(_index)
 	_list.append(c)
+	_index += 1
 	c.execute()
 	emit_signal("changed")
 
@@ -26,4 +27,20 @@ func redo() -> void:
 		emit_signal("changed")
 
 func _atEnd() -> bool:
-	return _list.size() == _index
+	return _index + 1 == _list.size()
+
+var _i: int
+
+func should_continue():
+	return (_i < _list.size())
+
+func _iter_init(_arg):
+	_i = 0
+	return should_continue()
+
+func _iter_next(_arg):
+	_i += 1
+	return should_continue()
+
+func _iter_get(_arg):
+	return _list[_i]

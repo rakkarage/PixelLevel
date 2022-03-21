@@ -1,8 +1,9 @@
-extends Viewport
+extends Node
 class_name TestLevelBase
 
-onready var _camera: Camera2D = $Camera
-onready var _back: TileMap = $Back
+onready var _viewport: Viewport = $Level/Viewport
+onready var _camera: Camera2D = $Level/Viewport/Camera
+onready var _back: TileMap = $Level/Viewport/Back
 var _rect := Rect2()
 var _oldSize := Vector2.ZERO
 var _tweenCamera := Tween.new()
@@ -63,7 +64,7 @@ func _world(tile: Vector2) -> Vector2:
 	return _back.map_to_world(tile)
 
 func _worldSize() -> Vector2:
-	return size * _camera.zoom
+	return _viewport.size * _camera.zoom
 
 func _worldBounds() -> Rect2:
 	return Rect2(Vector2.ZERO, _worldSize())
@@ -141,6 +142,6 @@ func _normalize() -> Vector2:
 	return (_camera.global_position - _mapSize() / 2.0) / _oldSize
 
 func _onResize() -> void:
-	_camera.global_position = _normalize() * size + _mapSize() / 2.0
-	_oldSize = size
+	_camera.global_position = _normalize() * _viewport.size + _mapSize() / 2.0
+	_oldSize = _viewport.size
 	_cameraUpdate()

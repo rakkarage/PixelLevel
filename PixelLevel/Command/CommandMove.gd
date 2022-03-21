@@ -17,20 +17,20 @@ const Directions := {
 	Direction.NorthWest: Vector2.UP + Vector2.LEFT,
 }
 
-var _d: Vector2
+var delta: Vector2
 var _old: Vector2
 var _map: TileMap
 var _rect: Rect2
 
 func _init(mob: Mob, map: TileMap, d: int).(mob) -> void:
-	_d = Directions[d]
+	delta = Directions[d]
 	_map = map
 	_rect = _map.get_used_rect()
 
 func execute() -> void:
 	_old = _mob.global_position
-	if _rect.has_point(_map.world_to_map(_old) + _d):
-		_mob.global_position += _map.map_to_world(_d)
+	if _rect.has_point(_map.world_to_map(_old) + delta):
+		_mob.global_position += _map.map_to_world(delta)
 	else:
 		print("beep")
 

@@ -4,17 +4,19 @@ class_name TestLevel
 onready var _undoButton: Button = $Fore/Viewport/Panel/VBox/Buttons/Undo
 onready var _selectButton: Button = $Fore/Viewport/Panel/VBox/Buttons/Select
 onready var _redoButton: Button = $Fore/Viewport/Panel/VBox/Buttons/Redo
-onready var _list: ItemList = $Fore/Viewport/Panel/VBox/ItemList
-onready var _path: Node2D = $Path
-onready var _mob: Sprite = $Mob
-onready var _target: Node2D = $Target
+onready var _list: ItemList = $Fore/Viewport/Panel/VBox/Scroll/ItemList
+onready var _path: Node2D = $Level/Viewport/Path
+onready var _mob: Sprite = $Level/Viewport/Mob
+onready var _target: Node2D = $Level/Viewport/Target
 var _startAt := Vector2(4, 4)
 var _time := 0.0
 const _turnTime := 0.22
 
-var _commands: CommandQueue = CommandQueue.new()
+var _commands := CommandQueue.new()
 
 func _ready() -> void:
+	Utility.stfu(_undoButton.connect("pressed", self, "_undoPressed"))
+	Utility.stfu(_redoButton.connect("pressed", self, "_redoPressed"))
 	Utility.stfu(_commands.connect("changed", self, "_commandsChanged"))
 	_mob.global_position = _world(_startAt) + _back.cell_size / 2.0
 	_target.modulate = Color.transparent
@@ -22,16 +24,17 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	_commands.execute(_processWasd())
 
-func _undo() -> void:
+func _undoPressed() -> void:
 	_commands.undo()
 
-func _redo() -> void:
+func _redoPressed() -> void:
 	_commands.redo()
 
 func _commandsChanged() -> void:
-	pass
+	_list.clear()
+	for i in _commands:
+		_list.add_item(str(i.delta))
 
-# check if inside map
 func _processWasd() -> Command:
 	if Input.is_action_just_pressed("ui_up"):
 		return CommandMove.new(_mob, _back, CommandMove.Direction.North)
