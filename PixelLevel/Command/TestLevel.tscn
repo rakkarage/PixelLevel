@@ -161,22 +161,14 @@ margin_right = 149.0
 margin_bottom = 20.0
 
 [node name="Undo" type="Button" parent="Fore/Viewport/Panel/VBox/Buttons"]
-margin_right = 46.0
+margin_right = 72.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Undo"
 
-[node name="Select" type="Button" parent="Fore/Viewport/Panel/VBox/Buttons"]
-margin_left = 50.0
-margin_right = 101.0
-margin_bottom = 20.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-text = "Select"
-
 [node name="Redo" type="Button" parent="Fore/Viewport/Panel/VBox/Buttons"]
-margin_left = 105.0
+margin_left = 76.0
 margin_right = 149.0
 margin_bottom = 20.0
 size_flags_horizontal = 3

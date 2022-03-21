@@ -2,7 +2,6 @@ extends TestLevelBase
 class_name TestLevel
 
 onready var _undoButton: Button = $Fore/Viewport/Panel/VBox/Buttons/Undo
-onready var _selectButton: Button = $Fore/Viewport/Panel/VBox/Buttons/Select
 onready var _redoButton: Button = $Fore/Viewport/Panel/VBox/Buttons/Redo
 onready var _list: ItemList = $Fore/Viewport/Panel/VBox/Scroll/ItemList
 onready var _path: Node2D = $Level/Viewport/Path
@@ -13,6 +12,8 @@ var _time := 0.0
 const _turnTime := 0.22
 
 var _commands := CommandQueue.new()
+
+# buggy when go fullscreen???? works in normal level?
 
 func _ready() -> void:
 	Utility.stfu(_undoButton.connect("pressed", self, "_undoPressed"))
@@ -56,20 +57,3 @@ func _processWasd() -> Command:
 	if Input.is_action_just_pressed("ui_nw"):
 		return CommandMove.new(_mob, _back, CommandMove.Direction.NorthWest)
 	return null
-
-# func _wasd(direction: Vector2) -> void:
-# 	var p := mobPosition() + direction
-# 	if isDoorShutV(p):
-# 		_toggleDoorV(p)
-# 	if not isBlockedV(p):
-# 		_face(_mob, direction)
-# 		yield(_step(_mob, direction), "completed")
-# 		_pathClear()
-# 		if not isStairV(p):
-# 			_lightUpdate(p, lightRadius)
-# 			_checkCenter()
-# 		else:
-# 			if isStairDownV(p):
-# 				emit_signal("generate")
-# 			elif isStairUpV(p):
-# 				emit_signal("generateUp")

@@ -15,6 +15,11 @@ _global_script_classes=[ {
 "path": "res://PixelLevel/Command/Command.gd"
 }, {
 "base": "Command",
+"class": "CommandGroup",
+"language": "GDScript",
+"path": "res://PixelLevel/Command/CommandGroup.gd"
+}, {
+"base": "Command",
 "class": "CommandMove",
 "language": "GDScript",
 "path": "res://PixelLevel/Command/CommandMove.gd"
@@ -96,6 +101,7 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "Command": "",
+"CommandGroup": "",
 "CommandMove": "",
 "CommandQueue": "",
 "DisjointSet": "",
