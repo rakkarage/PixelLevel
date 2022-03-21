@@ -22,7 +22,7 @@ func _ready() -> void:
 	_camera.zoom = Vector2(0.75, 0.75)
 	add_child(_tweenCamera)
 	_cameraCenter()
-	Utility.stfu(connect("size_changed", self, "_onResize"))
+	Utility.stfu(_viewport.connect("size_changed", self, "_onResize"))
 	Utility.stfu(Gesture.connect("onZoom", self, "_zoomPinch"))
 
 func _unhandled_input(event: InputEvent) -> void:

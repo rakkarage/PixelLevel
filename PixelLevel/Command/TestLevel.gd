@@ -34,6 +34,8 @@ func _commandsChanged() -> void:
 	_list.clear()
 	for i in _commands:
 		_list.add_item(str(i.delta))
+	_list.select(_commands.index)
+	_list.ensure_current_is_visible()
 
 func _processWasd() -> Command:
 	if Input.is_action_just_pressed("ui_up"):

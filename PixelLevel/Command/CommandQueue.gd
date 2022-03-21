@@ -2,32 +2,32 @@ extends Node
 class_name CommandQueue
 
 var _list: Array
-var _index := 0
+var index := -1
 signal changed
 
 func execute(c: Command) -> void:
 	if not c: return
 	if not _atEnd():
-		_list.resize(_index)
+		_list.resize(index)
 	_list.append(c)
-	_index += 1
+	index += 1
 	c.execute()
 	emit_signal("changed")
 
 func undo() -> void:
-	if _index > 0:
-		_list[_index].undo()
-		_index -= 1
+	if index > 0:
+		_list[index].undo()
+		index -= 1
 		emit_signal("changed")
 
 func redo() -> void:
-	if _index < _list.size():
-		_list[_index].redo()
-		_index += 1
+	if index < _list.size():
+		_list[index].redo()
+		index += 1
 		emit_signal("changed")
 
 func _atEnd() -> bool:
-	return _index + 1 == _list.size()
+	return index + 1 == _list.size()
 
 var _i: int
 
