@@ -146,20 +146,18 @@ anchor_mode = 0
 [node name="Panel" type="PanelContainer" parent="Fore/Viewport"]
 modulate = Color( 1, 1, 1, 0.74902 )
 anchor_left = 1.0
-anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = -165.0
-margin_top = -112.0
+margin_left = -163.0
 
 [node name="VBox" type="VBoxContainer" parent="Fore/Viewport/Panel"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 158.0
-margin_bottom = 105.0
+margin_right = 156.0
+margin_bottom = 593.0
 
 [node name="Buttons" type="HBoxContainer" parent="Fore/Viewport/Panel/VBox"]
-margin_right = 151.0
+margin_right = 149.0
 margin_bottom = 20.0
 
 [node name="Undo" type="Button" parent="Fore/Viewport/Panel/VBox/Buttons"]
@@ -179,7 +177,7 @@ text = "Select"
 
 [node name="Redo" type="Button" parent="Fore/Viewport/Panel/VBox/Buttons"]
 margin_left = 105.0
-margin_right = 151.0
+margin_right = 149.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -187,14 +185,14 @@ text = "Redo"
 
 [node name="Scroll" type="ScrollContainer" parent="Fore/Viewport/Panel/VBox"]
 margin_top = 24.0
-margin_right = 151.0
-margin_bottom = 98.0
+margin_right = 149.0
+margin_bottom = 586.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="ItemList" type="ItemList" parent="Fore/Viewport/Panel/VBox/Scroll"]
-margin_right = 151.0
-margin_bottom = 74.0
+margin_right = 149.0
+margin_bottom = 562.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 items = [ "Item 0", null, false, "Item 1", null, false, "Item 2", null, false, "Item 3", null, false, "Item 4", null, false ]

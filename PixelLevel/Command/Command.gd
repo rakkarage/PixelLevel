@@ -1,5 +1,6 @@
 class_name Command
 
+var valid := true
 var _mob: Mob
 
 func _init(mob: Mob) -> void:
