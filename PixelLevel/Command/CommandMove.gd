@@ -19,15 +19,20 @@ const Directions := {
 
 var _d: Vector2
 var _old: Vector2
-var _level: TileMap
+var _map: TileMap
+var _rect: Rect2
 
-func _init(mob: Mob, level: TileMap, d: int).(mob) -> void:
+func _init(mob: Mob, map: TileMap, d: int).(mob) -> void:
 	_d = Directions[d]
-	_level = level
+	_map = map
+	_rect = _map.get_used_rect()
 
 func execute() -> void:
 	_old = _mob.global_position
-	_mob.global_position += _level.map_to_world(_d)
+	if _rect.has_point(_map.world_to_map(_old) + _d):
+		_mob.global_position += _map.map_to_world(_d)
+	else:
+		print("beep")
 
 func undo() -> void:
 	_mob.global_position = _old

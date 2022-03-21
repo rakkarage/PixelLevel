@@ -31,24 +31,23 @@ func _redo() -> void:
 func _commandsChanged() -> void:
 	pass
 
-# do on pressed instead of constant for testing
 # check if inside map
 func _processWasd() -> Command:
-	if Input.is_action_pressed("ui_up"):
+	if Input.is_action_just_pressed("ui_up"):
 		return CommandMove.new(_mob, _back, CommandMove.Direction.North)
-	if Input.is_action_pressed("ui_ne"):
+	if Input.is_action_just_pressed("ui_ne"):
 		return CommandMove.new(_mob, _back, CommandMove.Direction.NorthEast)
-	if Input.is_action_pressed("ui_right"):
+	if Input.is_action_just_pressed("ui_right"):
 		return CommandMove.new(_mob, _back, CommandMove.Direction.East)
-	if Input.is_action_pressed("ui_se"):
+	if Input.is_action_just_pressed("ui_se"):
 		return CommandMove.new(_mob, _back, CommandMove.Direction.SouthEast)
-	if Input.is_action_pressed("ui_down"):
+	if Input.is_action_just_pressed("ui_down"):
 		return CommandMove.new(_mob, _back, CommandMove.Direction.South)
-	if Input.is_action_pressed("ui_sw"):
+	if Input.is_action_just_pressed("ui_sw"):
 		return CommandMove.new(_mob, _back, CommandMove.Direction.SouthWest)
-	if Input.is_action_pressed("ui_left"):
+	if Input.is_action_just_pressed("ui_left"):
 		return CommandMove.new(_mob, _back, CommandMove.Direction.West)
-	if Input.is_action_pressed("ui_nw"):
+	if Input.is_action_just_pressed("ui_nw"):
 		return CommandMove.new(_mob, _back, CommandMove.Direction.NorthWest)
 	return null
 
