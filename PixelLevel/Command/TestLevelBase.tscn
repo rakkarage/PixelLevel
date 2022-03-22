@@ -73,6 +73,8 @@ position = Vector2( 8, 8 )
 
 [node name="Mob" parent="Level/Viewport" instance=ExtResource( 2 )]
 
+[node name="Mobs" type="Node2D" parent="Level/Viewport"]
+
 [node name="SplitFore" type="TileMap" parent="Level/Viewport"]
 tile_set = ExtResource( 6 )
 cell_size = Vector2( 16, 16 )

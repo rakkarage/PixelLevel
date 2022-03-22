@@ -20,11 +20,13 @@ const Directions := {
 var delta: Vector2
 var _old: Vector2
 var _map: TileMap
+var _mob: Mob
 var _rect: Rect2
 
-func _init(mob: Mob, map: TileMap, d: int).(mob) -> void:
+func _init(mob: Mob, map: TileMap, d: int) -> void:
 	delta = Directions[d]
 	_map = map
+	_mob = mob
 	_rect = _map.get_used_rect()
 
 func execute() -> void:
