@@ -2,11 +2,11 @@
 
 [ext_resource path="res://PixelLevel/Target.tscn" type="PackedScene" id=1]
 [ext_resource path="res://PixelMob/Mob/Slime.tscn" type="PackedScene" id=2]
-[ext_resource path="res://PixelLevel/Command/TestLevelBase.gd" type="Script" id=3]
+[ext_resource path="res://PixelLevel/Command/TestLevel.gd" type="Script" id=4]
 [ext_resource path="res://PixelLevel/Level.tres" type="TileSet" id=6]
 
 [node name="Level" type="Node"]
-script = ExtResource( 3 )
+script = ExtResource( 4 )
 
 [node name="Level" type="ViewportContainer" parent="."]
 anchor_right = 1.0
@@ -38,9 +38,75 @@ cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
 format = 1
 tile_data = PoolIntArray( 65536, 68, 5, 65537, 68, 4, 65538, 68, 4, 65539, 68, 0, 65540, 68, 2, 65541, 68, 2, 65542, 68, 5, 65543, 68, 0, 65544, 68, 4, 65545, 68, 0, 65546, 68, 3, 65547, 68, 0, 65548, 68, 5, 65550, 68, 0, 196612, 2, 4, 196615, 6, 0, 196618, 3, 2, 327686, 536870916, 7, 327687, 536870916, 3, 327688, 536870916, 5, 458756, 3, 4, 458759, 9, 0, 458762, 2, 1, 589824, 68, 1, 589825, 33, 0, 589826, 68, 4, 589827, 68, 3, 589828, 68, 5, 589829, 68, 5, 589830, 68, 4, 589831, 68, 2, 589832, 68, 3, 589833, 68, 0, 589834, 68, 0, 589835, 68, 1, 589836, 68, 5, 589837, 68, 2, 589838, 68, 4, 655374, 73, 0 )
 
+[node name="Flower" type="TileMap" parent="Level/Viewport"]
+tile_set = ExtResource( 6 )
+cell_size = Vector2( 16, 16 )
+cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
+format = 1
+
+[node name="SplitBack" type="TileMap" parent="Level/Viewport"]
+tile_set = ExtResource( 6 )
+cell_size = Vector2( 16, 16 )
+cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
+format = 1
+
+[node name="ItemBack" type="TileMap" parent="Level/Viewport"]
+tile_set = ExtResource( 6 )
+cell_size = Vector2( 16, 16 )
+cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
+format = 1
+
+[node name="WaterBack" type="TileMap" parent="Level/Viewport"]
+tile_set = ExtResource( 6 )
+cell_size = Vector2( 16, 16 )
+cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
+format = 1
+
+[node name="Tree" type="TileMap" parent="Level/Viewport"]
+tile_set = ExtResource( 6 )
+cell_size = Vector2( 16, 16 )
+cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
+format = 1
+
 [node name="Path" type="Node2D" parent="Level/Viewport"]
 position = Vector2( 8, 8 )
 
 [node name="Mob" parent="Level/Viewport" instance=ExtResource( 2 )]
+
+[node name="SplitFore" type="TileMap" parent="Level/Viewport"]
+tile_set = ExtResource( 6 )
+cell_size = Vector2( 16, 16 )
+cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
+format = 1
+
+[node name="ItemFore" type="TileMap" parent="Level/Viewport"]
+tile_set = ExtResource( 6 )
+cell_size = Vector2( 16, 16 )
+cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
+format = 1
+
+[node name="WaterFore" type="TileMap" parent="Level/Viewport"]
+tile_set = ExtResource( 6 )
+cell_size = Vector2( 16, 16 )
+cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
+format = 1
+
+[node name="Top" type="TileMap" parent="Level/Viewport"]
+tile_set = ExtResource( 6 )
+cell_size = Vector2( 16, 16 )
+cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
+format = 1
+
+[node name="Light" type="TileMap" parent="Level/Viewport"]
+tile_set = ExtResource( 6 )
+cell_size = Vector2( 16, 16 )
+cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
+format = 1
+
+[node name="Edge" type="TileMap" parent="Level/Viewport"]
+tile_set = ExtResource( 6 )
+cell_size = Vector2( 16, 16 )
+cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
+format = 1
 
 [node name="Target" parent="Level/Viewport" instance=ExtResource( 1 )]
