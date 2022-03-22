@@ -1,17 +1,17 @@
 extends Node
 
 onready var _level: Level = $Level/Viewport
-onready var _mask: AnimationPlayer = $Fore/Viewport/Mask/AnimationPlayer
-onready var _textureRect: TextureRect = $Fore/Viewport/MiniMap
-onready var _position: Label = $Fore/Viewport/Panel/VBox/Mouse/Value
-onready var _depth: Label = $Fore/Viewport/Panel/VBox/Level/Value
-onready var _up: Button = $Fore/Viewport/Panel/VBox/HBoxLevel/Up
-onready var _regen: Button = $Fore/Viewport/Panel/VBox/HBoxLevel/Regen
-onready var _down: Button = $Fore/Viewport/Panel/VBox/HBoxLevel/Down
-onready var _light: Label = $Fore/Viewport/Panel/VBox/Light/Value
-onready var _minus: Button = $Fore/Viewport/Panel/VBox/HBoxLight/Minus
-onready var _toggle: Button = $Fore/Viewport/Panel/VBox/HBoxLight/Toggle
-onready var _plus: Button = $Fore/Viewport/Panel/VBox/HBoxLight/Plus
+onready var _mask: AnimationPlayer = $Fore/Mask/AnimationPlayer
+onready var _textureRect: TextureRect = $Fore/MiniMap
+onready var _position: Label = $Fore/Panel/VBox/Mouse/Value
+onready var _depth: Label = $Fore/Panel/VBox/Level/Value
+onready var _up: Button = $Fore/Panel/VBox/HBoxLevel/Up
+onready var _regen: Button = $Fore/Panel/VBox/HBoxLevel/Regen
+onready var _down: Button = $Fore/Panel/VBox/HBoxLevel/Down
+onready var _light: Label = $Fore/Panel/VBox/Light/Value
+onready var _minus: Button = $Fore/Panel/VBox/HBoxLight/Minus
+onready var _toggle: Button = $Fore/Panel/VBox/HBoxLight/Toggle
+onready var _plus: Button = $Fore/Panel/VBox/HBoxLight/Plus
 onready var _imageTexture := ImageTexture.new()
 onready var _image := Image.new()
 const _max := Vector2(64, 64)
@@ -45,7 +45,7 @@ func _limitedUpdateMap() -> void:
 
 func _updateMap() -> void:
 	var at := _level.mobPosition()
-	var original := _level.rect.size
+	var original := _level._back.get_used_rect().size
 	var size := original
 	var offset := Vector2.ZERO
 	if size.x > _max.x:
