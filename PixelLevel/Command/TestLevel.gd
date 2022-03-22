@@ -1,9 +1,9 @@
 extends TestLevelBase
 class_name TestLevel
 
-onready var _undoButton: Button = $Fore/Viewport/Panel/VBox/Buttons/Undo
-onready var _redoButton: Button = $Fore/Viewport/Panel/VBox/Buttons/Redo
-onready var _list: ItemList = $Fore/Viewport/Panel/VBox/Scroll/ItemList
+onready var _undoButton: Button = $Panel/VBox/Buttons/Undo
+onready var _redoButton: Button = $Panel/VBox/Buttons/Redo
+onready var _list: ItemList = $Panel/VBox/Scroll/ItemList
 onready var _path: Node2D = $Level/Viewport/Path
 onready var _mob: Sprite = $Level/Viewport/Mob
 onready var _target: Node2D = $Level/Viewport/Target

@@ -9,21 +9,7 @@
 [node name="Level" type="Node"]
 script = ExtResource( 4 )
 
-[node name="Back" type="ViewportContainer" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-stretch = true
-
-[node name="Viewport" type="Viewport" parent="Back"]
-size = Vector2( 1024, 600 )
-handle_input_locally = false
-render_target_update_mode = 3
-
-[node name="Camera" type="Camera2D" parent="Back/Viewport"]
-anchor_mode = 0
-
-[node name="Back" parent="Back/Viewport" instance=ExtResource( 3 )]
+[node name="Back" parent="." instance=ExtResource( 3 )]
 
 [node name="Level" type="ViewportContainer" parent="."]
 anchor_right = 1.0
@@ -128,46 +114,31 @@ format = 1
 
 [node name="Target" parent="Level/Viewport" instance=ExtResource( 1 )]
 
-[node name="Fore" type="ViewportContainer" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-stretch = true
-
-[node name="Viewport" type="Viewport" parent="Fore"]
-size = Vector2( 1024, 600 )
-transparent_bg = true
-handle_input_locally = false
-render_target_update_mode = 3
-
-[node name="Camera" type="Camera2D" parent="Fore/Viewport"]
-anchor_mode = 0
-
-[node name="Panel" type="PanelContainer" parent="Fore/Viewport"]
+[node name="Panel" type="PanelContainer" parent="."]
 modulate = Color( 1, 1, 1, 0.498039 )
 anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = -163.0
 
-[node name="VBox" type="VBoxContainer" parent="Fore/Viewport/Panel"]
+[node name="VBox" type="VBoxContainer" parent="Panel"]
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 156.0
 margin_bottom = 593.0
 
-[node name="Buttons" type="HBoxContainer" parent="Fore/Viewport/Panel/VBox"]
+[node name="Buttons" type="HBoxContainer" parent="Panel/VBox"]
 margin_right = 149.0
 margin_bottom = 20.0
 
-[node name="Undo" type="Button" parent="Fore/Viewport/Panel/VBox/Buttons"]
+[node name="Undo" type="Button" parent="Panel/VBox/Buttons"]
 margin_right = 72.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Undo"
 
-[node name="Redo" type="Button" parent="Fore/Viewport/Panel/VBox/Buttons"]
+[node name="Redo" type="Button" parent="Panel/VBox/Buttons"]
 margin_left = 76.0
 margin_right = 149.0
 margin_bottom = 20.0
@@ -175,14 +146,14 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Redo"
 
-[node name="Scroll" type="ScrollContainer" parent="Fore/Viewport/Panel/VBox"]
+[node name="Scroll" type="ScrollContainer" parent="Panel/VBox"]
 margin_top = 24.0
 margin_right = 149.0
 margin_bottom = 586.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="ItemList" type="ItemList" parent="Fore/Viewport/Panel/VBox/Scroll"]
+[node name="ItemList" type="ItemList" parent="Panel/VBox/Scroll"]
 margin_right = 149.0
 margin_bottom = 562.0
 size_flags_horizontal = 3
