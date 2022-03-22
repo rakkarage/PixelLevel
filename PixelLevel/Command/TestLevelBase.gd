@@ -4,7 +4,6 @@ class_name TestLevelBase
 onready var _viewport: Viewport = $Level/Viewport
 onready var _camera: Camera2D = $Level/Viewport/Camera
 onready var _back: TileMap = $Level/Viewport/Back
-var _rect := Rect2()
 var _oldSize := Vector2.ZERO
 var _tweenCamera := Tween.new()
 var _dragLeft := false
@@ -18,7 +17,6 @@ const _zoomPinchIn := 0.02
 const _zoomPinchOut := 1.02
 
 func _ready() -> void:
-	_rect = _back.get_used_rect()
 	_camera.zoom = Vector2(0.75, 0.75)
 	_oldSize = _viewport.size
 	add_child(_tweenCamera)
@@ -48,15 +46,16 @@ func _unhandled_input(event: InputEvent) -> void:
 			_cameraTo(_camera.global_position - event.relative * _camera.zoom)
 
 func _tileIndex(p: Vector2) -> int:
-	return Utility.indexV(p, int(_rect.size.x))
+	return Utility.indexV(p, int(_back.get_used_rect().size.x))
 
 func _tilePosition(i: int) -> Vector2:
-	return Utility.position(i, int(_rect.size.x))
+	return Utility.position(i, int(_back.get_used_rect().size.x))
 
-func insideMapV(p: Vector2) -> bool: return _rect.has_point(p)
+func insideMapV(p: Vector2) -> bool:
+	return _back.get_used_rect().has_point(p)
 
 func insideMap(x: int, y: int) -> bool:
-	return x >= _rect.position.x and y >= _rect.position.y and x < _rect.size.x and y < _rect.size.y
+	return insideMapV(Vector2(x, y))
 
 func getCameraRect() -> Rect2:
 	return Rect2(_map(_camera.global_position), _map(_camera.global_position + _worldSize()))
@@ -74,7 +73,7 @@ func _map(position: Vector2) -> Vector2:
 	return _back.world_to_map(position)
 
 func _mapSize() -> Vector2:
-	return _rect.size * _back.cell_size
+	return _back.get_used_rect().size * _back.cell_size
 
 func mapBounds() -> Rect2:
 	return Rect2(-_camera.global_position, _mapSize())
@@ -116,9 +115,6 @@ func _cameraSnap(to: Vector2) -> void:
 
 func _cameraStop() -> void:
 	Utility.stfu(_tweenCamera.stop(_camera, "global_position"))
-
-const _edgeOffset := 1.5
-const _edgeOffsetV := Vector2(_edgeOffset, _edgeOffset)
 
 func _zoomPinch(at: Vector2, amount: float) -> void:
 	if amount > 0: _zoom(at, _zoomFactorOut)
