@@ -20,7 +20,7 @@ func _ready() -> void:
 	_camera.zoom = Vector2(0.75, 0.75)
 	_oldSize = _viewport.size
 	add_child(_tweenCamera)
-	_cameraCenter()
+	_cameraTo(_center())
 	Utility.stfu(_viewport.connect("size_changed", self, "_onResize"))
 	Utility.stfu(Gesture.connect("onZoom", self, "_zoomPinch"))
 
@@ -51,14 +51,8 @@ func _tileIndex(p: Vector2) -> int:
 func _tilePosition(i: int) -> Vector2:
 	return Utility.position(i, int(_back.get_used_rect().size.x))
 
-func insideMapV(p: Vector2) -> bool:
+func insideMap(p: Vector2) -> bool:
 	return _back.get_used_rect().has_point(p)
-
-func insideMap(x: int, y: int) -> bool:
-	return insideMapV(Vector2(x, y))
-
-func getCameraRect() -> Rect2:
-	return Rect2(_map(_camera.global_position), _map(_camera.global_position + _worldSize()))
 
 func _world(tile: Vector2) -> Vector2:
 	return _back.map_to_world(tile)
@@ -80,9 +74,6 @@ func mapBounds() -> Rect2:
 
 func _center() -> Vector2:
 	return -(_worldSize() / 2.0) + _mapSize() / 2.0
-
-func _cameraCenter() -> void:
-	_cameraTo(_center())
 
 func _cameraTo(to: Vector2) -> void:
 	_cameraStop()
