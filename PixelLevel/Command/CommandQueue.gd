@@ -34,15 +34,15 @@ var _i := 0
 func _continue():
 	return _i < _list.size()
 
-func _iter_init(_a):
+func _iter_init(_what):
 	_i = 0
 	return _continue()
 
-func _iter_next(_a):
+func _iter_next(_the):
 	_i += 1
 	return _continue()
 
-func _iter_get(_a):
+func _iter_get(_fuck):
 	return _list[_i]
 
 #endregion

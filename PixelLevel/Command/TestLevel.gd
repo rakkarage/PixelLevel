@@ -26,6 +26,19 @@ func _cameraToMob() -> void:
 
 func _process(_delta: float) -> void:
 	_commands.execute(_processWasd())
+	# _time += delta
+	# if _time > _turnTime and (_turn or _processWasd()):
+	# 	_timeTotal += _time
+	# 	_turnTotal += 1
+	# 	var test = _turn
+	# 	_turn = false
+	# 	if test:
+	# 		if not _handleDoor():
+	# 			yield(_move(_mob), "completed")
+	# 		if not _handleStair():
+	# 			_lightUpdate(mobPosition(), lightRadius)
+	# 			_checkCenter()
+	# 	_time = 0.0
 
 func _undoPressed() -> void:
 	_commands.undo()

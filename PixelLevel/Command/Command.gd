@@ -1,6 +1,7 @@
 class_name Command
 
 var valid := true
+var cost := 10
 
 func execute() -> void: pass
 
