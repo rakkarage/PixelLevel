@@ -181,6 +181,10 @@ config/description="Pixel-perfect dungeon and environment sprites."
 run/main_scene="res://Demo.tscn"
 config/icon="res://icon.png"
 
+[audio]
+
+default_bus_layout="res://PixelLevel/Audio.tres"
+
 [autoload]
 
 Random="*res://PixelLevel/Random.gd"
