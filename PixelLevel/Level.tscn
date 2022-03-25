@@ -12,21 +12,7 @@
 [node name="Level" type="Node"]
 script = ExtResource( 6 )
 
-[node name="Back" type="ViewportContainer" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-stretch = true
-
-[node name="Viewport" type="Viewport" parent="Back"]
-size = Vector2( 1024, 600 )
-handle_input_locally = false
-render_target_update_mode = 3
-
-[node name="Camera" type="Camera2D" parent="Back/Viewport"]
-anchor_mode = 0
-
-[node name="Back" parent="Back/Viewport" instance=ExtResource( 5 )]
+[node name="Back" parent="." instance=ExtResource( 5 )]
 
 [node name="Level" type="ViewportContainer" parent="."]
 anchor_right = 1.0
@@ -132,22 +118,12 @@ format = 1
 
 [node name="Target" parent="Level/Viewport" instance=ExtResource( 3 )]
 
-[node name="Fore" type="ViewportContainer" parent="."]
+[node name="Fore" type="Control" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-stretch = true
 
-[node name="Viewport" type="Viewport" parent="Fore"]
-size = Vector2( 1024, 600 )
-transparent_bg = true
-handle_input_locally = false
-render_target_update_mode = 3
-
-[node name="Camera" type="Camera2D" parent="Fore/Viewport"]
-anchor_mode = 0
-
-[node name="MiniMap" type="TextureRect" parent="Fore/Viewport"]
+[node name="MiniMap" type="TextureRect" parent="Fore"]
 margin_left = 16.0
 margin_top = 16.0
 margin_right = 80.0
@@ -155,16 +131,16 @@ margin_bottom = 80.0
 rect_min_size = Vector2( 64, 64 )
 mouse_filter = 2
 
-[node name="Mask" type="ColorRect" parent="Fore/Viewport"]
+[node name="Mask" type="ColorRect" parent="Fore"]
 material = ExtResource( 8 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Fore/Viewport/Mask"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Fore/Mask"]
 anims/Mask = ExtResource( 7 )
 
-[node name="Panel" type="PanelContainer" parent="Fore/Viewport"]
+[node name="Panel" type="PanelContainer" parent="Fore"]
 modulate = Color( 1, 1, 1, 0.74902 )
 anchor_left = 1.0
 anchor_top = 1.0
@@ -173,17 +149,17 @@ anchor_bottom = 1.0
 margin_left = -165.0
 margin_top = -112.0
 
-[node name="VBox" type="VBoxContainer" parent="Fore/Viewport/Panel"]
+[node name="VBox" type="VBoxContainer" parent="Fore/Panel"]
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 158.0
 margin_bottom = 105.0
 
-[node name="Mouse" type="HBoxContainer" parent="Fore/Viewport/Panel/VBox"]
+[node name="Mouse" type="HBoxContainer" parent="Fore/Panel/VBox"]
 margin_right = 151.0
 margin_bottom = 14.0
 
-[node name="Label" type="Label" parent="Fore/Viewport/Panel/VBox/Mouse"]
+[node name="Label" type="Label" parent="Fore/Panel/VBox/Mouse"]
 margin_right = 73.0
 margin_bottom = 14.0
 size_flags_horizontal = 3
@@ -191,7 +167,7 @@ size_flags_vertical = 3
 text = "Mouse:"
 align = 1
 
-[node name="Value" type="Label" parent="Fore/Viewport/Panel/VBox/Mouse"]
+[node name="Value" type="Label" parent="Fore/Panel/VBox/Mouse"]
 margin_left = 77.0
 margin_right = 151.0
 margin_bottom = 14.0
@@ -199,12 +175,12 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "(0, 0)"
 
-[node name="Level" type="HBoxContainer" parent="Fore/Viewport/Panel/VBox"]
+[node name="Level" type="HBoxContainer" parent="Fore/Panel/VBox"]
 margin_top = 18.0
 margin_right = 151.0
 margin_bottom = 32.0
 
-[node name="Label" type="Label" parent="Fore/Viewport/Panel/VBox/Level"]
+[node name="Label" type="Label" parent="Fore/Panel/VBox/Level"]
 margin_right = 73.0
 margin_bottom = 14.0
 size_flags_horizontal = 3
@@ -212,7 +188,7 @@ size_flags_vertical = 3
 text = "Level:"
 align = 1
 
-[node name="Value" type="Label" parent="Fore/Viewport/Panel/VBox/Level"]
+[node name="Value" type="Label" parent="Fore/Panel/VBox/Level"]
 margin_left = 77.0
 margin_right = 151.0
 margin_bottom = 14.0
@@ -220,19 +196,19 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "0"
 
-[node name="HBoxLevel" type="HBoxContainer" parent="Fore/Viewport/Panel/VBox"]
+[node name="HBoxLevel" type="HBoxContainer" parent="Fore/Panel/VBox"]
 margin_top = 36.0
 margin_right = 151.0
 margin_bottom = 56.0
 
-[node name="Down" type="Button" parent="Fore/Viewport/Panel/VBox/HBoxLevel"]
+[node name="Down" type="Button" parent="Fore/Panel/VBox/HBoxLevel"]
 margin_right = 48.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Down"
 
-[node name="Regen" type="Button" parent="Fore/Viewport/Panel/VBox/HBoxLevel"]
+[node name="Regen" type="Button" parent="Fore/Panel/VBox/HBoxLevel"]
 margin_left = 52.0
 margin_right = 103.0
 margin_bottom = 20.0
@@ -240,7 +216,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Regen"
 
-[node name="Up" type="Button" parent="Fore/Viewport/Panel/VBox/HBoxLevel"]
+[node name="Up" type="Button" parent="Fore/Panel/VBox/HBoxLevel"]
 margin_left = 107.0
 margin_right = 151.0
 margin_bottom = 20.0
@@ -248,12 +224,12 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Up"
 
-[node name="Light" type="HBoxContainer" parent="Fore/Viewport/Panel/VBox"]
+[node name="Light" type="HBoxContainer" parent="Fore/Panel/VBox"]
 margin_top = 60.0
 margin_right = 151.0
 margin_bottom = 74.0
 
-[node name="Label" type="Label" parent="Fore/Viewport/Panel/VBox/Light"]
+[node name="Label" type="Label" parent="Fore/Panel/VBox/Light"]
 margin_right = 73.0
 margin_bottom = 14.0
 size_flags_horizontal = 3
@@ -261,7 +237,7 @@ size_flags_vertical = 3
 text = "Light:"
 align = 1
 
-[node name="Value" type="Label" parent="Fore/Viewport/Panel/VBox/Light"]
+[node name="Value" type="Label" parent="Fore/Panel/VBox/Light"]
 margin_left = 77.0
 margin_right = 151.0
 margin_bottom = 14.0
@@ -269,19 +245,19 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "0"
 
-[node name="HBoxLight" type="HBoxContainer" parent="Fore/Viewport/Panel/VBox"]
+[node name="HBoxLight" type="HBoxContainer" parent="Fore/Panel/VBox"]
 margin_top = 78.0
 margin_right = 151.0
 margin_bottom = 98.0
 
-[node name="Minus" type="Button" parent="Fore/Viewport/Panel/VBox/HBoxLight"]
+[node name="Minus" type="Button" parent="Fore/Panel/VBox/HBoxLight"]
 margin_right = 51.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Minus"
 
-[node name="Toggle" type="Button" parent="Fore/Viewport/Panel/VBox/HBoxLight"]
+[node name="Toggle" type="Button" parent="Fore/Panel/VBox/HBoxLight"]
 margin_left = 55.0
 margin_right = 108.0
 margin_bottom = 20.0
@@ -289,7 +265,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Toggle"
 
-[node name="Plus" type="Button" parent="Fore/Viewport/Panel/VBox/HBoxLight"]
+[node name="Plus" type="Button" parent="Fore/Panel/VBox/HBoxLight"]
 margin_left = 112.0
 margin_right = 151.0
 margin_bottom = 20.0
