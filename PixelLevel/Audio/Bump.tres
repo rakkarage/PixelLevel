@@ -1,6 +1,6 @@
 [gd_resource type="AudioStreamRandomPitch" load_steps=2 format=2]
 
-[ext_resource path="res://PixelLevel/Audio/516905__rakkarage__error.wav" type="AudioStream" id=1]
+[ext_resource path="res://PixelLevel/Audio/170141__timgormly__8-bit-bump.wav" type="AudioStream" id=1]
 
 [resource]
 audio_stream = ExtResource( 1 )

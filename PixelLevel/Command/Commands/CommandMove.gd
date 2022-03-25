@@ -34,6 +34,7 @@ func execute() -> void:
 	if _rect.has_point(_map.world_to_map(_old) + delta):
 		_mob.global_position += _map.map_to_world(delta)
 	else:
+		Audio.error()
 		valid = false
 
 func undo() -> void:

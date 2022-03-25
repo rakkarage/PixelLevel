@@ -1,3 +1,5 @@
+class_name Energy
+
 var energy := 0
 var energyPerTurn := 10
 
