@@ -6,6 +6,7 @@ onready var _redoButton: Button = $Panel/VBox/Buttons/Redo
 onready var _list: ItemList = $Panel/VBox/Scroll/ItemList
 onready var _path: Node2D = $Level/Viewport/Path
 onready var _mob: Sprite = $Level/Viewport/Mob
+onready var _mobs: Node2D = $Level/Viewport/Mobs
 onready var _target: Node2D = $Level/Viewport/Target
 var _startAt := Vector2(4, 4)
 var _time := 0.0
@@ -19,6 +20,7 @@ func _ready() -> void:
 	Utility.stfu(_commands.connect("changed", self, "_commandsChanged"))
 	_mob.global_position = _world(_startAt) + _back.cell_size / 2.0
 	_target.modulate = Color.transparent
+	_addMobs()
 	_cameraToMob()
 
 func _cameraToMob() -> void:
@@ -72,3 +74,10 @@ func _processWasd() -> Command:
 	if Input.is_action_just_pressed("ui_nw"):
 		return CommandMove.new(_mob, _back, CommandMove.Direction.NorthWest)
 	return null
+
+func _addMobs() -> void:
+	var list := Utility.listFiles("res://PixelMob/Mob")
+	if list.size():
+		for i in 3:
+			var test = load(list[randi() % list.size()])
+			_mobs.add_child(test.instance())
