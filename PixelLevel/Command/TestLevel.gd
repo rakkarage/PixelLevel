@@ -75,9 +75,16 @@ func _processWasd() -> Command:
 		return CommandMove.new(_mob, _back, CommandMove.Direction.NorthWest)
 	return null
 
+const _mobCount := 3
+
 func _addMobs() -> void:
 	var list := Utility.listFiles("res://PixelMob/Mob")
 	if list.size():
-		for i in 3:
-			var test = load(list[randi() % list.size()])
-			_mobs.add_child(test.instance())
+		for i in _mobCount:
+			var r = Random.next(list.size() - 1) + 1
+			var mob : Node2D = load(list[r]).instance()
+			var x := Random.next(int(_back.get_used_rect().size.x))
+			var y := Random.next(int(_back.get_used_rect().size.y))
+			mob.position = _back.map_to_world(Vector2(x, y)) + _back.cell_size / 2
+			_mobs.add_child(mob)
+

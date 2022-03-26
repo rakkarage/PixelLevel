@@ -64,7 +64,7 @@ enum Tile { # match id in tileSet
 	Furnature, Carpet,
 	Fountain, Chest, ChestOpenFull, ChestOpenEmpty, ChestBroke, Loot
 	TreeStump, TreeBack, TreeFore,
-	EdgeInside,	EdgeInsideCorner,
+	EdgeInside, EdgeInsideCorner,
 	EdgeOutsideCorner, EdgeOutside,
 	Light,
 	Theme0Torch, Theme0WallPlain, Theme0Wall, Theme0Floor, Theme0FloorRoom, Theme0Stair, Theme0Door,
