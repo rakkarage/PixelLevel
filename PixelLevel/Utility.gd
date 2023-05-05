@@ -25,3 +25,17 @@ static func repeat(value, count: int) -> Array:
 	for _i in range(count):
 		array.append(value)
 	return array
+
+static func listFiles(path: String) -> Array:
+	var list := []
+	var dir := Directory.new()
+	if dir.open(path) == OK && dir.list_dir_begin(true, true) == OK:
+		var file := dir.get_next()
+		while file != "":
+			var newPath := path + "/" + file
+			if dir.current_is_dir():
+				list += listFiles(newPath)
+			elif !file.begins_with(".") and !file.ends_with(".import"):
+				list.append(newPath)
+			file = dir.get_next()
+	return list

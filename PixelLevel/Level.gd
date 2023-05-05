@@ -22,7 +22,6 @@ onready var _edge:      TileMap = $Edge
 onready var _target:     Node2D = $Target
 onready var _astar:             = AStar2D.new()
 onready var _tileSet:           = _back.tile_set
-var rect := Rect2()
 var _oldSize = Vector2.ZERO
 var _pathPoints := PoolVector2Array()
 var _dragLeft := false
@@ -65,7 +64,7 @@ enum Tile { # match id in tileSet
 	Furnature, Carpet,
 	Fountain, Chest, ChestOpenFull, ChestOpenEmpty, ChestBroke, Loot
 	TreeStump, TreeBack, TreeFore,
-	EdgeInside,	EdgeInsideCorner,
+	EdgeInside, EdgeInsideCorner,
 	EdgeOutsideCorner, EdgeOutside,
 	Light,
 	Theme0Torch, Theme0WallPlain, Theme0Wall, Theme0Floor, Theme0FloorRoom, Theme0Stair, Theme0Door,
@@ -125,20 +124,19 @@ const _waterPurpleTiles := [Tile.WaterShallowForePurple, Tile.WaterShallowBackPu
 #endregion
 
 func _ready() -> void:
-	rect = _back.get_used_rect()
 	_camera.zoom = Vector2(0.75, 0.75)
 	add_child(_tweenCamera)
 	add_child(_tweenStep)
 	add_child(_tweenTarget)
 	generated()
 	_cameraCenter()
-	connect("size_changed", self, "_onResize")
-	Gesture.connect("onZoom", self, "_zoomPinch")
+	Utility.stfu(connect("size_changed", self, "_onResize"))
+	Utility.stfu(Gesture.connect("onZoom", self, "_zoomPinch"))
 
 func generated() -> void:
 	_oldSize = size
 	_drawEdge()
-	_mob.global_position = _world(startAt) + _back.cell_size / 2.0
+	_mob.global_position = world(startAt) + _back.cell_size / 2.0
 	_pathClear()
 	_addPoints()
 	_connectPoints()
@@ -225,23 +223,26 @@ func _face(mob: Node2D, direction: Vector2) -> void:
 
 func _step(mob: Node2D, direction: Vector2) -> void:
 	mob.walk()
-	Utility.stfu(_tweenStep.interpolate_property(mob, "global_position", null, mob.global_position + _world(direction), _turnTime, Tween.TRANS_CIRC, Tween.EASE_IN_OUT))
+	Utility.stfu(_tweenStep.interpolate_property(mob, "global_position", null, mob.global_position + world(direction), _turnTime, Tween.TRANS_CIRC, Tween.EASE_IN_OUT))
 	Utility.stfu(_tweenStep.start())
 	yield(_tweenStep, "tween_all_completed")
 
 func _addPoints() -> void:
 	_astar.clear()
+	var rect = _back.get_used_rect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
 			var p := Vector2(x, y)
 			_astar.add_point(_tileIndex(p), p)
 
 func _connectPoints() -> void:
+	var rect = _back.get_used_rect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
 			_connect(Vector2(x, y))
 
 func _connect(p: Vector2) -> void:
+	var rect = _back.get_used_rect()
 	for yy in range(p.y - 1, p.y + 2):
 		for xx in range(p.x - 1, p.x + 2):
 			var pp := Vector2(xx, yy)
@@ -323,20 +324,21 @@ func _wasd(direction: Vector2) -> void:
 				emit_signal("generateUp")
 
 func _tileIndex(p: Vector2) -> int:
-	return Utility.indexV(p, int(rect.size.x))
+	return Utility.indexV(p, int(_back.get_used_rect().size.x))
 
 func _tilePosition(i: int) -> Vector2:
-	return Utility.position(i, int(rect.size.x))
+	return Utility.position(i, int(_back.get_used_rect().size.x))
 
-func insideMapV(p: Vector2) -> bool: return rect.has_point(p)
+func insideMapV(p: Vector2) -> bool:
+	return _back.get_used_rect().has_point(p)
 
 func insideMap(x: int, y: int) -> bool:
-	return x >= rect.position.x and y >= rect.position.y and x < rect.size.x and y < rect.size.y
+	return insideMapV(Vector2(x, y))
 
 func getCameraRect() -> Rect2:
 	return Rect2(_map(_camera.global_position), _map(_camera.global_position + _worldSize()))
 
-func _world(tile: Vector2) -> Vector2:
+func world(tile: Vector2) -> Vector2:
 	return _back.map_to_world(tile)
 
 func _worldSize() -> Vector2:
@@ -349,7 +351,7 @@ func _map(position: Vector2) -> Vector2:
 	return _back.world_to_map(position)
 
 func _mapSize() -> Vector2:
-	return rect.size * _back.cell_size
+	return _back.get_used_rect().size * _back.cell_size
 
 func mapBounds() -> Rect2:
 	return Rect2(-_camera.global_position, _mapSize())
@@ -403,7 +405,7 @@ const _edgeOffset := 1.5
 const _edgeOffsetV := Vector2(_edgeOffset, _edgeOffset)
 
 func _checkCenter() -> void:
-	var edge = _world(_edgeOffsetV) / _camera.zoom
+	var edge = world(_edgeOffsetV) / _camera.zoom
 	var test = -(_camera.global_position - _mob.global_position) / _camera.zoom
 	if ((test.x > size.x - edge.x) or (test.x < edge.x) or
 		(test.y > size.y - edge.y) or (test.y < edge.y)):
@@ -445,7 +447,7 @@ func _drawPath(from: Vector2, to: Vector2) -> void:
 		var child := _pathScene.instance()
 		child.modulate = color
 		child.global_rotation_degrees = rotation
-		child.global_position = _world(tile)
+		child.global_position = world(tile)
 		_path.add_child(child)
 
 func _delta(from: Vector2, to: Vector2) -> Vector2:
@@ -492,7 +494,7 @@ func _targetTo(to: Vector2, turn: bool) -> void:
 	if tile == targetPosition():
 		_turn = turn
 	else:
-		_target.global_position = _world(tile)
+		_target.global_position = world(tile)
 
 func _targetUpdate() -> void:
 	var from := mobPosition()
@@ -507,7 +509,7 @@ func _targetSnapClosest(tile: Vector2) -> Vector2:
 	return p
 
 func _targetSnap(tile: Vector2) -> void:
-	var p := _world(tile)
+	var p := world(tile)
 	if not _target.global_position.is_equal_approx(p):
 		_targetStop()
 		Utility.stfu(_tweenTarget.interpolate_property(_target, "global_position", null, p, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
@@ -669,11 +671,13 @@ func _lightTorches() -> void:
 					_lightEmit(northWest, current)
 
 func _dark() -> void:
+	var rect = _back.get_used_rect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
 			_setLight(x, y, _lightMin, false)
 
 func _darken() -> void:
+	var rect = _back.get_used_rect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
 			if _getLight(x, y) != _lightMin:
@@ -1056,6 +1060,7 @@ func isForeInvalid(x: int, y: int) -> bool:
 	return _fore.get_cell(x, y) == TileMap.INVALID_CELL
 
 func verifyCliff() -> void:
+	var rect = _back.get_used_rect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
 			if isCliff(x, y) and not isFloor(x, y - 1):
@@ -1185,10 +1190,11 @@ func isLit(x: int, y: int) -> bool:
 #region Edge
 
 func _drawEdge() -> void:
-	var minY := rect.position.y - 1
-	var maxY := rect.end.y
-	var minX := rect.position.x - 1
-	var maxX := rect.end.x
+	var rect = _back.get_used_rect()
+	var minY: int = rect.position.y - 1
+	var maxY: int = rect.end.y
+	var minX: int = rect.position.x - 1
+	var maxX: int = rect.end.x
 	for y in range(minY, maxY + 1):
 		for x in range(minX, maxX + 1):
 			if x == minX or x == maxX or y == minY or y == maxY:

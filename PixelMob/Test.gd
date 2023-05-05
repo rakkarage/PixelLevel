@@ -6,9 +6,9 @@ onready var _turn := $Panel/HBox/Turn
 onready var _mob := $Slime
 
 func _ready() -> void:
-	_attack.connect("pressed", self, "_attackPressed")
-	_walk.connect("pressed", self, "_walkPressed")
-	_turn.connect("pressed", self, "_turnPressed")
+	Utility.stfu(_attack.connect("pressed", self, "_attackPressed"))
+	Utility.stfu(_walk.connect("pressed", self, "_walkPressed"))
+	Utility.stfu(_turn.connect("pressed", self, "_turnPressed"))
 
 func _attackPressed() -> void:
 	_mob.attack()

@@ -21,17 +21,17 @@ const _updateMapDelay = 0.1
 func _ready() -> void:
 	_textureRect.texture = _imageTexture
 	_updateMap()
-	_level.connect("updateMap", self, "_limitedUpdateMap")
+	Utility.stfu(_level.connect("updateMap", self, "_limitedUpdateMap"))
 	_timerUpdateMap.connect("timeout", self, "_updateMap")
 	add_child(_timerUpdateMap)
-	_level.connect("generate", self, "_generate")
-	_level.connect("generateUp", self, "_levelUp")
-	_minus.connect("pressed", self, "_lightMinus")
-	_toggle.connect("pressed", self, "_lightToggle")
-	_plus.connect("pressed", self, "_lightPlus")
-	_up.connect("pressed", self, "_levelUp")
-	_regen.connect("pressed", self, "_levelRegen")
-	_down.connect("pressed", self, "_levelDown")
+	Utility.stfu(_level.connect("generate", self, "_generate"))
+	Utility.stfu(_level.connect("generateUp", self, "_levelUp"))
+	Utility.stfu(_minus.connect("pressed", self, "_lightMinus"))
+	Utility.stfu(_toggle.connect("pressed", self, "_lightToggle"))
+	Utility.stfu(_plus.connect("pressed", self, "_lightPlus"))
+	Utility.stfu(_up.connect("pressed", self, "_levelUp"))
+	Utility.stfu(_regen.connect("pressed", self, "_levelRegen"))
+	Utility.stfu(_down.connect("pressed", self, "_levelDown"))
 	_light.text = str(_level.lightRadius)
 
 func _input(event: InputEvent) -> void:
@@ -45,7 +45,7 @@ func _limitedUpdateMap() -> void:
 
 func _updateMap() -> void:
 	var at := _level.mobPosition()
-	var original := _level.rect.size
+	var original := _level._back.get_used_rect().size
 	var size := original
 	var offset := Vector2.ZERO
 	if size.x > _max.x:
