@@ -42,7 +42,7 @@ func _mirrorTouch(event: InputEvent) -> void:
 		_touch[1].start = _touch[0].start
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.scancode == KEY_ALT:
+	if event is InputEventKey and event.keycode == KEY_ALT:
 		_mirrorClear()
 		_alt = event.pressed
 		if _alt:
@@ -71,7 +71,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if count == 2:
 		_zoom(event)
 		_rotate(event)
-	update()
+	# update() TODO: !?
 
 func _zoom(event: InputEvent) -> void:
 	if event is InputEventScreenDrag:

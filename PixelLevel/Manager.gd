@@ -1,19 +1,19 @@
 extends Node
 
-onready var _level: Level = $Level/Viewport
-onready var _mask: AnimationPlayer = $Fore/Mask/AnimationPlayer
-onready var _textureRect: TextureRect = $Fore/MiniMap
-onready var _position: Label = $Fore/Panel/VBox/Mouse/Value
-onready var _depth: Label = $Fore/Panel/VBox/Level/Value
-onready var _up: Button = $Fore/Panel/VBox/HBoxLevel/Up
-onready var _regen: Button = $Fore/Panel/VBox/HBoxLevel/Regen
-onready var _down: Button = $Fore/Panel/VBox/HBoxLevel/Down
-onready var _light: Label = $Fore/Panel/VBox/Light/Value
-onready var _minus: Button = $Fore/Panel/VBox/HBoxLight/Minus
-onready var _toggle: Button = $Fore/Panel/VBox/HBoxLight/Toggle
-onready var _plus: Button = $Fore/Panel/VBox/HBoxLight/Plus
-onready var _imageTexture := ImageTexture.new()
-onready var _image := Image.new()
+@onready var _level: Level = $Level/SubViewport
+@onready var _mask: AnimationPlayer = $Fore/Mask/AnimationPlayer
+@onready var _textureRect: TextureRect = $Fore/MiniMap
+@onready var _position: Label = $Fore/Panel/VBox/Mouse/Value
+@onready var _depth: Label = $Fore/Panel/VBox/Level/Value
+@onready var _up: Button = $Fore/Panel/VBox/HBoxLevel/Up
+@onready var _regen: Button = $Fore/Panel/VBox/HBoxLevel/Regen
+@onready var _down: Button = $Fore/Panel/VBox/HBoxLevel/Down
+@onready var _light: Label = $Fore/Panel/VBox/Light/Value
+@onready var _minus: Button = $Fore/Panel/VBox/HBoxLight/Minus
+@onready var _toggle: Button = $Fore/Panel/VBox/HBoxLight/Toggle
+@onready var _plus: Button = $Fore/Panel/VBox/HBoxLight/Plus
+@onready var _imageTexture := ImageTexture.new()
+@onready var _image := Image.new()
 const _max := Vector2(64, 64)
 var _timerUpdateMap = Timer.new()
 const _updateMapDelay = 0.1
@@ -21,23 +21,23 @@ const _updateMapDelay = 0.1
 func _ready() -> void:
 	_textureRect.texture = _imageTexture
 	_updateMap()
-	Utility.stfu(_level.connect("updateMap", self, "_limitedUpdateMap"))
-	_timerUpdateMap.connect("timeout", self, "_updateMap")
+	Utility.stfu(_level.connect("updateMap", Callable(self, "_limitedUpdateMap")))
+	_timerUpdateMap.connect("timeout", Callable(self, "_updateMap"))
 	add_child(_timerUpdateMap)
-	Utility.stfu(_level.connect("generate", self, "_generate"))
-	Utility.stfu(_level.connect("generateUp", self, "_levelUp"))
-	Utility.stfu(_minus.connect("pressed", self, "_lightMinus"))
-	Utility.stfu(_toggle.connect("pressed", self, "_lightToggle"))
-	Utility.stfu(_plus.connect("pressed", self, "_lightPlus"))
-	Utility.stfu(_up.connect("pressed", self, "_levelUp"))
-	Utility.stfu(_regen.connect("pressed", self, "_levelRegen"))
-	Utility.stfu(_down.connect("pressed", self, "_levelDown"))
+	Utility.stfu(_level.connect("generate", Callable(self, "_generate")))
+	Utility.stfu(_level.connect("generateUp", Callable(self, "_levelUp")))
+	Utility.stfu(_minus.connect("pressed", Callable(self, "_lightMinus")))
+	Utility.stfu(_toggle.connect("pressed", Callable(self, "_lightToggle")))
+	Utility.stfu(_plus.connect("pressed", Callable(self, "_lightPlus")))
+	Utility.stfu(_up.connect("pressed", Callable(self, "_levelUp")))
+	Utility.stfu(_regen.connect("pressed", Callable(self, "_levelRegen")))
+	Utility.stfu(_down.connect("pressed", Callable(self, "_levelDown")))
 	_light.text = str(_level.lightRadius)
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
-		var x := str(stepify(event.position.x, 0.01))
-		var y := str(stepify(event.position.y, 0.01))
+		var x := str(snapped(event.position.x, 0.01))
+		var y := str(snapped(event.position.y, 0.01))
 		_position.text = "({0}, {1})".format([x, y])
 
 func _limitedUpdateMap() -> void:
@@ -59,18 +59,18 @@ func _updateMap() -> void:
 		if offset.y < 0: offset.y = 0
 		if offset.y > original.y - size.y + 1: offset.y = original.y - size.y + 1
 	_image.create(int(size.x), int(size.y), false, Image.FORMAT_RGBA8)
-	_image.lock()
+	false # _image.lock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
 	for y in range(size.y):
 		for x in range(size.x):
 			var actualX := int(x + offset.x)
 			var actualY := int(y + offset.y)
 			_image.set_pixel(x, y, _level.getMapColor(actualX, actualY))
-	_image.unlock()
+	false # _image.unlock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
 	_image.expand_x2_hq2x()
 	_image.expand_x2_hq2x()
 	_imageTexture.create_from_image(_image)
 
-onready var _g := {
+@onready var _g := {
 	# GenerateBasic.new(_level): 1,
 	# GenerateRoom.new(_level): 1,
 	GenerateDungeon.new(_level): 1,
@@ -83,9 +83,9 @@ onready var _g := {
 var _selected: Generate
 
 func _generate(delta: int = 1) -> void:
-	yield(get_tree(), "idle_frame")
+	await get_tree().idle_frame
 	_mask.play("Mask")
-	yield(_mask, "animation_finished")
+	await _mask.animation_finished
 	if delta != 0 or _selected == null:
 		_selected = Random.priority(_g)
 	_selected.generate(delta)

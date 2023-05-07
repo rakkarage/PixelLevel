@@ -9,11 +9,11 @@
 [ext_resource path="res://PixelMob/Animation/SlimeSquare/Idle1.tres" type="Animation" id=7]
 [ext_resource path="res://PixelMob/Animation/SlimeSquare/Idle2.tres" type="Animation" id=8]
 [ext_resource path="res://PixelMob/Animation/SlimeSquare/Idle0.tres" type="Animation" id=9]
-[ext_resource path="res://PixelMob/Sprite/SlimeSquareA.png" type="Texture" id=10]
+[ext_resource path="res://PixelMob/Sprite/SlimeSquareA.png" type="Texture2D" id=10]
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id=1]
 
-[node name="SlimeSquare" type="Sprite"]
+[node name="SlimeSquare" type="Sprite2D"]
 texture = ExtResource( 10 )
 hframes = 5
 script = ExtResource( 1 )

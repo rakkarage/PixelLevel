@@ -31,8 +31,8 @@ func _init(mob: Mob, map: TileMap, d: int) -> void:
 
 func execute() -> void:
 	_old = _mob.global_position
-	if _rect.has_point(_map.world_to_map(_old) + delta):
-		_mob.global_position += _map.map_to_world(delta)
+	if _rect.has_point(_map.local_to_map(_old) + delta):
+		_mob.global_position += _map.map_to_local(delta)
 	else:
 		Audio.error()
 		valid = false

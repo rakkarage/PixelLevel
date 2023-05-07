@@ -1,7 +1,6 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://cfvthl6ipvclo"]
 
-[ext_resource path="res://PixelLevel/Animation/Path.tres" type="SpriteFrames" id=1]
+[ext_resource type="SpriteFrames" uid="uid://dv4v3vh1i8ajv" path="res://PixelLevel/Animation/Path.tres" id="1"]
 
-[node name="Path" type="AnimatedSprite"]
-frames = ExtResource( 1 )
-playing = true
+[node name="Path" type="AnimatedSprite2D"]
+sprite_frames = ExtResource("1")

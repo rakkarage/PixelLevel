@@ -1,7 +1,7 @@
 shader_type canvas_item;
-render_mode unshaded, blend_add;
+render_mode unshaded;
 
-uniform sampler2D frames: hint_albedo;
+uniform sampler2D frames: source_color;
 uniform float count;
 uniform float duration;
 uniform float width;

@@ -2,12 +2,13 @@
 
 importer="image"
 type="Image"
-path="res://.import/ABack.png-7792dafb634fda6fea3b4203f076b83f.image"
+uid="uid://b1yg7wibqysc4"
+path="res://.godot/imported/ABack.png-7792dafb634fda6fea3b4203f076b83f.image"
 
 [deps]
 
 source_file="res://PixelLevel/Sprite/Template/ABack.png"
-dest_files=[ "res://.import/ABack.png-7792dafb634fda6fea3b4203f076b83f.image" ]
+dest_files=["res://.godot/imported/ABack.png-7792dafb634fda6fea3b4203f076b83f.image"]
 
 [params]
 

@@ -1,13 +1,13 @@
 extends TestLevelBase
 class_name TestLevel
 
-onready var _undoButton: Button = $Panel/VBox/Buttons/Undo
-onready var _redoButton: Button = $Panel/VBox/Buttons/Redo
-onready var _list: ItemList = $Panel/VBox/Scroll/ItemList
-onready var _path: Node2D = $Level/Viewport/Path
-onready var _mob: Sprite = $Level/Viewport/Mob
-onready var _mobs: Node2D = $Level/Viewport/Mobs
-onready var _target: Node2D = $Level/Viewport/Target
+@onready var _undoButton: Button = $Panel/VBox/Buttons/Undo
+@onready var _redoButton: Button = $Panel/VBox/Buttons/Redo
+@onready var _list: ItemList = $Panel/VBox/Scroll/ItemList
+@onready var _path: Node2D = $Level/SubViewport/Path
+@onready var _mob: Sprite2D = $Level/SubViewport/Mob
+@onready var _mobs: Node2D = $Level/SubViewport/Mobs
+@onready var _target: Node2D = $Level/SubViewport/Target
 var _startAt := Vector2(4, 4)
 var _time := 0.0
 const _turnTime := 0.22
@@ -15,11 +15,11 @@ const _turnTime := 0.22
 var _commands := CommandQueue.new()
 
 func _ready() -> void:
-	Utility.stfu(_undoButton.connect("pressed", self, "_undoPressed"))
-	Utility.stfu(_redoButton.connect("pressed", self, "_redoPressed"))
-	Utility.stfu(_commands.connect("changed", self, "_commandsChanged"))
+	Utility.stfu(_undoButton.connect("pressed", Callable(self, "_undoPressed")))
+	Utility.stfu(_redoButton.connect("pressed", Callable(self, "_redoPressed")))
+	Utility.stfu(_commands.connect("changed", Callable(self, "_commandsChanged")))
 	_mob.global_position = _world(_startAt) + _back.cell_size / 2.0
-	_target.modulate = Color.transparent
+	_target.modulate = Color.TRANSPARENT
 	_addMobs()
 	_cameraToMob()
 
@@ -82,9 +82,9 @@ func _addMobs() -> void:
 	if list.size():
 		for i in _mobCount:
 			var r = Random.next(list.size() - 1) + 1
-			var mob : Node2D = load(list[r]).instance()
+			var mob : Node2D = load(list[r]).instantiate()
 			var x := Random.next(int(_back.get_used_rect().size.x))
 			var y := Random.next(int(_back.get_used_rect().size.y))
-			mob.position = _back.map_to_world(Vector2(x, y)) + _back.cell_size / 2
+			mob.position = _back.map_to_local(Vector2(x, y)) + _back.cell_size / 2
 			_mobs.add_child(mob)
 

@@ -1,35 +1,35 @@
 [remap]
 
 importer="texture"
-type="StreamTexture"
-path="res://.import/Theme.png-d4164c957010fda8a0dee30b774c6946.stex"
+type="CompressedTexture2D"
+uid="uid://ba2mgwj3s623m"
+path.s3tc="res://.godot/imported/Theme.png-d4164c957010fda8a0dee30b774c6946.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://PixelLevel/Sprite/Tile/Theme.png"
-dest_files=[ "res://.import/Theme.png-d4164c957010fda8a0dee30b774c6946.stex" ]
+dest_files=["res://.godot/imported/Theme.png-d4164c957010fda8a0dee30b774c6946.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
+compress/high_quality=false
 compress/lossy_quality=0.7
-compress/hdr_mode=0
-compress/bptc_ldr=0
+compress/hdr_compression=1
 compress/normal_map=0
-flags/repeat=0
-flags/filter=false
-flags/mipmaps=false
-flags/anisotropic=false
-flags/srgb=2
+compress/channel_pack=0
+mipmaps/generate=true
+mipmaps/limit=-1
+roughness/mode=0
+roughness/src_normal=""
 process/fix_alpha_border=true
 process/premult_alpha=false
-process/HDR_as_SRGB=false
-process/invert_color=false
 process/normal_map_invert_y=false
-stream=false
-size_limit=0
-detect_3d=false
-svg/scale=1.0
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=0
+detect_3d/compress_to=0

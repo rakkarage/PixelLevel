@@ -1,11 +1,11 @@
 extends Node
 class_name TestLevelBase
 
-onready var _viewport: Viewport = $Level/Viewport
-onready var _camera: Camera2D = $Level/Viewport/Camera
-onready var _back: TileMap = $Level/Viewport/Back
+@onready var _viewport: SubViewport = $Level/SubViewport
+@onready var _camera: Camera2D = $Level/SubViewport/Camera3D
+@onready var _back: TileMap = $Level/SubViewport/Back
 var _oldSize := Vector2.ZERO
-var _tweenCamera := Tween.new()
+var _tweenCamera = Tween
 var _dragLeft := false
 var _capture := false
 const _tweenTime := 0.333
@@ -19,14 +19,15 @@ const _zoomPinchOut := 1.02
 func _ready() -> void:
 	_camera.zoom = Vector2(0.75, 0.75)
 	_oldSize = _viewport.size
+	_tweenCamera = get_tree().create_tween()
 	add_child(_tweenCamera)
 	_cameraTo(_center())
-	Utility.stfu(_viewport.connect("size_changed", self, "_onResize"))
-	Utility.stfu(Gesture.connect("onZoom", self, "_zoomPinch"))
+	Utility.stfu(_viewport.connect("size_changed", Callable(self, "_onResize")))
+	Utility.stfu(Gesture.connect("onZoom", Callable(self, "_zoomPinch")))
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
-		if event.button_index == BUTTON_LEFT:
+		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
 				_dragLeft = true
 				_capture = false
@@ -34,10 +35,10 @@ func _unhandled_input(event: InputEvent) -> void:
 				if _capture:
 					_cameraUpdate()
 				_dragLeft = false
-		elif event.button_index == BUTTON_WHEEL_UP:
+		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			_zoomIn(event.global_position)
 			_cameraUpdate()
-		elif event.button_index == BUTTON_WHEEL_DOWN:
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			_zoomOut(event.global_position)
 			_cameraUpdate()
 	elif event is InputEventMouseMotion:
@@ -55,16 +56,17 @@ func insideMap(p: Vector2) -> bool:
 	return _back.get_used_rect().has_point(p)
 
 func _world(tile: Vector2) -> Vector2:
-	return _back.map_to_world(tile)
+	return _back.map_to_local(tile)
 
 func _worldSize() -> Vector2:
-	return _viewport.size * _camera.zoom
+	# return _viewport.size * _camera.zoom
+	return Vector2.ZERO
 
 func _worldBounds() -> Rect2:
 	return Rect2(Vector2.ZERO, _worldSize())
 
 func _map(position: Vector2) -> Vector2:
-	return _back.world_to_map(position)
+	return _back.local_to_map(position)
 
 func _mapSize() -> Vector2:
 	return _back.get_used_rect().size * _back.cell_size
@@ -130,6 +132,6 @@ func _normalize() -> Vector2:
 	return (_camera.global_position - _mapSize() / 2.0) / _oldSize
 
 func _onResize() -> void:
-	_camera.global_position = _normalize() * _viewport.size + _mapSize() / 2.0
-	_oldSize = _viewport.size
+	# _camera.global_position = _normalize() * _viewport.size + _mapSize() / 2.0
+	# _oldSize = _viewport.size
 	_cameraUpdate()

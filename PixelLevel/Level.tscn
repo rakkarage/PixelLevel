@@ -1,274 +1,228 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=3 uid="uid://j68vmebkp224"]
 
-[ext_resource path="res://PixelLevel/Level.tres" type="TileSet" id=1]
-[ext_resource path="res://PixelMob/Mob/Slime.tscn" type="PackedScene" id=2]
-[ext_resource path="res://PixelLevel/Target.tscn" type="PackedScene" id=3]
-[ext_resource path="res://PixelLevel/Level.gd" type="Script" id=4]
-[ext_resource path="res://PixelLevel/Back.tscn" type="PackedScene" id=5]
-[ext_resource path="res://PixelLevel/Manager.gd" type="Script" id=6]
-[ext_resource path="res://PixelLevel/Animation/MaskAnimation.tres" type="Animation" id=7]
-[ext_resource path="res://PixelLevel/Animation/MaskMaterial.tres" type="Material" id=8]
+[ext_resource type="TileSet" path="res://PixelLevel/Level.tres" id="1"]
+[ext_resource type="PackedScene" path="res://PixelMob/Mob/Slime.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://PixelLevel/Target.tscn" id="3"]
+[ext_resource type="Script" path="res://PixelLevel/Level.gd" id="4"]
+[ext_resource type="PackedScene" path="res://PixelLevel/Back.tscn" id="5"]
+[ext_resource type="Script" path="res://PixelLevel/Manager.gd" id="6"]
+[ext_resource type="Animation" path="res://PixelLevel/Animation/MaskAnimation.tres" id="7"]
+[ext_resource type="Material" path="res://PixelLevel/Animation/MaskMaterial.tres" id="8"]
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_k1n3q"]
+_data = {
+"Mask": ExtResource("7")
+}
 
 [node name="Level" type="Node"]
-script = ExtResource( 6 )
+script = ExtResource("6")
 
-[node name="Back" parent="." instance=ExtResource( 5 )]
+[node name="Back" parent="." instance=ExtResource("5")]
+layout_mode = 3
+anchors_preset = 15
 
-[node name="Level" type="ViewportContainer" parent="."]
+[node name="Level" type="SubViewportContainer" parent="."]
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 stretch = true
 
-[node name="Viewport" type="Viewport" parent="Level"]
-size = Vector2( 1024, 600 )
+[node name="SubViewport" type="SubViewport" parent="Level"]
 transparent_bg = true
 handle_input_locally = false
-render_target_update_mode = 3
-script = ExtResource( 4 )
+size = Vector2i(1152, 648)
+render_target_update_mode = 4
+script = ExtResource("4")
 
-[node name="Camera" type="Camera2D" parent="Level/Viewport"]
+[node name="Camera3D" type="Camera2D" parent="Level/SubViewport"]
 anchor_mode = 0
-current = true
 
-[node name="Back" type="TileMap" parent="Level/Viewport"]
-tile_set = ExtResource( 1 )
-cell_size = Vector2( 16, 16 )
-cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
-format = 1
-tile_data = PoolIntArray( 0, 81, 1, 1, 81, 1, 2, 81, 1, 3, 81, 2, 4, 81, 0, 5, 81, 4, 6, 81, 1, 7, 81, 2, 8, 81, 0, 9, 81, 0, 10, 81, 0, 11, 81, 3, 12, 81, 0, 13, 81, 1, 14, 81, 1, 65536, 81, 2, 65537, 81, 4, 65538, 81, 4, 65539, 81, 2, 65540, 81, 0, 65541, 81, 3, 65542, 81, 2, 65543, 81, 0, 65544, 81, 2, 65545, 81, 3, 65546, 81, 0, 65547, 81, 0, 65548, 81, 2, 65549, 81, 0, 65550, 81, 2, 131072, 81, 4, 131073, 81, 3, 131074, 81, 1, 131075, 81, 0, 131076, 81, 0, 131077, 81, 1, 131078, 81, 0, 131079, 81, 3, 131080, 81, 3, 131081, 81, 4, 131082, 81, 0, 131083, 81, 2, 131084, 81, 3, 131085, 81, 3, 131086, 81, 2, 196608, 81, 2, 196609, 81, 3, 196610, 81, 3, 196611, 81, 0, 196612, 81, 3, 196613, 81, 0, 196614, 81, 0, 196615, 81, 0, 196616, 81, 3, 196617, 81, 3, 196618, 81, 1, 196619, 81, 1, 196620, 81, 1, 196621, 81, 2, 196622, 81, 1, 262144, 81, 0, 262145, 81, 1, 262146, 81, 2, 262147, 81, 0, 262148, 81, 3, 262149, 81, 3, 262150, 81, 0, 262151, 81, 2, 262152, 81, 0, 262153, 81, 0, 262154, 81, 4, 262155, 81, 0, 262156, 81, 4, 262157, 81, 1, 262158, 81, 2, 327680, 81, 1, 327681, 81, 4, 327682, 81, 3, 327683, 81, 3, 327684, 81, 3, 327685, 81, 3, 327686, 81, 0, 327687, 81, 4, 327688, 81, 4, 327689, 81, 4, 327690, 81, 0, 327691, 81, 3, 327692, 81, 0, 327693, 81, 3, 327694, 81, 0, 393216, 81, 0, 393217, 81, 4, 393218, 81, 4, 393219, 81, 1, 393220, 81, 3, 393221, 81, 2, 393222, 81, 4, 393223, 81, 2, 393224, 81, 1, 393225, 81, 2, 393226, 81, 4, 393227, 81, 1, 393228, 81, 0, 393229, 81, 3, 393230, 81, 2, 458752, 81, 2, 458753, 81, 3, 458754, 81, 2, 458755, 81, 0, 458756, 81, 3, 458757, 81, 2, 458758, 81, 1, 458759, 81, 3, 458760, 81, 3, 458761, 81, 1, 458762, 81, 2, 458763, 81, 2, 458764, 81, 1, 458765, 81, 0, 458766, 81, 4, 524288, 81, 4, 524289, 81, 3, 524290, 81, 2, 524291, 81, 3, 524292, 81, 4, 524293, 81, 1, 524294, 81, 2, 524295, 81, 4, 524296, 81, 3, 524297, 81, 0, 524298, 81, 0, 524299, 81, 0, 524300, 81, 0, 524301, 81, 2, 524302, 81, 4, 589824, 81, 0, 589825, 81, 3, 589826, 81, 1, 589827, 81, 1, 589828, 81, 0, 589829, 81, 2, 589830, 81, 3, 589831, 81, 1, 589832, 81, 1, 589833, 81, 1, 589834, 81, 2, 589835, 81, 1, 589836, 81, 0, 589837, 81, 0, 589838, 81, 4, 655360, 81, 4, 655361, 81, 0, 655362, 81, 1, 655363, 81, 3, 655364, 81, 2, 655365, 81, 3, 655366, 81, 4, 655367, 81, 2, 655368, 81, 3, 655369, 81, 2, 655370, 81, 1, 655371, 81, 3, 655372, 81, 4, 655373, 81, 1, 655374, 81, 4 )
+[node name="Back" type="TileMap" parent="Level/SubViewport"]
+tile_set = ExtResource("1")
+format = 2
+layer_0/tile_data = PackedInt32Array(0, 65617, 0, 1, 65617, 0, 2, 65617, 0, 3, 131153, 0, 4, 81, 0, 5, 262225, 0, 6, 65617, 0, 7, 131153, 0, 8, 81, 0, 9, 81, 0, 10, 81, 0, 11, 196689, 0, 12, 81, 0, 13, 65617, 0, 14, 65617, 0, 65536, 131153, 0, 65537, 262225, 0, 65538, 262225, 0, 65539, 131153, 0, 65540, 81, 0, 65541, 196689, 0, 65542, 131153, 0, 65543, 81, 0, 65544, 131153, 0, 65545, 196689, 0, 65546, 81, 0, 65547, 81, 0, 65548, 131153, 0, 65549, 81, 0, 65550, 131153, 0, 131072, 262225, 0, 131073, 196689, 0, 131074, 65617, 0, 131075, 81, 0, 131076, 81, 0, 131077, 65617, 0, 131078, 81, 0, 131079, 196689, 0, 131080, 196689, 0, 131081, 262225, 0, 131082, 81, 0, 131083, 131153, 0, 131084, 196689, 0, 131085, 196689, 0, 131086, 131153, 0, 196608, 131153, 0, 196609, 196689, 0, 196610, 196689, 0, 196611, 81, 0, 196612, 196689, 0, 196613, 81, 0, 196614, 81, 0, 196615, 81, 0, 196616, 196689, 0, 196617, 196689, 0, 196618, 65617, 0, 196619, 65617, 0, 196620, 65617, 0, 196621, 131153, 0, 196622, 65617, 0, 262144, 81, 0, 262145, 65617, 0, 262146, 131153, 0, 262147, 81, 0, 262148, 196689, 0, 262149, 196689, 0, 262150, 81, 0, 262151, 131153, 0, 262152, 81, 0, 262153, 81, 0, 262154, 262225, 0, 262155, 81, 0, 262156, 262225, 0, 262157, 65617, 0, 262158, 131153, 0, 327680, 65617, 0, 327681, 262225, 0, 327682, 196689, 0, 327683, 196689, 0, 327684, 196689, 0, 327685, 196689, 0, 327686, 81, 0, 327687, 262225, 0, 327688, 262225, 0, 327689, 262225, 0, 327690, 81, 0, 327691, 196689, 0, 327692, 81, 0, 327693, 196689, 0, 327694, 81, 0, 393216, 81, 0, 393217, 262225, 0, 393218, 262225, 0, 393219, 65617, 0, 393220, 196689, 0, 393221, 131153, 0, 393222, 262225, 0, 393223, 131153, 0, 393224, 65617, 0, 393225, 131153, 0, 393226, 262225, 0, 393227, 65617, 0, 393228, 81, 0, 393229, 196689, 0, 393230, 131153, 0, 458752, 131153, 0, 458753, 196689, 0, 458754, 131153, 0, 458755, 81, 0, 458756, 196689, 0, 458757, 131153, 0, 458758, 65617, 0, 458759, 196689, 0, 458760, 196689, 0, 458761, 65617, 0, 458762, 131153, 0, 458763, 131153, 0, 458764, 65617, 0, 458765, 81, 0, 458766, 262225, 0, 524288, 262225, 0, 524289, 196689, 0, 524290, 131153, 0, 524291, 196689, 0, 524292, 262225, 0, 524293, 65617, 0, 524294, 131153, 0, 524295, 262225, 0, 524296, 196689, 0, 524297, 81, 0, 524298, 81, 0, 524299, 81, 0, 524300, 81, 0, 524301, 131153, 0, 524302, 262225, 0, 589824, 81, 0, 589825, 196689, 0, 589826, 65617, 0, 589827, 65617, 0, 589828, 81, 0, 589829, 131153, 0, 589830, 196689, 0, 589831, 65617, 0, 589832, 65617, 0, 589833, 65617, 0, 589834, 131153, 0, 589835, 65617, 0, 589836, 81, 0, 589837, 81, 0, 589838, 262225, 0, 655360, 262225, 0, 655361, 81, 0, 655362, 65617, 0, 655363, 196689, 0, 655364, 131153, 0, 655365, 196689, 0, 655366, 262225, 0, 655367, 131153, 0, 655368, 196689, 0, 655369, 131153, 0, 655370, 65617, 0, 655371, 196689, 0, 655372, 262225, 0, 655373, 65617, 0, 655374, 262225, 0)
 
-[node name="Fore" type="TileMap" parent="Level/Viewport"]
-tile_set = ExtResource( 1 )
-cell_size = Vector2( 16, 16 )
-cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
-format = 1
-tile_data = PoolIntArray( 65536, 68, 5, 65537, 68, 4, 65538, 68, 4, 65539, 68, 0, 65540, 68, 2, 65541, 68, 2, 65542, 68, 5, 65543, 68, 0, 65544, 68, 4, 65545, 68, 0, 65546, 68, 3, 65547, 68, 0, 65548, 68, 5, 65550, 68, 0, 196612, 2, 4, 196615, 6, 0, 196618, 3, 2, 327686, 536870916, 7, 327687, 536870916, 3, 327688, 536870916, 5, 458756, 3, 4, 458759, 9, 0, 458762, 2, 1, 589824, 68, 1, 589825, 33, 0, 589826, 68, 4, 589827, 68, 3, 589828, 68, 5, 589829, 68, 5, 589830, 68, 4, 589831, 68, 2, 589832, 68, 3, 589833, 68, 0, 589834, 68, 0, 589835, 68, 1, 589836, 68, 5, 589837, 68, 2, 589838, 68, 4, 655374, 73, 0 )
+[node name="Fore" type="TileMap" parent="Level/SubViewport"]
+tile_set = ExtResource("1")
+format = 2
+layer_0/tile_data = PackedInt32Array(65536, 327748, 0, 65537, 262212, 0, 65538, 262212, 0, 65539, 68, 0, 65540, 131140, 0, 65541, 131140, 0, 65542, 327748, 0, 65543, 68, 0, 65544, 262212, 0, 65545, 68, 0, 65546, 196676, 0, 65547, 68, 0, 65548, 327748, 0, 65550, 68, 0, 196612, 262146, 0, 196615, 6, 0, 196618, 131075, 0, 327686, 458756, 65536, 327687, 196612, 65536, 327688, 327684, 65536, 458756, 262147, 0, 458759, 9, 0, 458762, 65538, 0, 589824, 65604, 0, 589825, 33, 0, 589826, 262212, 0, 589827, 196676, 0, 589828, 327748, 0, 589829, 327748, 0, 589830, 262212, 0, 589831, 131140, 0, 589832, 196676, 0, 589833, 68, 0, 589834, 68, 0, 589835, 65604, 0, 589836, 327748, 0, 589837, 131140, 0, 589838, 262212, 0, 655374, 73, 0)
 
-[node name="Flower" type="TileMap" parent="Level/Viewport"]
-tile_set = ExtResource( 1 )
-cell_size = Vector2( 16, 16 )
-cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
-format = 1
+[node name="Flower" type="TileMap" parent="Level/SubViewport"]
+tile_set = ExtResource("1")
+format = 2
 
-[node name="SplitBack" type="TileMap" parent="Level/Viewport"]
-tile_set = ExtResource( 1 )
-cell_size = Vector2( 16, 16 )
-cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
-format = 1
+[node name="SplitBack" type="TileMap" parent="Level/SubViewport"]
+tile_set = ExtResource("1")
+format = 2
 
-[node name="ItemBack" type="TileMap" parent="Level/Viewport"]
-tile_set = ExtResource( 1 )
-cell_size = Vector2( 16, 16 )
-cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
-format = 1
+[node name="ItemBack" type="TileMap" parent="Level/SubViewport"]
+tile_set = ExtResource("1")
+format = 2
 
-[node name="WaterBack" type="TileMap" parent="Level/Viewport"]
-tile_set = ExtResource( 1 )
-cell_size = Vector2( 16, 16 )
-cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
-format = 1
+[node name="WaterBack" type="TileMap" parent="Level/SubViewport"]
+tile_set = ExtResource("1")
+format = 2
 
-[node name="Tree" type="TileMap" parent="Level/Viewport"]
-tile_set = ExtResource( 1 )
-cell_size = Vector2( 16, 16 )
-cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
-format = 1
+[node name="Tree" type="TileMap" parent="Level/SubViewport"]
+tile_set = ExtResource("1")
+format = 2
 
-[node name="Path" type="Node2D" parent="Level/Viewport"]
-position = Vector2( 8, 8 )
+[node name="Path" type="Node2D" parent="Level/SubViewport"]
+position = Vector2(8, 8)
 
-[node name="Mob" parent="Level/Viewport" instance=ExtResource( 2 )]
+[node name="Mob" parent="Level/SubViewport" instance=ExtResource("2")]
 
-[node name="SplitFore" type="TileMap" parent="Level/Viewport"]
-tile_set = ExtResource( 1 )
-cell_size = Vector2( 16, 16 )
-cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
-format = 1
+[node name="SplitFore" type="TileMap" parent="Level/SubViewport"]
+tile_set = ExtResource("1")
+format = 2
 
-[node name="ItemFore" type="TileMap" parent="Level/Viewport"]
-tile_set = ExtResource( 1 )
-cell_size = Vector2( 16, 16 )
-cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
-format = 1
+[node name="ItemFore" type="TileMap" parent="Level/SubViewport"]
+tile_set = ExtResource("1")
+format = 2
 
-[node name="WaterFore" type="TileMap" parent="Level/Viewport"]
-tile_set = ExtResource( 1 )
-cell_size = Vector2( 16, 16 )
-cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
-format = 1
+[node name="WaterFore" type="TileMap" parent="Level/SubViewport"]
+tile_set = ExtResource("1")
+format = 2
 
-[node name="Top" type="TileMap" parent="Level/Viewport"]
-tile_set = ExtResource( 1 )
-cell_size = Vector2( 16, 16 )
-cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
-format = 1
+[node name="Top" type="TileMap" parent="Level/SubViewport"]
+tile_set = ExtResource("1")
+format = 2
 
-[node name="Light" type="TileMap" parent="Level/Viewport"]
-tile_set = ExtResource( 1 )
-cell_size = Vector2( 16, 16 )
-cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
-format = 1
+[node name="Light" type="TileMap" parent="Level/SubViewport"]
+tile_set = ExtResource("1")
+format = 2
 
-[node name="Edge" type="TileMap" parent="Level/Viewport"]
-tile_set = ExtResource( 1 )
-cell_size = Vector2( 16, 16 )
-cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
-format = 1
+[node name="Edge" type="TileMap" parent="Level/SubViewport"]
+tile_set = ExtResource("1")
+format = 2
 
-[node name="Target" parent="Level/Viewport" instance=ExtResource( 3 )]
+[node name="Target" parent="Level/SubViewport" instance=ExtResource("3")]
 
 [node name="Fore" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
 [node name="MiniMap" type="TextureRect" parent="Fore"]
-margin_left = 16.0
-margin_top = 16.0
-margin_right = 80.0
-margin_bottom = 80.0
-rect_min_size = Vector2( 64, 64 )
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 80.0
+offset_bottom = 80.0
 mouse_filter = 2
 
 [node name="Mask" type="ColorRect" parent="Fore"]
-material = ExtResource( 8 )
+material = ExtResource("8")
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Fore/Mask"]
-anims/Mask = ExtResource( 7 )
+libraries = {
+"": SubResource("AnimationLibrary_k1n3q")
+}
 
 [node name="Panel" type="PanelContainer" parent="Fore"]
-modulate = Color( 1, 1, 1, 0.74902 )
+modulate = Color(1, 1, 1, 0.74902)
+layout_mode = 0
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = -165.0
-margin_top = -112.0
+offset_left = -165.0
+offset_top = -112.0
 
 [node name="VBox" type="VBoxContainer" parent="Fore/Panel"]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 158.0
-margin_bottom = 105.0
+layout_mode = 2
 
 [node name="Mouse" type="HBoxContainer" parent="Fore/Panel/VBox"]
-margin_right = 151.0
-margin_bottom = 14.0
+layout_mode = 2
 
 [node name="Label" type="Label" parent="Fore/Panel/VBox/Mouse"]
-margin_right = 73.0
-margin_bottom = 14.0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Mouse:"
-align = 1
 
 [node name="Value" type="Label" parent="Fore/Panel/VBox/Mouse"]
-margin_left = 77.0
-margin_right = 151.0
-margin_bottom = 14.0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "(0, 0)"
 
 [node name="Level" type="HBoxContainer" parent="Fore/Panel/VBox"]
-margin_top = 18.0
-margin_right = 151.0
-margin_bottom = 32.0
+layout_mode = 2
 
 [node name="Label" type="Label" parent="Fore/Panel/VBox/Level"]
-margin_right = 73.0
-margin_bottom = 14.0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Level:"
-align = 1
 
 [node name="Value" type="Label" parent="Fore/Panel/VBox/Level"]
-margin_left = 77.0
-margin_right = 151.0
-margin_bottom = 14.0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "0"
 
 [node name="HBoxLevel" type="HBoxContainer" parent="Fore/Panel/VBox"]
-margin_top = 36.0
-margin_right = 151.0
-margin_bottom = 56.0
+layout_mode = 2
 
 [node name="Down" type="Button" parent="Fore/Panel/VBox/HBoxLevel"]
-margin_right = 48.0
-margin_bottom = 20.0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Down"
 
 [node name="Regen" type="Button" parent="Fore/Panel/VBox/HBoxLevel"]
-margin_left = 52.0
-margin_right = 103.0
-margin_bottom = 20.0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Regen"
 
 [node name="Up" type="Button" parent="Fore/Panel/VBox/HBoxLevel"]
-margin_left = 107.0
-margin_right = 151.0
-margin_bottom = 20.0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Up"
 
 [node name="Light" type="HBoxContainer" parent="Fore/Panel/VBox"]
-margin_top = 60.0
-margin_right = 151.0
-margin_bottom = 74.0
+layout_mode = 2
 
 [node name="Label" type="Label" parent="Fore/Panel/VBox/Light"]
-margin_right = 73.0
-margin_bottom = 14.0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Light:"
-align = 1
 
 [node name="Value" type="Label" parent="Fore/Panel/VBox/Light"]
-margin_left = 77.0
-margin_right = 151.0
-margin_bottom = 14.0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "0"
 
 [node name="HBoxLight" type="HBoxContainer" parent="Fore/Panel/VBox"]
-margin_top = 78.0
-margin_right = 151.0
-margin_bottom = 98.0
+layout_mode = 2
 
 [node name="Minus" type="Button" parent="Fore/Panel/VBox/HBoxLight"]
-margin_right = 51.0
-margin_bottom = 20.0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Minus"
 
 [node name="Toggle" type="Button" parent="Fore/Panel/VBox/HBoxLight"]
-margin_left = 55.0
-margin_right = 108.0
-margin_bottom = 20.0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Toggle"
 
 [node name="Plus" type="Button" parent="Fore/Panel/VBox/HBoxLight"]
-margin_left = 112.0
-margin_right = 151.0
-margin_bottom = 20.0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Plus"

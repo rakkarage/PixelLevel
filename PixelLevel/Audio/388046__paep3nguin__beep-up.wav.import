@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/388046__paep3nguin__beep-up.wav-b0afd9d9a62c9a3973248eb84db4c76d.sample"
+type="AudioStreamWAV"
+uid="uid://bf5rro27gubcw"
+path="res://.godot/imported/388046__paep3nguin__beep-up.wav-b0afd9d9a62c9a3973248eb84db4c76d.sample"
 
 [deps]
 
 source_file="res://PixelLevel/Audio/388046__paep3nguin__beep-up.wav"
-dest_files=[ "res://.import/388046__paep3nguin__beep-up.wav-b0afd9d9a62c9a3973248eb84db4c76d.sample" ]
+dest_files=["res://.godot/imported/388046__paep3nguin__beep-up.wav-b0afd9d9a62c9a3973248eb84db4c76d.sample"]
 
 [params]
 

@@ -5,7 +5,7 @@
 [ext_resource path="res://PixelMob/Audio/167075__drminky__slime-land.tres" type="AudioStream" id=3]
 [ext_resource path="res://PixelMob/Audio/Bite.tres" type="AudioStream" id=4]
 [ext_resource path="res://PixelMob/Animation/SlimeSquare/Walk.tres" type="Animation" id=5]
-[ext_resource path="res://PixelMob/Sprite/SlimeSquareSmallA.png" type="Texture" id=6]
+[ext_resource path="res://PixelMob/Sprite/SlimeSquareSmallA.png" type="Texture2D" id=6]
 [ext_resource path="res://PixelMob/Animation/SlimeSquare/Attack.tres" type="Animation" id=7]
 [ext_resource path="res://PixelMob/Animation/SlimeSquare/Idle1.tres" type="Animation" id=8]
 [ext_resource path="res://PixelMob/Animation/SlimeSquare/Idle2.tres" type="Animation" id=9]
@@ -13,7 +13,7 @@
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id=1]
 
-[node name="SlimeSquareSmall" type="Sprite"]
+[node name="SlimeSquareSmall" type="Sprite2D"]
 texture = ExtResource( 6 )
 hframes = 5
 script = ExtResource( 1 )

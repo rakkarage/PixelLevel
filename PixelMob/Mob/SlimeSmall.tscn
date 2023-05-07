@@ -8,12 +8,12 @@
 [ext_resource path="res://PixelMob/Animation/SlimeSmall/Idle0.tres" type="Animation" id=6]
 [ext_resource path="res://PixelMob/Animation/SlimeSmall/Walk.tres" type="Animation" id=7]
 [ext_resource path="res://PixelMob/Animation/SlimeSmall/Attack.tres" type="Animation" id=8]
-[ext_resource path="res://PixelMob/Sprite/SlimeSmallA.png" type="Texture" id=9]
+[ext_resource path="res://PixelMob/Sprite/SlimeSmallA.png" type="Texture2D" id=9]
 [ext_resource path="res://PixelMob/Animation/SlimeSmall/Idle2.tres" type="Animation" id=10]
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id=1]
 
-[node name="SlimeSmall" type="Sprite"]
+[node name="SlimeSmall" type="Sprite2D"]
 texture = ExtResource( 9 )
 hframes = 15
 script = ExtResource( 1 )

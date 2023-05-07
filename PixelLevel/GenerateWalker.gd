@@ -12,10 +12,11 @@ var _direction := Vector2.UP
 var _steps := []
 var _stepCount := 0
 
-func _init(level: Level).(level) -> void: pass
+func _init(level: Level) -> void:
+	super(level)
 
 func generate(delta: int = 1) -> void:
-	.generate(delta)
+	super.generate(delta)
 	_fill(true, false)
 	_drawWalk()
 	_stairs()

@@ -1,29 +1,29 @@
-extends Viewport
+extends SubViewport
 class_name Level
 
 #region var
 
-onready var _camera:   Camera2D = $Camera
-onready var _back:      TileMap = $Back
-onready var _fore:      TileMap = $Fore
-onready var _flower:    TileMap = $Flower
-onready var _waterBack: TileMap = $WaterBack
-onready var _splitBack: TileMap = $SplitBack
-onready var _itemBack:  TileMap = $ItemBack
-onready var _tree:      TileMap = $Tree
-onready var _path:       Node2D = $Path
-onready var _mob:        Sprite = $Mob
-onready var _itemFore:  TileMap = $ItemFore
-onready var _splitFore: TileMap = $SplitFore
-onready var _waterFore: TileMap = $WaterFore
-onready var _top:       TileMap = $Top
-onready var _light:     TileMap = $Light
-onready var _edge:      TileMap = $Edge
-onready var _target:     Node2D = $Target
-onready var _astar:             = AStar2D.new()
-onready var _tileSet:           = _back.tile_set
+@onready var _camera:   Camera2D = $Camera2D
+@onready var _back:      TileMap = $Back
+@onready var _fore:      TileMap = $Fore
+@onready var _flower:    TileMap = $Flower
+@onready var _waterBack: TileMap = $WaterBack
+@onready var _splitBack: TileMap = $SplitBack
+@onready var _itemBack:  TileMap = $ItemBack
+@onready var _tree:      TileMap = $Tree
+@onready var _path:       Node2D = $Path
+@onready var _mob:      Sprite2D = $Mob
+@onready var _itemFore:  TileMap = $ItemFore
+@onready var _splitFore: TileMap = $SplitFore
+@onready var _waterFore: TileMap = $WaterFore
+@onready var _top:       TileMap = $Top
+@onready var _light:     TileMap = $Light
+@onready var _edge:      TileMap = $Edge
+@onready var _target:     Node2D = $Target
+@onready var _astar:             = AStar2D.new()
+@onready var _tileSet:           = _back.tile_set
 var _oldSize = Vector2.ZERO
-var _pathPoints := PoolVector2Array()
+var _pathPoints := PackedVector2Array()
 var _dragLeft := false
 var _capture := false
 var _turn := false
@@ -46,9 +46,9 @@ var desert := false
 const themeCount := 4
 var themeCliff := 0
 const themeCliffCount := 2
-var _tweenCamera := Tween.new()
-var _tweenStep := Tween.new()
-var _tweenTarget := Tween.new()
+var _tweenCamera : Tween
+var _tweenStep : Tween
+var _tweenTarget : Tween
 
 var state := {
 	"depth": 0
@@ -59,10 +59,10 @@ signal generate
 signal generateUp
 
 enum Tile { # match id in tileSet
-	Cliff0, Cliff1
+	Cliff0, Cliff1,
 	Banner0, Banner1,
 	Furnature, Carpet,
-	Fountain, Chest, ChestOpenFull, ChestOpenEmpty, ChestBroke, Loot
+	Fountain, Chest, ChestOpenFull, ChestOpenEmpty, ChestBroke, Loot,
 	TreeStump, TreeBack, TreeFore,
 	EdgeInside, EdgeInsideCorner,
 	EdgeOutsideCorner, EdgeOutside,
@@ -78,7 +78,7 @@ enum Tile { # match id in tileSet
 	Rubble,
 	OutsideDay, OutsideDayPillar, OutsideDayRubble, OutsideDayStair, OutsideFlower,
 	OutsideDayDesert, OutsideDayDoodad, OutsideDayGrassDry, OutsideDayDesertStair, OutsideDayGrassGreen,
-	OutsideDayHedge, OutsideDayWall, OutsideDayFloor
+	OutsideDayHedge, OutsideDayWall, OutsideDayFloor,
 	OutsideNight, OutsideNightPillar, OutsideNightRubble, OutsideNightStair,
 	OutsideNightDesert, OutsideNightDoodad, OutsideNightGrassDry, OutsideNightDesertStair, OutsideNightGrassGreen,
 	OutsideBightHedge, OutsideNightWall, OutsideNightFloor
@@ -125,13 +125,13 @@ const _waterPurpleTiles := [Tile.WaterShallowForePurple, Tile.WaterShallowBackPu
 
 func _ready() -> void:
 	_camera.zoom = Vector2(0.75, 0.75)
-	add_child(_tweenCamera)
-	add_child(_tweenStep)
-	add_child(_tweenTarget)
+	_tweenCamera = get_tree().create_tween()
+	_tweenStep = get_tree().create_tween()
+	_tweenTarget = get_tree().create_tween()
 	generated()
 	_cameraCenter()
-	Utility.stfu(connect("size_changed", self, "_onResize"))
-	Utility.stfu(Gesture.connect("onZoom", self, "_zoomPinch"))
+	Utility.stfu(connect("size_changed", Callable(self, "_onResize")))
+	Utility.stfu(Gesture.connect("onZoom", Callable(self, "_zoomPinch")))
 
 func generated() -> void:
 	_oldSize = size
@@ -140,7 +140,7 @@ func generated() -> void:
 	_pathClear()
 	_addPoints()
 	_connectPoints()
-	_target.modulate = Color.transparent
+	_target.modulate = Color.TRANSPARENT
 	_cameraToMob()
 	_dark()
 	_findTorches()
@@ -157,28 +157,28 @@ func _process(delta: float) -> void:
 		_turn = false
 		if test:
 			if not _handleDoor():
-				yield(_move(_mob), "completed")
+				await _move(_mob)
 			if not _handleStair():
 				_lightUpdate(mobPosition(), lightRadius)
 				_checkCenter()
 		_time = 0.0
 
 func _move(mob: Node2D) -> void:
-	yield(get_tree(), "idle_frame")
+	await get_tree().idle_frame
 	if _pathPoints.size() > 1:
 		var delta := _delta(_pathPoints[0], _pathPoints[1])
 		_face(mob, delta)
 		_fadeAndFree()
-		yield(_step(mob, delta), "completed")
+		await _step(mob, delta)
 
 func _fadeAndFree() -> void:
-	_pathPoints.remove(0)
+	_pathPoints.remove_at(0)
 	var node = _path.get_child(0)
 	var t = Tween.new()
 	add_child(t)
-	Utility.stfu(t.interpolate_property(node, "modulate", null, Color.transparent, _turnTime, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT))
+	Utility.stfu(t.interpolate_property(node, "modulate", null, Color.TRANSPARENT, _turnTime, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT))
 	Utility.stfu(t.start())
-	yield(t, "tween_all_completed")
+	await t.tween_all_completed
 	node.queue_free()
 	if _pathPoints.size() > 1:
 		_turn = true
@@ -211,9 +211,9 @@ func _toggleDoorV(p: Vector2) -> void: _toggleDoor(int(p.x), int(p.y))
 const _doorBreakChance = 0.02
 
 func _toggleDoor(x: int, y: int) -> void:
-	var door := _fore.get_cell_autotile_coord(x, y)
-	var broke = Random.nextFloat() <= _doorBreakChance
-	_fore.set_cell(x, y, _fore.get_cell(x, y), false, false, false, Vector2(2 if broke else 0 if door.x == 1 else 1, 0))
+	var door = _fore.get_cell_autotile_coord(x, y)
+	var broke := Random.nextFloat() <= _doorBreakChance
+	# _fore.set_cell(x, y, _fore.get_cell(x, y), false, false, false, Vector2(2 if broke else 0 if door.x == 1 else 1, 0))
 
 func _face(mob: Node2D, direction: Vector2) -> void:
 	if direction.x > 0:
@@ -225,7 +225,7 @@ func _step(mob: Node2D, direction: Vector2) -> void:
 	mob.walk()
 	Utility.stfu(_tweenStep.interpolate_property(mob, "global_position", null, mob.global_position + world(direction), _turnTime, Tween.TRANS_CIRC, Tween.EASE_IN_OUT))
 	Utility.stfu(_tweenStep.start())
-	yield(_tweenStep, "tween_all_completed")
+	await _tweenStep.tween_all_completed
 
 func _addPoints() -> void:
 	_astar.clear()
@@ -254,7 +254,7 @@ func _connect(p: Vector2) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
-		if event.button_index == BUTTON_LEFT:
+		if event.button_index == MOUSE_BUTTON_LEFT:
 			_turn = false
 			if event.pressed:
 				_dragLeft = true
@@ -266,10 +266,10 @@ func _unhandled_input(event: InputEvent) -> void:
 					_targetTo(event.global_position, not _tweenStep.is_active())
 					_targetUpdate()
 				_dragLeft = false
-		elif event.button_index == BUTTON_WHEEL_UP:
+		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			_zoomIn(event.global_position)
 			_cameraUpdate()
-		elif event.button_index == BUTTON_WHEEL_DOWN:
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			_zoomOut(event.global_position)
 			_cameraUpdate()
 	elif event is InputEventMouseMotion:
@@ -308,20 +308,20 @@ func _processWasd() -> bool:
 
 func _wasd(direction: Vector2) -> void:
 	var p := mobPosition() + direction
-	if isDoorShutV(p):
-		_toggleDoorV(p)
-	if not isBlockedV(p):
-		_face(_mob, direction)
-		yield(_step(_mob, direction), "completed")
-		_pathClear()
-		if not isStairV(p):
-			_lightUpdate(p, lightRadius)
-			_checkCenter()
-		else:
-			if isStairDownV(p):
-				emit_signal("generate")
-			elif isStairUpV(p):
-				emit_signal("generateUp")
+	# if isDoorShutV(p):
+	# 	_toggleDoorV(p)
+	# if not isBlockedV(p):
+	# 	_face(_mob, direction)
+	# 	await _step(_mob, direction).completed
+	# 	_pathClear()
+	# 	if not isStairV(p):
+	# 		_lightUpdate(p, lightRadius)
+	# 		_checkCenter()
+	# 	else:
+	# 		if isStairDownV(p):
+	# 			emit_signal("generate")
+	# 		elif isStairUpV(p):
+	# 			emit_signal("generateUp")
 
 func _tileIndex(p: Vector2) -> int:
 	return Utility.indexV(p, int(_back.get_used_rect().size.x))
@@ -339,16 +339,17 @@ func getCameraRect() -> Rect2:
 	return Rect2(_map(_camera.global_position), _map(_camera.global_position + _worldSize()))
 
 func world(tile: Vector2) -> Vector2:
-	return _back.map_to_world(tile)
+	return _back.map_to_local(tile)
 
 func _worldSize() -> Vector2:
-	return size * _camera.zoom
+	return Vector2.ZERO
+	# return size * _camera.zoom
 
 func _worldBounds() -> Rect2:
 	return Rect2(Vector2.ZERO, _worldSize())
 
 func _map(position: Vector2) -> Vector2:
-	return _back.world_to_map(position)
+	return _back.local_to_map(position)
 
 func _mapSize() -> Vector2:
 	return _back.get_used_rect().size * _back.cell_size
@@ -395,11 +396,12 @@ func _cameraSnap(to: Vector2) -> void:
 	_cameraStop()
 	Utility.stfu(_tweenCamera.interpolate_property(_camera, "global_position", null, to, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
 	Utility.stfu(_tweenCamera.start())
-	yield(_tweenCamera, "tween_all_completed")
+	await _tweenCamera.tween_all_completed
 	emit_signal("updateMap")
 
 func _cameraStop() -> void:
-	Utility.stfu(_tweenCamera.stop(_camera, "global_position"))
+	# Utility.stfu(_tweenCamera.stop(_camera, "global_position"))
+	pass
 
 const _edgeOffset := 1.5
 const _edgeOffsetV := Vector2(_edgeOffset, _edgeOffset)
@@ -444,7 +446,7 @@ func _drawPath(from: Vector2, to: Vector2) -> void:
 		var tile := _pathPoints[i]
 		if i + 1 < _pathPoints.size():
 			rotation = _pathRotate(_delta(tile, _pathPoints[i + 1]), pathDelta)
-		var child := _pathScene.instance()
+		var child := _pathScene.instantiate()
 		child.modulate = color
 		child.global_rotation_degrees = rotation
 		child.global_position = world(tile)
@@ -455,31 +457,31 @@ func _delta(from: Vector2, to: Vector2) -> Vector2:
 
 func _pathRotate(stepDelta, pathDelta) -> int:
 	var rotation := 0
-	var trending := abs(pathDelta.y) > abs(pathDelta.x)
-	if stepDelta.x > 0 and stepDelta.y < 0:
-		rotation = 270 if trending else 0
-	elif stepDelta.x > 0 and stepDelta.y > 0:
-		rotation = 90 if trending else 0
-	elif stepDelta.x < 0 and stepDelta.y < 0:
-		rotation = 270 if trending else 180
-	elif stepDelta.x < 0 and stepDelta.y > 0:
-		rotation = 90 if trending else 180
-	elif stepDelta.x > 0:
-		rotation = 0
-	elif stepDelta.x < 0:
-		rotation = 180
-	elif stepDelta.y < 0:
-		rotation = 270
-	elif stepDelta.y > 0:
-		rotation = 90
+	# var trending := abs(pathDelta.y) > abs(pathDelta.x)
+	# if stepDelta.x > 0 and stepDelta.y < 0:
+	# 	rotation = 270 if trending else 0
+	# elif stepDelta.x > 0 and stepDelta.y > 0:
+	# 	rotation = 90 if trending else 0
+	# elif stepDelta.x < 0 and stepDelta.y < 0:
+	# 	rotation = 270 if trending else 180
+	# elif stepDelta.x < 0 and stepDelta.y > 0:
+	# 	rotation = 90 if trending else 180
+	# elif stepDelta.x > 0:
+	# 	rotation = 0
+	# elif stepDelta.x < 0:
+	# 	rotation = 180
+	# elif stepDelta.y < 0:
+	# 	rotation = 270
+	# elif stepDelta.y > 0:
+	# 	rotation = 90
 	return rotation
 
 func _pathClear():
-	_target.modulate = Color.transparent
+	_target.modulate = Color.TRANSPARENT
 	for path in _path.get_children():
 		path.free()
 	for i in range(_pathPoints.size() - 1, 0, -1):
-		_pathPoints.remove(i)
+		_pathPoints.remove_at(i)
 
 #endregion
 
@@ -516,13 +518,14 @@ func _targetSnap(tile: Vector2) -> void:
 		Utility.stfu(_tweenTarget.start())
 
 func _targetStop() -> void:
-	Utility.stfu(_tweenTarget.stop(_target, "global_position"))
+	# Utility.stfu(_tweenTarget.stop(_target, "global_position"))
+	pass
 
 func _normalize() -> Vector2:
 	return (_camera.global_position - _mapSize() / 2.0) / _oldSize
 
 func _onResize() -> void:
-	_camera.global_position = _normalize() * size + _mapSize() / 2.0
+	# _camera.global_position = _normalize() * size + _mapSize() / 2.0
 	_oldSize = size
 	_cameraUpdate()
 
@@ -530,17 +533,19 @@ func isBlockedV(p: Vector2) -> bool: return isBlocked(int(p.x), int(p.y))
 
 func isBlocked(x: int, y: int) -> bool:
 	if not insideMap(x, y): return true
-	var fore := _fore.get_cell(x, y)
-	var back := _back.get_cell(x, y)
-	return _cliffTiles.has(fore) or ((fore == TileMap.INVALID_CELL) and not _floorTiles.has(back)) or isBlockedLight(x, y)
+	# var fore := _fore.get_cell(x, y)
+	# var back := _back.get_cell(x, y)
+	# return _cliffTiles.has(fore) or ((fore == TileMap.INVALID_CELL) and not _floorTiles.has(back)) or isBlockedLight(x, y)
+	return false
 
 func isBlockedLight(x: int, y: int) -> bool:
 	if not insideMap(x, y): return true
-	var fore := _fore.get_cell(x, y)
-	var w := _wallTiles.has(fore)
-	var d := _doorTiles.has(fore)
-	var s := _fore.get_cell_autotile_coord(x, y)
-	return w or (d and s == Vector2(0, 0))
+	# var fore := _fore.get_cell(x, y)
+	# var w := _wallTiles.has(fore)
+	# var d := _doorTiles.has(fore)
+	# var s := _fore.get_cell_autotile_coord(x, y)
+	# return w or (d and s == Vector2(0, 0))
+	return false
 
 #endregion
 
@@ -773,11 +778,12 @@ func targetPosition() -> Vector2:
 #region Tile
 
 func _setRandomTile(map: TileMap, x: int, y: int, id: int, flipX: bool = false, flipY: bool = false, rot90: bool = false) -> void:
-	map.set_cell(x, y, id, flipX, flipY, rot90, _randomTile(id))
+	# map.set_cell(x, y, id, flipX, flipY, rot90, _randomTile(id))
+	pass
 
 func _randomTile(id: int) -> Vector2:
 	var p := Vector2.ZERO
-	var s := _tileSet.tile_get_region(id).size / _tileSet.autotile_get_size(id)
+	var s = _tileSet.tile_get_region(id).size / _tileSet.autotile_get_size(id)
 	var total := 0
 	for y in range(s.y):
 		for x in range(s.x):
@@ -803,7 +809,8 @@ func isTileId(tile: int, tiles: Array) -> bool:
 #region Back
 
 func _setBack(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
-	_back.set_cell(x, y, tile, flipX, flipY, rot90, coord)
+	# _back.set_cell(x, y, tile, flipX, flipY, rot90, coord)
+	pass
 
 func _setBackRandom(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
 	_setRandomTile(_back, x, y, tile, flipX, flipY, rot90)
@@ -859,19 +866,22 @@ func isFloor(x: int, y: int) -> bool:
 func clearBackV(p: Vector2) -> void: clearBack(int(p.x), int(p.y))
 
 func clearBack(x: int, y: int) -> void:
-	_setBack(x, y, TileMap.INVALID_CELL)
+	# _setBack(x, y, TileMap.INVALID_CELL)
+	pass
 
 func isBackInvalidV(p: Vector2) -> bool: return isBackInvalid(int(p.x), int(p.y))
 
 func isBackInvalid(x: int, y: int) -> bool:
-	return _back.get_cell(x, y) == TileMap.INVALID_CELL
+	# return _back.get_cell(x, y) == TileMap.INVALID_CELL
+	return false
 
 #endregion
 
 #region Fore
 
 func _setFore(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
-	_fore.set_cell(x, y, tile, flipX, flipY, rot90, coord)
+	# _fore.set_cell(x, y, tile, flipX, flipY, rot90, coord)
+	pass
 
 func _setForeRandom(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
 	_setRandomTile(_fore, x, y, tile, flipX, flipY, rot90)
@@ -921,7 +931,8 @@ func setOutsideWall(x: int, y: int) -> void:
 	_setRandomTile(_fore, x, y, Tile.OutsideDayWall if day else Tile.OutsideNightWall, Random.nextBool())
 
 func setOutsideHedge(x: int, y: int) -> void:
-	_setRandomTile(_fore, x, y, Tile.OutsideDayHedge if day else Tile.OutsideNightHedge, Random.nextBool())
+	# _setRandomTile(_fore, x, y, Tile.OutsideDayHedge if day else Tile.OutsideNightHedge, Random.nextBool())
+	pass
 
 func setCliff(x: int, y: int) -> void:
 	var id
@@ -1052,12 +1063,14 @@ func isDoorShut(x: int, y: int) -> bool:
 func clearForeV(p: Vector2) -> void: clearFore(int(p.x), int(p.y))
 
 func clearFore(x: int, y: int) -> void:
-	_setFore(x, y, TileMap.INVALID_CELL)
+	# _setFore(x, y, TileMap.INVALID_CELL)
+	pass
 
 func isForeInvalidV(p: Vector2) -> bool: return isForeInvalid(int(p.x), int(p.y))
 
 func isForeInvalid(x: int, y: int) -> bool:
-	return _fore.get_cell(x, y) == TileMap.INVALID_CELL
+	# return _fore.get_cell(x, y) == TileMap.INVALID_CELL
+	return false
 
 func verifyCliff() -> void:
 	var rect = _back.get_used_rect()
@@ -1079,15 +1092,16 @@ func setFlower(x: int, y: int) -> void:
 
 func setTree(x: int, y: int) -> void:
 	var p := Vector2(Random.next(3), 0)
-	_tree.set_cell(x, y, Tile.TreeBack, false, false, false, p)
-	_top.set_cell(x, y - 1, Tile.TreeFore, false, false, false, p)
+	# _tree.set_cell(x, y, Tile.TreeBack, false, false, false, p)
+	# _top.set_cell(x, y - 1, Tile.TreeFore, false, false, false, p)
 
 func setTreeStump(x: int, y: int) -> void:
 	_setRandomTile(_tree, x, y, Tile.TreeStump, Random.nextBool())
 
 func clearTree(x: int, y: int) -> void:
-	_tree.set_cell(x, y, TileMap.INVALID_CELL)
-	_top.set_cell(x, y - 1, TileMap.INVALID_CELL)
+	# _tree.set_cell(x, y, TileMap.INVALID_CELL)
+	# _top.set_cell(x, y - 1, TileMap.INVALID_CELL)
+	pass
 
 func cutTreeV(p: Vector2) -> void: cutTree(int(p.x), int(p.y))
 
@@ -1102,26 +1116,30 @@ func cutTree(x: int, y: int) -> void:
 func setWaterShallowV(p: Vector2) -> void: setWaterShallow(int(p.x), int(p.y))
 
 func setWaterShallow(x: int, y: int) -> void:
-	_waterBack.set_cell(x, y, Tile.WaterShallowBack)
-	_waterFore.set_cell(x, y, Tile.WaterShallowFore)
+	# _waterBack.set_cell(x, y, Tile.WaterShallowBack)
+	# _waterFore.set_cell(x, y, Tile.WaterShallowFore)
+	pass
 
 func setWaterDeepV(p: Vector2) -> void: setWaterDeep(int(p.x), int(p.y))
 
 func setWaterDeep(x: int, y: int) -> void:
-	_waterBack.set_cell(x, y, Tile.WaterDeepBack)
-	_waterFore.set_cell(x, y, Tile.WaterDeepFore)
+	# _waterBack.set_cell(x, y, Tile.WaterDeepBack)
+	# _waterFore.set_cell(x, y, Tile.WaterDeepFore)
+	pass
 
 func setWaterShallowPurpleV(p: Vector2) -> void: setWaterShallowPurple(int(p.x), int(p.y))
 
 func setWaterShallowPurple(x: int, y: int) -> void:
-	_waterBack.set_cell(x, y, Tile.WaterShallowBackPurple)
-	_waterFore.set_cell(x, y, Tile.WaterShallowForePurple)
+	# _waterBack.set_cell(x, y, Tile.WaterShallowBackPurple)
+	# _waterFore.set_cell(x, y, Tile.WaterShallowForePurple)
+	pass
 
 func setWaterDeepPurpleV(p: Vector2) -> void: setWaterDeepPurple(int(p.x), int(p.y))
 
 func setWaterDeepPurple(x: int, y: int) -> void:
-	_waterBack.set_cell(x, y, Tile.WaterDeepBackPurple)
-	_waterFore.set_cell(x, y, Tile.WaterDeepForePurple)
+	# _waterBack.set_cell(x, y, Tile.WaterDeepBackPurple)
+	# _waterFore.set_cell(x, y, Tile.WaterDeepForePurple)
+	pass
 
 func _isWaterTile(x: int, y: int, tiles: Array) -> bool:
 	return isTileId(_waterBack.get_cell(x, y), tiles)
@@ -1140,13 +1158,15 @@ func isWaterPurple(x: int, y: int) -> bool:
 #region Item
 
 func _setItemFore(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
-	_itemFore.set_cell(x, y, tile, flipX, flipY, rot90, coord)
+	# _itemFore.set_cell(x, y, tile, flipX, flipY, rot90, coord)
+	pass
 
 func _setItemForeRandom(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
 	_setRandomTile(_itemFore, x, y, tile, flipX, flipY, rot90)
 
 func _setItemBack(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
-	_itemBack.set_cell(x, y, tile, flipX, flipY, rot90, coord)
+	# _itemBack.set_cell(x, y, tile, flipX, flipY, rot90, coord)
+	pass
 
 func _setItemBackRandom(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
 	_setRandomTile(_itemBack, x, y, tile, flipX, flipY, rot90)
@@ -1157,12 +1177,12 @@ func _setItemBackRandom(x: int, y: int, tile: int, flipX := false, flipY := fals
 
 func setGrass(x: int, y: int) -> void:
 	var flipX = Random.nextBool()
-	if desert:
-		_splitBack.set_cell(x, y, Tile.OutsideDayGrassDry if day else Tile.OutsideNightGrassDry, flipX, false, false, Vector2(0, 0))
-		_splitFore.set_cell(x, y, Tile.OutsideDayGrassDry if day else Tile.OutsideNightGrassDry, flipX, false, false, Vector2(1, 0))
-	else:
-		_splitBack.set_cell(x, y, Tile.OutsideDayGrassGreen if day else Tile.OutsideNightGrassGreen, flipX, false, false, Vector2(0, 0))
-		_splitFore.set_cell(x, y, Tile.OutsideDayGrassGreen if day else Tile.OutsideNightGrassGreen, flipX, false, false, Vector2(1, 0))
+	# if desert:
+	# 	_splitBack.set_cell(x, y, Tile.OutsideDayGrassDry if day else Tile.OutsideNightGrassDry, flipX, false, false, Vector2(0, 0))
+	# 	_splitFore.set_cell(x, y, Tile.OutsideDayGrassDry if day else Tile.OutsideNightGrassDry, flipX, false, false, Vector2(1, 0))
+	# else:
+	# 	_splitBack.set_cell(x, y, Tile.OutsideDayGrassGreen if day else Tile.OutsideNightGrassGreen, flipX, false, false, Vector2(0, 0))
+	# 	_splitFore.set_cell(x, y, Tile.OutsideDayGrassGreen if day else Tile.OutsideNightGrassGreen, flipX, false, false, Vector2(1, 0))
 
 #endregion
 
@@ -1172,8 +1192,9 @@ func _getLight(x: int, y: int) -> int:
 	return int(_light.get_cell_autotile_coord(x, y).x)
 
 func _setLight(x: int, y: int, light: int, test: bool) -> void:
-	if not test or light > _getLight(x, y):
-		_light.set_cell(x, y, Tile.Light, false, false, false, Vector2(light, 0))
+	# if not test or light > _getLight(x, y):
+	# 	_light.set_cell(x, y, Tile.Light, false, false, false, Vector2(light, 0))
+	pass
 
 func isExploredV(p: Vector2) -> bool: return isExplored(int(p.x), int(p.y))
 
@@ -1191,45 +1212,45 @@ func isLit(x: int, y: int) -> bool:
 
 func _drawEdge() -> void:
 	var rect = _back.get_used_rect()
-	var minY: int = rect.position.y - 1
-	var maxY: int = rect.end.y
-	var minX: int = rect.position.x - 1
-	var maxX: int = rect.end.x
-	for y in range(minY, maxY + 1):
-		for x in range(minX, maxX + 1):
-			if x == minX or x == maxX or y == minY or y == maxY:
-				if x == minX and y == minY: # nw
-					_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(1, 0))
-				elif x == minX and y == maxY: # sw
-					_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(2, 0))
-				elif x == maxX and y == minY: # ne
-					_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(0, 0))
-				elif x == maxX and y == maxY: # se
-					_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(3, 0))
-				elif x == minX: # w
-					_setRandomTile(_edge, x, y, Tile.EdgeOutside, false, Random.nextBool(), true)
-				elif x == maxX: # e
-					_setRandomTile(_edge, x, y, Tile.EdgeOutside, true, Random.nextBool(), true)
-				elif y == minY: # n
-					_setRandomTile(_edge, x, y, Tile.EdgeOutside, Random.nextBool(), false, false)
-				elif y == maxY: # s
-					_setRandomTile(_edge, x, y, Tile.EdgeOutside, Random.nextBool(), true, false)
-			elif (x == minX + 1) or (x == maxX - 1) or (y == minY + 1) or (y == maxY - 1):
-				if x == minX + 1 and y == minY + 1: # nw
-					_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, false, false, false)
-				elif x == minX + 1 and y == maxY - 1: # sw
-					_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, false, true, false)
-				elif x == maxX - 1 and y == minY + 1: # ne
-					_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, true, false, true)
-				elif x == maxX - 1 and y == maxY - 1: # se
-					_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, true, true, false)
-				elif x == minX + 1: # w
-					_setRandomTile(_edge, x, y, Tile.EdgeInside, false, Random.nextBool(), true)
-				elif x == maxX - 1: # e
-					_setRandomTile(_edge, x, y, Tile.EdgeInside, true, Random.nextBool(), true)
-				elif y == minY + 1: # n
-					_setRandomTile(_edge, x, y, Tile.EdgeInside, Random.nextBool(), false, false)
-				elif y == maxY - 1: # s
-					_setRandomTile(_edge, x, y, Tile.EdgeInside, Random.nextBool(), true, false)
+	# var minY: int = rect.position.y - 1
+	# var maxY: int = rect.end.y
+	# var minX: int = rect.position.x - 1
+	# var maxX: int = rect.end.x
+	# for y in range(minY, maxY + 1):
+	# 	for x in range(minX, maxX + 1):
+	# 		if x == minX or x == maxX or y == minY or y == maxY:
+	# 			if x == minX and y == minY: # nw
+	# 				_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(1, 0))
+	# 			elif x == minX and y == maxY: # sw
+	# 				_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(2, 0))
+	# 			elif x == maxX and y == minY: # ne
+	# 				_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(0, 0))
+	# 			elif x == maxX and y == maxY: # se
+	# 				_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(3, 0))
+	# 			elif x == minX: # w
+	# 				_setRandomTile(_edge, x, y, Tile.EdgeOutside, false, Random.nextBool(), true)
+	# 			elif x == maxX: # e
+	# 				_setRandomTile(_edge, x, y, Tile.EdgeOutside, true, Random.nextBool(), true)
+	# 			elif y == minY: # n
+	# 				_setRandomTile(_edge, x, y, Tile.EdgeOutside, Random.nextBool(), false, false)
+	# 			elif y == maxY: # s
+	# 				_setRandomTile(_edge, x, y, Tile.EdgeOutside, Random.nextBool(), true, false)
+	# 		elif (x == minX + 1) or (x == maxX - 1) or (y == minY + 1) or (y == maxY - 1):
+	# 			if x == minX + 1 and y == minY + 1: # nw
+	# 				_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, false, false, false)
+	# 			elif x == minX + 1 and y == maxY - 1: # sw
+	# 				_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, false, true, false)
+	# 			elif x == maxX - 1 and y == minY + 1: # ne
+	# 				_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, true, false, true)
+	# 			elif x == maxX - 1 and y == maxY - 1: # se
+	# 				_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, true, true, false)
+	# 			elif x == minX + 1: # w
+	# 				_setRandomTile(_edge, x, y, Tile.EdgeInside, false, Random.nextBool(), true)
+	# 			elif x == maxX - 1: # e
+	# 				_setRandomTile(_edge, x, y, Tile.EdgeInside, true, Random.nextBool(), true)
+	# 			elif y == minY + 1: # n
+	# 				_setRandomTile(_edge, x, y, Tile.EdgeInside, Random.nextBool(), false, false)
+	# 			elif y == maxY - 1: # s
+	# 				_setRandomTile(_edge, x, y, Tile.EdgeInside, Random.nextBool(), true, false)
 
 #endregion

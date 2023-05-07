@@ -1,10 +1,11 @@
 extends Generate
 class_name GenerateMaze
 
-func _init(level: Level).(level) -> void: pass
+func _init(level: Level) -> void:
+	super(level)
 
 func generate(delta: int = 1) -> void:
-	.generate(delta)
+	super.generate(delta)
 	var depth: int = int(abs(_level.state.depth)) + 10
 	var width := Random.nextRangeOdd(depth, depth + Random.next(depth))
 	var height := Random.nextRangeOdd(depth, depth + Random.next(depth))
@@ -47,7 +48,7 @@ func _drawMaze() -> void:
 	while points.size():
 		var random := Random.next(points.size())
 		var current : Vector2 = points[random]
-		points.remove(random)
+		points.remove_at(random)
 		var east := Vector2(current.x + 1, current.y)
 		var eastEast := Vector2(current.x + 2, current.y)
 		var west := Vector2(current.x - 1, current.y)

@@ -2,12 +2,13 @@
 
 importer="image"
 type="Image"
-path="res://.import/CastleFore.png-3f08e26e2b0103d547f9cdd814cb8b57.image"
+uid="uid://bc5n1kk4hur8w"
+path="res://.godot/imported/CastleFore.png-3f08e26e2b0103d547f9cdd814cb8b57.image"
 
 [deps]
 
 source_file="res://PixelLevel/Sprite/Template/CastleFore.png"
-dest_files=[ "res://.import/CastleFore.png-3f08e26e2b0103d547f9cdd814cb8b57.image" ]
+dest_files=["res://.godot/imported/CastleFore.png-3f08e26e2b0103d547f9cdd814cb8b57.image"]
 
 [params]
 
