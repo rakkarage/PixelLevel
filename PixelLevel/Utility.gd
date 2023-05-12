@@ -35,3 +35,8 @@ func _listFiles(path: String) -> Array:
 		if !file.begins_with(".") and !file.ends_with(".import"):
 			list.append(path + "/" + file)
 	return list
+
+func _saveFiles(list: Array, path: String) -> void:
+	var file = FileAccess.open(path, FileAccess.WRITE)
+	file.store_string(JSON.stringify(list))
+	file.close()
