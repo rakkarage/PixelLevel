@@ -2,7 +2,7 @@ extends Object
 class_name Generate
 
 var _level : Level
-export var priority = 1
+@export var priority = 1
 var _width := 0
 var _height := 0
 var _cliff := false

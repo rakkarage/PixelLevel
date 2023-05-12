@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/170141__timgormly__8-bit-bump.wav-c3671bacdcde7db0f7455e035830b801.sample"
+type="AudioStreamWAV"
+uid="uid://b3ejq7hp1s10c"
+path="res://.godot/imported/170141__timgormly__8-bit-bump.wav-c3671bacdcde7db0f7455e035830b801.sample"
 
 [deps]
 
 source_file="res://PixelLevel/Audio/170141__timgormly__8-bit-bump.wav"
-dest_files=[ "res://.import/170141__timgormly__8-bit-bump.wav-c3671bacdcde7db0f7455e035830b801.sample" ]
+dest_files=["res://.godot/imported/170141__timgormly__8-bit-bump.wav-c3671bacdcde7db0f7455e035830b801.sample"]
 
 [params]
 

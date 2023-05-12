@@ -1,10 +1,10 @@
 extends Control
 
-onready var _random := $Button
-onready var _mob := $Mob
+@onready var _random := $Button
+@onready var _mob := $Mob
 
 func _ready() -> void:
-	Utility.stfu(_random.connect("pressed", self, "_randomPressed"))
+	Utility.stfu(_random.connect("pressed", Callable(self, "_randomPressed")))
 
 func _randomPressed() -> void:
 	match Random.next(3):

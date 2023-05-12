@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://PixelLevel/Sprite/Back.png" type="Texture" id=1]
+[ext_resource path="res://PixelLevel/Sprite/Back.png" type="Texture2D" id=1]
 [ext_resource path="res://PixelLevel/Back.gd" type="Script" id=2]
 
 [node name="Back" type="Control"]
@@ -13,13 +13,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -384.0
-margin_top = -512.0
-margin_right = 384.0
-margin_bottom = 512.0
-rect_rotation = 90.0
-rect_scale = Vector2( 0.78125, 1 )
-rect_pivot_offset = Vector2( 384, 512 )
+offset_left = -384.0
+offset_top = -512.0
+offset_right = 384.0
+offset_bottom = 512.0
+rotation = 90.0
+scale = Vector2( 0.78125, 1 )
+pivot_offset = Vector2( 384, 512 )
 mouse_filter = 2
 texture = ExtResource( 1 )
 stretch_mode = 4

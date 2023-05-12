@@ -6,14 +6,14 @@
 [ext_resource path="res://PixelMob/Audio/167075__drminky__slime-land.tres" type="AudioStream" id=4]
 [ext_resource path="res://PixelMob/Audio/Bite.tres" type="AudioStream" id=5]
 [ext_resource path="res://PixelMob/Animation/SlimeSmaller/Idle0.tres" type="Animation" id=6]
-[ext_resource path="res://PixelMob/Sprite/SlimeSmallerA.png" type="Texture" id=7]
+[ext_resource path="res://PixelMob/Sprite/SlimeSmallerA.png" type="Texture2D" id=7]
 [ext_resource path="res://PixelMob/Animation/SlimeSmaller/Idle1.tres" type="Animation" id=8]
 [ext_resource path="res://PixelMob/Animation/SlimeSmaller/Idle2.tres" type="Animation" id=9]
 [ext_resource path="res://PixelMob/Animation/SlimeSmaller/Walk.tres" type="Animation" id=10]
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id=1]
 
-[node name="SlimeSmaller" type="Sprite"]
+[node name="SlimeSmaller" type="Sprite2D"]
 texture = ExtResource( 7 )
 hframes = 14
 script = ExtResource( 1 )

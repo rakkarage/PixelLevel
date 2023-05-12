@@ -9,8 +9,8 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 1 ),
-"transitions": PoolRealArray( 3.33, 3.33 ),
+"times": PackedFloat32Array( 0, 1 ),
+"transitions": PackedFloat32Array( 3.33, 3.33 ),
 "update": 0,
 "values": [ 0.0, 333.0 ]
 }
@@ -21,8 +21,8 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 1 ),
-"transitions": PoolRealArray( 0.22, 0.22 ),
+"times": PackedFloat32Array( 0, 1 ),
+"transitions": PackedFloat32Array( 0.22, 0.22 ),
 "update": 0,
 "values": [ Color( 0, 0, 0, 0 ), Color( 0, 0, 0, 1 ) ]
 }

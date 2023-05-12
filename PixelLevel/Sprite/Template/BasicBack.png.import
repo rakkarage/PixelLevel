@@ -2,12 +2,13 @@
 
 importer="image"
 type="Image"
-path="res://.import/BasicBack.png-6d1d00e2d33cd1d0f93a738eb406f03a.image"
+uid="uid://b0f8fg1crbfk6"
+path="res://.godot/imported/BasicBack.png-6d1d00e2d33cd1d0f93a738eb406f03a.image"
 
 [deps]
 
 source_file="res://PixelLevel/Sprite/Template/BasicBack.png"
-dest_files=[ "res://.import/BasicBack.png-6d1d00e2d33cd1d0f93a738eb406f03a.image" ]
+dest_files=["res://.godot/imported/BasicBack.png-6d1d00e2d33cd1d0f93a738eb406f03a.image"]
 
 [params]
 

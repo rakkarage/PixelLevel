@@ -6,10 +6,11 @@ const _maxRoomHeight := 7
 const _minRoomWidth := 4
 const _minRoomHeight := 4
 
-func _init(level: Level).(level) -> void: pass
+func _init(level: Level) -> void:
+	super(level)
 
 func generate(delta: int = 1) -> void:
-	.generate(delta)
+	super.generate(delta)
 	var width = _maxRoomWidth * (1 + Random.next(9))
 	var height = _maxRoomHeight * (1 + Random.next(9))
 	_setLevelRect(width, height)

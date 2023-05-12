@@ -2,12 +2,13 @@
 
 importer="image"
 type="Image"
-path="res://.import/BasicFore.png-867c9b7853963a674d6d558017b1ee24.image"
+uid="uid://bay5c3bwcgxm4"
+path="res://.godot/imported/BasicFore.png-867c9b7853963a674d6d558017b1ee24.image"
 
 [deps]
 
 source_file="res://PixelLevel/Sprite/Template/BasicFore.png"
-dest_files=[ "res://.import/BasicFore.png-867c9b7853963a674d6d558017b1ee24.image" ]
+dest_files=["res://.godot/imported/BasicFore.png-867c9b7853963a674d6d558017b1ee24.image"]
 
 [params]
 

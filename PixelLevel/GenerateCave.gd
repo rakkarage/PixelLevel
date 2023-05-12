@@ -8,10 +8,11 @@ const _standardSteps := 10
 var _outside := false
 var _outsideWall := false
 
-func _init(level: Level).(level) -> void: pass
+func _init(level: Level) -> void:
+	super(level)
 
 func generate(delta: int = 1) -> void:
-	.generate(delta)
+	super.generate(delta)
 	_outside = Random.nextBool()
 	_outsideWall = Random.nextBool()
 	_fill(true, true, _outside)

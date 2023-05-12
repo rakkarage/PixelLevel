@@ -2,12 +2,13 @@
 
 importer="image"
 type="Image"
-path="res://.import/AFore.png-2d33c3fe31ab33f1e7be2db14d8acb3e.image"
+uid="uid://72kkqij51a5"
+path="res://.godot/imported/AFore.png-2d33c3fe31ab33f1e7be2db14d8acb3e.image"
 
 [deps]
 
 source_file="res://PixelLevel/Sprite/Template/AFore.png"
-dest_files=[ "res://.import/AFore.png-2d33c3fe31ab33f1e7be2db14d8acb3e.image" ]
+dest_files=["res://.godot/imported/AFore.png-2d33c3fe31ab33f1e7be2db14d8acb3e.image"]
 
 [params]
 

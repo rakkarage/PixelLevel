@@ -1,15 +1,15 @@
-tool
+@tool
 extends Control
 
 func _ready() -> void:
-	Utility.stfu(get_node("..").connect("resized", self, "_onResized"))
+	Utility.stfu(get_node("..").connect("resized", Callable(self, "_onResized")))
 
 func _onResized() -> void:
-	var tex := rect_size
+	var tex := size
 	var win := get_viewport_rect().size
 	if win.x > win.y:
-		rect_rotation = 90
-		rect_scale = Vector2(win.y / tex.x, win.x / tex.y)
+		rotation = 90
+		scale = Vector2(win.y / tex.x, win.x / tex.y)
 	else:
-		rect_rotation = 0
-		rect_scale = Vector2(win.x / tex.x, win.y / tex.y)
+		rotation = 0
+		scale = Vector2(win.x / tex.x, win.y / tex.y)

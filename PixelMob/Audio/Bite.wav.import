@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/Bite.wav-a1f979864a8ca6303686fcab82d7291b.sample"
+type="AudioStreamWAV"
+uid="uid://begb6ygxqxl3n"
+path="res://.godot/imported/Bite.wav-a1f979864a8ca6303686fcab82d7291b.sample"
 
 [deps]
 
 source_file="res://PixelMob/Audio/Bite.wav"
-dest_files=[ "res://.import/Bite.wav-a1f979864a8ca6303686fcab82d7291b.sample" ]
+dest_files=["res://.godot/imported/Bite.wav-a1f979864a8ca6303686fcab82d7291b.sample"]
 
 [params]
 

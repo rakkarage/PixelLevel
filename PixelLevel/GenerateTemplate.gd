@@ -54,10 +54,11 @@ var _data := {
 	}
 }
 
-func _init(level: Level).(level) -> void: pass
+func _init(level: Level) -> void:
+	super(level)
 
 func generate(delta: int = 1) -> void:
-	.generate(delta)
+	super.generate(delta)
 	var template = Random.priority(_data)
 	var single := true
 	if template.name == "c":
@@ -151,8 +152,8 @@ func generate(delta: int = 1) -> void:
 	_level.generated()
 
 func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
-	template.back.lock()
-	template.fore.lock()
+	false # template.back.lock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
+	false # template.fore.lock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
 	for y in range(template.size):
 		for x in range(template.size):
 			var write := p + _applyRotate(x, y, template.size, _rotate)
@@ -191,11 +192,11 @@ func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 			elif foreColor == _colorTileYellow:
 				if Random.nextBool():
 					_level.setLootV(write)
-	template.back.unlock()
-	template.fore.unlock()
+	false # template.back.unlock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
+	false # template.fore.unlock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
 
 func _findTemplateWith(template: Dictionary, connections: Array) -> void:
-	template.back.lock()
+	false # template.back.lock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
 	var size: int = template.size
 	var countX := int(template.back.get_size().x / size)
 	var countY := int(template.back.get_size().y / size)
@@ -226,7 +227,7 @@ func _findTemplateWith(template: Dictionary, connections: Array) -> void:
 		connectRight = template.back.get_pixelv(right) != _backWall
 		connectDown = template.back.get_pixelv(down) != _backWall
 		connectLeft = template.back.get_pixelv(left) != _backWall
-	template.back.unlock()
+	false # template.back.unlock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
 
 func _applyRotateV(p: Vector2, size: int, rotate: int) -> Vector2:
 	return _applyRotate(int(p.x), int(p.y), size, rotate)

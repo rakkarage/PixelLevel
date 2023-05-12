@@ -2,12 +2,13 @@
 
 importer="image"
 type="Image"
-path="res://.import/CastleBack.png-1126ded0f4ecbd5faaa8e4c9e4eec4ba.image"
+uid="uid://cowxmaixaexsd"
+path="res://.godot/imported/CastleBack.png-1126ded0f4ecbd5faaa8e4c9e4eec4ba.image"
 
 [deps]
 
 source_file="res://PixelLevel/Sprite/Template/CastleBack.png"
-dest_files=[ "res://.import/CastleBack.png-1126ded0f4ecbd5faaa8e4c9e4eec4ba.image" ]
+dest_files=["res://.godot/imported/CastleBack.png-1126ded0f4ecbd5faaa8e4c9e4eec4ba.image"]
 
 [params]
 

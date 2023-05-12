@@ -9,11 +9,11 @@
 [ext_resource path="res://PixelMob/Animation/Slime/Idle1.tres" type="Animation" id=7]
 [ext_resource path="res://PixelMob/Audio/167075__drminky__slime-land.tres" type="AudioStream" id=8]
 [ext_resource path="res://PixelMob/Audio/Bite.tres" type="AudioStream" id=9]
-[ext_resource path="res://PixelMob/Sprite/SlimeB.png" type="Texture" id=10]
+[ext_resource path="res://PixelMob/Sprite/SlimeB.png" type="Texture2D" id=10]
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id=1]
 
-[node name="Slime" type="Sprite"]
+[node name="Slime" type="Sprite2D"]
 texture = ExtResource( 10 )
 hframes = 16
 script = ExtResource( 2 )

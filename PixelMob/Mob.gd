@@ -1,9 +1,9 @@
-extends Sprite
+extends Sprite2D
 class_name Mob
 
 var energy := Energy.new()
-onready var _tree: AnimationTree = $Tree
-onready var _machine: AnimationNodeStateMachinePlayback = _tree.get("parameters/playback")
+@onready var _tree: AnimationTree = $Tree
+@onready var _machine: AnimationNodeStateMachinePlayback = _tree.get("parameters/playback")
 const _key := "parameters/Idle/blend_position"
 const _idleAnimationPriority := {
 	-1: 100,
