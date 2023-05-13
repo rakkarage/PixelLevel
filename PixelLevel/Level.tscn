@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://j68vmebkp224"]
 
 [ext_resource type="TileSet" uid="uid://o4hwwiwhwcrg" path="res://PixelLevel/Level.tres" id="1"]
-[ext_resource type="PackedScene" path="res://PixelMob/Mob/Slime.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://flro1hiu4sqn" path="res://PixelMob/Mob/Slime.tscn" id="2"]
 [ext_resource type="PackedScene" uid="uid://txc51ttsajhp" path="res://PixelLevel/Target.tscn" id="3"]
 [ext_resource type="Script" path="res://PixelLevel/Level.gd" id="4"]
 [ext_resource type="PackedScene" uid="uid://cpwpn22g1oh61" path="res://Interface/Back.tscn" id="5"]

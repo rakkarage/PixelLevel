@@ -1,6 +1,6 @@
 [gd_resource type="Animation" load_steps=2 format=3 uid="uid://2f24733y2l0y"]
 
-[ext_resource type="AudioStream" path="res://PixelMob/Audio/Bite.tres" id="1"]
+[ext_resource type="AudioStream" uid="uid://ysplh2y3mpn4" path="res://PixelMob/Audio/Bite.tres" id="1"]
 
 [resource]
 resource_name = "Attack"
