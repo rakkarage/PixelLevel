@@ -1,9 +1,0 @@
-[gd_resource type="AudioStreamRandomizer" load_steps=2 format=3 uid="uid://dc1y17tjbnh63"]
-
-[ext_resource type="AudioStream" uid="uid://bn664dppb8y8w" path="res://PixelLevel/Audio/516905__rakkarage__error.wav" id="1_rae00"]
-
-[resource]
-streams_count = 1
-random_pitch = 1.22
-stream_0/stream = ExtResource("1_rae00")
-stream_0/weight = 1.0

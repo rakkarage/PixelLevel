@@ -1,9 +1,0 @@
-[gd_resource type="AudioStreamRandomizer" load_steps=2 format=3 uid="uid://bk1me4rshm5ke"]
-
-[ext_resource type="AudioStream" uid="uid://cotoxtc5ip8rt" path="res://PixelLevel/Audio/257357__brnck__button-click.wav" id="1_tw0vs"]
-
-[resource]
-streams_count = 1
-random_pitch = 1.22
-stream_0/stream = ExtResource("1_tw0vs")
-stream_0/weight = 1.0

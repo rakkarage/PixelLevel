@@ -1,26 +1,26 @@
-[gd_scene load_steps=6 format=3 uid="uid://bohjk23ldxdic"]
+[gd_scene load_steps=6 format=3 uid="uid://ixxtws3yqcrj"]
 
-[ext_resource type="AudioStream" uid="uid://bk1me4rshm5ke" path="res://PixelLevel/Audio/Click.tres" id="1"]
-[ext_resource type="AudioStream" uid="uid://bkvt3w5laomsf" path="res://PixelLevel/Audio/Success.tres" id="2"]
-[ext_resource type="AudioStream" uid="uid://dc1y17tjbnh63" path="res://PixelLevel/Audio/Error.tres" id="3"]
+[ext_resource type="AudioStream" uid="uid://dehlbqwls3osw" path="res://Interface/Audio/Click.tres" id="3_vyxiv"]
 [ext_resource type="Script" path="res://PixelLevel/Audio.gd" id="4"]
-[ext_resource type="AudioStream" uid="uid://cx2ojeq2tdt8e" path="res://PixelLevel/Audio/Bump.tres" id="5"]
+[ext_resource type="AudioStream" uid="uid://r78j1gp4d24h" path="res://Interface/Audio/Error.tres" id="4_h55oe"]
+[ext_resource type="AudioStream" path="res://Interface/Audio/Bump.tres" id="5"]
+[ext_resource type="AudioStream" uid="uid://x4om0qpl51fd" path="res://Interface/Audio/Success.tres" id="5_lcxpk"]
 
 [node name="Audio" type="Node"]
 script = ExtResource("4")
 
 [node name="Bump" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5")
-bus = "Sound"
+bus = &"Sound"
 
 [node name="Click" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("1")
-bus = "Sound"
+stream = ExtResource("3_vyxiv")
+bus = &"Sound"
 
 [node name="Error" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("3")
-bus = "Sound"
+stream = ExtResource("4_h55oe")
+bus = &"Sound"
 
 [node name="Success" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("2")
-bus = "Sound"
+stream = ExtResource("5_lcxpk")
+bus = &"Sound"

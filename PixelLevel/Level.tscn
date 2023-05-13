@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://j68vmebkp224"]
+[gd_scene load_steps=8 format=3 uid="uid://cqpmrdwgwolm2"]
 
 [ext_resource type="TileSet" uid="uid://rer8omh2xmlw" path="res://PixelLevel/Level.tres" id="1"]
 [ext_resource type="PackedScene" uid="uid://flro1hiu4sqn" path="res://PixelMob/Mob/Slime.tscn" id="2"]
@@ -6,18 +6,7 @@
 [ext_resource type="Script" path="res://PixelLevel/Level.gd" id="4"]
 [ext_resource type="PackedScene" uid="uid://cpwpn22g1oh61" path="res://Interface/Back.tscn" id="5"]
 [ext_resource type="Script" path="res://PixelLevel/Manager.gd" id="6"]
-[ext_resource type="Animation" uid="uid://buew2qpi1tn52" path="res://PixelLevel/Animation/MaskAnimation.tres" id="7"]
-[ext_resource type="Shader" path="res://Interface/Mask.gdshader" id="7_margt"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_le4a6"]
-shader = ExtResource("7_margt")
-shader_parameter/color = null
-shader_parameter/scale = 2.0
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_k1n3q"]
-_data = {
-"Mask": ExtResource("7")
-}
+[ext_resource type="PackedScene" uid="uid://dplcfrlu5as7j" path="res://Interface/Mask.tscn" id="7_yu1f2"]
 
 [node name="Level" type="Control"]
 layout_mode = 3
@@ -48,7 +37,7 @@ size = Vector2i(1152, 648)
 render_target_update_mode = 4
 script = ExtResource("4")
 
-[node name="Camera2D" type="Camera2D" parent="Level/SubViewport"]
+[node name="Camera" type="Camera2D" parent="Level/SubViewport"]
 anchor_mode = 0
 
 [node name="Back" type="TileMap" parent="Level/SubViewport"]
@@ -130,17 +119,8 @@ offset_right = 80.0
 offset_bottom = 80.0
 mouse_filter = 2
 
-[node name="Mask" type="ColorRect" parent="Fore"]
-material = SubResource("ShaderMaterial_le4a6")
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Fore/Mask"]
-libraries = {
-"": SubResource("AnimationLibrary_k1n3q")
-}
+[node name="Mask" parent="Fore" instance=ExtResource("7_yu1f2")]
+layout_mode = 1
 
 [node name="Panel" type="PanelContainer" parent="Fore"]
 modulate = Color(1, 1, 1, 0.74902)
