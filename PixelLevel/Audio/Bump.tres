@@ -1,7 +1,9 @@
-[gd_resource type="AudioStreamRandomizer" load_steps=2 format=2]
+[gd_resource type="AudioStreamRandomizer" load_steps=2 format=3 uid="uid://cx2ojeq2tdt8e"]
 
-[ext_resource path="res://PixelLevel/Audio/170141__timgormly__8-bit-bump.wav" type="AudioStream" id=1]
+[ext_resource type="AudioStream" uid="uid://b3ejq7hp1s10c" path="res://PixelLevel/Audio/170141__timgormly__8-bit-bump.wav" id="1_wrkug"]
 
 [resource]
-audio_stream = ExtResource( 1 )
+streams_count = 1
 random_pitch = 1.22
+stream_0/stream = ExtResource("1_wrkug")
+stream_0/weight = 1.0

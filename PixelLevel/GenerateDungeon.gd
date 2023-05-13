@@ -26,7 +26,7 @@ func _placeRooms() -> Array:
 	var across := int((_width) / float(_maxRoomWidth))
 	var down := int((_height) / float(_maxRoomHeight))
 	var maxRooms := across * down
-	var used := Utility.repeat(false, maxRooms)
+	var used := Utility.arrayRepeat(false, maxRooms)
 	var actual := 1 + Random.next(maxRooms - 1)
 	var rooms := []
 	var roomIndex := 0

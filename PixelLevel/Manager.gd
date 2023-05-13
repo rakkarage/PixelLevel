@@ -14,7 +14,7 @@ extends Node
 @onready var _plus: Button = $Fore/Panel/VBox/HBoxLight/Plus
 @onready var _imageTexture := ImageTexture.new()
 @onready var _image := Image.new()
-const _max := Vector2(64, 64)
+const _max := Vector2i(64, 64)
 var _timerUpdateMap = Timer.new()
 const _updateMapDelay = 0.1
 
@@ -58,17 +58,15 @@ func _updateMap() -> void:
 		offset.y = at.y - size.y / 2.0
 		if offset.y < 0: offset.y = 0
 		if offset.y > original.y - size.y + 1: offset.y = original.y - size.y + 1
-	_image.create(int(size.x), int(size.y), false, Image.FORMAT_RGBA8)
-	false # _image.lock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
+	var image = Image.create(int(size.x), int(size.y), false, Image.FORMAT_RGBA8)
 	for y in range(size.y):
 		for x in range(size.x):
 			var actualX := int(x + offset.x)
 			var actualY := int(y + offset.y)
 			_image.set_pixel(x, y, _level.getMapColor(actualX, actualY))
-	false # _image.unlock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
-	_image.expand_x2_hq2x()
-	_image.expand_x2_hq2x()
-	_imageTexture.create_from_image(_image)
+	image.expand_x2_hq2x()
+	image.expand_x2_hq2x()
+	_imageTexture = ImageTexture.create_from_image(image)
 
 @onready var _g := {
 	# GenerateBasic.new(_level): 1,

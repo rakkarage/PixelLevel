@@ -1,10 +1,10 @@
-[gd_resource type="ShaderMaterial" load_steps=3 format=2]
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://b6veglcnmdmup"]
 
-[ext_resource path="res://PixelLevel/Animation/Mask.gdshader" type="Shader" id=1]
-[ext_resource path="res://PixelLevel/Sprite/MaskGate.png" type="Texture2D" id=2]
+[ext_resource type="Shader" path="res://PixelLevel/Animation/Mask.gdshader" id="1"]
+[ext_resource type="Texture2D" uid="uid://ccyucp7kuphir" path="res://PixelLevel/Sprite/MaskGate.png" id="2"]
 
 [resource]
-shader = ExtResource( 1 )
-shader_param/color = Color( 0, 0, 0, 0 )
-shader_param/scale = 0.0
-shader_param/mask = ExtResource( 2 )
+shader = ExtResource("1")
+shader_parameter/color = Color(0, 0, 0, 0)
+shader_parameter/scale = 0.0
+shader_parameter/mask = ExtResource("2")

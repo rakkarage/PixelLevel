@@ -19,13 +19,13 @@ func generate(delta: int = 1) -> void:
 func _drawMaze() -> void:
 	var start := Vector2.ZERO
 	var end := Vector2.ZERO
-	var generate := Vector2.ZERO
+	var p := Vector2.ZERO
 	var g := Random.next(4)
 	match g:
-		0: generate = Vector2(1, 1)
-		1: generate = Vector2(1, _height - 2)
-		2: generate = Vector2(_width - 2, 1)
-		3: generate = Vector2(_width - 2, _height - 2)
+		0: p = Vector2(1, 1)
+		1: p = Vector2(1, _height - 2)
+		2: p = Vector2(_width - 2, 1)
+		3: p = Vector2(_width - 2, _height - 2)
 	var s = Random.next(4)
 	match s:
 		0:
@@ -41,10 +41,10 @@ func _drawMaze() -> void:
 			start = Vector2(_width - 2, _height - 2)
 			end = Vector2(1, 1)
 	_level.startAt = start
-	_level.clearForeV(generate)
-	_setFloorOrRoomV(generate)
+	_level.clearForeV(p)
+	_setFloorOrRoomV(p)
 	var points := []
-	points.append(generate)
+	points.append(p)
 	while points.size():
 		var random := Random.next(points.size())
 		var current : Vector2 = points[random]

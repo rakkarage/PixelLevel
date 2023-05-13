@@ -32,7 +32,7 @@ func _drawWalk() -> void:
 
 func _walk(steps: int) -> Array:
 	_steps.clear()
-	for _step in range(steps):
+	for step in range(steps):
 		if Random.nextFloat() <= _changeChance or _stepCount > _stepsChange:
 			_changeDirection()
 		if _step():

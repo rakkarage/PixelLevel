@@ -2,14 +2,14 @@
 
 [ext_resource type="Texture2D" uid="uid://bfqkw2ks4qgxo" path="res://PixelMob/Sprite/SlimeP.png" id="1"]
 [ext_resource type="Script" path="res://PixelMob/TestRandom.gd" id="2"]
-[ext_resource type="PackedScene" path="res://PixelMob/Mob/Slime.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://flro1hiu4sqn" path="res://PixelMob/Mob/Slime.tscn" id="3"]
 [ext_resource type="Texture2D" uid="uid://mlecmfhjqrwr" path="res://PixelMob/Sprite/SlimeC.png" id="4"]
 [ext_resource type="Texture2D" uid="uid://dfw3556723rvc" path="res://PixelMob/Sprite/SlimeA.png" id="5"]
-[ext_resource type="PackedScene" path="res://PixelMob/Mob/SlimeSmaller.tscn" id="6"]
-[ext_resource type="PackedScene" path="res://PixelMob/Mob/SlimeSmall.tscn" id="7"]
-[ext_resource type="PackedScene" path="res://PixelMob/Mob/SlimeSquareSmall.tscn" id="8"]
-[ext_resource type="PackedScene" path="res://PixelMob/Mob/SlimeSquareSmaller.tscn" id="9"]
-[ext_resource type="PackedScene" path="res://PixelMob/Mob/SlimeSquare.tscn" id="10"]
+[ext_resource type="PackedScene" uid="uid://cp40dp4735b2f" path="res://PixelMob/Mob/SlimeSmaller.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://erw6kxso76q3" path="res://PixelMob/Mob/SlimeSmall.tscn" id="7"]
+[ext_resource type="PackedScene" uid="uid://up8usoj4h6g1" path="res://PixelMob/Mob/SlimeSquareSmall.tscn" id="8"]
+[ext_resource type="PackedScene" uid="uid://bkn2nruivq2mf" path="res://PixelMob/Mob/SlimeSquareSmaller.tscn" id="9"]
+[ext_resource type="PackedScene" uid="uid://bbn26htvl5mkk" path="res://PixelMob/Mob/SlimeSquare.tscn" id="10"]
 
 [node name="TestAll" type="Control"]
 layout_mode = 3

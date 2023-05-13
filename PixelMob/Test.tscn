@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bimw05dkquwja"]
 
-[ext_resource type="PackedScene" path="res://PixelMob/Mob/Slime.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://flro1hiu4sqn" path="res://PixelMob/Mob/Slime.tscn" id="1"]
 [ext_resource type="Script" path="res://PixelMob/Test.gd" id="7"]
 
 [node name="Test" type="Control"]

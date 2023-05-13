@@ -71,11 +71,11 @@ func _getAdjacentCount(list: Array, x: int, y: int) -> int:
 	return count
 
 func _getCellularList(steps: int, chance: float, birth: int, death: int) -> Array:
-	var list := Utility.repeat(false, _width * _height)
+	var list := Utility.arrayRepeat(false, _width * _height)
 	for i in range(list.size()):
 		list[i] = Random.nextFloat() <= chance
 	for _i in range(steps):
-		var temp := Utility.repeat(false, _width * _height)
+		var temp := Utility.arrayRepeat(false, _width * _height)
 		for y in range(_height):
 			for x in range(_width):
 				var adjacent := _getAdjacentCount(list, x, y)

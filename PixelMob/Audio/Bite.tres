@@ -1,8 +1,9 @@
-[gd_resource type="AudioStreamRandomizer" load_steps=2 format=2]
+[gd_resource type="AudioStreamRandomizer" load_steps=2 format=3 uid="uid://ysplh2y3mpn4"]
 
-[ext_resource path="res://PixelMob/Audio/Bite.wav" type="AudioStream" id=1]
-
+[ext_resource type="AudioStream" uid="uid://begb6ygxqxl3n" path="res://PixelMob/Audio/Bite.wav" id="1"]
 
 [resource]
-audio_stream = ExtResource( 1 )
+streams_count = 1
 random_pitch = 1.5
+stream_0/stream = ExtResource("1")
+stream_0/weight = 1.0
