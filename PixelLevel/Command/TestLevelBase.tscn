@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://txc51ttsajhp" path="res://PixelLevel/Target.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://flro1hiu4sqn" path="res://PixelMob/Mob/Slime.tscn" id="2"]
 [ext_resource type="Script" path="res://PixelLevel/Command/TestLevelBase.gd" id="3"]
-[ext_resource type="TileSet" uid="uid://o4hwwiwhwcrg" path="res://PixelLevel/Level.tres" id="6"]
+[ext_resource type="TileSet" uid="uid://rer8omh2xmlw" path="res://PixelLevel/Level.tres" id="6"]
 
 [node name="Level" type="Node"]
 script = ExtResource("3")

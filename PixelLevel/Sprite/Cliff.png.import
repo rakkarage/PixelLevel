@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b7a745rsow5fd"
-path="res://.godot/imported/Path.png-43dcc920504c43fd5db4217b518aa65a.ctex"
+uid="uid://dge8ikqhyrnmn"
+path="res://.godot/imported/Cliff.png-f1fd40ec92257a6d136ef264c209ac67.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://PixelLevel/Sprite/Path.png"
-dest_files=["res://.godot/imported/Path.png-43dcc920504c43fd5db4217b518aa65a.ctex"]
+source_file="res://PixelLevel/Sprite/Cliff.png"
+dest_files=["res://.godot/imported/Cliff.png-f1fd40ec92257a6d136ef264c209ac67.ctex"]
 
 [params]
 

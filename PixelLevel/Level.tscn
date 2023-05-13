@@ -1,13 +1,18 @@
-[gd_scene load_steps=10 format=3 uid="uid://j68vmebkp224"]
+[gd_scene load_steps=11 format=3 uid="uid://j68vmebkp224"]
 
-[ext_resource type="TileSet" uid="uid://o4hwwiwhwcrg" path="res://PixelLevel/Level.tres" id="1"]
+[ext_resource type="TileSet" uid="uid://rer8omh2xmlw" path="res://PixelLevel/Level.tres" id="1"]
 [ext_resource type="PackedScene" uid="uid://flro1hiu4sqn" path="res://PixelMob/Mob/Slime.tscn" id="2"]
 [ext_resource type="PackedScene" uid="uid://txc51ttsajhp" path="res://PixelLevel/Target.tscn" id="3"]
 [ext_resource type="Script" path="res://PixelLevel/Level.gd" id="4"]
 [ext_resource type="PackedScene" uid="uid://cpwpn22g1oh61" path="res://Interface/Back.tscn" id="5"]
 [ext_resource type="Script" path="res://PixelLevel/Manager.gd" id="6"]
 [ext_resource type="Animation" uid="uid://buew2qpi1tn52" path="res://PixelLevel/Animation/MaskAnimation.tres" id="7"]
-[ext_resource type="Material" uid="uid://b6veglcnmdmup" path="res://PixelLevel/Animation/MaskMaterial.tres" id="8"]
+[ext_resource type="Shader" path="res://Interface/Mask.gdshader" id="7_margt"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_le4a6"]
+shader = ExtResource("7_margt")
+shader_parameter/color = null
+shader_parameter/scale = 2.0
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_k1n3q"]
 _data = {
@@ -31,6 +36,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 stretch = true
 
@@ -41,7 +48,7 @@ size = Vector2i(1152, 648)
 render_target_update_mode = 4
 script = ExtResource("4")
 
-[node name="Camera3D" type="Camera2D" parent="Level/SubViewport"]
+[node name="Camera2D" type="Camera2D" parent="Level/SubViewport"]
 anchor_mode = 0
 
 [node name="Back" type="TileMap" parent="Level/SubViewport"]
@@ -124,7 +131,7 @@ offset_bottom = 80.0
 mouse_filter = 2
 
 [node name="Mask" type="ColorRect" parent="Fore"]
-material = ExtResource("8")
+material = SubResource("ShaderMaterial_le4a6")
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0

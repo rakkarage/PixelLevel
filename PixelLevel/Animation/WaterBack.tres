@@ -1,7 +1,7 @@
-[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://c7c1v2sfysogi"]
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://boed2ymsgdxfg"]
 
-[ext_resource type="Texture2D" uid="uid://bkyo1oeqfpqhn" path="res://PixelLevel/Sprite/Tile/Water.png" id="1"]
 [ext_resource type="Shader" path="res://PixelLevel/Animation/AnimationAdd.gdshader" id="2"]
+[ext_resource type="Texture2D" uid="uid://bkyo1oeqfpqhn" path="res://PixelLevel/Sprite/Water.png" id="2_t5xs5"]
 
 [resource]
 shader = ExtResource("2")
@@ -9,4 +9,4 @@ shader_parameter/count = 7.0
 shader_parameter/duration = 0.125
 shader_parameter/width = 0.0714286
 shader_parameter/startX = 0.0
-shader_parameter/frames = ExtResource("1")
+shader_parameter/frames = ExtResource("2_t5xs5")

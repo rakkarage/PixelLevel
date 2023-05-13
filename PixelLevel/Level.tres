@@ -1,22 +1,22 @@
-[gd_resource type="TileSet" load_steps=97 format=3 uid="uid://o4hwwiwhwcrg"]
+[gd_resource type="TileSet" load_steps=97 format=3 uid="uid://rer8omh2xmlw"]
 
-[ext_resource type="Texture2D" uid="uid://bxsfc4jvnng6n" path="res://PixelLevel/Sprite/Tile/Light.png" id="1"]
-[ext_resource type="Texture2D" uid="uid://hvjkds7gedju" path="res://PixelLevel/Sprite/Tile/Doodad.png" id="2"]
-[ext_resource type="Texture2D" uid="uid://w7mlnv2lk8ti" path="res://PixelLevel/Sprite/Tile/Edge.png" id="3"]
-[ext_resource type="Texture2D" uid="uid://dge8ikqhyrnmn" path="res://PixelLevel/Sprite/Tile/Cliff.png" id="4"]
-[ext_resource type="Texture2D" uid="uid://bkyo1oeqfpqhn" path="res://PixelLevel/Sprite/Tile/Water.png" id="5"]
-[ext_resource type="Material" uid="uid://d1vkesy0sbyn8" path="res://PixelLevel/Animation/Banner0.tres" id="6"]
-[ext_resource type="Material" uid="uid://cx0tt8v2ebarw" path="res://PixelLevel/Animation/Torch.tres" id="7"]
-[ext_resource type="Material" uid="uid://cghhe1vjtc4jx" path="res://PixelLevel/Animation/Banner1.tres" id="8"]
-[ext_resource type="Material" uid="uid://c7c1v2sfysogi" path="res://PixelLevel/Animation/WaterBack.tres" id="9"]
-[ext_resource type="Material" uid="uid://0mc0u1din2vn" path="res://PixelLevel/Animation/WaterFore.tres" id="10"]
-[ext_resource type="Texture2D" uid="uid://beo1t80stwo63" path="res://PixelLevel/Sprite/Tile/Rubble.png" id="11"]
-[ext_resource type="Texture2D" uid="uid://bmfreaxt2uhw3" path="res://PixelLevel/Sprite/Tile/Outside.png" id="12"]
-[ext_resource type="Material" uid="uid://bf88mpmtqtvnm" path="res://PixelLevel/Animation/Fountain.tres" id="13"]
-[ext_resource type="Texture2D" uid="uid://ba2mgwj3s623m" path="res://PixelLevel/Sprite/Tile/Theme.png" id="22"]
+[ext_resource type="Texture2D" uid="uid://dge8ikqhyrnmn" path="res://PixelLevel/Sprite/Cliff.png" id="1_gfr4i"]
+[ext_resource type="Texture2D" uid="uid://hvjkds7gedju" path="res://PixelLevel/Sprite/Doodad.png" id="2_xvijb"]
+[ext_resource type="Texture2D" uid="uid://w7mlnv2lk8ti" path="res://PixelLevel/Sprite/Edge.png" id="3_4vkc8"]
+[ext_resource type="Texture2D" uid="uid://bxsfc4jvnng6n" path="res://PixelLevel/Sprite/Light.png" id="4_s6pyh"]
+[ext_resource type="Material" uid="uid://qxvggwd34vai" path="res://PixelLevel/Animation/Banner0.tres" id="6"]
+[ext_resource type="Material" uid="uid://8wa4pgw4oek1" path="res://PixelLevel/Animation/Torch.tres" id="7"]
+[ext_resource type="Texture2D" uid="uid://ba2mgwj3s623m" path="res://PixelLevel/Sprite/Theme.png" id="7_e4cd4"]
+[ext_resource type="Material" uid="uid://c0bk02rwpe5v6" path="res://PixelLevel/Animation/Banner1.tres" id="8"]
+[ext_resource type="Material" uid="uid://boed2ymsgdxfg" path="res://PixelLevel/Animation/WaterBack.tres" id="9"]
+[ext_resource type="Material" uid="uid://c1nbkjx3as8vk" path="res://PixelLevel/Animation/WaterFore.tres" id="10"]
+[ext_resource type="Texture2D" uid="uid://bkyo1oeqfpqhn" path="res://PixelLevel/Sprite/Water.png" id="10_7dpgy"]
+[ext_resource type="Texture2D" uid="uid://beo1t80stwo63" path="res://PixelLevel/Sprite/Rubble.png" id="12_yupuo"]
+[ext_resource type="Material" uid="uid://cto8u4cwfo2u8" path="res://PixelLevel/Animation/Fountain.tres" id="13"]
+[ext_resource type="Texture2D" uid="uid://bmfreaxt2uhw3" path="res://PixelLevel/Sprite/Outside.png" id="13_1u0aa"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_imfsq"]
-texture = ExtResource("4")
+texture = ExtResource("1_gfr4i")
 0:0/next_alternative_id = 8
 0:0/0 = 0
 0:0/1 = 1
@@ -229,7 +229,7 @@ texture = ExtResource("4")
 9:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_kyxh0"]
-texture = ExtResource("4")
+texture = ExtResource("1_gfr4i")
 margins = Vector2i(0, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -443,7 +443,7 @@ margins = Vector2i(0, 16)
 9:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_y42yq"]
-texture = ExtResource("2")
+texture = ExtResource("2_xvijb")
 margins = Vector2i(144, 80)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -510,7 +510,7 @@ margins = Vector2i(144, 80)
 2:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2vesf"]
-texture = ExtResource("2")
+texture = ExtResource("2_xvijb")
 margins = Vector2i(176, 64)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -535,7 +535,7 @@ margins = Vector2i(176, 64)
 0:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_hmpq6"]
-texture = ExtResource("2")
+texture = ExtResource("2_xvijb")
 margins = Vector2i(96, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -602,7 +602,7 @@ margins = Vector2i(96, 16)
 2:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_rq7kx"]
-texture = ExtResource("2")
+texture = ExtResource("2_xvijb")
 margins = Vector2i(144, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -669,7 +669,7 @@ margins = Vector2i(144, 16)
 2:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ipyit"]
-texture = ExtResource("2")
+texture = ExtResource("2_xvijb")
 margins = Vector2i(144, 0)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -736,7 +736,7 @@ margins = Vector2i(144, 0)
 2:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3pq6n"]
-texture = ExtResource("3")
+texture = ExtResource("3_4vkc8")
 0:0/next_alternative_id = 8
 0:0/0 = 0
 0:0/1 = 1
@@ -1600,7 +1600,7 @@ texture = ExtResource("3")
 40:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_863lv"]
-texture = ExtResource("3")
+texture = ExtResource("3_4vkc8")
 margins = Vector2i(0, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -2108,7 +2108,7 @@ margins = Vector2i(0, 16)
 23:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_kr17x"]
-texture = ExtResource("3")
+texture = ExtResource("3_4vkc8")
 margins = Vector2i(0, 32)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -2196,7 +2196,7 @@ margins = Vector2i(0, 32)
 3:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6f148"]
-texture = ExtResource("3")
+texture = ExtResource("3_4vkc8")
 margins = Vector2i(64, 32)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -2788,7 +2788,7 @@ margins = Vector2i(64, 32)
 27:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_u8q17"]
-texture = ExtResource("1")
+texture = ExtResource("4_s6pyh")
 0:0/next_alternative_id = 8
 0:0/0 = 0
 0:0/1 = 1
@@ -3463,7 +3463,7 @@ texture = ExtResource("1")
 31:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dgyo7"]
-texture = ExtResource("2")
+texture = ExtResource("2_xvijb")
 0:0/next_alternative_id = 8
 0:0/0 = 0
 0:0/0/material = ExtResource("6")
@@ -3640,7 +3640,7 @@ texture = ExtResource("2")
 5:0/7/material = ExtResource("6")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qpcco"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 0:0/next_alternative_id = 8
 0:0/0 = 0
 0:0/0/material = ExtResource("7")
@@ -3759,7 +3759,7 @@ texture = ExtResource("22")
 3:0/7/material = ExtResource("7")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_83mow"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(64, 0)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -3847,7 +3847,7 @@ margins = Vector2i(64, 0)
 3:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_p8bh6"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(128, 0)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -3935,7 +3935,7 @@ margins = Vector2i(128, 0)
 3:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_aus08"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(192, 0)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -4065,7 +4065,7 @@ margins = Vector2i(192, 0)
 5:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_a1kte"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(288, 0)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -4195,7 +4195,7 @@ margins = Vector2i(288, 0)
 5:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_v0r6q"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(384, 0)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -4241,7 +4241,7 @@ margins = Vector2i(384, 0)
 1:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vdsp3"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(416, 0)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -4308,7 +4308,7 @@ margins = Vector2i(416, 0)
 2:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3gywf"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(0, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -4428,7 +4428,7 @@ margins = Vector2i(0, 16)
 3:0/7/material = ExtResource("7")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jdqcw"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(64, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -4516,7 +4516,7 @@ margins = Vector2i(64, 16)
 3:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jl1sg"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(128, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -4604,7 +4604,7 @@ margins = Vector2i(128, 16)
 3:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_nbten"]
-texture = ExtResource("2")
+texture = ExtResource("2_xvijb")
 margins = Vector2i(0, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -4753,7 +4753,7 @@ margins = Vector2i(0, 16)
 4:0/7/material = ExtResource("8")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_mvonv"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(192, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -4883,7 +4883,7 @@ margins = Vector2i(192, 16)
 5:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_budqb"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(288, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -5013,7 +5013,7 @@ margins = Vector2i(288, 16)
 5:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pq486"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(384, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -5059,7 +5059,7 @@ margins = Vector2i(384, 16)
 1:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_46ito"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(416, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -5126,7 +5126,7 @@ margins = Vector2i(416, 16)
 2:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_io4e3"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(0, 32)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -5246,7 +5246,7 @@ margins = Vector2i(0, 32)
 3:0/7/material = ExtResource("7")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yqaho"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(64, 32)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -5334,7 +5334,7 @@ margins = Vector2i(64, 32)
 3:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_mhebj"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(128, 32)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -5422,7 +5422,7 @@ margins = Vector2i(128, 32)
 3:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_n0mwb"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(192, 32)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -5552,7 +5552,7 @@ margins = Vector2i(192, 32)
 5:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_h6gpi"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(288, 32)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -5682,7 +5682,7 @@ margins = Vector2i(288, 32)
 5:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wt0vd"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(384, 32)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -5728,7 +5728,7 @@ margins = Vector2i(384, 32)
 1:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_l1h1c"]
-texture = ExtResource("2")
+texture = ExtResource("2_xvijb")
 margins = Vector2i(0, 32)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -5984,7 +5984,7 @@ margins = Vector2i(0, 32)
 11:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fi85d"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(416, 32)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -6051,7 +6051,7 @@ margins = Vector2i(416, 32)
 2:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fjq17"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(0, 48)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -6171,7 +6171,7 @@ margins = Vector2i(0, 48)
 3:0/7/material = ExtResource("7")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ndf72"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(64, 48)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -6259,7 +6259,7 @@ margins = Vector2i(64, 48)
 3:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_hdaxa"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(128, 48)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -6347,7 +6347,7 @@ margins = Vector2i(128, 48)
 3:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_a023e"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(192, 48)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -6477,7 +6477,7 @@ margins = Vector2i(192, 48)
 5:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_hg3qk"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(288, 48)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -6607,7 +6607,7 @@ margins = Vector2i(288, 48)
 5:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_v6v4e"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(384, 48)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -6653,7 +6653,7 @@ margins = Vector2i(384, 48)
 1:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7fx8e"]
-texture = ExtResource("22")
+texture = ExtResource("7_e4cd4")
 margins = Vector2i(416, 48)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -6720,7 +6720,7 @@ margins = Vector2i(416, 48)
 2:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_s841p"]
-texture = ExtResource("5")
+texture = ExtResource("10_7dpgy")
 0:0/next_alternative_id = 8
 0:0/0 = 0
 0:0/0/material = ExtResource("9")
@@ -6926,7 +6926,7 @@ texture = ExtResource("5")
 6:0/7/material = ExtResource("9")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8dwd4"]
-texture = ExtResource("5")
+texture = ExtResource("10_7dpgy")
 margins = Vector2i(112, 0)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -7133,7 +7133,7 @@ margins = Vector2i(112, 0)
 6:0/7/material = ExtResource("10")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_aogat"]
-texture = ExtResource("2")
+texture = ExtResource("2_xvijb")
 margins = Vector2i(0, 48)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -7263,7 +7263,7 @@ margins = Vector2i(0, 48)
 5:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_hk8xq"]
-texture = ExtResource("5")
+texture = ExtResource("10_7dpgy")
 margins = Vector2i(0, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -7470,7 +7470,7 @@ margins = Vector2i(0, 16)
 6:0/7/material = ExtResource("9")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qusln"]
-texture = ExtResource("5")
+texture = ExtResource("10_7dpgy")
 margins = Vector2i(112, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -7677,7 +7677,7 @@ margins = Vector2i(112, 16)
 6:0/7/material = ExtResource("10")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_58waj"]
-texture = ExtResource("5")
+texture = ExtResource("10_7dpgy")
 margins = Vector2i(0, 32)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -7884,7 +7884,7 @@ margins = Vector2i(0, 32)
 6:0/7/material = ExtResource("9")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ko4jo"]
-texture = ExtResource("5")
+texture = ExtResource("10_7dpgy")
 margins = Vector2i(112, 32)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -8091,7 +8091,7 @@ margins = Vector2i(112, 32)
 6:0/7/material = ExtResource("10")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5kkte"]
-texture = ExtResource("5")
+texture = ExtResource("10_7dpgy")
 margins = Vector2i(0, 48)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -8298,7 +8298,7 @@ margins = Vector2i(0, 48)
 6:0/7/material = ExtResource("9")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0bmng"]
-texture = ExtResource("5")
+texture = ExtResource("10_7dpgy")
 margins = Vector2i(112, 48)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -8505,7 +8505,7 @@ margins = Vector2i(112, 48)
 6:0/7/material = ExtResource("10")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_757hq"]
-texture = ExtResource("11")
+texture = ExtResource("12_yupuo")
 0:0/next_alternative_id = 8
 0:0/0 = 0
 0:0/1 = 1
@@ -8634,7 +8634,7 @@ texture = ExtResource("11")
 5:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_hxrtw"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 0:0/next_alternative_id = 8
 0:0/0 = 0
 0:0/1 = 1
@@ -8868,7 +8868,7 @@ texture = ExtResource("12")
 10:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_u05as"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(176, 0)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -8914,7 +8914,7 @@ margins = Vector2i(176, 0)
 1:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3tvaq"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(208, 0)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -8981,7 +8981,7 @@ margins = Vector2i(208, 0)
 2:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lhp2n"]
-texture = ExtResource("2")
+texture = ExtResource("2_xvijb")
 margins = Vector2i(0, 64)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -9159,7 +9159,7 @@ margins = Vector2i(0, 64)
 5:0/7/material = ExtResource("13")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_iqbfr"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(256, 0)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -9205,7 +9205,7 @@ margins = Vector2i(256, 0)
 1:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jjiwu"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(288, 0)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -9377,7 +9377,7 @@ margins = Vector2i(288, 0)
 7:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2q14i"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(416, 0)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -9549,7 +9549,7 @@ margins = Vector2i(416, 0)
 7:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2js3s"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(544, 0)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -9742,7 +9742,7 @@ margins = Vector2i(544, 0)
 8:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7o5wd"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(688, 0)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -9788,7 +9788,7 @@ margins = Vector2i(688, 0)
 1:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_kb6fd"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(720, 0)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -9834,7 +9834,7 @@ margins = Vector2i(720, 0)
 1:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_w2p4q"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(752, 0)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -9880,7 +9880,7 @@ margins = Vector2i(752, 0)
 1:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_em4vs"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(784, 0)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -9968,7 +9968,7 @@ margins = Vector2i(784, 0)
 3:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xtfpl"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(848, 0)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -10098,7 +10098,7 @@ margins = Vector2i(848, 0)
 5:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_sggis"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(944, 0)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -10207,7 +10207,7 @@ margins = Vector2i(944, 0)
 4:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qgmu8"]
-texture = ExtResource("2")
+texture = ExtResource("2_xvijb")
 margins = Vector2i(0, 80)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -10274,7 +10274,7 @@ margins = Vector2i(0, 80)
 2:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_nagff"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(0, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -10509,7 +10509,7 @@ margins = Vector2i(0, 16)
 10:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_43vjg"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(176, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -10555,7 +10555,7 @@ margins = Vector2i(176, 16)
 1:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3hnkv"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(208, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -10622,7 +10622,7 @@ margins = Vector2i(208, 16)
 2:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k5584"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(256, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -10668,7 +10668,7 @@ margins = Vector2i(256, 16)
 1:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0demd"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(416, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -10840,7 +10840,7 @@ margins = Vector2i(416, 16)
 7:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1mprq"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(544, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -11033,7 +11033,7 @@ margins = Vector2i(544, 16)
 8:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3nisd"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(688, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -11079,7 +11079,7 @@ margins = Vector2i(688, 16)
 1:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vjwsi"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(720, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -11125,7 +11125,7 @@ margins = Vector2i(720, 16)
 1:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_321xd"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(752, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -11171,7 +11171,7 @@ margins = Vector2i(752, 16)
 1:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0p5sc"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(784, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -11259,7 +11259,7 @@ margins = Vector2i(784, 16)
 3:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_364ad"]
-texture = ExtResource("2")
+texture = ExtResource("2_xvijb")
 margins = Vector2i(48, 80)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -11326,7 +11326,7 @@ margins = Vector2i(48, 80)
 2:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_t646k"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(848, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -11456,7 +11456,7 @@ margins = Vector2i(848, 16)
 5:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vy4uy"]
-texture = ExtResource("12")
+texture = ExtResource("13_1u0aa")
 margins = Vector2i(944, 16)
 0:0/next_alternative_id = 8
 0:0/0 = 0
@@ -11565,7 +11565,7 @@ margins = Vector2i(944, 16)
 4:0/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_uua4r"]
-texture = ExtResource("2")
+texture = ExtResource("2_xvijb")
 margins = Vector2i(96, 80)
 0:0/next_alternative_id = 8
 0:0/0 = 0

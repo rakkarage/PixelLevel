@@ -1,15 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://txc51ttsajhp"]
-
-[ext_resource type="SpriteFrames" uid="uid://ccj4jws6okqdm" path="res://PixelLevel/Animation/Target.tres" id="1"]
+[gd_scene format=3 uid="uid://txc51ttsajhp"]
 
 [node name="Target" type="Node2D"]
 
 [node name="Back" type="AnimatedSprite2D" parent="."]
-sprite_frames = ExtResource("1")
+sprite_frames = null
 animation = &"Back"
 offset = Vector2(8, 0)
 
 [node name="Fore" type="AnimatedSprite2D" parent="."]
-sprite_frames = ExtResource("1")
+sprite_frames = null
 animation = &"Fore"
 offset = Vector2(8, 0)

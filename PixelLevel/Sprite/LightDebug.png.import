@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bxsfc4jvnng6n"
-path="res://.godot/imported/Light.png-0f7500c510a1591bf263b105f60e72a6.ctex"
+uid="uid://b4tq02vfn2eaj"
+path="res://.godot/imported/LightDebug.png-90764051255dc7abcdbcec4b443a4471.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://PixelLevel/Sprite/Tile/Light.png"
-dest_files=["res://.godot/imported/Light.png-0f7500c510a1591bf263b105f60e72a6.ctex"]
+source_file="res://PixelLevel/Sprite/LightDebug.png"
+dest_files=["res://.godot/imported/LightDebug.png-90764051255dc7abcdbcec4b443a4471.ctex"]
 
 [params]
 

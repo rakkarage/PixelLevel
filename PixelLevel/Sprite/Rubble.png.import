@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ba2mgwj3s623m"
-path="res://.godot/imported/Theme.png-d4164c957010fda8a0dee30b774c6946.ctex"
+uid="uid://beo1t80stwo63"
+path="res://.godot/imported/Rubble.png-cb4f17b8912aec0cbb5ee9ff32fed4ae.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://PixelLevel/Sprite/Tile/Theme.png"
-dest_files=["res://.godot/imported/Theme.png-d4164c957010fda8a0dee30b774c6946.ctex"]
+source_file="res://PixelLevel/Sprite/Rubble.png"
+dest_files=["res://.godot/imported/Rubble.png-cb4f17b8912aec0cbb5ee9ff32fed4ae.ctex"]
 
 [params]
 
@@ -21,7 +21,7 @@ compress/lossy_quality=0.7
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=true
+mipmaps/generate=false
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""
@@ -31,4 +31,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=1

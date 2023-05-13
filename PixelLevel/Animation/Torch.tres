@@ -1,7 +1,7 @@
-[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://cx0tt8v2ebarw"]
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://8wa4pgw4oek1"]
 
-[ext_resource type="Texture2D" uid="uid://ba2mgwj3s623m" path="res://PixelLevel/Sprite/Tile/Theme.png" id="1"]
 [ext_resource type="Shader" path="res://PixelLevel/Animation/Animation.gdshader" id="2"]
+[ext_resource type="Texture2D" uid="uid://ba2mgwj3s623m" path="res://PixelLevel/Sprite/Theme.png" id="2_ogsjo"]
 
 [resource]
 shader = ExtResource("2")
@@ -9,4 +9,4 @@ shader_parameter/count = 4.0
 shader_parameter/duration = 0.125
 shader_parameter/width = 0.0344828
 shader_parameter/startX = 0.0
-shader_parameter/frames = ExtResource("1")
+shader_parameter/frames = ExtResource("2_ogsjo")
