@@ -82,9 +82,9 @@ func _zoom(event: InputEvent) -> void:
 
 func _rotate(event: InputEvent) -> void:
 	if event is InputEventScreenDrag:
-		var rotate : float = _touch[0].p.angle_to_point(_touch[1].p)
-		_rotateCurrent = _rotateLast - rotate
-		_rotateLast = rotate
+		var r : float = _touch[0].p.angle_to_point(_touch[1].p)
+		_rotateCurrent = _rotateLast - r
+		_rotateLast = r
 		emit_signal("onRotate", _mid(_touch[0].p, _touch[1].p), -_rotateCurrent)
 
 const _colorA := Color(0.25, 0.25, 0.25)
