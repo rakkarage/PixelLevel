@@ -14,14 +14,20 @@ _data = {
 "Mask": ExtResource("7")
 }
 
-[node name="Level" type="Node"]
+[node name="Level" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("6")
 
 [node name="Back" parent="." instance=ExtResource("5")]
-layout_mode = 3
-anchors_preset = 15
+layout_mode = 1
 
 [node name="Level" type="SubViewportContainer" parent="."]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -100,10 +106,12 @@ format = 2
 [node name="Target" parent="Level/SubViewport" instance=ExtResource("3")]
 
 [node name="Fore" type="Control" parent="."]
-layout_mode = 3
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 
 [node name="MiniMap" type="TextureRect" parent="Fore"]

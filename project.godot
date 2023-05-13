@@ -34,6 +34,11 @@ Audio="*res://PixelLevel/Audio.tscn"
 
 window/handheld/orientation="sensor"
 
+[gui]
+
+theme/custom="res://Interface/Theme.tres"
+theme/custom_font="res://Interface/Font/SuperWhite.fnt"
+
 [input]
 
 ui_left={

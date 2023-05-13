@@ -17,8 +17,8 @@ const Directions := {
 	Direction.NorthWest: Vector2.UP + Vector2.LEFT,
 }
 
-var delta: Vector2
-var _old: Vector2
+var delta: Vector2i
+var _old: Vector2i
 var _map: TileMap
 var _mob: Mob
 var _rect: Rect2
