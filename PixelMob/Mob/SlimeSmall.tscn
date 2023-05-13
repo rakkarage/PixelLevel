@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://erw6kxso76q3"]
+[gd_scene load_steps=13 format=3 uid="uid://erw6kxso76q3"]
 
 [ext_resource type="Script" path="res://PixelMob/Mob.gd" id="1"]
 [ext_resource type="AnimationNodeStateMachine" uid="uid://bb51mn7kse13m" path="res://PixelMob/Animation/Tree.tres" id="2"]
@@ -12,6 +12,15 @@
 [ext_resource type="Animation" uid="uid://cvx6rdgce45lt" path="res://PixelMob/Animation/SlimeSmall/Idle2.tres" id="10"]
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id="1"]
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_46ov7"]
+_data = {
+"Attack": ExtResource("8"),
+"Idle0": ExtResource("6"),
+"Idle1": ExtResource("5"),
+"Idle2": ExtResource("10"),
+"Walk": ExtResource("7")
+}
 
 [node name="SlimeSmall" type="Sprite2D"]
 texture = ExtResource("9")
@@ -27,11 +36,9 @@ parameters/Idle/blend_position = 0
 
 [node name="Animation" type="AnimationPlayer" parent="Tree"]
 root_node = NodePath("../..")
-anims/Attack = ExtResource("8")
-anims/Idle0 = ExtResource("6")
-anims/Idle1 = ExtResource("5")
-anims/Idle2 = ExtResource("10")
-anims/Walk = ExtResource("7")
+libraries = {
+"": SubResource("AnimationLibrary_46ov7")
+}
 
 [node name="Attack" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4")

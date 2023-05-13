@@ -3,6 +3,7 @@
 [resource]
 resource_name = "Idle1"
 length = 1.5
+loop_mode = 1
 step = 0.125
 tracks/0/type = "value"
 tracks/0/imported = false
