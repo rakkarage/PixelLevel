@@ -175,7 +175,7 @@ func _fadeAndFree() -> void:
 	_pathPoints.remove_at(0)
 	var node = _path.get_child(0)
 	var t = get_tree().create_tween()
-	t.interpolate_property(node, "modulate", null, Color.TRANSPARENT, _turnTime, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
+	t.tween_property(node, "modulate", Color.TRANSPARENT, _turnTime)
 	await t.tween_all_completed
 	node.queue_free()
 	if _pathPoints.size() > 1:
@@ -222,7 +222,8 @@ func _face(mob: Node2D, direction: Vector2) -> void:
 func _step(mob: Node2D, direction: Vector2) -> void:
 	mob.walk()
 	_tweenStep.kill()
-	_tweenStep.interpolate_property(mob, "global_position", null, mob.global_position + Vector2(_world(direction)), _turnTime, Tween.TRANS_CIRC, Tween.EASE_IN_OUT)
+	_tweenStep.set_trans(Tween.TRANS_CIRC).set_ease(Tween.EASE_IN_OUT)
+	_tweenStep.tween_property(mob, "global_position", mob.global_position + Vector2(_world(direction)), _turnTime)
 	await _tweenStep.tween_all_completed
 
 func _addPoints() -> void:
@@ -381,7 +382,8 @@ func _cameraUpdate() -> void:
 
 func _cameraSnap(to: Vector2) -> void:
 	_tweenCamera.kill()
-	_tweenCamera.interpolate_property(_camera, "global_position", null, to, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
+	_tweenCamera.set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+	_tweenCamera.tween_property(_camera, "global_position", to, _duration)
 	await _tweenCamera.tween_all_completed
 	emit_signal("updateMap")
 
@@ -496,7 +498,8 @@ func _targetSnap(tile: Vector2) -> void:
 	var p := _world(tile)
 	if not _target.global_position.is_equal_approx(p):
 		_tweenTarget.kill()
-		_tweenTarget.interpolate_property(_target, "global_position", null, p, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
+		_tweenTarget.set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+		_tweenTarget.tween_property(_target, "global_position", p, _duration)
 
 func _normalize() -> Vector2i:
 	return (_camera.global_position - _mapSize() / 2.0) / _oldSize

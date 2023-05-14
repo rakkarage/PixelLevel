@@ -91,7 +91,8 @@ func _cameraUpdate() -> void:
 
 func _cameraSnap(to: Vector2) -> void:
 	_tweenCamera.kill()
-	_tweenCamera.interpolate_property(_camera, "global_position", null, to, _tweenTime, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
+	_tweenCamera.set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+	_tweenCamera.tween_property(_camera, "global_position", to, _tweenTime)
 
 func _zoomPinch(at: Vector2, amount: float) -> void:
 	if amount > 0: _zoom(at, _zoomFactorOut)
