@@ -372,22 +372,11 @@ func _cameraToMob() -> void:
 func _cameraBy(by: Vector2) -> void:
 	_cameraTo(_camera.global_position + by)
 
-func _constrainRect(world: Rect2, map: Rect2) -> Vector2:
-	return _constrain(world.position, world.end, map.position, map.end)
-
-func _constrain(minWorld: Vector2, maxWorld: Vector2, minMap: Vector2, maxMap: Vector2) -> Vector2:
-	var delta := Vector2.ZERO
-	if minWorld.x > minMap.x: delta.x += minMap.x - minWorld.x
-	if maxWorld.x < maxMap.x: delta.x -= maxWorld.x - maxMap.x
-	if minWorld.y > minMap.y: delta.y += minMap.y - minWorld.y
-	if maxWorld.y < maxMap.y: delta.y -= maxWorld.y - maxMap.y
-	return delta
-
 func _cameraUpdate() -> void:
 	var map := mapBounds()
 	var world := _worldBounds().grow(_back.tile_set.tile_size.x)
 	if not world.intersects(map):
-		_cameraSnap(_camera.global_position + _constrainRect(world, map))
+		_cameraSnap(_camera.global_position + Utility.constrainRect(world, map))
 	else:
 		emit_signal("updateMap")
 
