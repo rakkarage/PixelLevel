@@ -130,8 +130,8 @@ func _ready() -> void:
 	_tweenTarget = get_tree().create_tween()
 	generated()
 	_cameraCenter()
-	Utility.stfu(connect("size_changed", Callable(self, "_onResize")))
-	Utility.stfu(Gesture.connect("onZoom", Callable(self, "_zoomPinch")))
+	connect("size_changed", _onResize)
+	Gesture.connect("onZoom", _zoomPinch)
 
 func generated() -> void:
 	_oldSize = size
@@ -350,7 +350,7 @@ func _worldBounds() -> Rect2:
 func _map(position: Vector2) -> Vector2:
 	return _back.local_to_map(position)
 
-func _mapSize() -> Vector2:
+func _mapSize() -> Vector2i:
 	return _back.get_used_rect().size * _back.tile_set.tile_size
 
 func mapBounds() -> Rect2:
@@ -393,13 +393,13 @@ func _cameraUpdate() -> void:
 
 func _cameraSnap(to: Vector2) -> void:
 	_cameraStop()
-	Utility.stfu(_tweenCamera.interpolate_property(_camera, "global_position", null, to, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
-	Utility.stfu(_tweenCamera.start())
+	_tweenCamera.interpolate_property(_camera, "global_position", null, to, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
+	_tweenCamera.start()
 	await _tweenCamera.tween_all_completed
 	emit_signal("updateMap")
 
 func _cameraStop() -> void:
-	# Utility.stfu(_tweenCamera.stop(_camera, "global_position"))
+	# _tweenCamera.stop(_camera, "global_position")
 	pass
 
 const _edgeOffset := 1.5
@@ -513,18 +513,18 @@ func _targetSnap(tile: Vector2) -> void:
 	var p := _world(tile)
 	if not _target.global_position.is_equal_approx(p):
 		_targetStop()
-		Utility.stfu(_tweenTarget.interpolate_property(_target, "global_position", null, p, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
-		Utility.stfu(_tweenTarget.start())
+		_tweenTarget.interpolate_property(_target, "global_position", null, p, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
+		_tweenTarget.start()
 
 func _targetStop() -> void:
-	# Utility.stfu(_tweenTarget.stop(_target, "global_position"))
+	# _tweenTarget.stop(_target, "global_position")
 	pass
 
-func _normalize() -> Vector2:
+func _normalize() -> Vector2i:
 	return (_camera.global_position - _mapSize() / 2.0) / _oldSize
 
 func _onResize() -> void:
-	# _camera.global_position = _normalize() * size + _mapSize() / 2.0
+	_camera.global_position = _normalize() * size + Vector2i(_mapSize() / 2.0)
 	_oldSize = size
 	_cameraUpdate()
 

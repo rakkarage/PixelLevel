@@ -15,9 +15,9 @@ const _turnTime := 0.22
 var _commands := CommandQueue.new()
 
 func _ready() -> void:
-	Utility.stfu(_undoButton.connect("pressed", Callable(self, "_undoPressed")))
-	Utility.stfu(_redoButton.connect("pressed", Callable(self, "_redoPressed")))
-	Utility.stfu(_commands.connect("changed", Callable(self, "_commandsChanged")))
+	_undoButton.connect("pressed", _undoPressed)
+	_redoButton.connect("pressed", _redoPressed)
+	_commands.connect("changed", _commandsChanged)
 	_mob.global_position = _world(_startAt) + _back.cell_size / 2.0
 	_target.modulate = Color.TRANSPARENT
 	_addMobs()

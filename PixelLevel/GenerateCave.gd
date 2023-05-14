@@ -147,7 +147,7 @@ func _removeSmallCaves(caves: Dictionary, list: Array) -> void:
 			var cave: Array = caves[key]
 			for i in cave:
 				list[i] = true
-		Utility.stfu(caves.erase(key))
+		caves.erase(key)
 
 func _isCaveEdge(list: Array, x: int, y: int) -> bool:
 	var edge := false

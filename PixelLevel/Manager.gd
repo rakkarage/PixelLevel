@@ -13,7 +13,6 @@ extends Node
 @onready var _toggle: Button = $Fore/Panel/VBox/HBoxLight/Toggle
 @onready var _plus: Button = $Fore/Panel/VBox/HBoxLight/Plus
 @onready var _imageTexture := ImageTexture.new()
-@onready var _image := Image.new()
 const _max := Vector2i(64, 64)
 var _timerUpdateMap = Timer.new()
 const _updateMapDelay = 0.1
@@ -21,17 +20,17 @@ const _updateMapDelay = 0.1
 func _ready() -> void:
 	_textureRect.texture = _imageTexture
 	_updateMap()
-	Utility.stfu(_level.connect("updateMap", Callable(self, "_limitedUpdateMap")))
-	_timerUpdateMap.connect("timeout", Callable(self, "_updateMap"))
+	_level.connect("updateMap", _limitedUpdateMap)
+	_timerUpdateMap.connect("timeout", _updateMap)
 	add_child(_timerUpdateMap)
-	Utility.stfu(_level.connect("generate", Callable(self, "_generate")))
-	Utility.stfu(_level.connect("generateUp", Callable(self, "_levelUp")))
-	Utility.stfu(_minus.connect("pressed", Callable(self, "_lightMinus")))
-	Utility.stfu(_toggle.connect("pressed", Callable(self, "_lightToggle")))
-	Utility.stfu(_plus.connect("pressed", Callable(self, "_lightPlus")))
-	Utility.stfu(_up.connect("pressed", Callable(self, "_levelUp")))
-	Utility.stfu(_regen.connect("pressed", Callable(self, "_levelRegen")))
-	Utility.stfu(_down.connect("pressed", Callable(self, "_levelDown")))
+	_level.connect("generate", _generate)
+	_level.connect("generateUp", _levelUp)
+	_minus.connect("pressed", _lightMinus)
+	_toggle.connect("pressed", _lightToggle)
+	_plus.connect("pressed", _lightPlus)
+	_up.connect("pressed", _levelUp)
+	_regen.connect("pressed", _levelRegen)
+	_down.connect("pressed", _levelDown)
 	_light.text = str(_level.lightRadius)
 
 func _input(event: InputEvent) -> void:

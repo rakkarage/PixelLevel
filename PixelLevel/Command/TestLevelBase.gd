@@ -22,8 +22,8 @@ func _ready() -> void:
 	_tweenCamera = get_tree().create_tween()
 	add_child(_tweenCamera)
 	_cameraTo(_center())
-	Utility.stfu(_viewport.connect("size_changed", Callable(self, "_onResize")))
-	Utility.stfu(Gesture.connect("onZoom", Callable(self, "_zoomPinch")))
+	_viewport.connect("size_changed", _onResize)
+	Gesture.connect("onZoom", _zoomPinch)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -103,11 +103,11 @@ func _cameraUpdate() -> void:
 
 func _cameraSnap(to: Vector2) -> void:
 	_cameraStop()
-	Utility.stfu(_tweenCamera.interpolate_property(_camera, "global_position", null, to, _tweenTime, Tween.TRANS_ELASTIC, Tween.EASE_OUT))
-	Utility.stfu(_tweenCamera.start())
+	_tweenCamera.interpolate_property(_camera, "global_position", null, to, _tweenTime, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
+	_tweenCamera.start()
 
 func _cameraStop() -> void:
-	Utility.stfu(_tweenCamera.stop(_camera, "global_position"))
+	_tweenCamera.stop(_camera, "global_position")
 
 func _zoomPinch(at: Vector2, amount: float) -> void:
 	if amount > 0: _zoom(at, _zoomFactorOut)
