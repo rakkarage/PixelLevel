@@ -19,8 +19,7 @@ const _zoomPinchOut := 1.02
 func _ready() -> void:
 	_camera.zoom = Vector2(0.75, 0.75)
 	_oldSize = _viewport.size
-	_tweenCamera = get_tree().create_tween()
-	add_child(_tweenCamera)
+	_tweenCamera = create_tween()
 	_cameraTo(_center())
 	_viewport.connect("size_changed", _onResize)
 	Gesture.connect("onZoom", _zoomPinch)
@@ -78,7 +77,7 @@ func _center() -> Vector2:
 	return -(_worldSize() / 2.0) + _mapSize() / 2.0
 
 func _cameraTo(to: Vector2) -> void:
-	_cameraStop()
+	_tweenCamera.kill()
 	_camera.global_position = to
 
 func _cameraBy(by: Vector2) -> void:
@@ -91,12 +90,8 @@ func _cameraUpdate() -> void:
 		_cameraSnap(_camera.global_position + Utility.constrainRect(world, map))
 
 func _cameraSnap(to: Vector2) -> void:
-	_cameraStop()
+	_tweenCamera.kill()
 	_tweenCamera.interpolate_property(_camera, "global_position", null, to, _tweenTime, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
-	_tweenCamera.start()
-
-func _cameraStop() -> void:
-	_tweenCamera.stop(_camera, "global_position")
 
 func _zoomPinch(at: Vector2, amount: float) -> void:
 	if amount > 0: _zoom(at, _zoomFactorOut)

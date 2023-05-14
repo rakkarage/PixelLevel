@@ -125,9 +125,9 @@ const _waterPurpleTiles := [Tile.WaterShallowForePurple, Tile.WaterShallowBackPu
 
 func _ready() -> void:
 	_camera.zoom = Vector2(0.75, 0.75)
-	_tweenCamera = get_tree().create_tween()
-	_tweenStep = get_tree().create_tween()
-	_tweenTarget = get_tree().create_tween()
+	_tweenCamera = create_tween()
+	_tweenStep = create_tween()
+	_tweenTarget = create_tween()
 	generated()
 	_cameraCenter()
 	connect("size_changed", _onResize)
@@ -176,7 +176,6 @@ func _fadeAndFree() -> void:
 	var node = _path.get_child(0)
 	var t = get_tree().create_tween()
 	t.interpolate_property(node, "modulate", null, Color.TRANSPARENT, _turnTime, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
-	t.start()
 	await t.tween_all_completed
 	node.queue_free()
 	if _pathPoints.size() > 1:
@@ -222,8 +221,8 @@ func _face(mob: Node2D, direction: Vector2) -> void:
 
 func _step(mob: Node2D, direction: Vector2) -> void:
 	mob.walk()
+	_tweenStep.kill()
 	_tweenStep.interpolate_property(mob, "global_position", null, mob.global_position + Vector2(_world(direction)), _turnTime, Tween.TRANS_CIRC, Tween.EASE_IN_OUT)
-	_tweenStep.start()
 	await _tweenStep.tween_all_completed
 
 func _addPoints() -> void:
@@ -363,7 +362,7 @@ func _cameraCenter() -> void:
 	_cameraTo(_center())
 
 func _cameraTo(to: Vector2) -> void:
-	_cameraStop()
+	_tweenCamera.kill()
 	_camera.global_position = to
 
 func _cameraToMob() -> void:
@@ -381,15 +380,10 @@ func _cameraUpdate() -> void:
 		emit_signal("updateMap")
 
 func _cameraSnap(to: Vector2) -> void:
-	_cameraStop()
+	_tweenCamera.kill()
 	_tweenCamera.interpolate_property(_camera, "global_position", null, to, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
-	_tweenCamera.start()
 	await _tweenCamera.tween_all_completed
 	emit_signal("updateMap")
-
-func _cameraStop() -> void:
-	# _tweenCamera.stop(_camera, "global_position")
-	pass
 
 const _edgeOffset := 1.5
 const _edgeOffsetV := Vector2(_edgeOffset, _edgeOffset)
@@ -479,7 +473,7 @@ func _targetToMob() -> void:
 	_targetTo(_mob.global_position, true)
 
 func _targetTo(to: Vector2, turn: bool) -> void:
-	_targetStop()
+	_tweenTarget.kill()
 	var tile := _map(_camera.global_position + to * _camera.zoom)
 	if tile == targetPosition():
 		_turn = turn
@@ -501,13 +495,8 @@ func _targetSnapClosest(tile: Vector2) -> Vector2:
 func _targetSnap(tile: Vector2) -> void:
 	var p := _world(tile)
 	if not _target.global_position.is_equal_approx(p):
-		_targetStop()
+		_tweenTarget.kill()
 		_tweenTarget.interpolate_property(_target, "global_position", null, p, _duration, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
-		_tweenTarget.start()
-
-func _targetStop() -> void:
-	# _tweenTarget.stop(_target, "global_position")
-	pass
 
 func _normalize() -> Vector2i:
 	return (_camera.global_position - _mapSize() / 2.0) / _oldSize
