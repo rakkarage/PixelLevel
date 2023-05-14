@@ -1,4 +1,0 @@
-[gd_scene format=3 uid="uid://cfvthl6ipvclo"]
-
-[node name="Path" type="AnimatedSprite2D"]
-sprite_frames = null

@@ -1,14 +1,14 @@
 extends Control
 
-@onready var _attack := $Panel/HBox/Attack
-@onready var _walk := $Panel/HBox/Walk
-@onready var _turn := $Panel/HBox/Turn
-@onready var _mob := $Slime
+@onready var _attack := $Panel/VBox/Panel/HBox/Attack
+@onready var _walk := $Panel/VBox/Panel/HBox/Walk
+@onready var _turn := $Panel/VBox/Panel/HBox/Turn
+@onready var _mob := $Panel/VBox/Center/Panel/Slime
 
 func _ready() -> void:
-	Utility.stfu(_attack.connect("pressed", Callable(self, "_attackPressed")))
-	Utility.stfu(_walk.connect("pressed", Callable(self, "_walkPressed")))
-	Utility.stfu(_turn.connect("pressed", Callable(self, "_turnPressed")))
+	_attack.connect("pressed", _attackPressed)
+	_walk.connect("pressed", _walkPressed)
+	_turn.connect("pressed", _turnPressed)
 
 func _attackPressed() -> void:
 	_mob.attack()

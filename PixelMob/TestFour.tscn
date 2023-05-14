@@ -1,10 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://6q2iklp6ny3l"]
+[gd_scene load_steps=5 format=3 uid="uid://b4501vgffp5br"]
 
-[ext_resource type="Texture2D" uid="uid://bfqkw2ks4qgxo" path="res://PixelMob/Sprite/SlimeP.png" id="1"]
-[ext_resource type="Script" path="res://PixelMob/Test.gd" id="2"]
-[ext_resource type="PackedScene" uid="uid://flro1hiu4sqn" path="res://PixelMob/Mob/Slime.tscn" id="3"]
-[ext_resource type="Texture2D" uid="uid://mlecmfhjqrwr" path="res://PixelMob/Sprite/SlimeC.png" id="4"]
-[ext_resource type="Texture2D" uid="uid://dfw3556723rvc" path="res://PixelMob/Sprite/SlimeA.png" id="5"]
+[ext_resource type="PackedScene" uid="uid://1bkgj4vw8shv" path="res://PixelMob/Test.tscn" id="1_op1gc"]
+[ext_resource type="Texture2D" uid="uid://y7xyhbmayrqs" path="res://PixelMob/Sprite/SlimeB.png" id="2_0ttwh"]
+[ext_resource type="Texture2D" uid="uid://cil2kef15ccya" path="res://PixelMob/Sprite/SlimeC.png" id="3_jrwqc"]
+[ext_resource type="Texture2D" uid="uid://r64tp7ega33f" path="res://PixelMob/Sprite/SlimeP.png" id="4_ub3l8"]
 
 [node name="TestFour" type="Control"]
 layout_mode = 3
@@ -14,143 +13,48 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Grid" type="GridContainer" parent="."]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -270.0
+offset_top = -289.0
+offset_right = 270.0
+offset_bottom = 289.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Grid" type="GridContainer" parent="Panel"]
+layout_mode = 2
 columns = 2
 
-[node name="A" type="Control" parent="Grid"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-script = ExtResource("2")
-
-[node name="Slime" parent="Grid/A" instance=ExtResource("3")]
-position = Vector2(160, 125)
-scale = Vector2(10, 10)
-texture = ExtResource("5")
-
-[node name="Panel" type="PanelContainer" parent="Grid/A"]
-layout_mode = 0
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -78.5
-offset_right = 78.5
-offset_bottom = 34.0
-
-[node name="HBox" type="HBoxContainer" parent="Grid/A/Panel"]
+[node name="Test1" parent="Panel/Grid" instance=ExtResource("1_op1gc")]
 layout_mode = 2
 
-[node name="Attack" type="Button" parent="Grid/A/Panel/HBox"]
-layout_mode = 2
-text = "Attack"
+[node name="Slime" parent="Panel/Grid/Test1/VBox/Center/Panel" index="0"]
 
-[node name="Walk" type="Button" parent="Grid/A/Panel/HBox"]
-layout_mode = 2
-text = "Walk"
-
-[node name="Turn" type="Button" parent="Grid/A/Panel/HBox"]
-layout_mode = 2
-text = "Turn"
-
-[node name="B" type="Control" parent="Grid"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-script = ExtResource("2")
-
-[node name="Slime" parent="Grid/B" instance=ExtResource("3")]
-position = Vector2(160, 125)
-scale = Vector2(10, 10)
-
-[node name="Panel" type="PanelContainer" parent="Grid/B"]
-layout_mode = 0
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -78.5
-offset_right = 78.5
-offset_bottom = 34.0
-
-[node name="HBox" type="HBoxContainer" parent="Grid/B/Panel"]
+[node name="Test2" parent="Panel/Grid" instance=ExtResource("1_op1gc")]
 layout_mode = 2
 
-[node name="Attack" type="Button" parent="Grid/B/Panel/HBox"]
-layout_mode = 2
-text = "Attack"
+[node name="Slime" parent="Panel/Grid/Test2/VBox/Center/Panel" index="0"]
+texture = ExtResource("2_0ttwh")
 
-[node name="Walk" type="Button" parent="Grid/B/Panel/HBox"]
-layout_mode = 2
-text = "Walk"
-
-[node name="Turn" type="Button" parent="Grid/B/Panel/HBox"]
-layout_mode = 2
-text = "Turn"
-
-[node name="C" type="Control" parent="Grid"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-script = ExtResource("2")
-
-[node name="Slime" parent="Grid/C" instance=ExtResource("3")]
-position = Vector2(160, 125)
-scale = Vector2(10, 10)
-texture = ExtResource("4")
-
-[node name="Panel" type="PanelContainer" parent="Grid/C"]
-layout_mode = 0
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -78.5
-offset_right = 78.5
-offset_bottom = 34.0
-
-[node name="HBox" type="HBoxContainer" parent="Grid/C/Panel"]
+[node name="Test3" parent="Panel/Grid" instance=ExtResource("1_op1gc")]
 layout_mode = 2
 
-[node name="Attack" type="Button" parent="Grid/C/Panel/HBox"]
-layout_mode = 2
-text = "Attack"
+[node name="Slime" parent="Panel/Grid/Test3/VBox/Center/Panel" index="0"]
+texture = ExtResource("3_jrwqc")
 
-[node name="Walk" type="Button" parent="Grid/C/Panel/HBox"]
-layout_mode = 2
-text = "Walk"
-
-[node name="Turn" type="Button" parent="Grid/C/Panel/HBox"]
-layout_mode = 2
-text = "Turn"
-
-[node name="P" type="Control" parent="Grid"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-script = ExtResource("2")
-
-[node name="Slime" parent="Grid/P" instance=ExtResource("3")]
-position = Vector2(160, 125)
-scale = Vector2(10, 10)
-texture = ExtResource("1")
-
-[node name="Panel" type="PanelContainer" parent="Grid/P"]
-layout_mode = 0
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -78.5
-offset_right = 78.5
-offset_bottom = 34.0
-
-[node name="HBox" type="HBoxContainer" parent="Grid/P/Panel"]
+[node name="Test4" parent="Panel/Grid" instance=ExtResource("1_op1gc")]
 layout_mode = 2
 
-[node name="Attack" type="Button" parent="Grid/P/Panel/HBox"]
-layout_mode = 2
-text = "Attack"
+[node name="Slime" parent="Panel/Grid/Test4/VBox/Center/Panel" index="0"]
+texture = ExtResource("4_ub3l8")
 
-[node name="Walk" type="Button" parent="Grid/P/Panel/HBox"]
-layout_mode = 2
-text = "Walk"
-
-[node name="Turn" type="Button" parent="Grid/P/Panel/HBox"]
-layout_mode = 2
-text = "Turn"
+[editable path="Panel/Grid/Test1"]
+[editable path="Panel/Grid/Test2"]
+[editable path="Panel/Grid/Test3"]
+[editable path="Panel/Grid/Test4"]

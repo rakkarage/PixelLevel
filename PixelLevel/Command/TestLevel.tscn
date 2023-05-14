@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://ctsmye0y78sdg"]
 
-[ext_resource type="PackedScene" uid="uid://dthcib8ldrotn" path="res://PixelLevel/Command/TestLevelBase.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://dfpwhu8u2jrgw" path="res://PixelLevel/Command/TestLevelBase.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://cpwpn22g1oh61" path="res://Interface/Back.tscn" id="3"]
 [ext_resource type="Script" path="res://PixelLevel/Command/TestLevel.gd" id="4"]
 

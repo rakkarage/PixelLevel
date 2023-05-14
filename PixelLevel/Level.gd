@@ -3,7 +3,7 @@ class_name Level
 
 #region var
 
-@onready var _camera:   Camera2D = $Camera2D
+@onready var _camera:   Camera2D = $Camera
 @onready var _back:      TileMap = $Back
 @onready var _fore:      TileMap = $Fore
 @onready var _flower:    TileMap = $Flower

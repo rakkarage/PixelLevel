@@ -1,4 +1,4 @@
-[gd_resource type="AnimationNodeStateMachine" load_steps=14 format=3 uid="uid://bb51mn7kse13m"]
+[gd_resource type="AnimationNodeStateMachine" load_steps=14 format=3 uid="uid://cna2gr5dcy50w"]
 
 [sub_resource type="AnimationNodeAnimation" id="1"]
 animation = &"Attack"
@@ -31,6 +31,7 @@ switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="14"]
 switch_mode = 2
+advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="15"]
 
@@ -38,8 +39,9 @@ switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="17"]
 switch_mode = 2
+advance_mode = 2
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_2puhg"]
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_bgx3m"]
 advance_mode = 2
 
 [resource]
@@ -51,5 +53,5 @@ states/Idle/position = Vector2(454, 38)
 states/Start/position = Vector2(279, 38)
 states/Walk/node = SubResource("7")
 states/Walk/position = Vector2(279, 137)
-transitions = ["Attack", "Walk", SubResource("8"), "Walk", "Attack", SubResource("9"), "Walk", "Idle", SubResource("14"), "Idle", "Walk", SubResource("15"), "Idle", "Attack", SubResource("16"), "Attack", "Idle", SubResource("17"), "Start", "Idle", SubResource("AnimationNodeStateMachineTransition_2puhg")]
+transitions = ["Attack", "Walk", SubResource("8"), "Walk", "Attack", SubResource("9"), "Walk", "Idle", SubResource("14"), "Idle", "Walk", SubResource("15"), "Idle", "Attack", SubResource("16"), "Attack", "Idle", SubResource("17"), "Start", "Idle", SubResource("AnimationNodeStateMachineTransition_bgx3m")]
 graph_offset = Vector2(88, -35)

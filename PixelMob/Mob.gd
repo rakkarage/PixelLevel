@@ -1,7 +1,6 @@
-extends Sprite2D
 class_name Mob
+extends Sprite2D
 
-var energy := Energy.new()
 @onready var _tree: AnimationTree = $Tree
 @onready var _machine: AnimationNodeStateMachinePlayback = _tree.get("parameters/playback")
 const _key := "parameters/Idle/blend_position"

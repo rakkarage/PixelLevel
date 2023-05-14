@@ -1,6 +1,6 @@
-[gd_resource type="Animation" load_steps=2 format=3 uid="uid://clnjm7xfda1rd"]
+[gd_resource type="Animation" load_steps=2 format=3 uid="uid://bn16y50wxrqwe"]
 
-[ext_resource type="AudioStream" uid="uid://m0r52plp4mfc" path="res://PixelMob/Audio/167075__drminky__slime-land.tres" id="1"]
+[ext_resource type="AudioStream" uid="uid://btlcgij7xd57p" path="res://PixelMob/Audio/167075__drminky__slime-land.tres" id="1"]
 
 [resource]
 resource_name = "Walk"

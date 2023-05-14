@@ -1,6 +1,6 @@
-[gd_resource type="AudioStreamRandomizer" load_steps=2 format=3 uid="uid://m0r52plp4mfc"]
+[gd_resource type="AudioStreamRandomizer" load_steps=2 format=3 uid="uid://btlcgij7xd57p"]
 
-[ext_resource type="AudioStream" uid="uid://ceu07kimb1i7n" path="res://PixelMob/Audio/167075__drminky__slime-land.wav" id="1"]
+[ext_resource type="AudioStream" uid="uid://b3wr7r5dtbgfh" path="res://PixelMob/Audio/167075__drminky__slime-land.wav" id="1"]
 
 [resource]
 streams_count = 1

@@ -1,15 +1,14 @@
-[gd_scene load_steps=11 format=3 uid="uid://tu3gruobfhx3"]
+[gd_scene load_steps=10 format=3 uid="uid://dj1a5m2n2kuve"]
 
-[ext_resource type="Texture2D" uid="uid://bfqkw2ks4qgxo" path="res://PixelMob/Sprite/SlimeP.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://r64tp7ega33f" path="res://PixelMob/Sprite/SlimeP.png" id="1"]
 [ext_resource type="Script" path="res://PixelMob/TestRandom.gd" id="2"]
-[ext_resource type="PackedScene" uid="uid://flro1hiu4sqn" path="res://PixelMob/Mob/Slime.tscn" id="3"]
-[ext_resource type="Texture2D" uid="uid://mlecmfhjqrwr" path="res://PixelMob/Sprite/SlimeC.png" id="4"]
-[ext_resource type="Texture2D" uid="uid://dfw3556723rvc" path="res://PixelMob/Sprite/SlimeA.png" id="5"]
-[ext_resource type="PackedScene" uid="uid://cp40dp4735b2f" path="res://PixelMob/Mob/SlimeSmaller.tscn" id="6"]
-[ext_resource type="PackedScene" uid="uid://erw6kxso76q3" path="res://PixelMob/Mob/SlimeSmall.tscn" id="7"]
-[ext_resource type="PackedScene" uid="uid://up8usoj4h6g1" path="res://PixelMob/Mob/SlimeSquareSmall.tscn" id="8"]
-[ext_resource type="PackedScene" uid="uid://bkn2nruivq2mf" path="res://PixelMob/Mob/SlimeSquareSmaller.tscn" id="9"]
-[ext_resource type="PackedScene" uid="uid://bbn26htvl5mkk" path="res://PixelMob/Mob/SlimeSquare.tscn" id="10"]
+[ext_resource type="PackedScene" uid="uid://cktdt7fpv803m" path="res://PixelMob/Mob/Slime.tscn" id="3"]
+[ext_resource type="Texture2D" uid="uid://cil2kef15ccya" path="res://PixelMob/Sprite/SlimeC.png" id="4"]
+[ext_resource type="PackedScene" uid="uid://d1g74yamv7a60" path="res://PixelMob/Mob/SlimeSmaller.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://bx8264tnc4xkg" path="res://PixelMob/Mob/SlimeSmall.tscn" id="7"]
+[ext_resource type="PackedScene" uid="uid://clwn7qm4midqy" path="res://PixelMob/Mob/SlimeSquareSmall.tscn" id="8"]
+[ext_resource type="PackedScene" uid="uid://ux5o5wqa41l4" path="res://PixelMob/Mob/SlimeSquareSmaller.tscn" id="9"]
+[ext_resource type="PackedScene" uid="uid://bd8r5lqesr6wd" path="res://PixelMob/Mob/SlimeSquare.tscn" id="10"]
 
 [node name="TestAll" type="Control"]
 layout_mode = 3
@@ -19,154 +18,159 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Grid" type="GridContainer" parent="."]
-layout_mode = 0
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Grid" type="GridContainer" parent="Panel"]
+layout_mode = 2
 columns = 5
 
-[node name="SquareSmaller" type="Control" parent="Grid"]
+[node name="SquareSmaller" type="Control" parent="Panel/Grid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("2")
 
-[node name="Mob" parent="Grid/SquareSmaller" instance=ExtResource("9")]
+[node name="Mob" parent="Panel/Grid/SquareSmaller" instance=ExtResource("9")]
 position = Vector2(62, 119)
 scale = Vector2(10, 10)
 
-[node name="Button" type="Button" parent="Grid/SquareSmaller"]
+[node name="Button" type="Button" parent="Panel/Grid/SquareSmaller"]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="SquareSmall" type="Control" parent="Grid"]
+[node name="SquareSmall" type="Control" parent="Panel/Grid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("2")
 
-[node name="Mob" parent="Grid/SquareSmall" instance=ExtResource("8")]
+[node name="Mob" parent="Panel/Grid/SquareSmall" instance=ExtResource("8")]
 position = Vector2(62, 119)
 scale = Vector2(10, 10)
 
-[node name="Button" type="Button" parent="Grid/SquareSmall"]
+[node name="Button" type="Button" parent="Panel/Grid/SquareSmall"]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="Square" type="Control" parent="Grid"]
+[node name="Square" type="Control" parent="Panel/Grid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("2")
 
-[node name="Mob" parent="Grid/Square" instance=ExtResource("10")]
+[node name="Mob" parent="Panel/Grid/Square" instance=ExtResource("10")]
 position = Vector2(62, 119)
 scale = Vector2(10, 10)
 
-[node name="Button" type="Button" parent="Grid/Square"]
+[node name="Button" type="Button" parent="Panel/Grid/Square"]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="Smaller" type="Control" parent="Grid"]
+[node name="Smaller" type="Control" parent="Panel/Grid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("2")
 
-[node name="Mob" parent="Grid/Smaller" instance=ExtResource("6")]
+[node name="Mob" parent="Panel/Grid/Smaller" instance=ExtResource("6")]
 position = Vector2(62, 119)
 scale = Vector2(10, 10)
 
-[node name="Button" type="Button" parent="Grid/Smaller"]
+[node name="Button" type="Button" parent="Panel/Grid/Smaller"]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="Small" type="Control" parent="Grid"]
+[node name="Small" type="Control" parent="Panel/Grid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("2")
 
-[node name="Mob" parent="Grid/Small" instance=ExtResource("7")]
+[node name="Mob" parent="Panel/Grid/Small" instance=ExtResource("7")]
 position = Vector2(62, 119)
 scale = Vector2(10, 10)
 
-[node name="Button" type="Button" parent="Grid/Small"]
+[node name="Button" type="Button" parent="Panel/Grid/Small"]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="A" type="Control" parent="Grid"]
+[node name="A" type="Control" parent="Panel/Grid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("2")
 
-[node name="Mob" parent="Grid/A" instance=ExtResource("3")]
+[node name="Mob" parent="Panel/Grid/A" instance=ExtResource("3")]
 position = Vector2(62, 119)
 scale = Vector2(10, 10)
-texture = ExtResource("5")
 
-[node name="Button" type="Button" parent="Grid/A"]
+[node name="Button" type="Button" parent="Panel/Grid/A"]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="B" type="Control" parent="Grid"]
+[node name="B" type="Control" parent="Panel/Grid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("2")
 
-[node name="Mob" parent="Grid/B" instance=ExtResource("3")]
+[node name="Mob" parent="Panel/Grid/B" instance=ExtResource("3")]
 position = Vector2(62, 119)
 scale = Vector2(10, 10)
 
-[node name="Button" type="Button" parent="Grid/B"]
+[node name="Button" type="Button" parent="Panel/Grid/B"]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="C" type="Control" parent="Grid"]
+[node name="C" type="Control" parent="Panel/Grid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("2")
 
-[node name="Mob" parent="Grid/C" instance=ExtResource("3")]
+[node name="Mob" parent="Panel/Grid/C" instance=ExtResource("3")]
 position = Vector2(62, 119)
 scale = Vector2(10, 10)
 texture = ExtResource("4")
 
-[node name="Button" type="Button" parent="Grid/C"]
+[node name="Button" type="Button" parent="Panel/Grid/C"]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="P" type="Control" parent="Grid"]
+[node name="P" type="Control" parent="Panel/Grid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("2")
 
-[node name="Mob" parent="Grid/P" instance=ExtResource("3")]
+[node name="Mob" parent="Panel/Grid/P" instance=ExtResource("3")]
 position = Vector2(62, 119)
 scale = Vector2(10, 10)
 texture = ExtResource("1")
 
-[node name="Button" type="Button" parent="Grid/P"]
+[node name="Button" type="Button" parent="Panel/Grid/P"]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 anchor_right = 1.0

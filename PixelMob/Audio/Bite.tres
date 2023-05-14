@@ -1,6 +1,6 @@
-[gd_resource type="AudioStreamRandomizer" load_steps=2 format=3 uid="uid://ysplh2y3mpn4"]
+[gd_resource type="AudioStreamRandomizer" load_steps=2 format=3 uid="uid://hkpbsbrbr06u"]
 
-[ext_resource type="AudioStream" uid="uid://begb6ygxqxl3n" path="res://PixelMob/Audio/Bite.wav" id="1"]
+[ext_resource type="AudioStream" uid="uid://sbd5gi1citq1" path="res://PixelMob/Audio/Bite.wav" id="1"]
 
 [resource]
 streams_count = 1

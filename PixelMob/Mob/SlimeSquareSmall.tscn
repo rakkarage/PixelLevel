@@ -1,19 +1,19 @@
-[gd_scene load_steps=13 format=3 uid="uid://up8usoj4h6g1"]
+[gd_scene load_steps=13 format=3 uid="uid://clwn7qm4midqy"]
 
 [ext_resource type="Script" path="res://PixelMob/Mob.gd" id="1"]
-[ext_resource type="AnimationNodeStateMachine" uid="uid://bb51mn7kse13m" path="res://PixelMob/Animation/Tree.tres" id="2"]
-[ext_resource type="AudioStream" uid="uid://m0r52plp4mfc" path="res://PixelMob/Audio/167075__drminky__slime-land.tres" id="3"]
-[ext_resource type="AudioStream" uid="uid://ysplh2y3mpn4" path="res://PixelMob/Audio/Bite.tres" id="4"]
-[ext_resource type="Animation" uid="uid://clnjm7xfda1rd" path="res://PixelMob/Animation/SlimeSquare/Walk.tres" id="5"]
-[ext_resource type="Texture2D" uid="uid://bdii8qlouuxh1" path="res://PixelMob/Sprite/SlimeSquareSmallA.png" id="6"]
-[ext_resource type="Animation" uid="uid://2f24733y2l0y" path="res://PixelMob/Animation/SlimeSquare/Attack.tres" id="7"]
-[ext_resource type="Animation" uid="uid://cppfclaqpervw" path="res://PixelMob/Animation/SlimeSquare/Idle1.tres" id="8"]
-[ext_resource type="Animation" uid="uid://ve1muvpouquw" path="res://PixelMob/Animation/SlimeSquare/Idle2.tres" id="9"]
-[ext_resource type="Animation" uid="uid://6xpnongyve63" path="res://PixelMob/Animation/SlimeSquare/Idle0.tres" id="10"]
+[ext_resource type="Texture2D" uid="uid://dq8dc8dr8ny4t" path="res://PixelMob/Sprite/SlimeSquareSmallA.png" id="1_2nvy2"]
+[ext_resource type="AnimationNodeStateMachine" uid="uid://cna2gr5dcy50w" path="res://PixelMob/Animation/Tree.tres" id="2"]
+[ext_resource type="AudioStream" uid="uid://btlcgij7xd57p" path="res://PixelMob/Audio/167075__drminky__slime-land.tres" id="3"]
+[ext_resource type="AudioStream" uid="uid://hkpbsbrbr06u" path="res://PixelMob/Audio/Bite.tres" id="4"]
+[ext_resource type="Animation" uid="uid://bn16y50wxrqwe" path="res://PixelMob/Animation/SlimeSquare/Walk.tres" id="5"]
+[ext_resource type="Animation" uid="uid://c838h7qqqw3au" path="res://PixelMob/Animation/SlimeSquare/Attack.tres" id="7"]
+[ext_resource type="Animation" uid="uid://ewmwqg5h12hw" path="res://PixelMob/Animation/SlimeSquare/Idle1.tres" id="8"]
+[ext_resource type="Animation" uid="uid://ipenpo82ppc" path="res://PixelMob/Animation/SlimeSquare/Idle2.tres" id="9"]
+[ext_resource type="Animation" uid="uid://d2awwsm810nvs" path="res://PixelMob/Animation/SlimeSquare/Idle0.tres" id="10"]
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id="1"]
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_vylf8"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_r1xxo"]
 _data = {
 "Attack": ExtResource("7"),
 "Idle0": ExtResource("10"),
@@ -23,7 +23,7 @@ _data = {
 }
 
 [node name="SlimeSquareSmall" type="Sprite2D"]
-texture = ExtResource("6")
+texture = ExtResource("1_2nvy2")
 hframes = 5
 script = ExtResource("1")
 
@@ -37,7 +37,7 @@ parameters/Idle/blend_position = 0
 [node name="Animation" type="AnimationPlayer" parent="Tree"]
 root_node = NodePath("../..")
 libraries = {
-"": SubResource("AnimationLibrary_vylf8")
+"": SubResource("AnimationLibrary_r1xxo")
 }
 
 [node name="Attack" type="AudioStreamPlayer" parent="."]

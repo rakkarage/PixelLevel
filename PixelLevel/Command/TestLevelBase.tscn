@@ -1,7 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://dthcib8ldrotn"]
+[gd_scene load_steps=5 format=3 uid="uid://dfpwhu8u2jrgw"]
 
-[ext_resource type="PackedScene" uid="uid://txc51ttsajhp" path="res://PixelLevel/Target.tscn" id="1"]
-[ext_resource type="PackedScene" uid="uid://flro1hiu4sqn" path="res://PixelMob/Mob/Slime.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://c0gglcpbg3xyp" path="res://Interface/Target.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://cktdt7fpv803m" path="res://PixelMob/Mob/Slime.tscn" id="2"]
 [ext_resource type="Script" path="res://PixelLevel/Command/TestLevelBase.gd" id="3"]
 [ext_resource type="TileSet" uid="uid://rer8omh2xmlw" path="res://PixelLevel/Level.tres" id="6"]
 

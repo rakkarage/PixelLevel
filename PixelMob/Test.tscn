@@ -1,40 +1,42 @@
-[gd_scene load_steps=3 format=3 uid="uid://bimw05dkquwja"]
+[gd_scene load_steps=3 format=3 uid="uid://1bkgj4vw8shv"]
 
-[ext_resource type="PackedScene" uid="uid://flro1hiu4sqn" path="res://PixelMob/Mob/Slime.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://cktdt7fpv803m" path="res://PixelMob/Mob/Slime.tscn" id="1"]
 [ext_resource type="Script" path="res://PixelMob/Test.gd" id="7"]
 
-[node name="Test" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="Test" type="PanelContainer"]
+custom_minimum_size = Vector2(252, 271)
+offset_right = 252.0
+offset_bottom = 271.0
 script = ExtResource("7")
 
-[node name="Slime" parent="." instance=ExtResource("1")]
-position = Vector2(320, 250)
-scale = Vector2(10, 10)
-
-[node name="Panel" type="PanelContainer" parent="."]
-layout_mode = 0
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -78.5
-offset_right = 78.5
-offset_bottom = 34.0
-
-[node name="HBox" type="HBoxContainer" parent="Panel"]
+[node name="VBox" type="VBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Attack" type="Button" parent="Panel/HBox"]
+[node name="Center" type="CenterContainer" parent="VBox"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="VBox/Center"]
+custom_minimum_size = Vector2(160, 160)
+layout_mode = 2
+
+[node name="Slime" parent="VBox/Center/Panel" instance=ExtResource("1")]
+scale = Vector2(10, 10)
+centered = false
+
+[node name="Panel" type="PanelContainer" parent="VBox"]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="VBox/Panel"]
+layout_mode = 2
+
+[node name="Attack" type="Button" parent="VBox/Panel/HBox"]
 layout_mode = 2
 text = "Attack"
 
-[node name="Walk" type="Button" parent="Panel/HBox"]
+[node name="Walk" type="Button" parent="VBox/Panel/HBox"]
 layout_mode = 2
 text = "Walk"
 
-[node name="Turn" type="Button" parent="Panel/HBox"]
+[node name="Turn" type="Button" parent="VBox/Panel/HBox"]
 layout_mode = 2
 text = "Turn"
