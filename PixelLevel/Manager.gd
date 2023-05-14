@@ -1,7 +1,7 @@
 extends Node
 
 @onready var _level: Level = $Level/SubViewport
-@onready var _mask: AnimationPlayer = $Fore/Mask/AnimationPlayer
+@onready var _mask: AnimationPlayer = $Fore/Mask/Mask/AnimationPlayer
 @onready var _textureRect: TextureRect = $Fore/MiniMap
 @onready var _position: Label = $Fore/Panel/VBox/Mouse/Value
 @onready var _depth: Label = $Fore/Panel/VBox/Level/Value
@@ -44,28 +44,26 @@ func _limitedUpdateMap() -> void:
 	_timerUpdateMap.start(_updateMapDelay)
 
 func _updateMap() -> void:
-	var at := _level.mobPosition()
+	var at := Vector2i(_level.mobPosition()) # TODO: make mob return int
 	var original := _level._back.get_used_rect().size
 	var size := original
-	var offset := Vector2.ZERO
+	var offset := Vector2i.ZERO
 	if size.x > _max.x:
 		size.x = _max.x
-		offset.x = at.x - size.x / 2.0
+		offset.x = at.x - int(size.x / 2.0)
 		if offset.x < 0: offset.x = 0
 		if offset.x > original.x - size.x + 1: offset.x = original.x - size.x + 1
 	if size.y > _max.y:
 		size.y = _max.y
-		offset.y = at.y - size.y / 2.0
+		offset.y = at.y - int(size.y / 2.0)
 		if offset.y < 0: offset.y = 0
 		if offset.y > original.y - size.y + 1: offset.y = original.y - size.y + 1
-	var image = Image.create(int(size.x), int(size.y), false, Image.FORMAT_RGBA8)
+	var image = Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
 	for y in range(size.y):
 		for x in range(size.x):
-			var actualX := int(x + offset.x)
-			var actualY := int(y + offset.y)
-			_image.set_pixel(x, y, _level.getMapColor(actualX, actualY))
-	image.expand_x2_hq2x()
-	image.expand_x2_hq2x()
+			image.set_pixel(x, y, _level.getMapColor(x + offset.x, y + offset.y))
+	image.resize_to_po2(false, Image.INTERPOLATE_NEAREST)
+	image.resize_to_po2(false, Image.INTERPOLATE_NEAREST)
 	_imageTexture = ImageTexture.create_from_image(image)
 
 @onready var _g := {
