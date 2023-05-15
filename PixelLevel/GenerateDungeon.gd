@@ -36,7 +36,7 @@ func _placeRooms() -> Array:
 			roomIndex = Random.next(maxRooms)
 			usedRoom = used[roomIndex]
 		used[roomIndex] = true
-		var p := Utility.position(roomIndex, across) * Vector2(_maxRoomWidth, _maxRoomHeight)
+		var p := Utility.position(roomIndex, across) * Vector2i(_maxRoomWidth, _maxRoomHeight)
 		var room := Rect2(p.x, p.y, _maxRoomWidth, _maxRoomHeight)
 		_drawRoom(_findRoom(room))
 		rooms.append(room)
@@ -68,9 +68,9 @@ func _placeTunnels(_rooms: Array) -> void:
 				if movingX: currentCenter.x += deltaXSign * 1
 				else: currentCenter.y += deltaYSign * 1
 				if not is_equal_approx(currentCenter.x, 1) and not is_equal_approx(currentCenter.y, 1):
-					if _level.isWallV(currentCenter) or _level.isCliffV(currentCenter) or _level.isForeInvalidV(currentCenter):
-						_level.clearForeV(currentCenter)
-						_setFloorOrRoomV(currentCenter)
+					if _level.isWall(currentCenter) or _level.isCliff(currentCenter) or _level.isForeInvalidV(currentCenter):
+						_level.clearFore(currentCenter)
+						_setFloorOrRoom(currentCenter)
 			if movingX: delta.x -= deltaXSign * carveLength
 			else: delta.y -= deltaYSign * carveLength
 		current = room

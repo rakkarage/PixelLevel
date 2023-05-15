@@ -60,7 +60,7 @@ func _updateMap() -> void:
 	var image = Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
 	for y in range(size.y):
 		for x in range(size.x):
-			image.set_pixel(x, y, _level.getMapColor(x + offset.x, y + offset.y))
+			image.set_pixel(x, y, _level.getMapColor(Vector2i(x + offset.x, y + offset.y)))
 	image.resize_to_po2(false, Image.INTERPOLATE_NEAREST)
 	image.resize_to_po2(false, Image.INTERPOLATE_NEAREST)
 	_imageTexture = ImageTexture.create_from_image(image)

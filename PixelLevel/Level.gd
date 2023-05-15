@@ -1,6 +1,8 @@
 extends SubViewport
 class_name Level
 
+const INVALID_CELL = -1
+
 #region var
 
 @onready var _camera:   Camera2D = $Camera
@@ -81,7 +83,7 @@ enum Tile { # match id in tileSet
 	OutsideDayHedge, OutsideDayWall, OutsideDayFloor,
 	OutsideNight, OutsideNightPillar, OutsideNightRubble, OutsideNightStair,
 	OutsideNightDesert, OutsideNightDoodad, OutsideNightGrassDry, OutsideNightDesertStair, OutsideNightGrassGreen,
-	OutsideBightHedge, OutsideNightWall, OutsideNightFloor
+	OutsideNightHedge, OutsideNightWall, OutsideNightFloor
 }
 
 const _floorTiles := [Tile.Theme0Floor, Tile.Theme0FloorRoom,
@@ -98,7 +100,7 @@ const _wallTiles := [Tile.Theme0WallPlain, Tile.Theme0Wall, Tile.Theme0Torch,
 	Tile.Theme2WallPlain, Tile.Theme2Wall, Tile.Theme2Torch,
 	Tile.Theme3WallPlain, Tile.Theme3Wall, Tile.Theme3Torch,
 	Tile.OutsideDayWall, Tile.OutsideNightWall,
-	Tile.OutsideDayHedge, Tile.OutsideBightHedge]
+	Tile.OutsideDayHedge, Tile.OutsideNightHedge]
 
 const _cliffTiles := [Tile.Cliff0, Tile.Cliff1]
 
@@ -136,7 +138,7 @@ func _ready() -> void:
 func generated() -> void:
 	_oldSize = size
 	_drawEdge()
-	_mob.global_position = _world(startAt) + _back.tile_set.tile_size / 2
+	_mob.global_position = _world(startAt) + Vector2(_back.tile_set.tile_size / 2.0)
 	_pathClear()
 	_addPoints()
 	_connectPoints()
@@ -186,10 +188,10 @@ func _fadeAndFree() -> void:
 func _handleStair() -> bool:
 	if _pathPoints.size() == 1:
 		var p = mobPosition()
-		if isStairDownV(p):
+		if isStairDown(p):
 			emit_signal("generate")
 			return true
-		elif isStairUpV(p):
+		elif isStairUp(p):
 			emit_signal("generateUp")
 			return true
 	return false
@@ -197,29 +199,27 @@ func _handleStair() -> bool:
 func _handleDoor() -> bool:
 	var from := mobPosition()
 	var to := targetPosition()
-	if from.distance_to(to) < 2.0:
-		if isDoorV(to):
-			_toggleDoorV(to)
-			_astar.set_point_disabled(_tileIndex(to), isDoorShutV(to))
+	if (from - to).length() < 2.0:
+		if isDoor(to):
+			_toggleDoor(to)
+			_astar.set_point_disabled(_tileIndex(to), isDoorShut(to))
 			return true
 	return false
 
-func _toggleDoorV(p: Vector2) -> void: _toggleDoor(int(p.x), int(p.y))
-
 const _doorBreakChance = 0.02
 
-func _toggleDoor(x: int, y: int) -> void:
-	var door = _fore.get_cell_autotile_coord(x, y)
+func _toggleDoor(p: Vector2i) -> void:
+	var door = _fore.get_cell_autotile_coord(p)
 	var broke := Random.nextFloat() <= _doorBreakChance
-	# _fore.set_cell(x, y, _fore.get_cell(x, y), false, false, false, Vector2(2 if broke else 0 if door.x == 1 else 1, 0))
+	_fore.set_cell(0, p, _fore.get_cell(0, p), Vector2i(2 if broke else 0 if door.x == 1 else 1, 0))
 
-func _face(mob: Node2D, direction: Vector2) -> void:
+func _face(mob: Node2D, direction: Vector2i) -> void:
 	if direction.x > 0:
-		mob.scale = Vector2(-1, 1)
+		mob.scale = Vector2i(-1, 1)
 	else:
-		mob.scale = Vector2(1, 1)
+		mob.scale = Vector2i(1, 1)
 
-func _step(mob: Node2D, direction: Vector2) -> void:
+func _step(mob: Node2D, direction: Vector2i) -> void:
 	mob.walk()
 	_tweenStep.kill()
 	_tweenStep.set_trans(Tween.TRANS_CIRC).set_ease(Tween.EASE_IN_OUT)
@@ -231,24 +231,24 @@ func _addPoints() -> void:
 	var rect = _back.get_used_rect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
-			var p := Vector2(x, y)
+			var p := Vector2i(x, y)
 			_astar.add_point(_tileIndex(p), p)
 
 func _connectPoints() -> void:
 	var rect = _back.get_used_rect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
-			_connect(Vector2(x, y))
+			_connect(Vector2i(x, y))
 
-func _connect(p: Vector2) -> void:
+func _connect(p: Vector2i) -> void:
 	var rect = _back.get_used_rect()
 	for yy in range(p.y - 1, p.y + 2):
 		for xx in range(p.x - 1, p.x + 2):
-			var pp := Vector2(xx, yy)
+			var pp := Vector2i(xx, yy)
 			if (not is_equal_approx(yy, p.y) or not is_equal_approx(xx, p.x)) and rect.has_point(pp):
-				if isDoor(xx, yy) or not isBlocked(xx, yy):
+				if isDoor(pp) or not isBlocked(pp):
 					_astar.connect_points(_tileIndex(p), _tileIndex(pp), false)
-					if isDoorShut(xx, yy):
+					if isDoorShut(pp):
 						_astar.set_point_disabled(_tileIndex(pp), true)
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -280,83 +280,79 @@ func _unhandled_input(event: InputEvent) -> void:
 func _processWasd() -> bool:
 	var done := false
 	if Input.is_action_pressed("ui_up"):
-		_wasd(Vector2.UP)
+		_wasd(Vector2i.UP)
 		done = true
 	if Input.is_action_pressed("ui_ne"):
-		_wasd(Vector2.UP + Vector2.RIGHT)
+		_wasd(Vector2i.UP + Vector2i.RIGHT)
 		done = true
 	if Input.is_action_pressed("ui_right"):
-		_wasd(Vector2.RIGHT)
+		_wasd(Vector2i.RIGHT)
 		done = true
 	if Input.is_action_pressed("ui_se"):
-		_wasd(Vector2.DOWN + Vector2.RIGHT)
+		_wasd(Vector2i.DOWN + Vector2i.RIGHT)
 		done = true
 	if Input.is_action_pressed("ui_down"):
-		_wasd(Vector2.DOWN)
+		_wasd(Vector2i.DOWN)
 		done = true
 	if Input.is_action_pressed("ui_sw"):
-		_wasd(Vector2.DOWN + Vector2.LEFT)
+		_wasd(Vector2i.DOWN + Vector2i.LEFT)
 		done = true
 	if Input.is_action_pressed("ui_left"):
-		_wasd(Vector2.LEFT)
+		_wasd(Vector2i.LEFT)
 		done = true
 	if Input.is_action_pressed("ui_nw"):
-		_wasd(Vector2.UP + Vector2.LEFT)
+		_wasd(Vector2i.UP + Vector2i.LEFT)
 		done = true
 	return done
 
-func _wasd(direction: Vector2) -> void:
+func _wasd(direction: Vector2i) -> void:
 	var p := mobPosition() + direction
-	# if isDoorShutV(p):
-	# 	_toggleDoorV(p)
-	# if not isBlockedV(p):
-	# 	_face(_mob, direction)
-	# 	await _step(_mob, direction).completed
-	# 	_pathClear()
-	# 	if not isStairV(p):
-	# 		_lightUpdate(p, lightRadius)
-	# 		_checkCenter()
-	# 	else:
-	# 		if isStairDownV(p):
-	# 			emit_signal("generate")
-	# 		elif isStairUpV(p):
-	# 			emit_signal("generateUp")
+	if isDoorShut(p):
+		_toggleDoor(p)
+	if not isBlocked(p):
+		_face(_mob, direction)
+		await _step(_mob, direction)
+		_pathClear()
+		if not isStair(p):
+			_lightUpdate(p, lightRadius)
+			_checkCenter()
+		else:
+			if isStairDown(p):
+				emit_signal("generate")
+			elif isStairUp(p):
+				emit_signal("generateUp")
 
-func _tileIndex(p: Vector2) -> int:
-	return Utility.indexV(p, int(_back.get_used_rect().size.x))
+func _tileIndex(p: Vector2i) -> int:
+	return Utility.index(p, _back.get_used_rect().size.x)
 
 func _tilePosition(i: int) -> Vector2:
-	return Utility.position(i, int(_back.get_used_rect().size.x))
+	return Utility.position(i, _back.get_used_rect().size.x)
 
-func insideMapV(p: Vector2) -> bool:
+func insideMap(p: Vector2i) -> bool:
 	return _back.get_used_rect().has_point(p)
-
-func insideMap(x: int, y: int) -> bool:
-	return insideMapV(Vector2(x, y))
 
 func getCameraRect() -> Rect2:
 	return Rect2(_map(_camera.global_position), _map(_camera.global_position + _worldSize()))
 
-func _world(tile: Vector2) -> Vector2i:
+func _world(tile: Vector2i) -> Vector2:
 	return _back.map_to_local(tile)
 
 func _worldSize() -> Vector2:
-	return Vector2.ZERO
-	# return size * _camera.zoom
+	return Vector2(size) * _camera.zoom
 
 func _worldBounds() -> Rect2:
 	return Rect2(Vector2.ZERO, _worldSize())
 
-func _map(position: Vector2) -> Vector2:
+func _map(position: Vector2) -> Vector2i:
 	return _back.local_to_map(position)
 
 func _mapSize() -> Vector2i:
 	return _back.get_used_rect().size * _back.tile_set.tile_size
 
-func mapBounds() -> Rect2:
+func mapBounds() -> Rect2i:
 	return Rect2(-_camera.global_position, _mapSize())
 
-func _center() -> Vector2:
+func _center() -> Vector2i:
 	return -(_worldSize() / 2.0) + _mapSize() / 2.0
 
 func _cameraCenter() -> void:
@@ -420,8 +416,8 @@ func _zoomClamp(z: Vector2) -> Vector2:
 
 #region Path
 
-func _drawPath(from: Vector2, to: Vector2) -> void:
-	var color := _getPathColor(int(to.x), int(to.y))
+func _drawPath(from: Vector2i, to: Vector2i) -> void:
+	var color := _getPathColor(to)
 	_target.modulate = color
 	var rotation := 0
 	var pathDelta := _delta(from, to)
@@ -436,28 +432,28 @@ func _drawPath(from: Vector2, to: Vector2) -> void:
 		child.global_position = _world(tile)
 		_path.add_child(child)
 
-func _delta(from: Vector2, to: Vector2) -> Vector2:
+func _delta(from: Vector2i, to: Vector2i) -> Vector2:
 	return to - from
 
-func _pathRotate(stepDelta, pathDelta) -> int:
+func _pathRotate(stepDelta: Vector2i, pathDelta: Vector2i) -> int:
 	var rotation := 0
-	# var trending := abs(pathDelta.y) > abs(pathDelta.x)
-	# if stepDelta.x > 0 and stepDelta.y < 0:
-	# 	rotation = 270 if trending else 0
-	# elif stepDelta.x > 0 and stepDelta.y > 0:
-	# 	rotation = 90 if trending else 0
-	# elif stepDelta.x < 0 and stepDelta.y < 0:
-	# 	rotation = 270 if trending else 180
-	# elif stepDelta.x < 0 and stepDelta.y > 0:
-	# 	rotation = 90 if trending else 180
-	# elif stepDelta.x > 0:
-	# 	rotation = 0
-	# elif stepDelta.x < 0:
-	# 	rotation = 180
-	# elif stepDelta.y < 0:
-	# 	rotation = 270
-	# elif stepDelta.y > 0:
-	# 	rotation = 90
+	var trending = abs(pathDelta.y) > abs(pathDelta.x)
+	if stepDelta.x > 0 and stepDelta.y < 0:
+		rotation = 270 if trending else 0
+	elif stepDelta.x > 0 and stepDelta.y > 0:
+		rotation = 90 if trending else 0
+	elif stepDelta.x < 0 and stepDelta.y < 0:
+		rotation = 270 if trending else 180
+	elif stepDelta.x < 0 and stepDelta.y > 0:
+		rotation = 90 if trending else 180
+	elif stepDelta.x > 0:
+		rotation = 0
+	elif stepDelta.x < 0:
+		rotation = 180
+	elif stepDelta.y < 0:
+		rotation = 270
+	elif stepDelta.y > 0:
+		rotation = 90
 	return rotation
 
 func _pathClear():
@@ -489,7 +485,7 @@ func _targetUpdate() -> void:
 	if from != to:
 		_drawPath(from, to)
 
-func _targetSnapClosest(tile: Vector2) -> Vector2:
+func _targetSnapClosest(tile: Vector2i) -> Vector2i:
 	var p := _astar.get_point_position(_astar.get_closest_point(tile, true))
 	_targetSnap(p)
 	return p
@@ -509,23 +505,21 @@ func _onResize() -> void:
 	_oldSize = size
 	_cameraUpdate()
 
-func isBlockedV(p: Vector2) -> bool: return isBlocked(int(p.x), int(p.y))
+# mob blocked by cliff or no floor or...
+func isBlocked(p: Vector2i) -> bool:
+	if not insideMap(p): return true
+	var fore := _fore.get_cell_source_id(0, p)
+	var back := _back.get_cell_source_id(0, p)
+	return _cliffTiles.has(fore) or ((fore == INVALID_CELL) and not _floorTiles.has(back)) or isBlockedLight(p)
 
-func isBlocked(x: int, y: int) -> bool:
-	if not insideMap(x, y): return true
-	# var fore := _fore.get_cell(x, y)
-	# var back := _back.get_cell(x, y)
-	# return _cliffTiles.has(fore) or ((fore == TileMap.INVALID_CELL) and not _floorTiles.has(back)) or isBlockedLight(x, y)
-	return false
-
-func isBlockedLight(x: int, y: int) -> bool:
-	if not insideMap(x, y): return true
-	# var fore := _fore.get_cell(x, y)
-	# var w := _wallTiles.has(fore)
-	# var d := _doorTiles.has(fore)
-	# var s := _fore.get_cell_autotile_coord(x, y)
-	# return w or (d and s == Vector2(0, 0))
-	return false
+# light blocked by wall or shut door
+func isBlockedLight(p: Vector2i) -> bool:
+	if not insideMap(p): return true
+	var fore := _fore.get_cell_source_id(0, p)
+	var w := _wallTiles.has(fore)
+	var d := _doorTiles.has(fore)
+	var s = _fore.get_cell_atlas_coords(0, p)
+	return w or (d and s == Vector2i.ZERO)
 
 #endregion
 
@@ -557,7 +551,10 @@ func lightDecrease() -> void:
 	lightRadius -= 1
 	_lightUpdate(mobPosition(), lightRadius)
 
-func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float, end: float, xx: int, xy: int, yx: int, yy: int) -> void:
+# https://web.archive.org/web/20130705072606/http://doryen.eptalys.net/2011/03/ramblings-on-lights-in-full-color-roguelikes/
+# https://journal.stuffwithstuff.com/2015/09/07/what-the-hero-sees/
+# https://www.roguebasin.com/index.php/FOV_using_recursive_shadowcasting
+func _lightEmitRecursive(at: Vector2i, radius: float, maxRadius: float, start: float, end: float, xx: int, xy: int, yx: int, yy: int) -> void:
 	if start < end: return
 	var rSquared := maxRadius * maxRadius
 	var newStart := 0.0
@@ -567,22 +564,21 @@ func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float,
 		var blocked := false
 		while dx <= 0:
 			dx += 1
-			var x := int(at.x + dx * xx + dy * xy)
-			var y := int(at.y + dx * yx + dy * yy)
-			if not insideMap(x, y): continue
+			var p := Vector2i(at.x + dx * xx + dy * xy, at.y + dx * yx + dy * yy)
+			if not insideMap(p): continue
 			var lSlope := (dx - 0.5) / (dy + 0.5)
 			var rSlope := (dx + 0.5) / (dy - 0.5)
 			if start < rSlope: continue
 			elif end > lSlope: break
 			else:
-				var distanceSquared := (at.x - x) * (at.x - x) + (at.y - y) * (at.y - y)
+				var distanceSquared := (at.x - p.x) * (at.x - p.x) + (at.y - p.y) * (at.y - p.y)
 				if distanceSquared < rSquared:
 					var intensity1 := 1.0 / (1.0 + distanceSquared / maxRadius)
 					var intensity2 := intensity1 - 1.0 / (1.0 + rSquared)
 					var intensity := intensity2 / (1.0 - 1.0 / (1.0 + rSquared))
 					var light := int(intensity * _lightCount)
-					_setLight(x, y, _lightExplored + light, true)
-				var blockedAt := isBlockedLight(x, y)
+					_setLight(p, _lightExplored + light, true)
+				var blockedAt := isBlockedLight(p)
 				if blocked:
 					if blockedAt:
 						newStart = rSlope
@@ -596,12 +592,12 @@ func _lightEmitRecursive(at: Vector2, radius: int, maxRadius: int, start: float,
 					newStart = rSlope
 		if blocked: break
 
-func _lightEmit(at: Vector2, radius: int) -> void:
+func _lightEmit(at: Vector2i, radius: int) -> void:
 	for i in range(_fovOctants[0].size()):
 		_lightEmitRecursive(at, 1, radius, 1.0, 0.0, _fovOctants[0][i], _fovOctants[1][i], _fovOctants[2][i], _fovOctants[3][i])
-	_setLight(int(at.x), int(at.y), _lightMax, true)
+	_setLight(at, _lightMax, true)
 
-func _lightUpdate(at: Vector2, radius: int) -> void:
+func _lightUpdate(at: Vector2i, radius: int) -> void:
 	_darken()
 	_lightEmit(at, radius)
 	_lightTorches()
@@ -619,54 +615,55 @@ func _lightTorches() -> void:
 	for p in _torches.keys():
 		_torches[p] = clamp(_torches[p] + Random.nextRange(-1, 1), 2, _torchRadiusMax)
 		var current = _torches[p]
-		var north := Vector2(p.x, p.y + 1)
-		var east := Vector2(p.x + 1, p.y)
-		var south := Vector2(p.x, p.y - 1)
-		var west := Vector2(p.x - 1, p.y)
+		var north := Vector2i(p.x, p.y + 1)
+		var east := Vector2i(p.x + 1, p.y)
+		var south := Vector2i(p.x, p.y - 1)
+		var west := Vector2i(p.x - 1, p.y)
 		var emitted := false
-		if insideMapV(p):
-			var northBlocked = isBlockedV(north)
-			if not northBlocked and isLitV(north):
+		if insideMap(p):
+			var northBlocked = isBlocked(north)
+			if not northBlocked and isLit(north):
 				emitted = true
 				_lightEmit(north, current)
-			var eastBlocked = isBlockedV(east)
-			if not eastBlocked and isLitV(east):
+			var eastBlocked = isBlocked(east)
+			if not eastBlocked and isLit(east):
 				emitted = true
 				_lightEmit(east, current)
-			var southBlocked = isBlockedV(south)
-			if not southBlocked and isLitV(south):
+			var southBlocked = isBlocked(south)
+			if not southBlocked and isLit(south):
 				emitted = true
 				_lightEmit(south, current)
-			var westBlocked = isBlockedV(west)
-			if not westBlocked and isLitV(west):
+			var westBlocked = isBlocked(west)
+			if not westBlocked and isLit(west):
 				emitted = true
 				_lightEmit(west, current)
 			if not emitted:
-				var northEast := Vector2(p.x + 1, p.y + 1)
-				var southEast := Vector2(p.x + 1, p.y - 1)
-				var southWest := Vector2(p.x - 1, p.y - 1)
-				var northWest := Vector2(p.x - 1, p.y + 1)
-				if northBlocked and eastBlocked and not isBlockedV(northEast) and isLitV(northEast):
+				var northEast := Vector2i(p.x + 1, p.y + 1)
+				var southEast := Vector2i(p.x + 1, p.y - 1)
+				var southWest := Vector2i(p.x - 1, p.y - 1)
+				var northWest := Vector2i(p.x - 1, p.y + 1)
+				if northBlocked and eastBlocked and not isBlocked(northEast) and isLit(northEast):
 					_lightEmit(northEast, current)
-				if southBlocked and eastBlocked and not isBlockedV(southEast) and isLitV(southEast):
+				if southBlocked and eastBlocked and not isBlocked(southEast) and isLit(southEast):
 					_lightEmit(southEast, current)
-				if southBlocked and westBlocked and not isBlockedV(southWest) and isLitV(southWest):
+				if southBlocked and westBlocked and not isBlocked(southWest) and isLit(southWest):
 					_lightEmit(southWest, current)
-				if northBlocked and westBlocked and not isBlockedV(northWest) and isLitV(northWest):
+				if northBlocked and westBlocked and not isBlocked(northWest) and isLit(northWest):
 					_lightEmit(northWest, current)
 
 func _dark() -> void:
 	var rect = _back.get_used_rect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
-			_setLight(x, y, _lightMin, false)
+			_setLight(Vector2i(x, y), _lightMin, false)
 
 func _darken() -> void:
 	var rect = _back.get_used_rect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
-			if _getLight(x, y) != _lightMin:
-				_setLight(x, y, _lightExplored, false)
+			var p := Vector2i(x, y)
+			if _getLight(p) != _lightMin:
+				_setLight(p, _lightExplored, false)
 
 #endregion
 
@@ -682,37 +679,35 @@ const _colorFloorLit := Color(0.4, 0.4, 0.4, _alpha)
 const _colorFloor := Color(0.2, 0.2, 0.2, _alpha)
 const _colorCamera := Color(1, 0, 1, _alpha)
 
-func getMapColor(x: int, y: int) -> Color:
+func getMapColor(p: Vector2i) -> Color:
 	var camera = getCameraRect()
 	var color = Color(0.25, 0.25, 0.25, 0.25)
-	var on = _isRect(x, y, camera)
+	var on = _isRect(p, camera)
 	if on:
 		color = _colorCamera
-	var lit = isLit(x, y)
-	var explored = isExplored(x, y)
+	var lit = isLit(p)
+	var explored = isExplored(p)
 	var mob = mobPosition()
 	if not _light.visible or (lit or explored):
-		if x == mob.x and y == mob.y:
+		if p == mob:
 			color = _colorMob
-		elif isStair(x, y):
+		elif isStair(p):
 			color = _colorStair
-		elif isDoor(x, y):
+		elif isDoor(p):
 			color = _colorDoor
 		elif on:
 			color = _colorCamera
-		elif isWall(x, y):
+		elif isWall(p):
 			color = _colorWallLit if lit else _colorWall
-		elif isFloor(x, y):
+		elif isFloor(p):
 			color = _colorFloorLit if lit else _colorFloor
 		else:
 			color = _colorWallLit if lit else _colorWall
 	return color
 
-func _isRect(x, y, r) -> bool:
-	return (((x >= r.position.x and x <= r.size.x) and
-		(y == r.position.y or y == r.size.y)) or
-		((y >= r.position.y and y <= r.size.y) and
-		(x == r.position.x or x == r.size.x)))
+func _isRect(p: Vector2i, r: Rect2i) -> bool:
+	return (((p.x >= r.position.x and p.x <= r.size.x) and (p.y == r.position.y or p.y == r.size.y)) or
+		((p.y >= r.position.y and p.y <= r.size.y) and (p.x == r.position.x or p.x == r.size.x)))
 
 const _alphaPath := 0.333
 const _colorPathMob := Color(_colorMob.r, _colorMob.g, _colorMob.b, _alphaPath)
@@ -720,15 +715,15 @@ const _colorPathStair := Color(_colorStair.r, _colorStair.g, _colorStair.b, _alp
 const _colorPathDoor := Color(_colorDoor.r, _colorDoor.g, _colorDoor.b, _alphaPath)
 const _colorPathWall := Color(_colorWall.r, _colorWall.g, _colorWall.b, _alphaPath)
 
-func _getPathColor(x: int, y: int) -> Color:
+func _getPathColor(p: Vector2i) -> Color:
 	var color = _colorPathWall
-	if isStair(x, y):
+	if isStair(p):
 		color = _colorPathStair
-	elif isDoor(x, y):
+	elif isDoor(p):
 		color = _colorPathDoor
-	elif isWall(x, y):
+	elif isWall(p):
 		color = _colorPathWall
-	elif isFloor(x, y):
+	elif isFloor(p):
 		color = _colorPathMob
 	return color
 
@@ -747,19 +742,19 @@ func clear() -> void:
 	_light.clear()
 	_edge.clear()
 
-func mobPosition() -> Vector2:
+func mobPosition() -> Vector2i:
 	return _map(_mob.global_position)
 
-func targetPosition() -> Vector2:
+func targetPosition() -> Vector2i:
 	return _map(_target.global_position)
 
 #endregion
 
 #region Tile
 
-func _setRandomTile(map: TileMap, x: int, y: int, id: int, flipX: bool = false, flipY: bool = false, rot90: bool = false) -> void:
-	# map.set_cell(x, y, id, flipX, flipY, rot90, _randomTile(id))
-	pass
+# TODO: flip and rotate in alternate now?
+func _setRandomTile(map: TileMap, p: Vector2i, id: int, flipX: bool = false, flipY: bool = false, rot90: bool = false) -> void:
+	map.set_cell(0, p, id, _randomTile(id))
 
 func _randomTile(id: int) -> Vector2:
 	var p := Vector2.ZERO
@@ -788,16 +783,14 @@ func isTileId(tile: int, tiles: Array) -> bool:
 
 #region Back
 
-func _setBack(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
-	# _back.set_cell(x, y, tile, flipX, flipY, rot90, coord)
-	pass
+# TODO: flip and rotate in alternate now?
+func _setBack(p: Vector2i, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2i.ZERO) -> void:
+	_back.set_cell(0, p, tile, coord)
 
-func _setBackRandom(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
-	_setRandomTile(_back, x, y, tile, flipX, flipY, rot90)
+func _setBackRandom(p: Vector2i, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_back, p, tile, flipX, flipY, rot90)
 
-func setFloorV(p: Vector2) -> void:	setFloor(int(p.x), int(p.y))
-
-func setFloor(x: int, y: int, wonky := false) -> void:
+func setFloor(p: Vector2, wonky := false) -> void:
 	var id
 	match theme:
 		0: id = Tile.Theme0Floor
@@ -807,11 +800,9 @@ func setFloor(x: int, y: int, wonky := false) -> void:
 	var flipX := Random.nextBool() if wonky else false
 	var flipY := Random.nextBool() if wonky else false
 	var rot90 := Random.nextBool() if wonky else false
-	_setBackRandom(x, y, id, flipX, flipY, rot90)
+	_setBackRandom(p, id, flipX, flipY, rot90)
 
-func setFloorRoomV(p: Vector2) -> void:	setFloorRoom(int(p.x), int(p.y))
-
-func setFloorRoom(x: int, y: int, wonky := false) -> void:
+func setFloorRoom(p: Vector2, wonky := false) -> void:
 	var id
 	match theme:
 		0: id = Tile.Theme0FloorRoom
@@ -821,345 +812,279 @@ func setFloorRoom(x: int, y: int, wonky := false) -> void:
 	var flipX := Random.nextBool() if wonky else false
 	var flipY := Random.nextBool() if wonky else false
 	var rot90 := Random.nextBool() if wonky else false
-	_setBackRandom(x, y, id, flipX, flipY, rot90)
+	_setBackRandom(p, id, flipX, flipY, rot90)
 
-func setOutside(x: int, y: int) -> void:
+func setOutside(p: Vector2i) -> void:
 	if desert:
-		_setBackRandom(x, y, Tile.OutsideDayDesert if day else Tile.OutsideNightDesert)
+		_setBackRandom(p, Tile.OutsideDayDesert if day else Tile.OutsideNightDesert)
 	else:
-		_setBackRandom(x, y, Tile.OutsideDay if day else Tile.OutsideNight, Random.nextBool(), Random.nextBool(), Random.nextBool())
+		_setBackRandom(p, Tile.OutsideDay if day else Tile.OutsideNight, Random.nextBool(), Random.nextBool(), Random.nextBool())
 
-func setOutsideFloor(x: int, y: int, wonky := false) -> void:
+func setOutsideFloor(p: Vector2, wonky := false) -> void:
 	var flipX := Random.nextBool() if wonky else false
 	var flipY := Random.nextBool() if wonky else false
 	var rot90 := Random.nextBool() if wonky else false
-	_setBackRandom(x, y, Tile.OutsideDayFloor if day else Tile.OutsideNightFloor, flipX, flipY, rot90)
+	_setBackRandom(p, Tile.OutsideDayFloor if day else Tile.OutsideNightFloor, flipX, flipY, rot90)
 
-func _isBackTile(x: int, y: int, tiles: Array) -> bool:
-	return isTileId(_back.get_cell(x, y), tiles)
+func _isBackTile(p: Vector2i, tiles: Array) -> bool:
+	return isTileId(_back.get_cell_source_id(0, p), tiles)
 
-func isFloorV(p: Vector2) -> bool: return isFloor(int(p.x), int(p.y))
+func isFloor(p: Vector2i) -> bool:
+	return _isBackTile(p, _floorTiles)
 
-func isFloor(x: int, y: int) -> bool:
-	return _isBackTile(x, y, _floorTiles)
+func clearBack(p: Vector2i) -> void:
+	_setBack(p, INVALID_CELL)
 
-func clearBackV(p: Vector2) -> void: clearBack(int(p.x), int(p.y))
-
-func clearBack(x: int, y: int) -> void:
-	# _setBack(x, y, TileMap.INVALID_CELL)
-	pass
-
-func isBackInvalidV(p: Vector2) -> bool: return isBackInvalid(int(p.x), int(p.y))
-
-func isBackInvalid(x: int, y: int) -> bool:
-	# return _back.get_cell(x, y) == TileMap.INVALID_CELL
-	return false
+func isBackInvalid(p: Vector2i) -> bool:
+	return _back.get_cell(p) == INVALID_CELL
 
 #endregion
 
 #region Fore
 
-func _setFore(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
-	# _fore.set_cell(x, y, tile, flipX, flipY, rot90, coord)
-	pass
+# TODO: flip and rotate in alternate now?
+func _setFore(p: Vector2i, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2i.ZERO) -> void:
+	_fore.set_cell(0, p, tile, coord)
 
-func _setForeRandom(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
-	_setRandomTile(_fore, x, y, tile, flipX, flipY, rot90)
+func _setForeRandom(p: Vector2i, int, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_fore, p, tile, flipX, flipY, rot90)
 
-func setWallPlainV(p: Vector2) -> void: setWallPlain(int(p.x), int(p.y))
-
-func setWallPlain(x: int, y: int) -> void:
+func setWallPlain(p: Vector2i) -> void:
 	var id
 	match theme:
 		0: id = Tile.Theme0WallPlain
 		1: id = Tile.Theme1WallPlain
 		2: id = Tile.Theme2WallPlain
 		3: id = Tile.Theme3WallPlain
-	_setForeRandom(x, y, id, Random.nextBool())
+	_setForeRandom(p, id, Random.nextBool())
 
-func setWallV(p: Vector2) -> void: setWall(int(p.x), int(p.y))
-
-func setWall(x: int, y: int) -> void:
+func setWall(p: Vector2i) -> void:
 	var id
 	match theme:
 		0: id = Tile.Theme0Wall
 		1: id = Tile.Theme1Wall
 		2: id = Tile.Theme2Wall
 		3: id = Tile.Theme3Wall
-	_setForeRandom(x, y, id, Random.nextBool())
+	_setForeRandom(p, id, Random.nextBool())
 
-func setTorchV(p: Vector2) -> void: setTorch(int(p.x), int(p.y))
-
-func setTorch(x: int, y: int) -> void:
+func setTorch(p: Vector2i) -> void:
 	var id
 	match theme:
 		0: id = Tile.Theme0Torch
 		1: id = Tile.Theme1Torch
 		2: id = Tile.Theme2Torch
 		3: id = Tile.Theme3Torch
-	_setForeRandom(x, y, id, Random.nextBool())
+	_setForeRandom(p, id, Random.nextBool())
 
-func setRubbleV(p: Vector2) -> void: setRubble(int(p.x), int(p.y))
+func setRubble(p: Vector2i) -> void:
+	_setRandomTile(_back, p, Tile.Rubble, Random.nextBool(), Random.nextBool(), Random.nextBool())
 
-func setRubble(x: int, y: int) -> void:
-	_setRandomTile(_back, x, y, Tile.Rubble, Random.nextBool(), Random.nextBool(), Random.nextBool())
+func setOutsideRubble(p: Vector2i) -> void:
+	_setRandomTile(_back, p, Tile.OutsideDayRubble if day else Tile.OutsideNightRubble, Random.nextBool(), Random.nextBool(), Random.nextBool())
 
-func setOutsideRubble(x: int, y: int) -> void:
-	_setRandomTile(_back, x, y, Tile.OutsideDayRubble if day else Tile.OutsideNightRubble, Random.nextBool(), Random.nextBool(), Random.nextBool())
+func setOutsideWall(p: Vector2i) -> void:
+	_setRandomTile(_fore, p, Tile.OutsideDayWall if day else Tile.OutsideNightWall, Random.nextBool())
 
-func setOutsideWall(x: int, y: int) -> void:
-	_setRandomTile(_fore, x, y, Tile.OutsideDayWall if day else Tile.OutsideNightWall, Random.nextBool())
+func setOutsideHedge(p: Vector2i) -> void:
+	_setRandomTile(_fore, p, Tile.OutsideDayHedge if day else Tile.OutsideNightHedge, Random.nextBool())
 
-func setOutsideHedge(x: int, y: int) -> void:
-	# _setRandomTile(_fore, x, y, Tile.OutsideDayHedge if day else Tile.OutsideNightHedge, Random.nextBool())
-	pass
-
-func setCliff(x: int, y: int) -> void:
+func setCliff(p: Vector2i) -> void:
 	var id
 	match themeCliff:
 		0: id = Tile.Cliff0
 		1: id = Tile.Cliff1
-	_setForeRandom(x, y, id, Random.nextBool())
+	_setForeRandom(p, id, Random.nextBool())
 
-func _setStair(x: int, y: int, coord: Vector2) -> void:
+func _setStair(p: Vector2i, coord: Vector2i) -> void:
 	var id
 	match theme:
 		0: id = Tile.Theme0Stair
 		1: id = Tile.Theme1Stair
 		2: id = Tile.Theme2Stair
 		3: id = Tile.Theme3Stair
-	_setFore(x, y, id, Random.nextBool(), false, false, coord)
+	_setFore(p, id, Random.nextBool(), false, false, coord)
 
-func setStairDownV(p: Vector2) -> void: setStairDown(int(p.x), int(p.y))
+func setStairDown(p: Vector2i) -> void:
+	_setStair(p, Vector2(0, 0))
 
-func setStairDown(x: int, y: int) -> void:
-	_setStair(x, y, Vector2(0, 0))
+func setStairUp(p: Vector2i) -> void:
+	_setStair(p, Vector2(1, 0))
 
-func setStairUpV(p: Vector2) -> void: setStairUp(int(p.x), int(p.y))
-
-func setStairUp(x: int, y: int) -> void:
-	_setStair(x, y, Vector2(1, 0))
-
-func _setStairOutside(x: int, y: int, coord: Vector2) -> void:
+func _setStairOutside(p: Vector2i, coord: Vector2i) -> void:
 	if desert:
-		_setFore(x, y, Tile.OutsideDayDesertStair if day else Tile.OutsideNightDesertStair, Random.nextBool(), false, false, coord)
+		_setFore(p, Tile.OutsideDayDesertStair if day else Tile.OutsideNightDesertStair, Random.nextBool(), false, false, coord)
 	else:
-		_setFore(x, y, Tile.OutsideDayStair if day else Tile.OutsideNightStair, Random.nextBool(), false, false, coord)
+		_setFore(p, Tile.OutsideDayStair if day else Tile.OutsideNightStair, Random.nextBool(), false, false, coord)
 
-func setStairOutsideUp(x: int, y: int) -> void:
-	_setStairOutside(x, y, Vector2(0, 0))
+func setStairOutsideUp(p: Vector2i) -> void:
+	_setStairOutside(p, Vector2(0, 0))
 
-func setStairOutsideDown(x: int, y: int) -> void:
-	_setStairOutside(x, y, Vector2(1, 0))
+func setStairOutsideDown(p: Vector2i) -> void:
+	_setStairOutside(p, Vector2(1, 0))
 
-func setDoorV(p: Vector2) -> void: setDoor(int(p.x), int(p.y))
-
-func setDoor(x: int, y: int) -> void:
+func setDoor(p: Vector2i) -> void:
 	var id
 	match theme:
 		0: id = Tile.Theme0Door
 		1: id = Tile.Theme1Door
 		2: id = Tile.Theme2Door
 		3: id = Tile.Theme3Door
-	_setRandomTile(_fore, x, y, id, Random.nextBool())
+	_setRandomTile(_fore, p, id, Random.nextBool())
 
-func setDoorBrokeV(p: Vector2) -> void: setDoorBroke(int(p.x), int(p.y))
-
-func setDoorBroke(x: int, y: int) -> void:
+func setDoorBroke(p: Vector2i) -> void:
 	var id
 	match theme:
 		0: id = Tile.Theme0Door
 		1: id = Tile.Theme1Door
 		2: id = Tile.Theme2Door
 		3: id = Tile.Theme3Door
-	_setFore(x, y, id, Random.nextBool(), false, false, Vector2(2, 0))
+	_setFore(p, id, Random.nextBool(), false, false, Vector2(2, 0))
 
-func setFountainV(p: Vector2) -> void: setFountain(int(p.x), int(p.y))
+func setFountain(p: Vector2i) -> void:
+	_setForeRandom(p, Tile.Fountain, Random.nextBool())
 
-func setFountain(x: int, y: int) -> void:
-	_setForeRandom(x, y, Tile.Fountain, Random.nextBool())
+func setBanner0(p: Vector2i) -> void:
+	_setForeRandom(p, Tile.Banner0, Random.nextBool())
 
-func setBanner0V(p: Vector2) -> void: setBanner0(int(p.x), int(p.y))
+func setBanner1(p: Vector2i) -> void:
+	_setForeRandom(p, Tile.Banner1, Random.nextBool())
 
-func setBanner0(x: int, y: int) -> void:
-	_setForeRandom(x, y, Tile.Banner0, Random.nextBool())
-
-func setBanner1V(p: Vector2) -> void: setBanner1(int(p.x), int(p.y))
-
-func setBanner1(x: int, y: int) -> void:
-	_setForeRandom(x, y, Tile.Banner1, Random.nextBool())
-
-func setLootV(p: Vector2) -> void: setLoot(int(p.x), int(p.y))
-
-func setLoot(x: int, y: int) -> void:
+func setLoot(p: Vector2i) -> void:
 	var id
 	match Random.next(4):
 		0: id = Tile.Chest
 		1: id = Tile.ChestBroke
 		2: id = Tile.ChestOpenEmpty
 		3: id = Tile.ChestOpenFull
-	_setItemBackRandom(x, y, id, Random.nextBool())
+	_setItemBackRandom(p, id, Random.nextBool())
 	if Random.nextBool():
-		_setItemFore(x, y, Tile.Loot)
+		_setItemFore(p, Tile.Loot)
 
-func _isForeTile(x: int, y: int, tiles: Array) -> bool:
-	return isTileId(_fore.get_cell_source_id(0, Vector2i(x, y)), tiles)
+func _isForeTile(p: Vector2i, tiles: Array) -> bool:
+	return isTileId(_fore.get_cell_source_id(0, p), tiles)
 
-func isWallV(p: Vector2) -> bool: return isWall(int(p.x), int(p.y))
+func isWall(p: Vector2i) -> bool:
+	return _isForeTile(p, _wallTiles)
 
-func isWall(x: int, y: int) -> bool:
-	return _isForeTile(x, y, _wallTiles)
+func isCliff(p: Vector2i) -> bool:
+	return _isForeTile(p, _cliffTiles)
 
-func isCliffV(p: Vector2) -> bool: return isCliff(int(p.x), int(p.y))
+func isStair(p: Vector2i) -> bool:
+	return _isForeTile(p, _stairTiles)
 
-func isCliff(x: int, y: int) -> bool:
-	return _isForeTile(x, y, _cliffTiles)
+func isStairUp(p: Vector2i) -> bool:
+	return isStair(p) and _fore.get_cell_autotile_coord(p) == Vector2i(1, 0)
 
-func isStairV(p: Vector2) -> bool: return isStair(int(p.x), int(p.y))
+func isStairDown(p: Vector2i) -> bool:
+	return isStair(p) and _fore.get_cell_autotile_coord(p) == Vector2i(0, 0)
 
-func isStair(x: int, y: int) -> bool:
-	return _isForeTile(x, y, _stairTiles)
+func isDoor(p: Vector2i) -> bool:
+	return _isForeTile(p, _doorTiles)
 
-func isStairUpV(p: Vector2) -> bool: return isStairUp(int(p.x), int(p.y))
+func isDoorShut(p: Vector2i) -> bool:
+	return isDoor(p) and (_fore.get_cell_atlas_coords(0, p) == Vector2i.ZERO)
 
-func isStairUp(x: int, y: int) -> bool:
-	return isStair(x, y) and _fore.get_cell_autotile_coord(x, y) == Vector2(1, 0)
+func clearFore(p: Vector2i) -> void:
+	_setFore(p, INVALID_CELL)
 
-func isStairDownV(p: Vector2) -> bool: return isStairDown(int(p.x), int(p.y))
-
-func isStairDown(x: int, y: int) -> bool:
-	return isStair(x, y) and _fore.get_cell_autotile_coord(x, y) == Vector2(0, 0)
-
-func isDoorV(p: Vector2) -> bool: return isDoor(int(p.x), int(p.y))
-
-func isDoor(x: int, y: int) -> bool:
-	return _isForeTile(x, y, _doorTiles)
-
-func isDoorShutV(p: Vector2) -> bool: return isDoorShut(int(p.x), int(p.y))
-
-func isDoorShut(x: int, y: int) -> bool:
-	return isDoor(x, y) and (_fore.get_cell_atlas_coords(0, Vector2i(x, y)) == Vector2i(0, 0))
-
-func clearForeV(p: Vector2i) -> void: clearFore(p.x, p.y)
-
-func clearFore(x: int, y: int) -> void:
-	# _setFore(x, y, TileMap.INVALID_CELL)
-	pass
-
-func isForeInvalidV(p: Vector2) -> bool: return isForeInvalid(int(p.x), int(p.y))
-
-func isForeInvalid(x: int, y: int) -> bool:
-	# return _fore.get_cell(x, y) == TileMap.INVALID_CELL
-	return false
+func isForeInvalid(p: Vector2i) -> bool:
+	return _fore.get_cell(p) == INVALID_CELL
 
 func verifyCliff() -> void:
 	var rect = _back.get_used_rect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
-			if isCliff(x, y) and not isFloor(x, y - 1):
-				clearFore(x, y)
+			var p = Vector2i(x, y)
+			if isCliff(p) and not isFloor(Vector2i(x, y - 1)):
+				clearFore(p)
 
 #endregion
 
 #region Flower
 
-func setFlower(x: int, y: int) -> void:
-	_setRandomTile(_flower, x, y, Tile.OutsideFlower, Random.nextBool())
+func setFlower(p: Vector2i) -> void:
+	_setRandomTile(_flower, p, Tile.OutsideFlower, Random.nextBool())
 
 #endregion
 
 #region Tree
 
-func setTree(x: int, y: int) -> void:
-	var p := Vector2(Random.next(3), 0)
-	# _tree.set_cell(x, y, Tile.TreeBack, false, false, false, p)
-	# _top.set_cell(x, y - 1, Tile.TreeFore, false, false, false, p)
+func setTree(p: Vector2i) -> void:
+	var coord := Vector2(Random.next(3), 0)
+	_tree.set_cell(0, p, Tile.TreeBack, coord)
+	_top.set_cell(0, Vector2i(p.x, p.y - 1), Tile.TreeFore, coord)
 
-func setTreeStump(x: int, y: int) -> void:
-	_setRandomTile(_tree, x, y, Tile.TreeStump, Random.nextBool())
+func setTreeStump(p: Vector2i) -> void:
+	_setRandomTile(_tree, p, Tile.TreeStump, Random.nextBool())
 
-func clearTree(x: int, y: int) -> void:
-	# _tree.set_cell(x, y, TileMap.INVALID_CELL)
-	# _top.set_cell(x, y - 1, TileMap.INVALID_CELL)
-	pass
+func clearTree(p: Vector2i) -> void:
+	_tree.set_cell(0, p, INVALID_CELL)
+	_top.set_cell(0, Vector2i(p.x, p.y - 1), INVALID_CELL)
 
-func cutTreeV(p: Vector2) -> void: cutTree(int(p.x), int(p.y))
-
-func cutTree(x: int, y: int) -> void:
-	clearTree(x, y)
-	setTreeStump(x, y)
+func cutTree(p: Vector2i) -> void:
+	clearTree(p)
+	setTreeStump(p)
 
 #endregion
 
 #region Water
 
-func setWaterShallowV(p: Vector2) -> void: setWaterShallow(int(p.x), int(p.y))
+func setWaterShallow(p: Vector2i) -> void:
+	_waterBack.set_cell(0, p, Tile.WaterShallowBack)
+	_waterFore.set_cell(0, p, Tile.WaterShallowFore)
 
-func setWaterShallow(x: int, y: int) -> void:
-	# _waterBack.set_cell(x, y, Tile.WaterShallowBack)
-	# _waterFore.set_cell(x, y, Tile.WaterShallowFore)
-	pass
+func setWaterDeep(p: Vector2i) -> void:
+	_waterBack.set_cell(0, p, Tile.WaterDeepBack)
+	_waterFore.set_cell(0, p, Tile.WaterDeepFore)
 
-func setWaterDeepV(p: Vector2) -> void: setWaterDeep(int(p.x), int(p.y))
+func setWaterShallowPurple(p: Vector2i) -> void:
+	_waterBack.set_cell(0, p, Tile.WaterShallowBackPurple)
+	_waterFore.set_cell(0, p, Tile.WaterShallowForePurple)
 
-func setWaterDeep(x: int, y: int) -> void:
-	# _waterBack.set_cell(x, y, Tile.WaterDeepBack)
-	# _waterFore.set_cell(x, y, Tile.WaterDeepFore)
-	pass
+func setWaterDeepPurple(p: Vector2i) -> void:
+	_waterBack.set_cell(0, p, Tile.WaterDeepBackPurple)
+	_waterFore.set_cell(0, p, Tile.WaterDeepForePurple)
 
-func setWaterShallowPurpleV(p: Vector2) -> void: setWaterShallowPurple(int(p.x), int(p.y))
+func _isWaterTile(p: Vector2i, tiles: Array) -> bool:
+	return isTileId(_waterBack.get_cell(p), tiles)
 
-func setWaterShallowPurple(x: int, y: int) -> void:
-	# _waterBack.set_cell(x, y, Tile.WaterShallowBackPurple)
-	# _waterFore.set_cell(x, y, Tile.WaterShallowForePurple)
-	pass
+func isWater(p: Vector2i) -> bool:
+	return _isWaterTile(p, _waterTiles)
 
-func setWaterDeepPurpleV(p: Vector2) -> void: setWaterDeepPurple(int(p.x), int(p.y))
+func isWaterDeep(p: Vector2i) -> bool:
+	return _isWaterTile(p, _waterDeepTiles)
 
-func setWaterDeepPurple(x: int, y: int) -> void:
-	# _waterBack.set_cell(x, y, Tile.WaterDeepBackPurple)
-	# _waterFore.set_cell(x, y, Tile.WaterDeepForePurple)
-	pass
-
-func _isWaterTile(x: int, y: int, tiles: Array) -> bool:
-	return isTileId(_waterBack.get_cell(x, y), tiles)
-
-func isWater(x: int, y: int) -> bool:
-	return _isWaterTile(x, y, _waterTiles)
-
-func isWaterDeep(x: int, y: int) -> bool:
-	return _isWaterTile(x, y, _waterDeepTiles)
-
-func isWaterPurple(x: int, y: int) -> bool:
-	return _isWaterTile(x, y, _waterPurpleTiles)
+func isWaterPurple(p: Vector2i) -> bool:
+	return _isWaterTile(p, _waterPurpleTiles)
 
 #endregion
 
 #region Item
 
-func _setItemFore(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
-	# _itemFore.set_cell(x, y, tile, flipX, flipY, rot90, coord)
-	pass
+# TODO: flip and rotate in alternate now?
+func _setItemFore(p: Vector2i, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
+	_itemFore.set_cell(0, p, tile, coord)
 
-func _setItemForeRandom(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
-	_setRandomTile(_itemFore, x, y, tile, flipX, flipY, rot90)
+func _setItemForeRandom(p: Vector2i, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_itemFore, p, tile, flipX, flipY, rot90)
 
-func _setItemBack(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
-	# _itemBack.set_cell(x, y, tile, flipX, flipY, rot90, coord)
-	pass
+# TODO: flip and rotate in alternate now?
+func _setItemBack(p: Vector2i, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
+	_itemBack.set_cell(0, p, tile, coord)
 
-func _setItemBackRandom(x: int, y: int, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
-	_setRandomTile(_itemBack, x, y, tile, flipX, flipY, rot90)
+func _setItemBackRandom(p: Vector2i, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
+	_setRandomTile(_itemBack, p, tile, flipX, flipY, rot90)
 
 #endregion
 
 #region Split
 
-func setGrass(x: int, y: int) -> void:
+# TODO: flip and rotate in alternate now?
+func setGrass(p: Vector2i) -> void:
 	var flipX = Random.nextBool()
 	# if desert:
-	# 	_splitBack.set_cell(x, y, Tile.OutsideDayGrassDry if day else Tile.OutsideNightGrassDry, flipX, false, false, Vector2(0, 0))
-	# 	_splitFore.set_cell(x, y, Tile.OutsideDayGrassDry if day else Tile.OutsideNightGrassDry, flipX, false, false, Vector2(1, 0))
+	# 	_splitBack.set_cell(0, p, Tile.OutsideDayGrassDry if day else Tile.OutsideNightGrassDry, flipX, false, false, Vector2(0, 0))
+	# 	_splitFore.set_cell(0, p, Tile.OutsideDayGrassDry if day else Tile.OutsideNightGrassDry, flipX, false, false, Vector2(1, 0))
 	# else:
 	# 	_splitBack.set_cell(x, y, Tile.OutsideDayGrassGreen if day else Tile.OutsideNightGrassGreen, flipX, false, false, Vector2(0, 0))
 	# 	_splitFore.set_cell(x, y, Tile.OutsideDayGrassGreen if day else Tile.OutsideNightGrassGreen, flipX, false, false, Vector2(1, 0))
@@ -1168,28 +1093,24 @@ func setGrass(x: int, y: int) -> void:
 
 #region Light
 
-func _getLight(x: int, y: int) -> int:
-	return _light.get_cell_atlas_coords(0, Vector2i(x, y)).x
+func _getLight(p: Vector2i) -> int:
+	return _light.get_cell_atlas_coords(0, p).x
 
-func _setLight(x: int, y: int, light: int, test: bool) -> void:
-	# if not test or light > _getLight(x, y):
-	# 	_light.set_cell(x, y, Tile.Light, false, false, false, Vector2(light, 0))
-	pass
+func _setLight(p: Vector2i, light: int, test: bool) -> void:
+	if not test or light > _getLight(p):
+		_light.set_cell(0, p, Tile.Light, Vector2(light, 0))
 
-func isExploredV(p: Vector2) -> bool: return isExplored(int(p.x), int(p.y))
+func isExplored(p: Vector2i) -> bool:
+	return _getLight(p) == _lightExplored
 
-func isExplored(x: int, y: int) -> bool:
-	return _getLight(x, y) == _lightExplored
-
-func isLitV(p: Vector2) -> bool: return isLit(int(p.x), int(p.y))
-
-func isLit(x: int, y: int) -> bool:
-	return _getLight(x, y) > _lightExplored
+func isLit(p: Vector2i) -> bool:
+	return _getLight(p) > _lightExplored
 
 #endregion
 
 #region Edge
 
+# TODO: flip and rotate in alternate now?
 func _drawEdge() -> void:
 	var rect = _back.get_used_rect()
 	# var minY: int = rect.position.y - 1

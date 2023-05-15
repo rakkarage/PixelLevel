@@ -27,7 +27,7 @@ func generate(delta: int = 1) -> void:
 func _drawWalk() -> void:
 	var steps := _walk(_stepsMax)
 	for step in steps:
-		_setFloorV(step)
+		_setFloor(step)
 		_level.clearForeV(step)
 
 func _walk(steps: int) -> Array:

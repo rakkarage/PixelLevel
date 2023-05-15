@@ -124,13 +124,16 @@ layout_mode = 1
 
 [node name="Panel" type="PanelContainer" parent="Fore"]
 modulate = Color(1, 1, 1, 0.74902)
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -165.0
-offset_top = -112.0
+offset_left = -222.0
+offset_top = -176.0
+grow_horizontal = 0
+grow_vertical = 0
 
 [node name="VBox" type="VBoxContainer" parent="Fore/Panel"]
 layout_mode = 2
@@ -221,5 +224,3 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Plus"
-
-[editable path="Fore/Mask"]

@@ -41,8 +41,8 @@ func _drawMaze() -> void:
 			start = Vector2(_width - 2, _height - 2)
 			end = Vector2(1, 1)
 	_level.startAt = start
-	_level.clearForeV(p)
-	_setFloorOrRoomV(p)
+	_level.clearFore(p)
+	_setFloorOrRoom(p)
 	var points := []
 	points.append(p)
 	while points.size():
@@ -65,39 +65,39 @@ func _drawMaze() -> void:
 			match Random.next(4):
 				0:
 					eastChecked = true
-					if ((_level.isWallV(east) or _level.isCliffV(east)) and
-						(_level.isWallV(eastEast) or _level.isCliffV(eastEast))):
-						_level.clearForeV(east)
-						_setFloorOrRoomV(east)
+					if ((_level.isWall(east) or _level.isCliff(east)) and
+						(_level.isWall(eastEast) or _level.isCliff(eastEast))):
+						_level.clearFore(east)
+						_setFloorOrRoom(east)
 						_level.clearForeV(eastEast)
-						_setFloorOrRoomV(eastEast)
+						_setFloorOrRoom(eastEast)
 						points.append(eastEast)
 				1:
 					westChecked = true
-					if ((_level.isWallV(west) or _level.isCliffV(west)) and
-						(_level.isWallV(westWest) or _level.isCliffV(westWest))):
-						_level.clearForeV(west)
-						_setFloorOrRoomV(west)
-						_level.clearForeV(westWest)
-						_setFloorOrRoomV(westWest)
+					if ((_level.isWall(west) or _level.isCliff(west)) and
+						(_level.isWall(westWest) or _level.isCliff(westWest))):
+						_level.clearFore(west)
+						_setFloorOrRoom(west)
+						_level.clearFore(westWest)
+						_setFloorOrRoom(westWest)
 						points.append(westWest)
 				2:
 					northChecked = true
-					if ((_level.isWallV(north) or _level.isCliffV(north)) and
-						(_level.isWallV(northNorth) or _level.isCliffV(northNorth))):
-						_level.clearForeV(north)
-						_setFloorOrRoomV(north)
-						_level.clearForeV(northNorth)
-						_setFloorOrRoomV(northNorth)
+					if ((_level.isWall(north) or _level.isCliff(north)) and
+						(_level.isWall(northNorth) or _level.isCliff(northNorth))):
+						_level.clearFore(north)
+						_setFloorOrRoom(north)
+						_level.clearFore(northNorth)
+						_setFloorOrRoom(northNorth)
 						points.append(northNorth)
 				3:
 					southChecked = true
-					if ((_level.isWallV(south) or _level.isCliffV(south)) and
-						(_level.isWallV(southSouth) or _level.isCliffV(southSouth))):
-						_level.clearForeV(south)
-						_setFloorOrRoomV(south)
-						_level.clearForeV(southSouth)
-						_setFloorOrRoomV(southSouth)
+					if ((_level.isWall(south) or _level.isCliff(south)) and
+						(_level.isWall(southSouth) or _level.isCliff(southSouth))):
+						_level.clearFore(south)
+						_setFloorOrRoom(south)
+						_level.clearFore(southSouth)
+						_setFloorOrRoom(southSouth)
 						points.append(southSouth)
-	_level.setStairUpV(start)
-	_level.setStairDownV(end)
+	_level.setStairUp(start)
+	_level.setStairDown(end)

@@ -36,33 +36,34 @@ func _drawCaves() -> void:
 			_combineLists(list, other)
 	for y in range(_height):
 		for x in range(_width):
-			if list[Utility.index(x, y, _width)]:
+			var p := Vector2i(x, y)
+			if list[Utility.index(p, _width)]:
 				if _cliff:
-					_level.setCliff(x, y)
+					_level.setCliff(p)
 				else:
 					if _outside and _outsideWall:
-						_setOutsideWall(x, y)
+						_setOutsideWall(p)
 					else:
-						_setWallPlain(x, y)
+						_setWallPlain(p)
 			else:
-				_level.clearFore(x, y)
+				_level.clearFore(p)
 				if _outside:
-					_setOutside(x, y)
+					_setOutside(p)
 				else:
 					if _room:
-						_level.setFloorRoom(x, y)
+						_level.setFloorRoom(p)
 					else:
-						_level.setFloor(x, y)
+						_level.setFloor(p)
 	if not _outside or not _outsideWall:
 		_outlineCaves(list)
 	_stairsAt(_biggest(list))
 
-func _getAdjacentCount(list: Array, x: int, y: int) -> int:
+func _getAdjacentCount(list: Array, p: Vector2i) -> int:
 	var count := 0
 	for yy in range(-1, 2):
 		for xx in range(-1, 2):
 			if not ((xx == 0) and (yy == 0)):
-				var new := Vector2(xx + x, yy + y)
+				var new := Vector2(xx + p.x, yy + p.y)
 				if _level.insideMapV(new):
 					if list[Utility.indexV(new, _width)]:
 						count += 1
@@ -78,8 +79,9 @@ func _getCellularList(steps: int, chance: float, birth: int, death: int) -> Arra
 		var temp := Utility.arrayRepeat(false, _width * _height)
 		for y in range(_height):
 			for x in range(_width):
-				var adjacent := _getAdjacentCount(list, x, y)
-				var index := Utility.index(x, y, _width)
+				var p := Vector2i(x, y)
+				var adjacent := _getAdjacentCount(list, p)
+				var index := Utility.index(p, _width)
 				var value: bool = list[index]
 				if value:
 					value = value and adjacent >= death
@@ -95,7 +97,7 @@ func _combineLists(destination: Array, source: Array) -> void:
 	var random := Random.nextBool()
 	for y in range(_height):
 		for x in range(_width):
-			var index := Utility.index(x, y, _width)
+			var index := Utility.index(Vector2i(x, y), _width)
 			destination[index] = (destination[index] and source[index]) if random else (destination[index] or source[index])
 
 func _biggest(list: Array) -> Array:
@@ -107,14 +109,16 @@ func _biggest(list: Array) -> Array:
 func _bigEnough(list: Array) -> bool:
 	return _biggest(list).size() > 4
 
-func _unionAdjacent(disjointSet: DisjointSet, list: Array, x: int, y: int) -> void:
+# TODO: should this go with disjoint set / naw replace that anyway
+func _unionAdjacent(disjointSet: DisjointSet, list: Array, p: Vector2i) -> void:
 	for yy in range(-1, 2):
 		for xx in range(-1, 2):
-			if not ((xx == 0) and (yy == 0)) and _level.insideMap(x + xx, y + yy):
-				var index1 := Utility.index(x + xx, y + yy, _width)
+			var new = Vector2i(p.x + xx, p.y + yy)
+			if not ((xx == 0) and (yy == 0)) and _level.insideMap(new):
+				var index1 := Utility.index(new, _width)
 				if not list[index1]:
 					var root1 := disjointSet.find(index1)
-					var index0 := Utility.index(x, y, _width)
+					var index0 := Utility.index(p, _width)
 					var root0 := disjointSet.find(index0)
 					if root0 != root1:
 						disjointSet.union(root0, root1)
@@ -123,8 +127,9 @@ func _disjointSetup(list: Array) -> DisjointSet:
 	var disjointSet := DisjointSet.new(_width * _height)
 	for y in range(_height):
 		for x in range(_width):
-			if not list[Utility.index(x, y, _width)]:
-				_unionAdjacent(disjointSet, list, x, y)
+			var p := Vector2i(x, y)
+			if not list[Utility.index(p, _width)]:
+				_unionAdjacent(disjointSet, list, p)
 	return disjointSet
 
 func _removeSmall(list: Array) -> void:
@@ -149,12 +154,12 @@ func _removeSmallCaves(caves: Dictionary, list: Array) -> void:
 				list[i] = true
 		caves.erase(key)
 
-func _isCaveEdge(list: Array, x: int, y: int) -> bool:
+func _isCaveEdge(list: Array, p: Vector2i) -> bool:
 	var edge := false
 	for yy in range(-1, 2):
 		for xx in range(-1, 2):
 			if not ((xx == 0) and (yy == 0)):
-				var new := Vector2(x + xx, y + yy)
+				var new := Vector2(p.x + xx, p.y + yy)
 				if _level.insideMapV(new) and not list[Utility.indexV(new, _width)]:
 					edge = true
 	return edge
@@ -162,9 +167,10 @@ func _isCaveEdge(list: Array, x: int, y: int) -> bool:
 func _outlineCaves(list: Array) -> void:
 	for y in range(_height):
 		for x in range(_width):
-			if list[Utility.index(x, y, _width)]:
-				if _isCaveEdge(list, x, y):
-					_setWall(x, y)
+			var p := Vector2i(x, y)
+			if list[Utility.index(p, _width)]:
+				if _isCaveEdge(list, p):
+					_setWall(p)
 
 func _drawOutside() -> void:
 	if not _level.desert:
@@ -181,8 +187,9 @@ func _drawFlowers() -> void:
 		_removeSmall(array)
 	for y in _height:
 		for x in _width:
-			if not array[Utility.index(x, y, _width)] and (not _level.isWall(x, y) and not _level.isBackInvalid(x, y) and not _level.isStair(x, y)):
-				_level.setFlower(x, y)
+			var p := Vector2i(x, y)
+			if not array[Utility.index(p, _width)] and (not _level.isWall(p) and not _level.isBackInvalid(p) and not _level.isStair(p)):
+				_level.setFlower(p)
 
 func _drawTrees() -> void:
 	var steps := Random.next(_standardSteps)
@@ -191,12 +198,13 @@ func _drawTrees() -> void:
 		_removeSmall(array)
 	for y in _height:
 		for x in _width:
-			var index = Utility.index(x, y, _width)
-			if not array[index] and (not _level.isWall(x, y) and not _level.isBackInvalid(x, y) and not _level.isStair(x, y)):
+			var p := Vector2i(x, y)
+			var index := Utility.index(p, _width)
+			if not array[index] and (not _level.isWall(p) and not _level.isBackInvalid(p) and not _level.isStair(p)):
 				if steps == 0 and Random.nextBool():
-					_level.setTreeStump(x, y)
+					_level.setTreeStump(p)
 				else:
-					_level.setTree(x, y)
+					_level.setTree(p)
 	if steps > 0 and Random.nextBool():
 		_cutTrees(array)
 
@@ -246,14 +254,15 @@ func _drawGrass() -> void:
 		_removeSmall(array)
 	for y in _height:
 		for x in _width:
-			if not array[Utility.index(x, y, _width)] and (not _level.isWall(x, y) and not _level.isBackInvalid(x, y) and not _level.isStair(x, y)):
-				_level.setGrass(x, y)
+			var p := Vector2i(x, y)
+			if not array[Utility.index(p, _width)] and (not _level.isWall(p) and not _level.isBackInvalid(p) and not _level.isStair(p)):
+				_level.setGrass(p)
 
 func _printArray(array: Array) -> void:
 	var output := ""
 	for y in range(_height):
 		for x in range(_width):
-			output += "1" if array[Utility.index(x, y, _width)] else "0"
+			output += "1" if array[Utility.index(Vector2i(x, y), _width)] else "0"
 		output += "\n"
 	output += "\r"
 	print(output)

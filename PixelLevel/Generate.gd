@@ -46,15 +46,16 @@ func _setLevelRect(width: int, height: int) -> void:
 func _fill(wall: bool, wallEdge: bool, outside: bool = false) -> void:
 	for y in range(_height):
 		for x in range(_width):
+			var p := Vector2i(x, y)
 			if outside:
-				_setOutside(x, y)
+				_setOutside(p)
 			else:
-				_setFloorOrRoom(x, y)
+				_setFloorOrRoom(p)
 			if wall:
-				_setWallPlain(x, y)
+				_setWallPlain(p)
 			elif wallEdge:
 				if y == 0 or y == _height - 1 or x == 0 or x == _width - 1:
-					_setWall(x, y)
+					_setWall(p)
 
 func _stairs() -> void:
 	var up := _findSpot()
@@ -71,76 +72,57 @@ func _stairsAt(array: Array) -> void:
 		down = Utility.position(array[Random.next(array.size())], _width)
 	_level.setStairDownV(down)
 
-func _findX() -> int:
-	return Random.nextRange(1, _width - 2)
-
-func _findY() -> int:
-	return Random.nextRange(1, _height - 2)
+func _random() -> Vector2i:
+	return Vector2i(Random.nextRange(1, _width - 2), Random.nextRange(1, _height - 2))
 
 func _findSpot() -> Vector2:
-	var x := _findX()
-	var y := _findY()
-	while _level.isWall(x, y) or _level.isStair(x, y) or not _level.isFloor(x, y):
-		x = _findX()
-		y = _findY()
-	return Vector2(x, y)
+	var p := _random()
+	while _level.isWall(p) or _level.isStair(p) or not _level.isFloor(p):
+		p = _random()
+	return p
 
-func _setFloorV(p: Vector2) -> void: _setFloor(int(p.x), int(p.y))
+func _setFloor(p: Vector2i) -> void:
+	_level.setFloor(p, _wonky)
+	_level.clearFore(p)
 
-func _setFloor(x: int, y: int) -> void:
-	_level.setFloor(x, y, _wonky)
-	_level.clearFore(x, y)
+func _setFloorRoom(p: Vector2i) -> void:
+	_level.setFloorRoom(p, _wonky)
+	_level.clearFore(p)
 
-func _setFloorRoomV(p: Vector2) -> void: _setFloorRoom(int(p.x), int(p.y))
+func _setOutside(p: Vector2i) -> void:
+	_level.setOutside(p)
+	_level.clearFore(p)
 
-func _setFloorRoom(x: int, y: int) -> void:
-	_level.setFloorRoom(x, y, _wonky)
-	_level.clearFore(x, y)
-
-func _setOutsideV(p: Vector2) -> void: _setOutside(int(p.x), int(p.y))
-
-func _setOutside(x: int, y: int) -> void:
-	_level.setOutside(x, y)
-	_level.clearFore(x, y)
-
-func _setFloorOrRoomV(p: Vector2) -> void: _setFloorOrRoom(int(p.x), int(p.y))
-
-func _setFloorOrRoom(x: int, y: int) -> void:
+func _setFloorOrRoom(p: Vector2i) -> void:
 	if _room:
-		_level.setFloorRoom(x, y, _wonky)
+		_level.setFloorRoom(p, _wonky)
 	else:
-		_level.setFloor(x, y, _wonky)
-	_level.clearFore(x, y)
+		_level.setFloor(p, _wonky)
+	_level.clearFore(p)
 
-func _setOutsideWallV(p: Vector2) -> void: _setOutsideWall(int(p.x), int(p.y))
+func _setOutsideWall(p: Vector2i) -> void:
+	_level.setOutsideWall(p)
+	_level.clearBack(p)
 
-func _setOutsideWall(x: int, y: int) -> void:
-	_level.setOutsideWall(x, y)
-	_level.clearBack(x, y)
-
-func _setWallPlainV(p: Vector2) -> void: _setWallPlain(int(p.x), int(p.y))
-
-func _setWallPlain(x: int, y: int) -> void:
+func _setWallPlain(p: Vector2i) -> void:
 	if _cliff:
-		_level.setCliff(x, y)
+		_level.setCliff(p)
 	else:
-		_level.setWallPlain(x, y)
-	_level.clearBack(x, y)
+		_level.setWallPlain(p)
+	_level.clearBack(p)
 
-func _setWallV(p: Vector2) -> void: _setWall(int(p.x), int(p.y))
-
-func _setWall(x: int, y: int) -> void:
+func _setWall(p: Vector2i) -> void:
 	if _cliff:
-		_level.setCliff(x, y)
+		_level.setCliff(p)
 	else:
 		if Random.nextFloat() <= _torchChance:
-			_level.setTorch(x, y)
+			_level.setTorch(p)
 		else:
 			if Random.nextFloat() <= _fancyChance:
-				_level.setWall(x, y)
+				_level.setWall(p)
 			else:
-				_level.setWallPlain(x, y)
-	_level.clearBack(x, y)
+				_level.setWallPlain(p)
+	_level.clearBack(p)
 
 func _generateStreams() -> void:
 	if Random.nextFloat() <= 0.333:
@@ -218,6 +200,7 @@ func _fillStream(rect: Rect2) -> void:
 	var deepWidth = int(rect.size.y / 3.0 if horizontal else rect.size.x / 3.0)
 	for y in range(rect.position.y, rect.end.y):
 		for x in range(rect.position.x, rect.end.x):
+			var p := Vector2i(x, y)
 			var deep = false
 			if horizontal:
 				if y >= rect.position.y + deepWidth && y < rect.end.y - deepWidth:
@@ -225,25 +208,25 @@ func _fillStream(rect: Rect2) -> void:
 			else:
 				if x >= rect.position.x + deepWidth && x < rect.end.x - deepWidth:
 					deep = true
-			if _level.insideMap(x, y) and _level.isFloor(x, y) or _level.isWall(x, y):
+			if _level.insideMap(p) and _level.isFloor(p) or _level.isWall(p):
 				var keep = false
-				if _level.isWall(x, y):
+				if _level.isWall(p):
 					if _leaveNone or Random.nextFloat() > _leaveChance:
-						_level.setRubble(x, y)
-						_level.clearFore(x, y)
+						_level.setRubble(p)
+						_level.clearFore(p)
 					else:
 						keep = true
-				elif _level.isDoor(x, y):
-					_level.setDoorBroke(x, y)
+				elif _level.isDoor(p):
+					_level.setDoorBroke(p)
 				if not keep:
-					if not _level.isStair(x, y):
-						_level.clearFore(x, y)
-					var alreadyDeep = _level.isWaterDeep(x, y)
+					if not _level.isStair(p):
+						_level.clearFore(p)
+					var alreadyDeep = _level.isWaterDeep(p)
 					if deep or alreadyDeep:
 						if not alreadyDeep:
-							_level.setWaterDeep(x, y)
+							_level.setWaterDeep(p)
 					else:
-						_level.setWaterShallow(x, y)
+						_level.setWaterShallow(p)
 
 func _findRoom(rect: Rect2) -> Rect2:
 	var px := Random.nextRange(int(rect.position.x), int(rect.position.x + rect.size.x / 2.0 - 2))
@@ -255,9 +238,10 @@ func _findRoom(rect: Rect2) -> Rect2:
 func _drawRoom(rect: Rect2) -> void:
 	for y in range(rect.position.y, rect.end.y):
 		for x in range(rect.position.x, rect.end.x):
+			var p := Vector2i(x, y)
 			if (x == rect.position.x or x == rect.end.x - 1 or
 				y == rect.position.y or y == rect.end.y - 1):
-				_setWall(x, y)
+				_setWall(p)
 			else:
-				_level.clearFore(x, y)
-				_setFloorOrRoom(x, y)
+				_level.clearFore(p)
+				_setFloorOrRoom(p)

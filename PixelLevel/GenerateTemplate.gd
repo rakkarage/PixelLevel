@@ -158,16 +158,16 @@ func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 			var backColor: Color = template.back.get_pixel(_select.x * template.size + x, _select.y * template.size + y)
 			var foreColor: Color = template.fore.get_pixel(_select.x * template.size + x, _select.y * template.size + y)
 			if backColor == _backFloor:
-				_setFloorV(write)
+				_setFloor(write)
 			elif backColor == _backWall:
 				if template.name == "b":
-					_setWallPlainV(write)
+					_setWallPlain(write)
 				else:
-					_setWallV(write)
+					_setWall(write)
 			elif backColor == _backFloorRoom:
-				_setFloorRoomV(write)
+				_setFloorRoom(write)
 			elif backColor == _backGrass:
-				_setOutsideV(write)
+				_setOutside(write)
 			if foreColor == _colorWaterShallow:
 				_level.setWaterShallowV(write)
 			elif foreColor == _colorWaterDeep:
@@ -177,8 +177,8 @@ func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 			elif foreColor == _colorWaterDeepPurple:
 				_level.setWaterDeepPurpleV(write)
 			elif foreColor == _colorTileRed:
-				_setFloorRoomV(write)
-				_level.setDoorV(write)
+				_setFloorRoom(write)
+				_level.setDoor(write)
 			elif foreColor == _colorTilePurple:
 				if Random.nextBool():
 					if Random.nextBool():
