@@ -1,12 +1,12 @@
 [gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://cto8u4cwfo2u8"]
 
-[ext_resource type="Shader" path="res://PixelLevel/Animation/Animation.gdshader" id="1"]
-[ext_resource type="Texture2D" uid="uid://hvjkds7gedju" path="res://PixelLevel/Sprite/Doodad.png" id="2_1mpye"]
+[ext_resource type="Shader" path="res://PixelLevel/Animation/Animation.gdshader" id="1_wiypl"]
+[ext_resource type="Texture2D" uid="uid://hvjkds7gedju" path="res://PixelLevel/Sprite/Doodad.png" id="2_x65p6"]
 
 [resource]
-shader = ExtResource("1")
+shader = ExtResource("1_wiypl")
 shader_parameter/count = 6.0
 shader_parameter/duration = 0.25
 shader_parameter/width = 0.0833333
 shader_parameter/startX = 0.0
-shader_parameter/frames = ExtResource("2_1mpye")
+shader_parameter/frames = ExtResource("2_x65p6")

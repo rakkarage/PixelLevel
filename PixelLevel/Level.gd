@@ -127,9 +127,6 @@ const _waterPurpleTiles := [Tile.WaterShallowForePurple, Tile.WaterShallowBackPu
 
 func _ready() -> void:
 	_camera.zoom = Vector2(0.75, 0.75)
-	_tweenCamera = create_tween()
-	_tweenStep = create_tween()
-	_tweenTarget = create_tween()
 	generated()
 	_cameraCenter()
 	connect("size_changed", _onResize)
@@ -155,7 +152,7 @@ func _process(delta: float) -> void:
 	if _time > _turnTime and (_turn or _processWasd()):
 		_timeTotal += _time
 		_turnTotal += 1
-		var test = _turn
+		var test := _turn
 		_turn = false
 		if test:
 			if not _handleDoor():
@@ -175,10 +172,10 @@ func _move(mob: Node2D) -> void:
 
 func _fadeAndFree() -> void:
 	_pathPoints.remove_at(0)
-	var node = _path.get_child(0)
-	var t = get_tree().create_tween()
-	t.tween_property(node, "modulate", Color.TRANSPARENT, _turnTime)
-	await t.tween_all_completed
+	var node := _path.get_child(0)
+	var tween := get_tree().create_tween()
+	tween.tween_property(node, "modulate", Color.TRANSPARENT, _turnTime)
+	await tween.finished
 	node.queue_free()
 	if _pathPoints.size() > 1:
 		_turn = true
@@ -187,7 +184,7 @@ func _fadeAndFree() -> void:
 
 func _handleStair() -> bool:
 	if _pathPoints.size() == 1:
-		var p = mobPosition()
+		var p := mobPosition()
 		if isStairDown(p):
 			emit_signal("generate")
 			return true
@@ -221,27 +218,29 @@ func _face(mob: Node2D, direction: Vector2i) -> void:
 
 func _step(mob: Node2D, direction: Vector2i) -> void:
 	mob.walk()
-	_tweenStep.kill()
+	if _tweenStep:
+		_tweenStep.kill()
+	_tweenStep = create_tween()
 	_tweenStep.set_trans(Tween.TRANS_CIRC).set_ease(Tween.EASE_IN_OUT)
 	_tweenStep.tween_property(mob, "global_position", mob.global_position + Vector2(_world(direction)), _turnTime)
-	await _tweenStep.tween_all_completed
+	await _tweenStep.finished
 
 func _addPoints() -> void:
 	_astar.clear()
-	var rect = _back.get_used_rect()
+	var rect := _back.get_used_rect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
 			var p := Vector2i(x, y)
 			_astar.add_point(_tileIndex(p), p)
 
 func _connectPoints() -> void:
-	var rect = _back.get_used_rect()
+	var rect := _back.get_used_rect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
 			_connect(Vector2i(x, y))
 
 func _connect(p: Vector2i) -> void:
-	var rect = _back.get_used_rect()
+	var rect := _back.get_used_rect()
 	for yy in range(p.y - 1, p.y + 2):
 		for xx in range(p.x - 1, p.x + 2):
 			var pp := Vector2i(xx, yy)
@@ -262,7 +261,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				if _capture:
 					_cameraUpdate()
 				else:
-					_targetTo(event.global_position, not _tweenStep.is_active())
+					_targetTo(event.global_position, not _tweenStep.is_running())
 					_targetUpdate()
 				_dragLeft = false
 		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
@@ -359,7 +358,8 @@ func _cameraCenter() -> void:
 	_cameraTo(_center())
 
 func _cameraTo(to: Vector2) -> void:
-	_tweenCamera.kill()
+	if _tweenCamera:
+		_tweenCamera.kill()
 	_camera.global_position = to
 
 func _cameraToMob() -> void:
@@ -377,18 +377,20 @@ func _cameraUpdate() -> void:
 		emit_signal("updateMap")
 
 func _cameraSnap(to: Vector2) -> void:
-	_tweenCamera.kill()
+	if _tweenCamera:
+		_tweenCamera.kill()
+	_tweenCamera = create_tween()
 	_tweenCamera.set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
 	_tweenCamera.tween_property(_camera, "global_position", to, _duration)
-	await _tweenCamera.tween_all_completed
+	await _tweenCamera.finished
 	emit_signal("updateMap")
 
 const _edgeOffset := 1.5
 const _edgeOffsetV := Vector2(_edgeOffset, _edgeOffset)
 
 func _checkCenter() -> void:
-	var edge = Vector2(_world(_edgeOffsetV)) / _camera.zoom
-	var test = -(_camera.global_position - _mob.global_position) / _camera.zoom
+	var edge := Vector2(_world(_edgeOffsetV)) / _camera.zoom
+	var test := -(_camera.global_position - _mob.global_position) / _camera.zoom
 	if ((test.x > size.x - edge.x) or (test.x < edge.x) or
 		(test.y > size.y - edge.y) or (test.y < edge.y)):
 		_cameraSnap(-(_worldSize() / 2.0) + _mob.global_position)
@@ -471,7 +473,8 @@ func _targetToMob() -> void:
 	_targetTo(_mob.global_position, true)
 
 func _targetTo(to: Vector2, turn: bool) -> void:
-	_tweenTarget.kill()
+	if _tweenTarget:
+		_tweenTarget.kill()
 	var tile := _map(_camera.global_position + to * _camera.zoom)
 	if tile == targetPosition():
 		_turn = turn
@@ -493,7 +496,9 @@ func _targetSnapClosest(tile: Vector2i) -> Vector2i:
 func _targetSnap(tile: Vector2) -> void:
 	var p := _world(tile)
 	if not _target.global_position.is_equal_approx(p):
-		_tweenTarget.kill()
+		if _tweenTarget:
+			_tweenTarget.kill()
+		_tweenTarget = create_tween()
 		_tweenTarget.set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
 		_tweenTarget.tween_property(_target, "global_position", p, _duration)
 
@@ -652,13 +657,13 @@ func _lightTorches() -> void:
 					_lightEmit(northWest, current)
 
 func _dark() -> void:
-	var rect = _back.get_used_rect()
+	var rect := _back.get_used_rect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
 			_setLight(Vector2i(x, y), _lightMin, false)
 
 func _darken() -> void:
-	var rect = _back.get_used_rect()
+	var rect := _back.get_used_rect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
 			var p := Vector2i(x, y)
@@ -680,14 +685,14 @@ const _colorFloor := Color(0.2, 0.2, 0.2, _alpha)
 const _colorCamera := Color(1, 0, 1, _alpha)
 
 func getMapColor(p: Vector2i) -> Color:
-	var camera = getCameraRect()
-	var color = Color(0.25, 0.25, 0.25, 0.25)
-	var on = _isRect(p, camera)
+	var camera := getCameraRect()
+	var color := Color(0.25, 0.25, 0.25, 0.25)
+	var on := _isRect(p, camera)
 	if on:
 		color = _colorCamera
-	var lit = isLit(p)
-	var explored = isExplored(p)
-	var mob = mobPosition()
+	var lit := isLit(p)
+	var explored := isExplored(p)
+	var mob := mobPosition()
 	if not _light.visible or (lit or explored):
 		if p == mob:
 			color = _colorMob
@@ -716,7 +721,7 @@ const _colorPathDoor := Color(_colorDoor.r, _colorDoor.g, _colorDoor.b, _alphaPa
 const _colorPathWall := Color(_colorWall.r, _colorWall.g, _colorWall.b, _alphaPath)
 
 func _getPathColor(p: Vector2i) -> Color:
-	var color = _colorPathWall
+	var color := _colorPathWall
 	if isStair(p):
 		color = _colorPathStair
 	elif isDoor(p):
@@ -991,7 +996,7 @@ func isForeInvalid(p: Vector2i) -> bool:
 	return _fore.get_cell(p) == INVALID_CELL
 
 func verifyCliff() -> void:
-	var rect = _back.get_used_rect()
+	var rect := _back.get_used_rect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
 			var p = Vector2i(x, y)
@@ -1112,7 +1117,7 @@ func isLit(p: Vector2i) -> bool:
 
 # TODO: flip and rotate in alternate now?
 func _drawEdge() -> void:
-	var rect = _back.get_used_rect()
+	var rect := _back.get_used_rect()
 	# var minY: int = rect.position.y - 1
 	# var maxY: int = rect.end.y
 	# var minX: int = rect.position.x - 1

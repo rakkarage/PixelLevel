@@ -1,14 +1,14 @@
 [gd_scene load_steps=10 format=3 uid="uid://dj1a5m2n2kuve"]
 
-[ext_resource type="Texture2D" uid="uid://r64tp7ega33f" path="res://PixelMob/Sprite/SlimeP.png" id="1"]
-[ext_resource type="Script" path="res://PixelMob/TestRandom.gd" id="2"]
-[ext_resource type="PackedScene" uid="uid://cktdt7fpv803m" path="res://PixelMob/Mob/Slime.tscn" id="3"]
-[ext_resource type="Texture2D" uid="uid://cil2kef15ccya" path="res://PixelMob/Sprite/SlimeC.png" id="4"]
-[ext_resource type="PackedScene" uid="uid://d1g74yamv7a60" path="res://PixelMob/Mob/SlimeSmaller.tscn" id="6"]
-[ext_resource type="PackedScene" uid="uid://bx8264tnc4xkg" path="res://PixelMob/Mob/SlimeSmall.tscn" id="7"]
-[ext_resource type="PackedScene" uid="uid://clwn7qm4midqy" path="res://PixelMob/Mob/SlimeSquareSmall.tscn" id="8"]
-[ext_resource type="PackedScene" uid="uid://ux5o5wqa41l4" path="res://PixelMob/Mob/SlimeSquareSmaller.tscn" id="9"]
-[ext_resource type="PackedScene" uid="uid://bd8r5lqesr6wd" path="res://PixelMob/Mob/SlimeSquare.tscn" id="10"]
+[ext_resource type="Script" path="res://PixelMob/TestRandom.gd" id="1_f5yk5"]
+[ext_resource type="PackedScene" uid="uid://ux5o5wqa41l4" path="res://PixelMob/Mob/SlimeSquareSmaller.tscn" id="2_m1qbo"]
+[ext_resource type="PackedScene" uid="uid://clwn7qm4midqy" path="res://PixelMob/Mob/SlimeSquareSmall.tscn" id="3_xsuvk"]
+[ext_resource type="PackedScene" uid="uid://bd8r5lqesr6wd" path="res://PixelMob/Mob/SlimeSquare.tscn" id="4_d6exo"]
+[ext_resource type="PackedScene" uid="uid://d1g74yamv7a60" path="res://PixelMob/Mob/SlimeSmaller.tscn" id="5_i3406"]
+[ext_resource type="PackedScene" uid="uid://bx8264tnc4xkg" path="res://PixelMob/Mob/SlimeSmall.tscn" id="6_t1fb6"]
+[ext_resource type="PackedScene" uid="uid://cktdt7fpv803m" path="res://PixelMob/Mob/Slime.tscn" id="7_nc73j"]
+[ext_resource type="Texture2D" uid="uid://cil2kef15ccya" path="res://PixelMob/Sprite/SlimeC.png" id="8_wpnkq"]
+[ext_resource type="Texture2D" uid="uid://r64tp7ega33f" path="res://PixelMob/Sprite/SlimeP.png" id="9_wxl88"]
 
 [node name="TestAll" type="Control"]
 layout_mode = 3
@@ -34,9 +34,9 @@ columns = 5
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource("2")
+script = ExtResource("1_f5yk5")
 
-[node name="Mob" parent="Panel/Grid/SquareSmaller" instance=ExtResource("9")]
+[node name="Mob" parent="Panel/Grid/SquareSmaller" instance=ExtResource("2_m1qbo")]
 position = Vector2(62, 119)
 scale = Vector2(10, 10)
 
@@ -50,9 +50,9 @@ anchor_bottom = 1.0
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource("2")
+script = ExtResource("1_f5yk5")
 
-[node name="Mob" parent="Panel/Grid/SquareSmall" instance=ExtResource("8")]
+[node name="Mob" parent="Panel/Grid/SquareSmall" instance=ExtResource("3_xsuvk")]
 position = Vector2(62, 119)
 scale = Vector2(10, 10)
 
@@ -66,9 +66,9 @@ anchor_bottom = 1.0
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource("2")
+script = ExtResource("1_f5yk5")
 
-[node name="Mob" parent="Panel/Grid/Square" instance=ExtResource("10")]
+[node name="Mob" parent="Panel/Grid/Square" instance=ExtResource("4_d6exo")]
 position = Vector2(62, 119)
 scale = Vector2(10, 10)
 
@@ -82,9 +82,9 @@ anchor_bottom = 1.0
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource("2")
+script = ExtResource("1_f5yk5")
 
-[node name="Mob" parent="Panel/Grid/Smaller" instance=ExtResource("6")]
+[node name="Mob" parent="Panel/Grid/Smaller" instance=ExtResource("5_i3406")]
 position = Vector2(62, 119)
 scale = Vector2(10, 10)
 
@@ -98,9 +98,9 @@ anchor_bottom = 1.0
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource("2")
+script = ExtResource("1_f5yk5")
 
-[node name="Mob" parent="Panel/Grid/Small" instance=ExtResource("7")]
+[node name="Mob" parent="Panel/Grid/Small" instance=ExtResource("6_t1fb6")]
 position = Vector2(62, 119)
 scale = Vector2(10, 10)
 
@@ -114,9 +114,9 @@ anchor_bottom = 1.0
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource("2")
+script = ExtResource("1_f5yk5")
 
-[node name="Mob" parent="Panel/Grid/A" instance=ExtResource("3")]
+[node name="Mob" parent="Panel/Grid/A" instance=ExtResource("7_nc73j")]
 position = Vector2(62, 119)
 scale = Vector2(10, 10)
 
@@ -130,9 +130,9 @@ anchor_bottom = 1.0
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource("2")
+script = ExtResource("1_f5yk5")
 
-[node name="Mob" parent="Panel/Grid/B" instance=ExtResource("3")]
+[node name="Mob" parent="Panel/Grid/B" instance=ExtResource("7_nc73j")]
 position = Vector2(62, 119)
 scale = Vector2(10, 10)
 
@@ -146,12 +146,12 @@ anchor_bottom = 1.0
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource("2")
+script = ExtResource("1_f5yk5")
 
-[node name="Mob" parent="Panel/Grid/C" instance=ExtResource("3")]
+[node name="Mob" parent="Panel/Grid/C" instance=ExtResource("7_nc73j")]
 position = Vector2(62, 119)
 scale = Vector2(10, 10)
-texture = ExtResource("4")
+texture = ExtResource("8_wpnkq")
 
 [node name="Button" type="Button" parent="Panel/Grid/C"]
 modulate = Color(1, 1, 1, 0)
@@ -163,12 +163,12 @@ anchor_bottom = 1.0
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource("2")
+script = ExtResource("1_f5yk5")
 
-[node name="Mob" parent="Panel/Grid/P" instance=ExtResource("3")]
+[node name="Mob" parent="Panel/Grid/P" instance=ExtResource("7_nc73j")]
 position = Vector2(62, 119)
 scale = Vector2(10, 10)
-texture = ExtResource("1")
+texture = ExtResource("9_wxl88")
 
 [node name="Button" type="Button" parent="Panel/Grid/P"]
 modulate = Color(1, 1, 1, 0)

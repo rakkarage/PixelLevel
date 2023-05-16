@@ -1,12 +1,12 @@
 [gd_scene load_steps=5 format=3 uid="uid://dfpwhu8u2jrgw"]
 
-[ext_resource type="PackedScene" uid="uid://c0gglcpbg3xyp" path="res://Interface/Target.tscn" id="1"]
-[ext_resource type="PackedScene" uid="uid://cktdt7fpv803m" path="res://PixelMob/Mob/Slime.tscn" id="2"]
-[ext_resource type="Script" path="res://PixelLevel/Command/TestLevelBase.gd" id="3"]
-[ext_resource type="TileSet" uid="uid://rer8omh2xmlw" path="res://PixelLevel/Level.tres" id="6"]
+[ext_resource type="Script" path="res://PixelLevel/Command/TestLevelBase.gd" id="1_qp5v1"]
+[ext_resource type="TileSet" uid="uid://rer8omh2xmlw" path="res://PixelLevel/Level.tres" id="2_3ple6"]
+[ext_resource type="PackedScene" uid="uid://cktdt7fpv803m" path="res://PixelMob/Mob/Slime.tscn" id="3_0if14"]
+[ext_resource type="PackedScene" uid="uid://c0gglcpbg3xyp" path="res://Interface/Target.tscn" id="4_or76l"]
 
 [node name="Level" type="Node"]
-script = ExtResource("3")
+script = ExtResource("1_qp5v1")
 
 [node name="Level" type="SubViewportContainer" parent="."]
 anchors_preset = 15
@@ -25,62 +25,62 @@ render_target_update_mode = 4
 anchor_mode = 0
 
 [node name="Back" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("6")
+tile_set = ExtResource("2_3ple6")
 format = 2
 
 [node name="Fore" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("6")
+tile_set = ExtResource("2_3ple6")
 format = 2
 
 [node name="Flower" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("6")
+tile_set = ExtResource("2_3ple6")
 format = 2
 
 [node name="SplitBack" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("6")
+tile_set = ExtResource("2_3ple6")
 format = 2
 
 [node name="ItemBack" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("6")
+tile_set = ExtResource("2_3ple6")
 format = 2
 
 [node name="WaterBack" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("6")
+tile_set = ExtResource("2_3ple6")
 format = 2
 
 [node name="Tree" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("6")
+tile_set = ExtResource("2_3ple6")
 format = 2
 
 [node name="Path" type="Node2D" parent="Level/SubViewport"]
 position = Vector2(8, 8)
 
-[node name="Mob" parent="Level/SubViewport" instance=ExtResource("2")]
+[node name="Mob" parent="Level/SubViewport" instance=ExtResource("3_0if14")]
 
 [node name="Mobs" type="Node2D" parent="Level/SubViewport"]
 
 [node name="SplitFore" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("6")
+tile_set = ExtResource("2_3ple6")
 format = 2
 
 [node name="ItemFore" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("6")
+tile_set = ExtResource("2_3ple6")
 format = 2
 
 [node name="WaterFore" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("6")
+tile_set = ExtResource("2_3ple6")
 format = 2
 
 [node name="Top" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("6")
+tile_set = ExtResource("2_3ple6")
 format = 2
 
 [node name="Light" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("6")
+tile_set = ExtResource("2_3ple6")
 format = 2
 
 [node name="Edge" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("6")
+tile_set = ExtResource("2_3ple6")
 format = 2
 
-[node name="Target" parent="Level/SubViewport" instance=ExtResource("1")]
+[node name="Target" parent="Level/SubViewport" instance=ExtResource("4_or76l")]
