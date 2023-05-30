@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://cpwpn22g1oh61" path="res://Interface/Back.tscn" id="2_j002i"]
 [ext_resource type="Script" path="res://PixelLevel/Level.gd" id="3_w24pf"]
 [ext_resource type="TileSet" uid="uid://rer8omh2xmlw" path="res://PixelLevel/Level.tres" id="4_6yiys"]
-[ext_resource type="PackedScene" uid="uid://cktdt7fpv803m" path="res://PixelMob/Mob/Slime.tscn" id="5_fpfxs"]
+[ext_resource type="PackedScene" uid="uid://c1mewurj1iqoa" path="res://PixelMobs/Mob/Slime.tscn" id="5_fpfxs"]
 [ext_resource type="PackedScene" uid="uid://c0gglcpbg3xyp" path="res://Interface/Target.tscn" id="6_fhrww"]
 [ext_resource type="PackedScene" uid="uid://dplcfrlu5as7j" path="res://Interface/Mask.tscn" id="7_st0df"]
 
