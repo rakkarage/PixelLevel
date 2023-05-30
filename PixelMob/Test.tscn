@@ -1,13 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://1bkgj4vw8shv"]
+[gd_scene load_steps=3 format=3 uid="uid://drkd4hu70f0qd"]
 
-[ext_resource type="Script" path="res://PixelMob/Test.gd" id="1_afx3r"]
-[ext_resource type="PackedScene" uid="uid://cktdt7fpv803m" path="res://PixelMob/Mob/Slime.tscn" id="2_gaei5"]
+[ext_resource type="PackedScene" uid="uid://c1mewurj1iqoa" path="res://PixelMobs/Mob/Slime.tscn" id="1"]
+[ext_resource type="Script" path="res://PixelMobs/Test.gd" id="7"]
 
 [node name="Test" type="PanelContainer"]
 custom_minimum_size = Vector2(252, 271)
 offset_right = 252.0
 offset_bottom = 271.0
-script = ExtResource("1_afx3r")
+script = ExtResource("7")
 
 [node name="VBox" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -19,7 +19,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(160, 160)
 layout_mode = 2
 
-[node name="Slime" parent="VBox/Center/Panel" instance=ExtResource("2_gaei5")]
+[node name="Slime" parent="VBox/Center/Panel" instance=ExtResource("1")]
 scale = Vector2(10, 10)
 centered = false
 

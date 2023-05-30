@@ -2,13 +2,13 @@
 
 importer="wav"
 type="AudioStreamWAV"
-uid="uid://b3wr7r5dtbgfh"
-path="res://.godot/imported/167075__drminky__slime-land.wav-ba7698561bb0ec0e180a2d3dddc31462.sample"
+uid="uid://dggu73pbwd1mu"
+path="res://.godot/imported/167075__drminky__slime-land.wav-3db698e643d5cd8c59e961749ee273be.sample"
 
 [deps]
 
-source_file="res://PixelMob/Audio/167075__drminky__slime-land.wav"
-dest_files=["res://.godot/imported/167075__drminky__slime-land.wav-ba7698561bb0ec0e180a2d3dddc31462.sample"]
+source_file="res://PixelMobs/Audio/167075__drminky__slime-land.wav"
+dest_files=["res://.godot/imported/167075__drminky__slime-land.wav-3db698e643d5cd8c59e961749ee273be.sample"]
 
 [params]
 

@@ -1,6 +1,6 @@
-[gd_resource type="Animation" load_steps=2 format=3 uid="uid://bhh1om7imnh6e"]
+[gd_resource type="Animation" load_steps=2 format=3 uid="uid://dqlh1gi13hmja"]
 
-[ext_resource type="AudioStream" uid="uid://hkpbsbrbr06u" path="res://PixelMob/Audio/Bite.tres" id="1_rpie3"]
+[ext_resource type="AudioStream" uid="uid://cehu434sl62vm" path="res://PixelMobs/Audio/Bite.tres" id="1"]
 
 [resource]
 resource_name = "Attack"
@@ -28,7 +28,7 @@ tracks/1/keys = {
 "clips": [{
 "end_offset": 0.0,
 "start_offset": 0.0,
-"stream": ExtResource("1_rpie3")
+"stream": ExtResource("1")
 }],
 "times": PackedFloat32Array(0.1875)
 }

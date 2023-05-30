@@ -1,34 +1,36 @@
-[gd_scene load_steps=13 format=3 uid="uid://d1g74yamv7a60"]
+[gd_scene load_steps=14 format=3 uid="uid://cgcxhmarfwn3i"]
 
-[ext_resource type="Texture2D" uid="uid://uukv1q4c3tjj" path="res://PixelMob/Sprite/SlimeSmallerA.png" id="1_osqsr"]
-[ext_resource type="Script" path="res://PixelMob/Mob.gd" id="2_a223t"]
-[ext_resource type="AnimationNodeStateMachine" uid="uid://cna2gr5dcy50w" path="res://PixelMob/Animation/Tree.tres" id="3_brhtu"]
-[ext_resource type="Animation" uid="uid://b5b4qhxentx33" path="res://PixelMob/Animation/SlimeSmaller/Attack.tres" id="4_0pf6o"]
-[ext_resource type="Animation" uid="uid://xaorkm4cd460" path="res://PixelMob/Animation/SlimeSmaller/Idle0.tres" id="5_4oq2j"]
-[ext_resource type="Animation" uid="uid://cq0l3faofedtm" path="res://PixelMob/Animation/SlimeSmaller/Idle1.tres" id="6_no2eh"]
-[ext_resource type="Animation" uid="uid://bypnruxl7np26" path="res://PixelMob/Animation/SlimeSmaller/Idle2.tres" id="7_qjjgo"]
-[ext_resource type="Animation" uid="uid://bvisk8ncp4u45" path="res://PixelMob/Animation/SlimeSmaller/Walk.tres" id="8_b5urg"]
-[ext_resource type="AudioStream" uid="uid://hkpbsbrbr06u" path="res://PixelMob/Audio/Bite.tres" id="9_slrbu"]
-[ext_resource type="AudioStream" uid="uid://btlcgij7xd57p" path="res://PixelMob/Audio/167075__drminky__slime-land.tres" id="10_g13vl"]
+[ext_resource type="Script" path="res://PixelMobs/Mob.gd" id="1"]
+[ext_resource type="Animation" uid="uid://cjplxfi0gop4i" path="res://PixelMobs/Animation/SlimeSmaller/Attack.tres" id="2"]
+[ext_resource type="AnimationNodeStateMachine" uid="uid://dr1gdcj351f5g" path="res://PixelMobs/Animation/Tree.tres" id="3"]
+[ext_resource type="AudioStream" uid="uid://cfig861hlsk04" path="res://PixelMobs/Audio/167075__drminky__slime-land.tres" id="4"]
+[ext_resource type="AudioStream" uid="uid://cehu434sl62vm" path="res://PixelMobs/Audio/Bite.tres" id="5"]
+[ext_resource type="Animation" uid="uid://bmuxvk70eart8" path="res://PixelMobs/Animation/SlimeSmaller/Idle0.tres" id="6"]
+[ext_resource type="Texture2D" uid="uid://b0103xmshjpg4" path="res://PixelMobs/Sprite/SlimeSmallerA.png" id="7"]
+[ext_resource type="Animation" uid="uid://oqjx3oxlmc0b" path="res://PixelMobs/Animation/SlimeSmaller/Idle1.tres" id="8"]
+[ext_resource type="Animation" uid="uid://eju88dqqot1o" path="res://PixelMobs/Animation/SlimeSmaller/Idle2.tres" id="9"]
+[ext_resource type="Animation" uid="uid://bptcarjilfo26" path="res://PixelMobs/Animation/RESET.tres" id="9_kiyhu"]
+[ext_resource type="Animation" uid="uid://cm10qm3nu0f0u" path="res://PixelMobs/Animation/SlimeSmaller/Walk.tres" id="10"]
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id="1"]
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_tfymb"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_fotdr"]
 _data = {
-"Attack": ExtResource("4_0pf6o"),
-"Idle0": ExtResource("5_4oq2j"),
-"Idle1": ExtResource("6_no2eh"),
-"Idle2": ExtResource("7_qjjgo"),
-"Walk": ExtResource("8_b5urg")
+"Attack": ExtResource("2"),
+"Idle0": ExtResource("6"),
+"Idle1": ExtResource("8"),
+"Idle2": ExtResource("9"),
+"RESET": ExtResource("9_kiyhu"),
+"Walk": ExtResource("10")
 }
 
 [node name="SlimeSmaller" type="Sprite2D"]
-texture = ExtResource("1_osqsr")
+texture = ExtResource("7")
 hframes = 14
-script = ExtResource("2_a223t")
+script = ExtResource("1")
 
 [node name="Tree" type="AnimationTree" parent="."]
-tree_root = ExtResource("3_brhtu")
+tree_root = ExtResource("3")
 anim_player = NodePath("Animation")
 active = true
 parameters/playback = SubResource("1")
@@ -37,11 +39,11 @@ parameters/Idle/blend_position = 0
 [node name="Animation" type="AnimationPlayer" parent="Tree"]
 root_node = NodePath("../..")
 libraries = {
-"": SubResource("AnimationLibrary_tfymb")
+"": SubResource("AnimationLibrary_fotdr")
 }
 
 [node name="Attack" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("9_slrbu")
+stream = ExtResource("5")
 
 [node name="Walk" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("10_g13vl")
+stream = ExtResource("4")

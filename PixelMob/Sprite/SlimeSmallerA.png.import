@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://uukv1q4c3tjj"
-path="res://.godot/imported/SlimeSmallerA.png-9717c4cee7be4484495acf39f36685a8.ctex"
+uid="uid://b0103xmshjpg4"
+path="res://.godot/imported/SlimeSmallerA.png-c7bc8ba9cc7fe39bedb144d0137ff71d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://PixelMob/Sprite/SlimeSmallerA.png"
-dest_files=["res://.godot/imported/SlimeSmallerA.png-9717c4cee7be4484495acf39f36685a8.ctex"]
+source_file="res://PixelMobs/Sprite/SlimeSmallerA.png"
+dest_files=["res://.godot/imported/SlimeSmallerA.png-c7bc8ba9cc7fe39bedb144d0137ff71d.ctex"]
 
 [params]
 

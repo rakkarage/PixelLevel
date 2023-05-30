@@ -2,13 +2,13 @@
 
 importer="wav"
 type="AudioStreamWAV"
-uid="uid://sbd5gi1citq1"
-path="res://.godot/imported/Bite.wav-a1f979864a8ca6303686fcab82d7291b.sample"
+uid="uid://dsdy7chjojbft"
+path="res://.godot/imported/Bite.wav-b231863cf596bfd61081f40fd50d0889.sample"
 
 [deps]
 
-source_file="res://PixelMob/Audio/Bite.wav"
-dest_files=["res://.godot/imported/Bite.wav-a1f979864a8ca6303686fcab82d7291b.sample"]
+source_file="res://PixelMobs/Audio/Bite.wav"
+dest_files=["res://.godot/imported/Bite.wav-b231863cf596bfd61081f40fd50d0889.sample"]
 
 [params]
 
