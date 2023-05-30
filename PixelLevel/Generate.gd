@@ -41,7 +41,7 @@ func regenerate() -> void:
 func _setLevelRect(width: int, height: int) -> void:
 	_width = width
 	_height = height
-	_level.rect = Rect2(_level.rect.position, Vector2(_width, _height))
+	_level.size = Vector2(_width, _height)
 
 func _fill(wall: bool, wallEdge: bool, outside: bool = false) -> void:
 	for y in range(_height):

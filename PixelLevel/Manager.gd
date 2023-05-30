@@ -79,14 +79,14 @@ var _selected: Generate
 
 func _generate(delta: int = 1) -> void:
 	await get_tree().process_frame
-	_mask.play("Mask")
+	_mask.play("Go")
 	await _mask.animation_finished
 	if delta != 0 or _selected == null:
 		_selected = Random.priority(_g)
 	_selected.generate(delta)
 	_depth.text = str(_level.state.depth)
 	_light.text = str(_level.lightRadius)
-	_mask.play_backwards("Mask")
+	_mask.play_backwards("Go")
 
 func _lightMinus() -> void:
 	_level.lightDecrease()
