@@ -78,7 +78,7 @@ func _updateMap() -> void:
 var _selected: Generate
 
 func _generate(delta: int = 1) -> void:
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	_mask.play("Mask")
 	await _mask.animation_finished
 	if delta != 0 or _selected == null:

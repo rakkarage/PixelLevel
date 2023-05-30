@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://b4501vgffp5br"]
 
-[ext_resource type="PackedScene" uid="uid://1bkgj4vw8shv" path="res://PixelMob/Test.tscn" id="1_e2to2"]
-[ext_resource type="Texture2D" uid="uid://y7xyhbmayrqs" path="res://PixelMob/Sprite/SlimeB.png" id="2_2w8fc"]
-[ext_resource type="Texture2D" uid="uid://cil2kef15ccya" path="res://PixelMob/Sprite/SlimeC.png" id="3_jx05e"]
-[ext_resource type="Texture2D" uid="uid://r64tp7ega33f" path="res://PixelMob/Sprite/SlimeP.png" id="4_3dxy5"]
+[ext_resource type="PackedScene" uid="uid://1bkgj4vw8shv" path="res://PixelMob/Test.tscn" id="1_486iv"]
+[ext_resource type="Texture2D" uid="uid://y7xyhbmayrqs" path="res://PixelMob/Sprite/SlimeB.png" id="2_yl3d0"]
+[ext_resource type="Texture2D" uid="uid://cil2kef15ccya" path="res://PixelMob/Sprite/SlimeC.png" id="3_5s0la"]
+[ext_resource type="Texture2D" uid="uid://r64tp7ega33f" path="res://PixelMob/Sprite/SlimeP.png" id="4_4hf6e"]
 
 [node name="TestFour" type="Control"]
 layout_mode = 3
@@ -31,28 +31,26 @@ grow_vertical = 2
 layout_mode = 2
 columns = 2
 
-[node name="Test1" parent="Panel/Grid" instance=ExtResource("1_e2to2")]
+[node name="Test1" parent="Panel/Grid" instance=ExtResource("1_486iv")]
 layout_mode = 2
 
-[node name="Slime" parent="Panel/Grid/Test1/VBox/Center/Panel" index="0"]
-
-[node name="Test2" parent="Panel/Grid" instance=ExtResource("1_e2to2")]
+[node name="Test2" parent="Panel/Grid" instance=ExtResource("1_486iv")]
 layout_mode = 2
 
 [node name="Slime" parent="Panel/Grid/Test2/VBox/Center/Panel" index="0"]
-texture = ExtResource("2_2w8fc")
+texture = ExtResource("2_yl3d0")
 
-[node name="Test3" parent="Panel/Grid" instance=ExtResource("1_e2to2")]
+[node name="Test3" parent="Panel/Grid" instance=ExtResource("1_486iv")]
 layout_mode = 2
 
 [node name="Slime" parent="Panel/Grid/Test3/VBox/Center/Panel" index="0"]
-texture = ExtResource("3_jx05e")
+texture = ExtResource("3_5s0la")
 
-[node name="Test4" parent="Panel/Grid" instance=ExtResource("1_e2to2")]
+[node name="Test4" parent="Panel/Grid" instance=ExtResource("1_486iv")]
 layout_mode = 2
 
 [node name="Slime" parent="Panel/Grid/Test4/VBox/Center/Panel" index="0"]
-texture = ExtResource("4_3dxy5")
+texture = ExtResource("4_4hf6e")
 
 [editable path="Panel/Grid/Test1"]
 [editable path="Panel/Grid/Test2"]

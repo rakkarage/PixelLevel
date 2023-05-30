@@ -24,7 +24,7 @@ const INVALID_CELL = -1
 @onready var _target:     Node2D = $Target
 @onready var _astar:             = AStar2D.new()
 @onready var _tileSet:           = _back.tile_set
-var _oldSize = Vector2.ZERO
+var _oldSize := Vector2.ZERO
 var _pathPoints := PackedVector2Array()
 var _dragLeft := false
 var _capture := false
@@ -163,7 +163,7 @@ func _process(delta: float) -> void:
 		_time = 0.0
 
 func _move(mob: Node2D) -> void:
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	if _pathPoints.size() > 1:
 		var delta := _delta(_pathPoints[0], _pathPoints[1])
 		_face(mob, delta)
@@ -260,7 +260,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			else:
 				if _capture:
 					_cameraUpdate()
-				else:
+				elif _tweenStep:
 					_targetTo(event.global_position, not _tweenStep.is_running())
 					_targetUpdate()
 				_dragLeft = false
@@ -502,11 +502,11 @@ func _targetSnap(tile: Vector2) -> void:
 		_tweenTarget.set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
 		_tweenTarget.tween_property(_target, "global_position", p, _duration)
 
-func _normalize() -> Vector2i:
-	return (_camera.global_position - _mapSize() / 2.0) / _oldSize
+func _normalize() -> Vector2:
+	return (_camera.global_position - Vector2(_mapSize() / 2.0)) / _oldSize
 
 func _onResize() -> void:
-	_camera.global_position = _normalize() * size + Vector2i(_mapSize() / 2.0)
+	_camera.global_position = _normalize() * Vector2(size + Vector2i(_mapSize() / 2.0))
 	_oldSize = size
 	_cameraUpdate()
 

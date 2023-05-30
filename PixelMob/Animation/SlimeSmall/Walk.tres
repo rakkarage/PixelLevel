@@ -1,6 +1,6 @@
 [gd_resource type="Animation" load_steps=2 format=3 uid="uid://bwhpn62xicylo"]
 
-[ext_resource type="AudioStream" uid="uid://btlcgij7xd57p" path="res://PixelMob/Audio/167075__drminky__slime-land.tres" id="1_4bm4e"]
+[ext_resource type="AudioStream" uid="uid://btlcgij7xd57p" path="res://PixelMob/Audio/167075__drminky__slime-land.tres" id="1_hddlm"]
 
 [resource]
 resource_name = "Walk"
@@ -29,7 +29,7 @@ tracks/1/keys = {
 "clips": [{
 "end_offset": 0.0,
 "start_offset": 0.0,
-"stream": ExtResource("1_4bm4e")
+"stream": ExtResource("1_hddlm")
 }],
 "times": PackedFloat32Array(0.5625)
 }

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://b4fj8whx4whq8"]
 
-[ext_resource type="PackedScene" uid="uid://dk3mnbttn0vi5" path="res://PixelLevel/Level.tscn" id="1_hrwas"]
-[ext_resource type="PackedScene" uid="uid://dwkeeiuo87ffy" path="res://Intro/Intro.tscn" id="2_3l28f"]
+[ext_resource type="PackedScene" uid="uid://dk3mnbttn0vi5" path="res://PixelLevel/Level.tscn" id="1_8d886"]
+[ext_resource type="PackedScene" uid="uid://dwkeeiuo87ffy" path="res://Intro/Intro.tscn" id="2_p7pot"]
 
 [node name="Demo" type="Control"]
 layout_mode = 3
@@ -11,8 +11,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Level" parent="." instance=ExtResource("1_hrwas")]
+[node name="Level" parent="." instance=ExtResource("1_8d886")]
 layout_mode = 1
 
-[node name="Intro" parent="." instance=ExtResource("2_3l28f")]
+[node name="Intro" parent="." instance=ExtResource("2_p7pot")]
 layout_mode = 1

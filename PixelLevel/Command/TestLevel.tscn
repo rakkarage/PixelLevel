@@ -1,13 +1,13 @@
 [gd_scene load_steps=4 format=3 uid="uid://ctsmye0y78sdg"]
 
-[ext_resource type="PackedScene" uid="uid://dfpwhu8u2jrgw" path="res://PixelLevel/Command/TestLevelBase.tscn" id="1_6w266"]
-[ext_resource type="Script" path="res://PixelLevel/Command/TestLevel.gd" id="2_8w06g"]
-[ext_resource type="PackedScene" uid="uid://cpwpn22g1oh61" path="res://Interface/Back.tscn" id="3_ephxy"]
+[ext_resource type="PackedScene" uid="uid://dfpwhu8u2jrgw" path="res://PixelLevel/Command/TestLevelBase.tscn" id="1_58rp7"]
+[ext_resource type="Script" path="res://PixelLevel/Command/TestLevel.gd" id="2_eaai3"]
+[ext_resource type="PackedScene" uid="uid://cpwpn22g1oh61" path="res://Interface/Back.tscn" id="3_1lm5v"]
 
-[node name="Level" instance=ExtResource("1_6w266")]
-script = ExtResource("2_8w06g")
+[node name="Level" instance=ExtResource("1_58rp7")]
+script = ExtResource("2_eaai3")
 
-[node name="Back" parent="." index="0" instance=ExtResource("3_ephxy")]
+[node name="Back" parent="." index="0" instance=ExtResource("3_1lm5v")]
 
 [node name="Panel" type="PanelContainer" parent="." index="2"]
 modulate = Color(1, 1, 1, 0.498039)
