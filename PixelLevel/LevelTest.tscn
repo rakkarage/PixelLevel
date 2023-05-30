@@ -1,0 +1,117 @@
+[gd_scene load_steps=5 format=3 uid="uid://dn6bjytoxfoma"]
+
+[ext_resource type="Script" path="res://PixelLevel/LevelTest.gd" id="1_wmj68"]
+[ext_resource type="TileSet" uid="uid://rer8omh2xmlw" path="res://PixelLevel/Level.tres" id="4_iwbyl"]
+[ext_resource type="PackedScene" uid="uid://cktdt7fpv803m" path="res://PixelMob/Mob/Slime.tscn" id="5_epfv5"]
+[ext_resource type="PackedScene" uid="uid://c0gglcpbg3xyp" path="res://Interface/Target.tscn" id="6_fkxqk"]
+
+[node name="Level" type="Node2D"]
+script = ExtResource("1_wmj68")
+
+[node name="Map" type="TileMap" parent="."]
+tile_set = ExtResource("4_iwbyl")
+format = 2
+layer_0/name = "Back"
+layer_0/tile_data = PackedInt32Array(0, 65617, 0, 1, 65617, 0, 2, 65617, 0, 3, 131153, 0, 4, 81, 0, 5, 262225, 0, 6, 65617, 0, 7, 131153, 0, 8, 81, 0, 9, 81, 0, 10, 81, 0, 11, 196689, 0, 12, 81, 0, 13, 65617, 0, 14, 65617, 0, 65536, 131153, 0, 65537, 262225, 0, 65538, 262225, 0, 65539, 131153, 0, 65540, 81, 0, 65541, 196689, 0, 65542, 131153, 0, 65543, 81, 0, 65544, 131153, 0, 65545, 196689, 0, 65546, 81, 0, 65547, 81, 0, 65548, 131153, 0, 65549, 81, 0, 65550, 131153, 0, 131072, 262225, 0, 131073, 196689, 0, 131074, 65617, 0, 131075, 81, 0, 131076, 81, 0, 131077, 65617, 0, 131078, 81, 0, 131079, 196689, 0, 131080, 196689, 0, 131081, 262225, 0, 131082, 81, 0, 131083, 131153, 0, 131084, 196689, 0, 131085, 196689, 0, 131086, 131153, 0, 196608, 131153, 0, 196609, 196689, 0, 196610, 196689, 0, 196611, 81, 0, 196612, 196689, 0, 196613, 81, 0, 196614, 81, 0, 196615, 81, 0, 196616, 196689, 0, 196617, 196689, 0, 196618, 65617, 0, 196619, 65617, 0, 196620, 65617, 0, 196621, 131153, 0, 196622, 65617, 0, 262144, 81, 0, 262145, 65617, 0, 262146, 131153, 0, 262147, 81, 0, 262148, 196689, 0, 262149, 196689, 0, 262150, 81, 0, 262151, 131153, 0, 262152, 81, 0, 262153, 81, 0, 262154, 262225, 0, 262155, 81, 0, 262156, 262225, 0, 262157, 65617, 0, 262158, 131153, 0, 327680, 65617, 0, 327681, 262225, 0, 327682, 196689, 0, 327683, 196689, 0, 327684, 196689, 0, 327685, 196689, 0, 327686, 81, 0, 327687, 262225, 0, 327688, 262225, 0, 327689, 262225, 0, 327690, 81, 0, 327691, 196689, 0, 327692, 81, 0, 327693, 196689, 0, 327694, 81, 0, 393216, 81, 0, 393217, 262225, 0, 393218, 262225, 0, 393219, 65617, 0, 393220, 196689, 0, 393221, 131153, 0, 393222, 262225, 0, 393223, 131153, 0, 393224, 65617, 0, 393225, 131153, 0, 393226, 262225, 0, 393227, 65617, 0, 393228, 81, 0, 393229, 196689, 0, 393230, 131153, 0, 458752, 131153, 0, 458753, 196689, 0, 458754, 131153, 0, 458755, 81, 0, 458756, 196689, 0, 458757, 131153, 0, 458758, 65617, 0, 458759, 196689, 0, 458760, 196689, 0, 458761, 65617, 0, 458762, 131153, 0, 458763, 131153, 0, 458764, 65617, 0, 458765, 81, 0, 458766, 262225, 0, 524288, 262225, 0, 524289, 196689, 0, 524290, 131153, 0, 524291, 196689, 0, 524292, 262225, 0, 524293, 65617, 0, 524294, 131153, 0, 524295, 262225, 0, 524296, 196689, 0, 524297, 81, 0, 524298, 81, 0, 524299, 81, 0, 524300, 81, 0, 524301, 131153, 0, 524302, 262225, 0, 589824, 81, 0, 589825, 196689, 0, 589826, 65617, 0, 589827, 65617, 0, 589828, 81, 0, 589829, 131153, 0, 589830, 196689, 0, 589831, 65617, 0, 589832, 65617, 0, 589833, 65617, 0, 589834, 131153, 0, 589835, 65617, 0, 589836, 81, 0, 589837, 81, 0, 589838, 262225, 0, 655360, 262225, 0, 655361, 81, 0, 655362, 65617, 0, 655363, 196689, 0, 655364, 131153, 0, 655365, 196689, 0, 655366, 262225, 0, 655367, 131153, 0, 655368, 196689, 0, 655369, 131153, 0, 655370, 65617, 0, 655371, 196689, 0, 655372, 262225, 0, 655373, 65617, 0, 655374, 262225, 0)
+layer_1/name = "Fore"
+layer_1/enabled = true
+layer_1/modulate = Color(1, 1, 1, 1)
+layer_1/y_sort_enabled = false
+layer_1/y_sort_origin = 0
+layer_1/z_index = 0
+layer_1/tile_data = PackedInt32Array()
+layer_2/name = "Flower"
+layer_2/enabled = true
+layer_2/modulate = Color(1, 1, 1, 1)
+layer_2/y_sort_enabled = false
+layer_2/y_sort_origin = 0
+layer_2/z_index = 0
+layer_2/tile_data = PackedInt32Array()
+layer_3/name = "SplitBack"
+layer_3/enabled = true
+layer_3/modulate = Color(1, 1, 1, 1)
+layer_3/y_sort_enabled = false
+layer_3/y_sort_origin = 0
+layer_3/z_index = 0
+layer_3/tile_data = PackedInt32Array()
+layer_4/name = "ItemBack"
+layer_4/enabled = true
+layer_4/modulate = Color(1, 1, 1, 1)
+layer_4/y_sort_enabled = false
+layer_4/y_sort_origin = 0
+layer_4/z_index = 0
+layer_4/tile_data = PackedInt32Array()
+layer_5/name = "WaterBack"
+layer_5/enabled = true
+layer_5/modulate = Color(1, 1, 1, 1)
+layer_5/y_sort_enabled = false
+layer_5/y_sort_origin = 0
+layer_5/z_index = 0
+layer_5/tile_data = PackedInt32Array()
+layer_6/name = "Tree"
+layer_6/enabled = true
+layer_6/modulate = Color(1, 1, 1, 1)
+layer_6/y_sort_enabled = false
+layer_6/y_sort_origin = 0
+layer_6/z_index = 0
+layer_6/tile_data = PackedInt32Array()
+layer_7/name = "SplitFore"
+layer_7/enabled = true
+layer_7/modulate = Color(1, 1, 1, 1)
+layer_7/y_sort_enabled = false
+layer_7/y_sort_origin = 0
+layer_7/z_index = 0
+layer_7/tile_data = PackedInt32Array()
+layer_8/name = "ItemFore"
+layer_8/enabled = true
+layer_8/modulate = Color(1, 1, 1, 1)
+layer_8/y_sort_enabled = false
+layer_8/y_sort_origin = 0
+layer_8/z_index = 0
+layer_8/tile_data = PackedInt32Array()
+layer_9/name = "WaterFore"
+layer_9/enabled = true
+layer_9/modulate = Color(1, 1, 1, 1)
+layer_9/y_sort_enabled = false
+layer_9/y_sort_origin = 0
+layer_9/z_index = 0
+layer_9/tile_data = PackedInt32Array()
+layer_10/name = "Top"
+layer_10/enabled = true
+layer_10/modulate = Color(1, 1, 1, 1)
+layer_10/y_sort_enabled = false
+layer_10/y_sort_origin = 0
+layer_10/z_index = 0
+layer_10/tile_data = PackedInt32Array()
+layer_11/name = "Light"
+layer_11/enabled = true
+layer_11/modulate = Color(1, 1, 1, 1)
+layer_11/y_sort_enabled = false
+layer_11/y_sort_origin = 0
+layer_11/z_index = 0
+layer_11/tile_data = PackedInt32Array()
+layer_12/name = "Edge"
+layer_12/enabled = true
+layer_12/modulate = Color(1, 1, 1, 1)
+layer_12/y_sort_enabled = false
+layer_12/y_sort_origin = 0
+layer_12/z_index = 0
+layer_12/tile_data = PackedInt32Array()
+
+[node name="Target" parent="Map" instance=ExtResource("6_fkxqk")]
+
+[node name="Path" type="Node2D" parent="Map"]
+position = Vector2(8, 8)
+
+[node name="Mob" parent="Map" instance=ExtResource("5_epfv5")]
+script = null
+
+[node name="TileMap" type="TileMap" parent="."]
+format = 2
+layer_1/name = ""
+layer_1/enabled = true
+layer_1/modulate = Color(1, 1, 1, 1)
+layer_1/y_sort_enabled = false
+layer_1/y_sort_origin = 0
+layer_1/z_index = 0
+layer_1/tile_data = PackedInt32Array()
