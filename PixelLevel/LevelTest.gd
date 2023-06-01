@@ -14,32 +14,24 @@ var _pathPoints := PackedVector2Array()
 var _dragLeft := false
 var _capture := false
 var _turn := false
+var _time := 0.0
+var _turnTotal := 0
+var _timeTotal := 0.0
+const _turnTime := 0.22
+const _duration := 0.333
+const _zoomMin := Vector2(0.2, 0.2)
+const _zoomMax := Vector2(1.0, 1.0)
+const _zoomFactorIn := 0.90
+const _zoomFactorOut := 1.10
+const _zoomPinchIn := 0.02
+const _zoomPinchOut := 1.02
+const _pathScene := preload("res://Interface/Path.tscn")
+
 var _tweenCamera : Tween
 var _tweenStep : Tween
 var _tweenTarget : Tween
 
-const _duration := 0.333
-const _pathScene := preload("res://Interface/Path.tscn")
-
-#region Light Variables
-
-const _torchRadius := 8
-const _torchRadiusMax := _torchRadius * 2
-var lightRadius := 16
-const _lightMin := 0
-const _lightMax := 31
-const _lightExplored := 8
-const _lightCount := 24
-const _fovOctants = [
-	[1,  0,  0, -1, -1,  0,  0,  1],
-	[0,  1, -1,  0,  0, -1,  1,  0],
-	[0,  1,  1,  0,  0, -1, -1,  0],
-	[1,  0,  0,  1, -1,  0,  0, -1]
-]
-var _torches := {}
-
-#endregion
-
+# matches tileMap layers
 enum Layer {
 	Back,
 	Fore,
@@ -51,6 +43,7 @@ enum Layer {
 	Light,
 	Edge }
 
+# matches source id
 enum Tile {
 	Cliff1, Cliff2,	Banner1, Banner2, Doodad, Rug, Fountain, Loot,
 	EdgeInside, EdgeInsideCorner, EdgeOutsideCorner, EdgeOutside,
@@ -66,6 +59,7 @@ enum Tile {
 	Theme4Torch, Theme4Wall, Theme4Floor, Theme4Stair, Theme4Door,
 	WaterShallow, WaterDeep, WaterShallowPurple, WaterDeepPurple }
 
+# these are used for testing if a tile is a certain type
 const _floorTiles := [
 	Tile.Theme1Floor, Tile.Theme2Floor, Tile.Theme3Floor, Tile.Theme4Floor,
 	Tile.DayGrass, Tile.NightGrass, Tile.DayPath, Tile.NightPath,
@@ -80,6 +74,11 @@ const _doorTiles := [Tile.Theme1Door, Tile.Theme2Door, Tile.Theme3Door, Tile.The
 const _waterTiles := [Tile.WaterShallow, Tile.WaterDeep, Tile.WaterShallowPurple, Tile.WaterDeepPurple]
 const _waterDeepTiles := [Tile.WaterDeep, Tile.WaterDeepPurple]
 const _waterPurpleTiles := [Tile.WaterShallowPurple, Tile.WaterDeepPurple]
+
+# atlas coords
+enum Door { Shut, Open, Broke }
+enum Stair { Up, Down }
+enum OutsideStair { UpGrass, DownGrass, Up, Down }
 
 #endregion
 
@@ -99,27 +98,122 @@ func _generated() -> void:
 	#TODO
 	pass
 
+func _process(delta: float) -> void:
+	_time += delta
+	if _time > _turnTime and (_turn or _processWasd()):
+		_timeTotal += _time
+		_turnTotal += 1
+		var test := _turn
+		_turn = false
+		if test:
+			if not _handleDoor():
+				await _move(_hero)
+			if not _handleStair():
+				_lightUpdate(heroPosition(), lightRadius)
+				_checkCenter()
+		_time = 0.0
+
+func _move(mob: Node2D) -> void:
+	await get_tree().process_frame
+	if _pathPoints.size() > 1:
+		var delta := _delta(_pathPoints[0], _pathPoints[1])
+		_face(mob, delta)
+		_fadeAndFree()
+		await _step(mob, delta)
+
+func _fadeAndFree() -> void:
+	_pathPoints.remove_at(0)
+	var node := _path.get_child(0)
+	var tween := get_tree().create_tween()
+	tween.tween_property(node, "modulate", Color.TRANSPARENT, _turnTime)
+	await tween.finished
+	node.queue_free()
+	if _pathPoints.size() > 1:
+		_turn = true
+	else:
+		_pathClear()
+
+func _handleStair() -> bool:
+	if _pathPoints.size() == 1:
+		var p := heroPosition()
+		if isStairDown(p):
+			emit_signal("generate")
+			return true
+		elif isStairUp(p):
+			emit_signal("generateUp")
+			return true
+	return false
+
+func _handleDoor() -> bool:
+	var from := heroPosition()
+	var to := targetPosition()
+	if (from - to).length() < 2.0:
+		if isDoor(to):
+			_toggleDoor(to)
+			_astar.set_point_disabled(_tileIndex(to), isDoorShut(to))
+			return true
+	return false
+
+const _doorBreakChance = 0.02
+
+func _toggleDoor(p: Vector2i) -> void:
+	if not isDoor(p): return
+	var door = _tileMap.get_cell_atlas_coords(Layer.Fore, p).x
+	if door != Door.Broke:
+		var broke := Random.nextFloat() <= _doorBreakChance
+		_tileMap.set_cell_alternative_tile(Layer.Fore, p, Door.Broke if broke else Door.Shut if door == Door.Open else Door.Open)
+
+func _face(mob: Node2D, direction: Vector2i) -> void:
+	if direction.x > 0:
+		mob.scale = Vector2i(-1, 1)
+	else:
+		mob.scale = Vector2i(1, 1)
+
+func _step(mob: Node2D, direction: Vector2i) -> void:
+	mob.walk()
+	if _tweenStep:
+		_tweenStep.kill()
+	_tweenStep = create_tween()
+	_tweenStep.set_trans(Tween.TRANS_CIRC).set_ease(Tween.EASE_IN_OUT)
+	_tweenStep.tween_property(mob, "global_position", mob.global_position + Vector2(_world(direction)), _turnTime)
+	await _tweenStep.finished
+
+func _addPoints() -> void:
+	_astar.clear()
+	var rect := _tileMap.get_used_rect()
+	for y in range(rect.size.y):
+		for x in range(rect.size.x):
+			var p := Vector2i(x, y)
+			_astar.add_point(_tileIndex(p), p)
+
+func _connectPoints() -> void:
+	var rect := _tileMap.get_used_rect()
+	for y in range(rect.size.y):
+		for x in range(rect.size.x):
+			_connect(Vector2i(x, y))
+
+func _connect(p: Vector2i) -> void:
+	var rect := _tileMap.get_used_rect()
+	for yy in range(p.y - 1, p.y + 2):
+		for xx in range(p.x - 1, p.x + 2):
+			var pp := Vector2i(xx, yy)
+			if (not is_equal_approx(yy, p.y) or not is_equal_approx(xx, p.x)) and rect.has_point(pp):
+				if isDoor(pp) or not isBlocked(pp):
+					_astar.connect_points(_tileIndex(p), _tileIndex(pp), false)
+					if isDoorShut(pp):
+						_astar.set_point_disabled(_tileIndex(pp), true)
+
 func _tileIndex(pos: Vector2) -> int:
 	return Utility.index(pos, _mapSize().x)
 
 func _tilePosition(index: int) -> Vector2:
 	return Utility.position(index, _mapSize().x)
 
-# mob blocked by cliff or no floor or...
 func isBlocked(p: Vector2i) -> bool:
-	if not insideMap(p): return true
-	var fore := _tileMap.get_cell_source_id(Layer.Fore, p)
-	var back := _tileMap.get_cell_source_id(Layer.Back, p)
-	return _cliffTiles.has(fore) or ((fore == INVALID_CELL) and not _floorTiles.has(back)) or isBlockedLight(p)
+	return isFloor(p) && !isBlockedLight(p)
 
-# light blocked by wall or shut door
 func isBlockedLight(p: Vector2i) -> bool:
-	if not insideMap(p): return true
-	var fore := _fore.get_cell_source_id(0, p)
-	var w := _wallTiles.has(fore)
-	var d := _doorTiles.has(fore)
-	var s = _fore.get_cell_atlas_coords(0, p)
-	return w or (d and s == Vector2i.ZERO)
+	return isWall(p) or isDoorShut(p)
 
 #region Input
 
@@ -355,37 +449,151 @@ func _getPathColor(p: Vector2i) -> Color:
 		color = _colorPathMob
 	return color
 
-func clear() -> void:
-	_back.clear()
-	_fore.clear()
-	_flower.clear()
-	_waterBack.clear()
-	_splitBack.clear()
-	_itemBack.clear()
-	_tree.clear()
-	_itemFore.clear()
-	_splitFore.clear()
-	_waterFore.clear()
-	_top.clear()
-	_light.clear()
-	_edge.clear()
-
 #endregion
 
-func _zoomIn(p: Vector2) -> void:
-	pass
+#region Light
 
-func _zoomOut(p: Vector2) -> void:
-	pass
+const _torchRadius := 8
+const _torchRadiusMax := _torchRadius * 2
+var lightRadius := 16
+const _lightMin := 0
+const _lightMax := 31
+const _lightExplored := 8
+const _lightCount := 24
+const _fovOctants = [
+	[1,  0,  0, -1, -1,  0,  0,  1],
+	[0,  1, -1,  0,  0, -1,  1,  0],
+	[0,  1,  1,  0,  0, -1, -1,  0],
+	[1,  0,  0,  1, -1,  0,  0, -1]
+]
+var _torches := {}
 
-func _face(node: Node2D, direction: Vector2i) -> void:
-	pass
+func lightToggle() -> void:
+	_tileMap.set_layer_enabled(Layer.Light, not _tileMap.is_layer_enabled(Layer.Light))
 
-func _step(node: Node2D, direction: Vector2i) -> void:
-	pass
+func lightIncrease() -> void:
+	lightRadius += 1
+	_lightUpdate(heroPosition(), lightRadius)
 
-func _lightUpdate(p: Vector2i, radius: int) -> void:
-	pass
+func lightDecrease() -> void:
+	lightRadius -= 1
+	_lightUpdate(heroPosition(), lightRadius)
+
+# https://web.archive.org/web/20130705072606/http://doryen.eptalys.net/2011/03/ramblings-on-lights-in-full-color-roguelikes/
+# https://journal.stuffwithstuff.com/2015/09/07/what-the-hero-sees/
+# https://www.roguebasin.com/index.php/FOV_using_recursive_shadowcasting
+func _lightEmitRecursive(at: Vector2i, radius: float, maxRadius: float, start: float, end: float, xx: int, xy: int, yx: int, yy: int) -> void:
+	if start < end: return
+	var rSquared := maxRadius * maxRadius
+	var newStart := 0.0
+	for i in range(radius, maxRadius + 1):
+		var dx := -i - 1
+		var dy := -i
+		var blocked := false
+		while dx <= 0:
+			dx += 1
+			var p := Vector2i(at.x + dx * xx + dy * xy, at.y + dx * yx + dy * yy)
+			if not insideMap(p): continue
+			var lSlope := (dx - 0.5) / (dy + 0.5)
+			var rSlope := (dx + 0.5) / (dy - 0.5)
+			if start < rSlope: continue
+			elif end > lSlope: break
+			else:
+				var distanceSquared := (at.x - p.x) * (at.x - p.x) + (at.y - p.y) * (at.y - p.y)
+				if distanceSquared < rSquared:
+					var intensity1 := 1.0 / (1.0 + distanceSquared / maxRadius)
+					var intensity2 := intensity1 - 1.0 / (1.0 + rSquared)
+					var intensity := intensity2 / (1.0 - 1.0 / (1.0 + rSquared))
+					var light := int(intensity * _lightCount)
+					_setLight(p, _lightExplored + light, true)
+				var blockedAt := isBlockedLight(p)
+				if blocked:
+					if blockedAt:
+						newStart = rSlope
+						continue
+					else:
+						blocked = false
+						start = newStart
+				elif blockedAt and radius < maxRadius:
+					blocked = true
+					_lightEmitRecursive(at, i + 1, maxRadius, start, lSlope, xx, xy, yx, yy)
+					newStart = rSlope
+		if blocked: break
+
+func _lightEmit(at: Vector2i, radius: int) -> void:
+	for i in range(_fovOctants[0].size()):
+		_lightEmitRecursive(at, 1, radius, 1.0, 0.0, _fovOctants[0][i], _fovOctants[1][i], _fovOctants[2][i], _fovOctants[3][i])
+	_setLight(at, _lightMax, true)
+
+func _lightUpdate(at: Vector2i, radius: int) -> void:
+	_darken()
+	_lightEmit(at, radius)
+	_lightTorches()
+
+func _findTorches() -> void:
+	_torches.clear()
+	var torch0 := _tileMap.get_used_cells_by_id(Layer.Fore, Tile.Theme1Torch)
+	var torch1 := _tileMap.get_used_cells_by_id(Layer.Fore, Tile.Theme1Torch)
+	var torch2 := _tileMap.get_used_cells_by_id(Layer.Fore, Tile.Theme2Torch)
+	var torch3 := _tileMap.get_used_cells_by_id(Layer.Fore, Tile.Theme3Torch)
+	for p in torch0 + torch1 + torch2 + torch3:
+		_torches[p] = Random.next(_torchRadius)
+
+func _lightTorches() -> void:
+	for p in _torches.keys():
+		_torches[p] = clamp(_torches[p] + Random.nextRange(-1, 1), 2, _torchRadiusMax)
+		var current = _torches[p]
+		var north := Vector2i(p.x, p.y + 1)
+		var east := Vector2i(p.x + 1, p.y)
+		var south := Vector2i(p.x, p.y - 1)
+		var west := Vector2i(p.x - 1, p.y)
+		var emitted := false
+		if insideMap(p):
+			var northBlocked = isBlocked(north)
+			if not northBlocked and isLit(north):
+				emitted = true
+				_lightEmit(north, current)
+			var eastBlocked = isBlocked(east)
+			if not eastBlocked and isLit(east):
+				emitted = true
+				_lightEmit(east, current)
+			var southBlocked = isBlocked(south)
+			if not southBlocked and isLit(south):
+				emitted = true
+				_lightEmit(south, current)
+			var westBlocked = isBlocked(west)
+			if not westBlocked and isLit(west):
+				emitted = true
+				_lightEmit(west, current)
+			if not emitted:
+				var northEast := Vector2i(p.x + 1, p.y + 1)
+				var southEast := Vector2i(p.x + 1, p.y - 1)
+				var southWest := Vector2i(p.x - 1, p.y - 1)
+				var northWest := Vector2i(p.x - 1, p.y + 1)
+				if northBlocked and eastBlocked and not isBlocked(northEast) and isLit(northEast):
+					_lightEmit(northEast, current)
+				if southBlocked and eastBlocked and not isBlocked(southEast) and isLit(southEast):
+					_lightEmit(southEast, current)
+				if southBlocked and westBlocked and not isBlocked(southWest) and isLit(southWest):
+					_lightEmit(southWest, current)
+				if northBlocked and westBlocked and not isBlocked(northWest) and isLit(northWest):
+					_lightEmit(northWest, current)
+
+func _dark() -> void:
+	var rect := _tileMap.get_used_rect()
+	for y in range(rect.size.y):
+		for x in range(rect.size.x):
+			_setLight(Vector2i(x, y), _lightMin, false)
+
+func _darken() -> void:
+	var rect := _tileMap.get_used_rect()
+	for y in range(rect.size.y):
+		for x in range(rect.size.x):
+			var p := Vector2i(x, y)
+			if _getLight(p) != _lightMin:
+				_setLight(p, _lightExplored, false)
+
+#endregion
 
 func insideMap(p: Vector2i) -> bool:
 	return _tileMap.get_used_rect().has_point(p)
@@ -456,6 +664,25 @@ func _checkCenter() -> void:
 		_cameraSnap(-(_worldSize() / 2.0) + _hero.global_position)
 	else:
 		emit_signal("updateMap")
+
+func _zoomPinch(at: Vector2, amount: float) -> void:
+	if amount > 0: _zoom(at, _zoomFactorOut)
+	elif amount < 0: _zoom(at, _zoomFactorIn)
+
+func _zoomIn(at: Vector2) -> void: _zoom(at, _zoomFactorIn)
+
+func _zoomOut(at: Vector2) -> void: _zoom(at, _zoomFactorOut)
+
+func _zoom(at: Vector2, factor: float) -> void:
+	var z0 := _camera.zoom
+	var z1 := _zoomClamp(z0 * factor)
+	var c0 := _camera.global_position
+	var c1 := c0 + at * (z0 - z1)
+	_camera.zoom = z1
+	_camera.global_position = c1
+
+func _zoomClamp(z: Vector2) -> Vector2:
+	return _zoomMin if z < _zoomMin else _zoomMax if z > _zoomMax else z
 
 #region Tile
 
