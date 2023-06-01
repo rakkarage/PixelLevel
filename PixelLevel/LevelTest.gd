@@ -43,7 +43,7 @@ enum Layer {
 	Light,
 	Edge }
 
-# matches source id
+# matches tileSet source id
 enum Tile {
 	Cliff1, Cliff2,	Banner1, Banner2, Doodad, Rug, Fountain, Loot,
 	EdgeInside, EdgeInsideCorner, EdgeOutsideCorner, EdgeOutside,
@@ -53,11 +53,12 @@ enum Tile {
 	NightGrass, NightPillar, NightPath, NightStair, NightDesert, NightDoodad,
 	NightWeed, NightHedge, NightWall, NightFloor,
 	Tree, TreeStump, Flower, Rubble,
-	Theme1Torch, Theme1Wall, Theme1Floor, Theme1Stair, Theme1Door,
-	Theme2Torch, Theme2Wall, Theme2Floor, Theme2Stair, Theme2Door,
-	Theme3Torch, Theme3Wall, Theme3Floor, Theme3Stair, Theme3Door,
-	Theme4Torch, Theme4Wall, Theme4Floor, Theme4Stair, Theme4Door,
-	WaterShallow, WaterDeep, WaterShallowPurple, WaterDeepPurple }
+	Theme1Torch, Theme1Wall, Theme1Floor, Theme1FloorRoom, Theme1Stair, Theme1Door,
+	Theme2Torch, Theme2Wall, Theme2Floor, Theme2FloorRoom, Theme2Stair, Theme2Door,
+	Theme3Torch, Theme3Wall, Theme3Floor, Theme3FloorRoom, Theme3Stair, Theme3Door,
+	Theme4Torch, Theme4Wall, Theme4Floor, Theme4FloorRoom, Theme4Stair, Theme4Door,
+	WaterShallowBack, WaterShallowBackFore, WaterDeepBack, WaterDeepFore,
+	WaterShallowPurpleBack, WaterShallowPurpleFore, WaterDeepPurpleBack, WaterDeepPurpleFore }
 
 # these are used for testing if a tile is a certain type
 const _floorTiles := [
@@ -71,9 +72,10 @@ const _wallTiles := [
 const _cliffTiles := [Tile.Cliff1, Tile.Cliff2]
 const _stairTiles := [Tile.Theme1Stair, Tile.Theme2Stair, Tile.Theme3Stair, Tile.Theme4Stair, Tile.DayStair, Tile.NightStair]
 const _doorTiles := [Tile.Theme1Door, Tile.Theme2Door, Tile.Theme3Door, Tile.Theme4Door]
-const _waterTiles := [Tile.WaterShallow, Tile.WaterDeep, Tile.WaterShallowPurple, Tile.WaterDeepPurple]
-const _waterDeepTiles := [Tile.WaterDeep, Tile.WaterDeepPurple]
-const _waterPurpleTiles := [Tile.WaterShallowPurple, Tile.WaterDeepPurple]
+const _waterTiles := [Tile.WaterShallowBack, Tile.WaterShallowBackFore, Tile.WaterDeepBack, Tile.WaterDeepFore,
+	Tile.WaterShallowPurpleBack, Tile.WaterShallowPurpleFore, Tile.WaterDeepPurpleBack, Tile.WaterDeepPurpleFore]
+const _waterDeepTiles := [Tile.WaterDeepBack, Tile.WaterDeepFore, Tile.WaterDeepPurpleBack, Tile.WaterDeepPurpleFore]
+const _waterPurpleTiles := [Tile.WaterShallowPurpleBack, Tile.WaterShallowPurpleFore, Tile.WaterDeepPurpleBack, Tile.WaterDeepPurpleFore]
 
 # atlas coords
 enum Door { Shut, Open, Broke }
@@ -687,8 +689,8 @@ func _zoomClamp(z: Vector2) -> Vector2:
 #region Tile
 
 # TODO: flip and rotate in alternate now?
-func _setRandomTile(map: TileMap, p: Vector2i, id: int, flipX: bool = false, flipY: bool = false, rot90: bool = false) -> void:
-	map.set_cell(0, p, id, _randomTile(id))
+func _setRandomTile(layer: int, p: Vector2i, id: int, flipX: bool = false, flipY: bool = false, rot90: bool = false) -> void:
+	_tileMap.set_cell(layer, p, id, _randomTile(id))
 
 func _randomTile(id: int) -> Vector2:
 	var p := Vector2.ZERO
