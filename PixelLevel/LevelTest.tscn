@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dy04j08kbrse1"]
 
-[ext_resource type="Script" path="res://LevelTest.gd" id="1_pifoy"]
+[ext_resource type="Script" path="res://PixelLevel/LevelTest.gd" id="1_fgq8g"]
 [ext_resource type="TileSet" uid="uid://cjn2ri268c5yx" path="res://PixelLevel/TileSet.tres" id="2_1phjh"]
 
 [node name="LevelTest" type="Control"]
@@ -10,7 +10,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_pifoy")
 
 [node name="Container" type="SubViewportContainer" parent="."]
 layout_mode = 1
@@ -25,6 +24,7 @@ stretch = true
 handle_input_locally = false
 size = Vector2i(1152, 648)
 render_target_update_mode = 4
+script = ExtResource("1_fgq8g")
 
 [node name="Camera" type="Camera2D" parent="Container/SubViewport"]
 anchor_mode = 0

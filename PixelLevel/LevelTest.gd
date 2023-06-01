@@ -1,8 +1,7 @@
-extends Control
+extends SubViewport
 
-@onready var _camera := $Container/SubViewport/Camera
-@onready var _tileMap := $Container/SubViewport/TileMap
-@onready var _generateButton := $Generate
+@onready var _camera := $Camera
+@onready var _tileMap := $TileMap
 
 var _dragLeft := false
 var _capture := false
@@ -18,8 +17,7 @@ enum Layer {
 	ItemFore, SplitFore, WaterFore,
 	Top,
 	Light,
-	Edge
-}
+	Edge }
 
 enum Tile {
 	Cliff1, Cliff2,	Banner1, Banner2, Doodad, Rug, Fountain, Loot,
@@ -34,40 +32,31 @@ enum Tile {
 	Theme2Torch, Theme2Wall, Theme2Floor, Theme2Stair, Theme2Door,
 	Theme3Torch, Theme3Wall, Theme3Floor, Theme3Stair, Theme3Door,
 	Theme4Torch, Theme4Wall, Theme4Floor, Theme4Stair, Theme4Door,
-	WaterShallow, WaterDeep, WaterShallowPurple, WaterDeepPurple,
-}
+	WaterShallow, WaterDeep, WaterShallowPurple, WaterDeepPurple }
 
 const _floorTiles := [
 	Tile.Theme1Floor, Tile.Theme2Floor, Tile.Theme3Floor, Tile.Theme4Floor,
 	Tile.DayGrass, Tile.NightGrass, Tile.DayPath, Tile.NightPath,
-	Tile.DayDesert, Tile.NightDesert, Tile.DayFloor, Tile.NightFloor, Tile.Rubble
-]
-
+	Tile.DayDesert, Tile.NightDesert, Tile.DayFloor, Tile.NightFloor, Tile.Rubble ]
 const _wallTiles := [
 	Tile.Theme1Torch, Tile.Theme1Wall, Tile.Theme2Torch, Tile.Theme2Wall,
 	Tile.Theme3Torch, Tile.Theme3Wall, Tile.Theme4Torch, Tile.Theme4Wall,
-	Tile.DayWall, Tile.NightWall, Tile.DayHedge, Tile.NightHedge
-]
-
+	Tile.DayWall, Tile.NightWall, Tile.DayHedge, Tile.NightHedge ]
 const _cliffTiles := [Tile.Cliff1, Tile.Cliff2]
-
 const _stairTiles := [Tile.Theme1Stair, Tile.Theme2Stair, Tile.Theme3Stair, Tile.Theme4Stair, Tile.DayStair, Tile.NightStair]
-
 const _doorTiles := [Tile.Theme1Door, Tile.Theme2Door, Tile.Theme3Door, Tile.Theme4Door]
-
 const _waterTiles := [Tile.WaterShallow, Tile.WaterDeep, Tile.WaterShallowPurple, Tile.WaterDeepPurple]
-
 const _waterDeepTiles := [Tile.WaterDeep, Tile.WaterDeepPurple]
-
 const _waterPurpleTiles := [Tile.WaterShallowPurple, Tile.WaterDeepPurple]
 
 func _ready() -> void:
-	_generateButton.connect("pressed", _generate)
+	pass
 
 func _generate() -> void:
-	print("Generating map...")
+	pass
 
 func _unhandled_input(event: InputEvent) -> void:
+	print("unhandled_input", event)
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
