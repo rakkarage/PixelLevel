@@ -81,7 +81,7 @@ func _getCellularList(steps: int, chance: float, birth: int, death: int) -> Arra
 			for x in range(_width):
 				var p := Vector2i(x, y)
 				var adjacent := _getAdjacentCount(list, p)
-				var index := Utility.index(p, _width)
+				var index := Utility.tileIndex(p, _width)
 				var value: bool = list[index]
 				if value:
 					value = value and adjacent >= death
@@ -97,7 +97,7 @@ func _combineLists(destination: Array, source: Array) -> void:
 	var random := Random.nextBool()
 	for y in range(_height):
 		for x in range(_width):
-			var index := Utility.index(Vector2i(x, y), _width)
+			var index := Utility.tileIndex(Vector2i(x, y), _width)
 			destination[index] = (destination[index] and source[index]) if random else (destination[index] or source[index])
 
 func _biggest(list: Array) -> Array:
@@ -115,10 +115,10 @@ func _unionAdjacent(disjointSet: DisjointSet, list: Array, p: Vector2i) -> void:
 		for xx in range(-1, 2):
 			var new = Vector2i(p.x + xx, p.y + yy)
 			if not ((xx == 0) and (yy == 0)) and _level.insideMap(new):
-				var index1 := Utility.index(new, _width)
+				var index1 := Utility.tileIndex(new, _width)
 				if not list[index1]:
 					var root1 := disjointSet.find(index1)
-					var index0 := Utility.index(p, _width)
+					var index0 := Utility.tileIndex(p, _width)
 					var root0 := disjointSet.find(index0)
 					if root0 != root1:
 						disjointSet.union(root0, root1)
@@ -199,7 +199,7 @@ func _drawTrees() -> void:
 	for y in _height:
 		for x in _width:
 			var p := Vector2i(x, y)
-			var index := Utility.index(p, _width)
+			var index := Utility.tileIndex(p, _width)
 			if not array[index] and (not _level.isWall(p) and not _level.isBackInvalid(p) and not _level.isStair(p)):
 				if steps == 0 and Random.nextBool():
 					_level.setTreeStump(p)
@@ -219,9 +219,9 @@ func _cutTrees(array: Array) -> void:
 					_level.cutTreeV(Utility.position(i, _width))
 			elif Random.nextBool(): # some
 				var direction := Random.next(4)
-				var test := Utility.position(cave[Random.next(cave.size())], _width)
+				var test := Utility.tilePosition(cave[Random.next(cave.size())], _width)
 				for i in cave:
-					var p := Utility.position(i, _width)
+					var p := Utility.tilePosition(i, _width)
 					match direction:
 						0:
 							if p.x > test.x:
