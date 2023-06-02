@@ -72,7 +72,7 @@ enum Tile {
 	WaterShallowBack, WaterShallowFore, WaterDeepBack, WaterDeepFore,
 	WaterShallowPurpleBack, WaterShallowPurpleFore, WaterDeepPurpleBack, WaterDeepPurpleFore }
 
-# used for testing if a tile is a certain type with isTileId
+# used for testing if a tile is a certain type
 const _floorTiles := [
 	Tile.Theme1Floor, Tile.Theme2Floor, Tile.Theme3Floor, Tile.Theme4Floor,
 	Tile.DayGrass, Tile.NightGrass, Tile.DayPath, Tile.NightPath,
@@ -326,7 +326,6 @@ func _zoomClamp(z: Vector2) -> Vector2:
 #region Input
 
 func _unhandled_input(event: InputEvent) -> void:
-	print("unhandled_input", event)
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			_turn = false
@@ -399,14 +398,10 @@ func _wasd(direction: Vector2i) -> void:
 
 #endregion
 
-#region Hero
+#region Target
 
 func heroPosition() -> Vector2i:
 	return _map(_hero.global_position)
-
-#endregion
-
-#region Target
 
 func targetPosition() -> Vector2i:
 	return _map(_target.global_position)
@@ -901,14 +896,10 @@ func verifyCliff() -> void:
 
 #endregion
 
-#region Flower
+#region Outside
 
 func setFlower(p: Vector2i) -> void:
 	_setRandomTile(Layer.Flower, p, Tile.Flower)
-
-#endregion
-
-#region Tree
 
 func setTree(p: Vector2i) -> void:
 	_setRandomTile(Layer.Tree, p, Tile.Tree)
@@ -922,6 +913,14 @@ func clearTree(p: Vector2i) -> void:
 func cutTree(p: Vector2i) -> void:
 	clearTree(p)
 	setTreeStump(p)
+
+func setGrass(p: Vector2i) -> void:
+	if desert:
+		_setRandomTile(Layer.SplitBack, p, Tile.DayWeed if day else Tile.NightWeed, Vector2i(Weed.BackDry, 0))
+		_setRandomTile(Layer.SplitFore, p, Tile.DayWeed if day else Tile.NightWeed, Vector2i(Weed.ForeDry, 0))
+	else:
+		_setRandomTile(Layer.SplitBack, p, Tile.DayWeed if day else Tile.NightWeed, Vector2i(Weed.Back, 0))
+		_setRandomTile(Layer.SplitFore, p, Tile.DayWeed if day else Tile.NightWeed, Vector2i(Weed.Fore, 0))
 
 #endregion
 
@@ -967,18 +966,6 @@ func _setItemBackRandom(p: Vector2i, tile: int) -> void:
 
 func setLoot(p: Vector2i) -> void:
 	_setItemBackRandom(p, Tile.Loot)
-
-#endregion
-
-#region Split
-
-func setGrass(p: Vector2i) -> void:
-	if desert:
-		_setRandomTile(Layer.SplitBack, p, Tile.DayWeed if day else Tile.NightWeed, Vector2i(Weed.BackDry, 0))
-		_setRandomTile(Layer.SplitFore, p, Tile.DayWeed if day else Tile.NightWeed, Vector2i(Weed.ForeDry, 0))
-	else:
-		_setRandomTile(Layer.SplitBack, p, Tile.DayWeed if day else Tile.NightWeed, Vector2i(Weed.Back, 0))
-		_setRandomTile(Layer.SplitFore, p, Tile.DayWeed if day else Tile.NightWeed, Vector2i(Weed.Fore, 0))
 
 #endregion
 
