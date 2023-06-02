@@ -8,7 +8,8 @@ extends SubViewport
 @onready var _target:  Node2D   = $Target
 @onready var _path:    Node2D   = $Path
 
-const INVALID_CELL := Vector2i(Tile.Invalid, Tile.Invalid)
+const INVALID = Tile.Invalid
+const INVALID_CELL := Vector2i(INVALID, INVALID)
 const _turnTime := 0.22
 const _duration := 0.333
 const _zoomMin := Vector2(0.2, 0.2)
@@ -707,12 +708,12 @@ func _setTile(layer: Layer, p: Vector2i, id: Tile, coords := Vector2(0, 0), alte
 	_tileMap.set_cell(layer, p, id, coords, alternative)
 
 func _clearTile(layer: Layer, p: Vector2i) -> void:
-	_setTile(layer, p, Tile.Invalid)
+	_setTile(layer, p, INVALID)
 
-func _setRandomTile(layer: Layer, p: Vector2i, id: Tile, coords := INVALID_CELL, alternative := -1) -> void:
+func _setRandomTile(layer: Layer, p: Vector2i, id: Tile, coords := INVALID_CELL, alternative := INVALID) -> void:
 	var source := _tileMap.tile_set.get_source(id)
 	var c := _randomTileCoord(source) if coords == INVALID_CELL else coords
-	var a := _randomTileAlternative(source, c) if alternative == Tile.Invalid else 0
+	var a := _randomTileAlternative(source, c) if alternative == INVALID else 0
 	_setTile(layer, p, id, c, a)
 
 func _randomTileCoord(source: TileSetSource) -> Vector2i:
