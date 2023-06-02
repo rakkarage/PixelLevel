@@ -2,13 +2,13 @@ extends SubViewport
 
 #region Variable
 
-@onready var _tileMap: TileMap  = $TileMap
 @onready var _camera:  Camera2D = $Camera
-@onready var _hero:    Node2D   = $Hero
-@onready var _target:  Node2D   = $Target
-@onready var _path:    Node2D   = $Path
+@onready var _tileMap: TileMap  = $TileMap
+@onready var _hero:    Node2D   = $TileMap/Hero
+@onready var _target:  Node2D   = $TileMap/Target
+@onready var _path:    Node2D   = $TileMap/Path
 
-const INVALID = Tile.Invalid
+const INVALID = -1
 const INVALID_CELL := Vector2i(INVALID, INVALID)
 const _turnTime := 0.22
 const _duration := 0.333
@@ -56,7 +56,6 @@ enum Layer {
 
 # matches tileSet source id
 enum Tile {
-	Invalid = -1,
 	Cliff1, Cliff2,	Banner1, Banner2, Doodad, Rug, Fountain, Loot,
 	EdgeInside, EdgeInsideCorner, EdgeOutsideCorner, EdgeOutside,
 	Light, LightDebug,
@@ -112,7 +111,7 @@ func _onResize() -> void:
 	_cameraUpdate()
 
 func _generated() -> void:
-	#TODO
+	_drawEdge()
 	pass
 
 func _process(delta: float) -> void:
@@ -704,25 +703,22 @@ func _setTile(layer: Layer, p: Vector2i, id: Tile, coords := Vector2(0, 0), alte
 	_tileMap.set_cell(layer, p, id, coords, alternative)
 
 func _clearTile(layer: Layer, p: Vector2i) -> void:
-	_setTile(layer, p, INVALID)
+	_tileMap.set_cell(layer, p, 0)
 
 func _setRandomTile(layer: Layer, p: Vector2i, id: Tile, coords := INVALID_CELL, alternative := INVALID) -> void:
 	var source := _tileMap.tile_set.get_source(id)
-	var c := _randomTileCoord(source) if coords == INVALID_CELL else coords
-	var a := _randomTileAlternative(source, c) if alternative == INVALID else 0
+	var c := _randomTileCoord(layer, p, source) if coords == INVALID_CELL else coords
+	var a := _randomTileAlternative(source, c) if alternative == INVALID else alternative
 	_setTile(layer, p, id, c, a)
 
-func _randomTileCoord(source: TileSetSource) -> Vector2i:
+func _randomTileCoord(layer: Layer, p: Vector2i, source: TileSetSource) -> Vector2i:
 	var array := []
 	for i in source.get_tiles_count():
-		array[i] = source.get_tile_probability(i)
+		array[i] = _tileMap.get_cell_tile_data(layer, p).probability
 	return source.get_tile_id(Random.probabilityIndex(array))
 
 func _randomTileAlternative(source: TileSetSource, coords: Vector2i) -> int:
-	var array := []
-	for i in source.get_alternative_tiles_count(coords):
-		array[i] = source.get_alternative_tile_probability(coords, i)
-	return source.get_alternative_tile_id(coords, Random.probabilityIndex(array))
+	return Random.next(source.get_alternative_tiles_count(coords))
 
 #endregion
 
