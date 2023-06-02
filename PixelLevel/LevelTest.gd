@@ -97,7 +97,7 @@ enum Weed { BackDry, Back, ForeDry, Fore }
 
 #endregion
 
-#region Map
+#region Init / Input
 
 func _ready() -> void:
 	_camera.zoom = Vector2(0.75, 0.75)
@@ -129,6 +129,81 @@ func _process(delta: float) -> void:
 				_lightUpdate(heroPosition(), lightRadius)
 				_checkCenter()
 		_time = 0.0
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			_turn = false
+			if event.pressed:
+				_dragLeft = true
+				_capture = false
+			else:
+				if _capture:
+					_cameraUpdate()
+				elif _tweenStep:
+					_targetTo(event.global_position, not _tweenStep.is_running())
+					_targetUpdate()
+				_dragLeft = false
+		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			_zoomIn(event.global_position)
+			_cameraUpdate()
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			_zoomOut(event.global_position)
+			_cameraUpdate()
+	elif event is InputEventMouseMotion:
+		if _dragLeft:
+			_capture = true
+			_cameraTo(_camera.global_position - event.relative * _camera.zoom)
+			emit_signal("updateMap")
+
+func _processWasd() -> bool:
+	var done := false
+	if Input.is_action_pressed("ui_up"):
+		_wasd(Vector2i.UP)
+		done = true
+	if Input.is_action_pressed("ui_ne"):
+		_wasd(Vector2i.UP + Vector2i.RIGHT)
+		done = true
+	if Input.is_action_pressed("ui_right"):
+		_wasd(Vector2i.RIGHT)
+		done = true
+	if Input.is_action_pressed("ui_se"):
+		_wasd(Vector2i.DOWN + Vector2i.RIGHT)
+		done = true
+	if Input.is_action_pressed("ui_down"):
+		_wasd(Vector2i.DOWN)
+		done = true
+	if Input.is_action_pressed("ui_sw"):
+		_wasd(Vector2i.DOWN + Vector2i.LEFT)
+		done = true
+	if Input.is_action_pressed("ui_left"):
+		_wasd(Vector2i.LEFT)
+		done = true
+	if Input.is_action_pressed("ui_nw"):
+		_wasd(Vector2i.UP + Vector2i.LEFT)
+		done = true
+	return done
+
+func _wasd(direction: Vector2i) -> void:
+	var p := heroPosition() + direction
+	if isDoorShut(p):
+		_toggleDoor(p)
+	if not isBlocked(p):
+		_face(_hero, direction)
+		await _step(_hero, direction)
+		_pathClear()
+		if not isStair(p):
+			_lightUpdate(p, lightRadius)
+			_checkCenter()
+		else:
+			if isStairDown(p):
+				emit_signal("generate")
+			elif isStairUp(p):
+				emit_signal("generateUp")
+
+#endregion
+
+#region Map
 
 func _move(mob: Node2D) -> void:
 	await get_tree().process_frame
@@ -320,81 +395,6 @@ func _zoom(at: Vector2, factor: float) -> void:
 
 func _zoomClamp(z: Vector2) -> Vector2:
 	return _zoomMin if z < _zoomMin else _zoomMax if z > _zoomMax else z
-
-#endregion
-
-#region Input
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			_turn = false
-			if event.pressed:
-				_dragLeft = true
-				_capture = false
-			else:
-				if _capture:
-					_cameraUpdate()
-				elif _tweenStep:
-					_targetTo(event.global_position, not _tweenStep.is_running())
-					_targetUpdate()
-				_dragLeft = false
-		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
-			_zoomIn(event.global_position)
-			_cameraUpdate()
-		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			_zoomOut(event.global_position)
-			_cameraUpdate()
-	elif event is InputEventMouseMotion:
-		if _dragLeft:
-			_capture = true
-			_cameraTo(_camera.global_position - event.relative * _camera.zoom)
-			emit_signal("updateMap")
-
-func _processWasd() -> bool:
-	var done := false
-	if Input.is_action_pressed("ui_up"):
-		_wasd(Vector2i.UP)
-		done = true
-	if Input.is_action_pressed("ui_ne"):
-		_wasd(Vector2i.UP + Vector2i.RIGHT)
-		done = true
-	if Input.is_action_pressed("ui_right"):
-		_wasd(Vector2i.RIGHT)
-		done = true
-	if Input.is_action_pressed("ui_se"):
-		_wasd(Vector2i.DOWN + Vector2i.RIGHT)
-		done = true
-	if Input.is_action_pressed("ui_down"):
-		_wasd(Vector2i.DOWN)
-		done = true
-	if Input.is_action_pressed("ui_sw"):
-		_wasd(Vector2i.DOWN + Vector2i.LEFT)
-		done = true
-	if Input.is_action_pressed("ui_left"):
-		_wasd(Vector2i.LEFT)
-		done = true
-	if Input.is_action_pressed("ui_nw"):
-		_wasd(Vector2i.UP + Vector2i.LEFT)
-		done = true
-	return done
-
-func _wasd(direction: Vector2i) -> void:
-	var p := heroPosition() + direction
-	if isDoorShut(p):
-		_toggleDoor(p)
-	if not isBlocked(p):
-		_face(_hero, direction)
-		await _step(_hero, direction)
-		_pathClear()
-		if not isStair(p):
-			_lightUpdate(p, lightRadius)
-			_checkCenter()
-		else:
-			if isStairDown(p):
-				emit_signal("generate")
-			elif isStairUp(p):
-				emit_signal("generateUp")
 
 #endregion
 
