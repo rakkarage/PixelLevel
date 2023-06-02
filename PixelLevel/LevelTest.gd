@@ -27,6 +27,9 @@ const _zoomPinchIn := 0.02
 const _zoomPinchOut := 1.02
 const _pathScene := preload("res://Interface/Path.tscn")
 
+const INVALID := -1
+const INVALID_CELL := Vector2i(INVALID, INVALID)
+
 var _tweenCamera : Tween
 var _tweenStep : Tween
 var _tweenTarget : Tween
@@ -83,6 +86,8 @@ enum Stair { Up, Down }
 enum OutsideStair { UpGrass, DownGrass, Up, Down }
 
 #endregion
+
+#region Map
 
 func _ready() -> void:
 	_camera.zoom = Vector2(0.75, 0.75)
@@ -216,6 +221,97 @@ func isBlocked(p: Vector2i) -> bool:
 
 func isBlockedLight(p: Vector2i) -> bool:
 	return isWall(p) or isDoorShut(p)
+
+func insideMap(p: Vector2i) -> bool:
+	return _tileMap.get_used_rect().has_point(p)
+
+func getCameraRect() -> Rect2:
+	return Rect2(_map(_camera.global_position), _map(_camera.global_position + _worldSize()))
+
+func _world(tile: Vector2i) -> Vector2:
+	return _tileMap.map_to_local(tile)
+
+func _worldSize() -> Vector2:
+	return Vector2(size) * _camera.zoom
+
+func _worldBounds() -> Rect2:
+	return Rect2(Vector2.ZERO, _worldSize())
+
+func _map(position: Vector2) -> Vector2i:
+	return _tileMap.local_to_map(position)
+
+func _mapSize() -> Vector2i:
+	return _tileMap.get_used_rect().size * _tileMap.tile_set.tile_size
+
+func mapBounds() -> Rect2i:
+	return Rect2(-_camera.global_position, _mapSize())
+
+func _center() -> Vector2i:
+	return -(_worldSize() / 2.0) + _mapSize() / 2.0
+
+func _cameraCenter() -> void:
+	_cameraTo(_center())
+
+func _cameraTo(to: Vector2) -> void:
+	if _tweenCamera:
+		_tweenCamera.kill()
+	_camera.global_position = to
+
+func _cameraToMob() -> void:
+	_cameraTo(-(_worldSize() / 2.0) + _hero.global_position)
+
+func _cameraBy(by: Vector2) -> void:
+	_cameraTo(_camera.global_position + by)
+
+func _cameraUpdate() -> void:
+	var map := mapBounds()
+	var world := _worldBounds().grow(_tileMap.tile_set.tile_size.x)
+	if not world.intersects(map):
+		_cameraSnap(_camera.global_position + Utility.constrainRect(world, map))
+	else:
+		emit_signal("updateMap")
+
+func _cameraSnap(to: Vector2) -> void:
+	if _tweenCamera:
+		_tweenCamera.kill()
+	_tweenCamera = create_tween()
+	_tweenCamera.set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+	_tweenCamera.tween_property(_camera, "global_position", to, _duration)
+	await _tweenCamera.finished
+	emit_signal("updateMap")
+
+const _edgeOffset := 1.5
+const _edgeOffsetV := Vector2(_edgeOffset, _edgeOffset)
+
+func _checkCenter() -> void:
+	var edge := Vector2(_world(_edgeOffsetV)) / _camera.zoom
+	var test := -(_camera.global_position - _hero.global_position) / _camera.zoom
+	if ((test.x > size.x - edge.x) or (test.x < edge.x) or
+		(test.y > size.y - edge.y) or (test.y < edge.y)):
+		_cameraSnap(-(_worldSize() / 2.0) + _hero.global_position)
+	else:
+		emit_signal("updateMap")
+
+func _zoomPinch(at: Vector2, amount: float) -> void:
+	if amount > 0: _zoom(at, _zoomFactorOut)
+	elif amount < 0: _zoom(at, _zoomFactorIn)
+
+func _zoomIn(at: Vector2) -> void: _zoom(at, _zoomFactorIn)
+
+func _zoomOut(at: Vector2) -> void: _zoom(at, _zoomFactorOut)
+
+func _zoom(at: Vector2, factor: float) -> void:
+	var z0 := _camera.zoom
+	var z1 := _zoomClamp(z0 * factor)
+	var c0 := _camera.global_position
+	var c1 := c0 + at * (z0 - z1)
+	_camera.zoom = z1
+	_camera.global_position = c1
+
+func _zoomClamp(z: Vector2) -> Vector2:
+	return _zoomMin if z < _zoomMin else _zoomMax if z > _zoomMax else z
+
+#endregion
 
 #region Input
 
@@ -597,123 +693,39 @@ func _darken() -> void:
 
 #endregion
 
-func insideMap(p: Vector2i) -> bool:
-	return _tileMap.get_used_rect().has_point(p)
-
-func getCameraRect() -> Rect2:
-	return Rect2(_map(_camera.global_position), _map(_camera.global_position + _worldSize()))
-
-func _world(tile: Vector2i) -> Vector2:
-	return _tileMap.map_to_local(tile)
-
-func _worldSize() -> Vector2:
-	return Vector2(size) * _camera.zoom
-
-func _worldBounds() -> Rect2:
-	return Rect2(Vector2.ZERO, _worldSize())
-
-func _map(position: Vector2) -> Vector2i:
-	return _tileMap.local_to_map(position)
-
-func _mapSize() -> Vector2i:
-	return _tileMap.get_used_rect().size * _tileMap.tile_set.tile_size
-
-func mapBounds() -> Rect2i:
-	return Rect2(-_camera.global_position, _mapSize())
-
-func _center() -> Vector2i:
-	return -(_worldSize() / 2.0) + _mapSize() / 2.0
-
-func _cameraCenter() -> void:
-	_cameraTo(_center())
-
-func _cameraTo(to: Vector2) -> void:
-	if _tweenCamera:
-		_tweenCamera.kill()
-	_camera.global_position = to
-
-func _cameraToMob() -> void:
-	_cameraTo(-(_worldSize() / 2.0) + _hero.global_position)
-
-func _cameraBy(by: Vector2) -> void:
-	_cameraTo(_camera.global_position + by)
-
-func _cameraUpdate() -> void:
-	var map := mapBounds()
-	var world := _worldBounds().grow(_tileMap.tile_set.tile_size.x)
-	if not world.intersects(map):
-		_cameraSnap(_camera.global_position + Utility.constrainRect(world, map))
-	else:
-		emit_signal("updateMap")
-
-func _cameraSnap(to: Vector2) -> void:
-	if _tweenCamera:
-		_tweenCamera.kill()
-	_tweenCamera = create_tween()
-	_tweenCamera.set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
-	_tweenCamera.tween_property(_camera, "global_position", to, _duration)
-	await _tweenCamera.finished
-	emit_signal("updateMap")
-
-const _edgeOffset := 1.5
-const _edgeOffsetV := Vector2(_edgeOffset, _edgeOffset)
-
-func _checkCenter() -> void:
-	var edge := Vector2(_world(_edgeOffsetV)) / _camera.zoom
-	var test := -(_camera.global_position - _hero.global_position) / _camera.zoom
-	if ((test.x > size.x - edge.x) or (test.x < edge.x) or
-		(test.y > size.y - edge.y) or (test.y < edge.y)):
-		_cameraSnap(-(_worldSize() / 2.0) + _hero.global_position)
-	else:
-		emit_signal("updateMap")
-
-func _zoomPinch(at: Vector2, amount: float) -> void:
-	if amount > 0: _zoom(at, _zoomFactorOut)
-	elif amount < 0: _zoom(at, _zoomFactorIn)
-
-func _zoomIn(at: Vector2) -> void: _zoom(at, _zoomFactorIn)
-
-func _zoomOut(at: Vector2) -> void: _zoom(at, _zoomFactorOut)
-
-func _zoom(at: Vector2, factor: float) -> void:
-	var z0 := _camera.zoom
-	var z1 := _zoomClamp(z0 * factor)
-	var c0 := _camera.global_position
-	var c1 := c0 + at * (z0 - z1)
-	_camera.zoom = z1
-	_camera.global_position = c1
-
-func _zoomClamp(z: Vector2) -> Vector2:
-	return _zoomMin if z < _zoomMin else _zoomMax if z > _zoomMax else z
-
 #region Tile
 
-# TODO: flip and rotate in alternate now?
-func _setRandomTile(layer: int, p: Vector2i, id: int, flipX: bool = false, flipY: bool = false, rot90: bool = false) -> void:
-	_tileMap.set_cell(layer, p, id, _randomTile(id))
+func _setRandomTile(layer: Layer, p: Vector2i, tile: Tile, include: bool = false) -> void:
+	var source := _tileMap.tile_set.get_source(tile)
+	var coord := _randomTileCoord(source)
+	var alt := source.get_alternative_tile_id(coord, Random.next(source.get_alternative_tiles_count(coord))) if include else 0
+	_tileMap.set_cell(layer, p, tile, coord, alt)
 
-func _randomTile(id: int) -> Vector2:
-	var p := Vector2.ZERO
-	var s = _tileSet.tile_get_region(id).size / _tileSet.autotile_get_size(id)
+func _randomTileCoord(source: TileSetSource) -> Vector2:
 	var total := 0
-	for y in range(s.y):
-		for x in range(s.x):
-			total += _tileSet.autotile_get_subtile_priority(id, Vector2(x, y))
+	var count := source.get_tiles_count()
+	for i in range(count):
+		total += source.get_tile_probability(i)
 	var selected := Random.next(total)
 	var current := 0
-	for y in range(s.y):
-		for x in range(s.x):
-			p = Vector2(x, y)
-			current += _tileSet.autotile_get_subtile_priority(id, p)
-			if current > selected:
-				return p
-	return p
+	for i in range(count):
+		current += source.get_tile_probability(i)
+		if current > selected:
+			return source.get_tile_coord(i)
+	return INVALID_CELL
 
-func isTileId(tile: int, tiles: Array) -> bool:
-	for id in tiles:
-		if tile == id:
-			return true
-	return false
+func _randomTileAlt(source: TileSetSource, coord: Vector2i) -> int:
+	var total := 0
+	var count := source.get_alternative_tiles_count(coord)
+	for i in range(count):
+		total += source.get_alternative_tile_probability(coord, i)
+	var selected := Random.next(total)
+	var current := 0
+	for i in range(count):
+		current += source.get_alternative_tile_probability(coord, i)
+		if current > selected:
+			return i
+	return INVALID
 
 #endregion
 
