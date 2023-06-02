@@ -64,10 +64,10 @@ enum Tile {
 	NightGrass, NightPillar, NightPath, NightStair, NightDesert, NightDoodad,
 	NightWeed, NightHedge, NightWall, NightFloor,
 	Tree, TreeStump, Flower, Rubble,
-	Theme1Torch, Theme1Wall, Theme1Floor, Theme1FloorRoom, Theme1Stair, Theme1Door,
-	Theme2Torch, Theme2Wall, Theme2Floor, Theme2FloorRoom, Theme2Stair, Theme2Door,
-	Theme3Torch, Theme3Wall, Theme3Floor, Theme3FloorRoom, Theme3Stair, Theme3Door,
-	Theme4Torch, Theme4Wall, Theme4Floor, Theme4FloorRoom, Theme4Stair, Theme4Door,
+	Theme1Torch, Theme1WallPlain, Theme1Wall, Theme1Floor, Theme1FloorRoom, Theme1Stair, Theme1Door,
+	Theme2Torch, Theme2WallPlain, Theme2Wall, Theme2Floor, Theme2FloorRoom, Theme2Stair, Theme2Door,
+	Theme3Torch, Theme3WallPlain, Theme3Wall, Theme3Floor, Theme3FloorRoom, Theme3Stair, Theme3Door,
+	Theme4Torch, Theme4WallPlain, Theme4Wall, Theme4Floor, Theme4FloorRoom, Theme4Stair, Theme4Door,
 	WaterShallowBack, WaterShallowBackFore, WaterDeepBack, WaterDeepFore,
 	WaterShallowPurpleBack, WaterShallowPurpleFore, WaterDeepPurpleBack, WaterDeepPurpleFore }
 
@@ -90,8 +90,8 @@ const _waterPurpleTiles := [Tile.WaterShallowPurpleBack, Tile.WaterShallowPurple
 
 # atlas coords
 enum Door { Shut, Open, Broke }
-enum Stair { Up, Down }
-enum OutsideStair { UpGrass, DownGrass, Up, Down }
+enum Stair { Down, Up}
+enum OutsideStair { DownGrass, UpGrass, Down, Up }
 
 #endregion
 
@@ -703,11 +703,14 @@ func _darken() -> void:
 
 #region Tile
 
-func _setRandomTile(layer: Layer, p: Vector2i, tile: Tile, include: bool = true) -> void:
-	var source := _tileMap.tile_set.get_source(tile)
-	var coord := _randomTileCoord(source)
-	var alternative := _randomTileAlternative(source, coord) if include else 0
-	_tileMap.set_cell(layer, p, tile, coord, alternative)
+func _setTile(layer: Layer, p: Vector2i, id: Tile, coords: Vector2 = Vector2(0, 0), alternative: int = 0) -> void:
+	_tileMap.set_cell(layer, p, id, coords, alternative)
+
+func _setRandomTile(layer: Layer, p: Vector2i, id: Tile, include: bool = true) -> void:
+	var source := _tileMap.tile_set.get_source(id)
+	var coords := _randomTileCoord(source)
+	var alternative := _randomTileAlternative(source, coords) if include else 0
+	_setTile(layer, p, id, coords, alternative)
 
 func _randomTileCoord(source: TileSetSource) -> Vector2:
 	var array := []
@@ -715,11 +718,11 @@ func _randomTileCoord(source: TileSetSource) -> Vector2:
 		array[i] = source.get_tile_probability(i)
 	return source.get_tile_id(Random.probabilityIndex(array))
 
-func _randomTileAlternative(source: TileSetSource, coord: Vector2i) -> int:
+func _randomTileAlternative(source: TileSetSource, coords: Vector2i) -> int:
 	var array := []
-	for i in source.get_alternative_tiles_count(coord):
-		array[i] = source.get_alternative_tile_probability(coord, i)
-	return source.get_alternative_tile_id(coord, Random.probabilityIndex(array))
+	for i in source.get_alternative_tiles_count(coords):
+		array[i] = source.get_alternative_tile_probability(coords, i)
+	return source.get_alternative_tile_id(coords, Random.probabilityIndex(array))
 
 #endregion
 
@@ -728,7 +731,7 @@ func _randomTileAlternative(source: TileSetSource, coord: Vector2i) -> int:
 func _setBackRandom(p: Vector2i, tile: int, include: bool = true) -> void:
 	_setRandomTile(Layer.Back, p, tile, include)
 
-func setFloor(p: Vector2, wonky := false) -> void:
+func setFloor(p: Vector2, wonky := true) -> void:
 	var id: Tile
 	match theme:
 		0: id = Tile.Theme1Floor
@@ -737,7 +740,7 @@ func setFloor(p: Vector2, wonky := false) -> void:
 		3: id = Tile.Theme4Floor
 	_setBackRandom(p, id, wonky)
 
-func setFloorRoom(p: Vector2, wonky := false) -> void:
+func setFloorRoom(p: Vector2, wonky := true) -> void:
 	var id: Tile
 	match theme:
 		0: id = Tile.Theme1FloorRoom
@@ -752,8 +755,14 @@ func setOutside(p: Vector2i) -> void:
 	else:
 		_setBackRandom(p, Tile.DayGrass if day else Tile.NightGrass)
 
-func setOutsideFloor(p: Vector2, wonky := false) -> void:
-	_setBackRandom(p, Tile.DayFloor if day else Tile.NightFloor, wonky)
+func setOutsideFloor(p: Vector2) -> void:
+	_setBackRandom(p, Tile.DayFloor if day else Tile.NightFloor)
+
+func setOutsidePath(p: Vector2i) -> void:
+	_setBackRandom(p, Tile.DayPath if day else Tile.NightPath)
+
+func setRubble(p: Vector2i) -> void:
+	_setBackRandom(p, Tile.Rubble)
 
 func _isBackTile(p: Vector2i, tiles: Array) -> bool:
 	return tiles.has(_tileMap.get_cell_source_id(Layer.Back, p))
@@ -765,6 +774,9 @@ func isFloor(p: Vector2i) -> bool:
 
 #region Fore / Wall
 
+func _setFore(p: Vector2i, tile: int, coords) -> void:
+	_setTile(Layer.Fore, p, tile, coords)
+
 func _setForeRandom(p: Vector2i, tile: int, include: bool = true) -> void:
 	_setRandomTile(Layer.Fore, p, tile, include)
 
@@ -775,7 +787,7 @@ func setWallPlain(p: Vector2i) -> void:
 		1: id = Tile.Theme2WallPlain
 		2: id = Tile.Theme3WallPlain
 		3: id = Tile.Theme4WallPlain
-	_setForeRandom(p, id, Random.nextBool())
+	_setForeRandom(p, id)
 
 func setWall(p: Vector2i) -> void:
 	var id: Tile
@@ -784,37 +796,31 @@ func setWall(p: Vector2i) -> void:
 		1: id = Tile.Theme2Wall
 		2: id = Tile.Theme3Wall
 		3: id = Tile.Theme4Wall
-	_setForeRandom(p, id, Random.nextBool())
+	_setForeRandom(p, id)
 
 func setTorch(p: Vector2i) -> void:
-	var id
+	var id: Tile
 	match theme:
-		0: id = Tile.Theme0Torch
-		1: id = Tile.Theme1Torch
-		2: id = Tile.Theme2Torch
-		3: id = Tile.Theme3Torch
-	_setForeRandom(p, id, Random.nextBool())
-
-func setRubble(p: Vector2i) -> void:
-	_setRandomTile(_back, p, Tile.Rubble, Random.nextBool(), Random.nextBool(), Random.nextBool())
-
-func setOutsideRubble(p: Vector2i) -> void:
-	_setRandomTile(_back, p, Tile.OutsideDayRubble if day else Tile.OutsideNightRubble, Random.nextBool(), Random.nextBool(), Random.nextBool())
+		0: id = Tile.Theme1Torch
+		1: id = Tile.Theme2Torch
+		2: id = Tile.Theme3Torch
+		3: id = Tile.Theme4Torch
+	_setForeRandom(p, id)
 
 func setOutsideWall(p: Vector2i) -> void:
-	_setRandomTile(_fore, p, Tile.OutsideDayWall if day else Tile.OutsideNightWall, Random.nextBool())
+	_setForeRandom(p, Tile.DayWall if day else Tile.NightWall)
 
 func setOutsideHedge(p: Vector2i) -> void:
-	_setRandomTile(_fore, p, Tile.OutsideDayHedge if day else Tile.OutsideNightHedge, Random.nextBool())
+	_setForeRandom(p, Tile.DayHedge if day else Tile.NightHedge)
 
 func setCliff(p: Vector2i) -> void:
-	var id
+	var id: Tile
 	match themeCliff:
-		0: id = Tile.Cliff0
-		1: id = Tile.Cliff1
-	_setForeRandom(p, id, Random.nextBool())
+		0: id = Tile.Cliff1
+		1: id = Tile.Cliff2
+	_setForeRandom(p, id)
 
-func _setStair(p: Vector2i, coord: Vector2i) -> void:
+func _setStair(p: Vector2i, type: Stair) -> void:
 	var id
 	match theme:
 		0: id = Tile.Theme0Stair
