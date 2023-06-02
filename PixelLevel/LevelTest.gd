@@ -72,7 +72,7 @@ enum Tile {
 	WaterShallowBack, WaterShallowFore, WaterDeepBack, WaterDeepFore,
 	WaterShallowPurpleBack, WaterShallowPurpleFore, WaterDeepPurpleBack, WaterDeepPurpleFore }
 
-# these are used for testing if a tile is a certain type with isTileId
+# used for testing if a tile is a certain type with isTileId
 const _floorTiles := [
 	Tile.Theme1Floor, Tile.Theme2Floor, Tile.Theme3Floor, Tile.Theme4Floor,
 	Tile.DayGrass, Tile.NightGrass, Tile.DayPath, Tile.NightPath,
@@ -92,7 +92,8 @@ const _waterPurpleTiles := [Tile.WaterShallowPurpleBack, Tile.WaterShallowPurple
 # atlas coords
 enum Door { Shut, Open, Broke }
 enum Stair { Down, Up}
-enum StairOutside { DownGrass, UpGrass, Down, Up }
+enum Loot { ChestShut, ChestOpenFull, ChestOpenEmpty, ChestBroke, Pile }
+enum Weed { BackDry, Back, ForeDry, Fore }
 
 #endregion
 
@@ -177,7 +178,7 @@ func _toggleDoor(p: Vector2i) -> void:
 	var door = _tileMap.get_cell_atlas_coords(Layer.Fore, p).x
 	if door != Door.Broke:
 		var broke := Random.nextFloat() <= _doorBreakChance
-		_tileMap.set_cell_alternative_tile(Layer.Fore, p, Door.Broke if broke else Door.Shut if door == Door.Open else Door.Open)
+		setDoor(p, Door.Broke if broke else Door.Shut if door == Door.Open else Door.Open)
 
 func _face(mob: Node2D, direction: Vector2i) -> void:
 	if direction.x > 0:
@@ -836,58 +837,38 @@ func setStairDown(p: Vector2i) -> void:
 func setStairUp(p: Vector2i) -> void:
 	_setStair(p, Stair.Up)
 
-func _setStairOutside(p: Vector2i, type: StairOutside) -> void:
+func _setStairOutside(p: Vector2i, type: Stair) -> void:
 	if desert:
-		_setForeRandom(p, Tile.DayDesertStair if day else Tile.NightDesertStair, Vector2i(type, 0))
+		_setForeRandom(p, Tile.DayStair if day else Tile.NightStair, Vector2i(type + 2, 0))
 	else:
-		_setFore(p, Tile.OutsideDayStair if day else Tile.OutsideNightStair, Random.nextBool(), false, false, coord)
+		_setForeRandom(p, Tile.DayStair if day else Tile.NightStair, Vector2i(type, 0))
 
 func setStairOutsideUp(p: Vector2i) -> void:
-	_setStairOutside(p, Vector2(0, 0))
+	_setStairOutside(p, Stair.Up)
 
 func setStairOutsideDown(p: Vector2i) -> void:
-	_setStairOutside(p, Vector2(1, 0))
+	_setStairOutside(p, Stair.Down)
 
-func setDoor(p: Vector2i) -> void:
-	var id
+func setDoor(p: Vector2i, type: Door) -> void:
+	var id: Tile
 	match theme:
-		0: id = Tile.Theme0Door
-		1: id = Tile.Theme1Door
-		2: id = Tile.Theme2Door
-		3: id = Tile.Theme3Door
-	_setRandomTile(_fore, p, id, Random.nextBool())
-
-func setDoorBroke(p: Vector2i) -> void:
-	var id
-	match theme:
-		0: id = Tile.Theme0Door
-		1: id = Tile.Theme1Door
-		2: id = Tile.Theme2Door
-		3: id = Tile.Theme3Door
-	_setFore(p, id, Random.nextBool(), false, false, Vector2(2, 0))
+		0: id = Tile.Theme1Door
+		1: id = Tile.Theme2Door
+		2: id = Tile.Theme3Door
+		3: id = Tile.Theme4Door
+	_setForeRandom(p, id, Vector2i(type, 0))
 
 func setFountain(p: Vector2i) -> void:
-	_setForeRandom(p, Tile.Fountain, Random.nextBool())
+	_setForeRandom(p, Tile.Fountain)
 
 func setBanner0(p: Vector2i) -> void:
-	_setForeRandom(p, Tile.Banner0, Random.nextBool())
+	_setForeRandom(p, Tile.Banner1)
 
 func setBanner1(p: Vector2i) -> void:
-	_setForeRandom(p, Tile.Banner1, Random.nextBool())
-
-func setLoot(p: Vector2i) -> void:
-	var id
-	match Random.next(4):
-		0: id = Tile.Chest
-		1: id = Tile.ChestBroke
-		2: id = Tile.ChestOpenEmpty
-		3: id = Tile.ChestOpenFull
-	_setItemBackRandom(p, id, Random.nextBool())
-	if Random.nextBool():
-		_setItemFore(p, Tile.Loot)
+	_setForeRandom(p, Tile.Banner2)
 
 func _isForeTile(p: Vector2i, tiles: Array) -> bool:
-	return isTileId(_fore.get_cell_source_id(0, p), tiles)
+	return tiles.has(_tileMap.get_cell_source_id(Layer.Fore, p))
 
 func isWall(p: Vector2i) -> bool:
 	return _isForeTile(p, _wallTiles)
@@ -899,30 +880,24 @@ func isStair(p: Vector2i) -> bool:
 	return _isForeTile(p, _stairTiles)
 
 func isStairUp(p: Vector2i) -> bool:
-	return isStair(p) and _fore.get_cell_autotile_coord(p) == Vector2i(1, 0)
+	return isStair(p) and _tileMap.get_cell_atlas_coords(Layer.Fore, p) == Vector2i(Stair.Up, 0)
 
 func isStairDown(p: Vector2i) -> bool:
-	return isStair(p) and _fore.get_cell_autotile_coord(p) == Vector2i(0, 0)
+	return isStair(p) and _tileMap.get_cell_atlas_coords(Layer.Fore, p) == Vector2i(Stair.Down, 0)
 
 func isDoor(p: Vector2i) -> bool:
 	return _isForeTile(p, _doorTiles)
 
 func isDoorShut(p: Vector2i) -> bool:
-	return isDoor(p) and (_fore.get_cell_atlas_coords(0, p) == Vector2i.ZERO)
-
-func clearFore(p: Vector2i) -> void:
-	_setFore(p, INVALID_CELL)
-
-func isForeInvalid(p: Vector2i) -> bool:
-	return _fore.get_cell(p) == INVALID_CELL
+	return isDoor(p) and _tileMap.get_cell_atlas_coords(Layer.Fore, p) == Vector2i(Door.Shut, 0)
 
 func verifyCliff() -> void:
-	var rect := _back.get_used_rect()
+	var rect := _tileMap.get_used_rect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
 			var p = Vector2i(x, y)
 			if isCliff(p) and not isFloor(Vector2i(x, y - 1)):
-				clearFore(p)
+				_clearTile(Layer.Fore, p)
 
 #endregion
 
@@ -953,20 +928,20 @@ func cutTree(p: Vector2i) -> void:
 #region Water
 
 func setWaterShallow(p: Vector2i) -> void:
-	_setTile(Layer.WaterBack, p, Tile.WaterShallowBack)
-	_setTile(Layer.WaterFore, p, Tile.WaterShallowFore)
+	_setRandomTile(Layer.WaterBack, p, Tile.WaterShallowBack)
+	_setRandomTile(Layer.WaterFore, p, Tile.WaterShallowFore)
 
 func setWaterDeep(p: Vector2i) -> void:
-	_setTile(Layer.WaterBack, p, Tile.WaterDeepBack)
-	_setTile(Layer.WaterFore, p, Tile.WaterDeepFore)
+	_setRandomTile(Layer.WaterBack, p, Tile.WaterDeepBack)
+	_setRandomTile(Layer.WaterFore, p, Tile.WaterDeepFore)
 
 func setWaterShallowPurple(p: Vector2i) -> void:
-	_setTile(Layer.WaterBack, p, Tile.WaterShallowPurpleBack)
-	_setTile(Layer.WaterFore, p, Tile.WaterShallowPurpleFore)
+	_setRandomTile(Layer.WaterBack, p, Tile.WaterShallowPurpleBack)
+	_setRandomTile(Layer.WaterFore, p, Tile.WaterShallowPurpleFore)
 
 func setWaterDeepPurple(p: Vector2i) -> void:
-	_setTile(Layer.WaterBack, p, Tile.WaterDeepPurpleBack)
-	_setTile(Layer.WaterFore, p, Tile.WaterDeepPurpleFore)
+	_setRandomTile(Layer.WaterBack, p, Tile.WaterDeepPurpleBack)
+	_setRandomTile(Layer.WaterFore, p, Tile.WaterDeepPurpleFore)
 
 func _isWaterTile(p: Vector2i, tiles: Array) -> bool:
 	return tiles.has(_tileMap.get_cell_source_id(Layer.WaterBack, p))
@@ -984,44 +959,37 @@ func isWaterPurple(p: Vector2i) -> bool:
 
 #region Item
 
-func _setItemFore(p: Vector2i, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
-	_itemFore.set_cell(0, p, tile, coord)
+func _setItemForeRandom(p: Vector2i, tile: int) -> void:
+	_setRandomTile(Layer.ItemFore, p, tile)
 
-func _setItemForeRandom(p: Vector2i, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
-	_setRandomTile(_itemFore, p, tile, flipX, flipY, rot90)
+func _setItemBackRandom(p: Vector2i, tile: int) -> void:
+	_setRandomTile(Layer.ItemBack, p, tile)
 
-# TODO: flip and rotate in alternate now?
-func _setItemBack(p: Vector2i, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
-	_itemBack.set_cell(0, p, tile, coord)
-
-func _setItemBackRandom(p: Vector2i, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
-	_setRandomTile(_itemBack, p, tile, flipX, flipY, rot90)
+func setLoot(p: Vector2i) -> void:
+	_setItemBackRandom(p, Tile.Loot)
 
 #endregion
 
 #region Split
 
-# TODO: flip and rotate in alternate now?
 func setGrass(p: Vector2i) -> void:
-	var flipX = Random.nextBool()
-	# if desert:
-	# 	_splitBack.set_cell(0, p, Tile.OutsideDayGrassDry if day else Tile.OutsideNightGrassDry, flipX, false, false, Vector2(0, 0))
-	# 	_splitFore.set_cell(0, p, Tile.OutsideDayGrassDry if day else Tile.OutsideNightGrassDry, flipX, false, false, Vector2(1, 0))
-	# else:
-	# 	_splitBack.set_cell(x, y, Tile.OutsideDayGrassGreen if day else Tile.OutsideNightGrassGreen, flipX, false, false, Vector2(0, 0))
-	# 	_splitFore.set_cell(x, y, Tile.OutsideDayGrassGreen if day else Tile.OutsideNightGrassGreen, flipX, false, false, Vector2(1, 0))
+	if desert:
+		_setRandomTile(Layer.SplitBack, p, Tile.DayWeed if day else Tile.NightWeed, Vector2i(Weed.BackDry, 0))
+		_setRandomTile(Layer.SplitFore, p, Tile.DayWeed if day else Tile.NightWeed, Vector2i(Weed.ForeDry, 0))
+	else:
+		_setRandomTile(Layer.SplitBack, p, Tile.DayWeed if day else Tile.NightWeed, Vector2i(Weed.Back, 0))
+		_setRandomTile(Layer.SplitFore, p, Tile.DayWeed if day else Tile.NightWeed, Vector2i(Weed.Fore, 0))
 
 #endregion
 
 #region Light
 
 func _getLight(p: Vector2i) -> int:
-	return _tileMap.get_cell(Layer.Light, 0, p).x
-	# return _light.get_cell_atlas_coords(0, p).x
+	return _tileMap.get_cell_atlas_coords(Layer.Light, p).x
 
 func _setLight(p: Vector2i, light: int, test: bool) -> void:
 	if not test or light > _getLight(p):
-		_tileMap.set_cell(Layer.Light, 0, p, Tile.Light, Vector2(light, 0))
+		_setTile(Layer.Light, p, Tile.Light, Vector2(light, 0))
 
 func isExplored(p: Vector2i) -> bool:
 	return _getLight(p) == _lightExplored
@@ -1031,51 +999,49 @@ func isLit(p: Vector2i) -> bool:
 
 #endregion
 
-
 #region Edge
 
-# TODO: flip and rotate in alternate now?
 func _drawEdge() -> void:
-	var rect := _back.get_used_rect()
-	# var minY: int = rect.position.y - 1
-	# var maxY: int = rect.end.y
-	# var minX: int = rect.position.x - 1
-	# var maxX: int = rect.end.x
-	# for y in range(minY, maxY + 1):
-	# 	for x in range(minX, maxX + 1):
-	# 		if x == minX or x == maxX or y == minY or y == maxY:
-	# 			if x == minX and y == minY: # nw
-	# 				_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(1, 0))
-	# 			elif x == minX and y == maxY: # sw
-	# 				_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(2, 0))
-	# 			elif x == maxX and y == minY: # ne
-	# 				_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(0, 0))
-	# 			elif x == maxX and y == maxY: # se
-	# 				_edge.set_cell(x, y, Tile.EdgeOutsideCorner, false, false, false, Vector2(3, 0))
-	# 			elif x == minX: # w
-	# 				_setRandomTile(_edge, x, y, Tile.EdgeOutside, false, Random.nextBool(), true)
-	# 			elif x == maxX: # e
-	# 				_setRandomTile(_edge, x, y, Tile.EdgeOutside, true, Random.nextBool(), true)
-	# 			elif y == minY: # n
-	# 				_setRandomTile(_edge, x, y, Tile.EdgeOutside, Random.nextBool(), false, false)
-	# 			elif y == maxY: # s
-	# 				_setRandomTile(_edge, x, y, Tile.EdgeOutside, Random.nextBool(), true, false)
-	# 		elif (x == minX + 1) or (x == maxX - 1) or (y == minY + 1) or (y == maxY - 1):
-	# 			if x == minX + 1 and y == minY + 1: # nw
-	# 				_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, false, false, false)
-	# 			elif x == minX + 1 and y == maxY - 1: # sw
-	# 				_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, false, true, false)
-	# 			elif x == maxX - 1 and y == minY + 1: # ne
-	# 				_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, true, false, true)
-	# 			elif x == maxX - 1 and y == maxY - 1: # se
-	# 				_setRandomTile(_edge, x, y, Tile.EdgeInsideCorner, true, true, false)
-	# 			elif x == minX + 1: # w
-	# 				_setRandomTile(_edge, x, y, Tile.EdgeInside, false, Random.nextBool(), true)
-	# 			elif x == maxX - 1: # e
-	# 				_setRandomTile(_edge, x, y, Tile.EdgeInside, true, Random.nextBool(), true)
-	# 			elif y == minY + 1: # n
-	# 				_setRandomTile(_edge, x, y, Tile.EdgeInside, Random.nextBool(), false, false)
-	# 			elif y == maxY - 1: # s
-	# 				_setRandomTile(_edge, x, y, Tile.EdgeInside, Random.nextBool(), true, false)
+	var rect := _tileMap.get_used_rect()
+	var minY: int = rect.position.y - 1
+	var maxY: int = rect.end.y
+	var minX: int = rect.position.x - 1
+	var maxX: int = rect.end.x
+	for y in range(minY, maxY + 1):
+		for x in range(minX, maxX + 1):
+			if x == minX or x == maxX or y == minY or y == maxY:
+				if x == minX and y == minY: # nw
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutsideCorner)
+				elif x == minX and y == maxY: # sw
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutsideCorner)
+				elif x == maxX and y == minY: # ne
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutsideCorner)
+				elif x == maxX and y == maxY: # se
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutsideCorner)
+				elif x == minX: # w
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutside)
+				elif x == maxX: # e
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutside)
+				elif y == minY: # n
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutside)
+				elif y == maxY: # s
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutside)
+			elif (x == minX + 1) or (x == maxX - 1) or (y == minY + 1) or (y == maxY - 1):
+				if x == minX + 1 and y == minY + 1: # nw
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInsideCorner)
+				elif x == minX + 1 and y == maxY - 1: # sw
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInsideCorner)
+				elif x == maxX - 1 and y == minY + 1: # ne
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInsideCorner)
+				elif x == maxX - 1 and y == maxY - 1: # se
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInsideCorner)
+				elif x == minX + 1: # w
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInside)
+				elif x == maxX - 1: # e
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInside)
+				elif y == minY + 1: # n
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInside)
+				elif y == maxY - 1: # s
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInside)
 
 #endregion
