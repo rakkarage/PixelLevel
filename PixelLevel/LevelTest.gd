@@ -8,15 +8,8 @@ extends SubViewport
 @onready var _target:  Node2D   = $Target
 @onready var _path:    Node2D   = $Path
 
-var _astar: AStar2D = AStar2D.new()
-var _oldSize := Vector2.ZERO
-var _pathPoints := PackedVector2Array()
-var _dragLeft := false
-var _capture := false
-var _turn := false
-var _time := 0.0
-var _turnTotal := 0
-var _timeTotal := 0.0
+const INVALID := -1
+const INVALID_CELL := Vector2i(INVALID, INVALID)
 const _turnTime := 0.22
 const _duration := 0.333
 const _zoomMin := Vector2(0.2, 0.2)
@@ -27,8 +20,23 @@ const _zoomPinchIn := 0.02
 const _zoomPinchOut := 1.02
 const _pathScene := preload("res://Interface/Path.tscn")
 
-const INVALID := -1
-const INVALID_CELL := Vector2i(INVALID, INVALID)
+var _astar: AStar2D = AStar2D.new()
+var _oldSize := Vector2.ZERO
+var _pathPoints := PackedVector2Array()
+var _dragLeft := false
+var _capture := false
+var _turn := false
+var _time := 0.0
+var _turnTotal := 0
+var _timeTotal := 0.0
+var startAt := Vector2(4, 4)
+
+var theme := 0 # dungeon theme
+var day := true # day or night outside theme
+var desert := false # desert or grass outside theme
+const themeCount := 4 # number of dungeon themes
+var themeCliff := 0 # cliff theme
+const themeCliffCount := 2 # number of cliff themes
 
 var _tweenCamera : Tween
 var _tweenStep : Tween
@@ -63,7 +71,7 @@ enum Tile {
 	WaterShallowBack, WaterShallowBackFore, WaterDeepBack, WaterDeepFore,
 	WaterShallowPurpleBack, WaterShallowPurpleFore, WaterDeepPurpleBack, WaterDeepPurpleFore }
 
-# these are used for testing if a tile is a certain type
+# these are used for testing if a tile is a certain type with isTileId
 const _floorTiles := [
 	Tile.Theme1Floor, Tile.Theme2Floor, Tile.Theme3Floor, Tile.Theme4Floor,
 	Tile.DayGrass, Tile.NightGrass, Tile.DayPath, Tile.NightPath,
@@ -695,124 +703,87 @@ func _darken() -> void:
 
 #region Tile
 
-func _setRandomTile(layer: Layer, p: Vector2i, tile: Tile, include: bool = false) -> void:
+func _setRandomTile(layer: Layer, p: Vector2i, tile: Tile, include: bool = true) -> void:
 	var source := _tileMap.tile_set.get_source(tile)
 	var coord := _randomTileCoord(source)
-	var alt := source.get_alternative_tile_id(coord, Random.next(source.get_alternative_tiles_count(coord))) if include else 0
-	_tileMap.set_cell(layer, p, tile, coord, alt)
+	var alternative := _randomTileAlternative(source, coord) if include else 0
+	_tileMap.set_cell(layer, p, tile, coord, alternative)
 
 func _randomTileCoord(source: TileSetSource) -> Vector2:
-	var total := 0
-	var count := source.get_tiles_count()
-	for i in range(count):
-		total += source.get_tile_probability(i)
-	var selected := Random.next(total)
-	var current := 0
-	for i in range(count):
-		current += source.get_tile_probability(i)
-		if current > selected:
-			return source.get_tile_coord(i)
-	return INVALID_CELL
+	var array := []
+	for i in source.get_tiles_count():
+		array[i] = source.get_tile_probability(i)
+	return source.get_tile_id(Random.probabilityIndex(array))
 
-func _randomTileAlt(source: TileSetSource, coord: Vector2i) -> int:
-	var total := 0
-	var count := source.get_alternative_tiles_count(coord)
-	for i in range(count):
-		total += source.get_alternative_tile_probability(coord, i)
-	var selected := Random.next(total)
-	var current := 0
-	for i in range(count):
-		current += source.get_alternative_tile_probability(coord, i)
-		if current > selected:
-			return i
-	return INVALID
+func _randomTileAlternative(source: TileSetSource, coord: Vector2i) -> int:
+	var array := []
+	for i in source.get_alternative_tiles_count(coord):
+		array[i] = source.get_alternative_tile_probability(coord, i)
+	return source.get_alternative_tile_id(coord, Random.probabilityIndex(array))
 
 #endregion
 
-#region Back
+#region Back / Floor
 
-# TODO: flip and rotate in alternate now?
-func _setBack(p: Vector2i, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2i.ZERO) -> void:
-	_back.set_cell(0, p, tile, coord)
-
-func _setBackRandom(p: Vector2i, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
-	_setRandomTile(_back, p, tile, flipX, flipY, rot90)
+func _setBackRandom(p: Vector2i, tile: int, include: bool = true) -> void:
+	_setRandomTile(Layer.Back, p, tile, include)
 
 func setFloor(p: Vector2, wonky := false) -> void:
-	var id
+	var id: Tile
 	match theme:
-		0: id = Tile.Theme0Floor
-		1: id = Tile.Theme1Floor
-		2: id = Tile.Theme2Floor
-		3: id = Tile.Theme3Floor
-	var flipX := Random.nextBool() if wonky else false
-	var flipY := Random.nextBool() if wonky else false
-	var rot90 := Random.nextBool() if wonky else false
-	_setBackRandom(p, id, flipX, flipY, rot90)
+		0: id = Tile.Theme1Floor
+		1: id = Tile.Theme2Floor
+		2: id = Tile.Theme3Floor
+		3: id = Tile.Theme4Floor
+	_setBackRandom(p, id, wonky)
 
 func setFloorRoom(p: Vector2, wonky := false) -> void:
-	var id
+	var id: Tile
 	match theme:
-		0: id = Tile.Theme0FloorRoom
-		1: id = Tile.Theme1FloorRoom
-		2: id = Tile.Theme2FloorRoom
-		3: id = Tile.Theme3FloorRoom
-	var flipX := Random.nextBool() if wonky else false
-	var flipY := Random.nextBool() if wonky else false
-	var rot90 := Random.nextBool() if wonky else false
-	_setBackRandom(p, id, flipX, flipY, rot90)
+		0: id = Tile.Theme1FloorRoom
+		1: id = Tile.Theme2FloorRoom
+		2: id = Tile.Theme3FloorRoom
+		3: id = Tile.Theme4FloorRoom
+	_setBackRandom(p, id, wonky)
 
 func setOutside(p: Vector2i) -> void:
 	if desert:
-		_setBackRandom(p, Tile.OutsideDayDesert if day else Tile.OutsideNightDesert)
+		_setBackRandom(p, Tile.DayDesert if day else Tile.NightDesert)
 	else:
-		_setBackRandom(p, Tile.OutsideDay if day else Tile.OutsideNight, Random.nextBool(), Random.nextBool(), Random.nextBool())
+		_setBackRandom(p, Tile.DayGrass if day else Tile.NightGrass)
 
 func setOutsideFloor(p: Vector2, wonky := false) -> void:
-	var flipX := Random.nextBool() if wonky else false
-	var flipY := Random.nextBool() if wonky else false
-	var rot90 := Random.nextBool() if wonky else false
-	_setBackRandom(p, Tile.OutsideDayFloor if day else Tile.OutsideNightFloor, flipX, flipY, rot90)
+	_setBackRandom(p, Tile.DayFloor if day else Tile.NightFloor, wonky)
 
 func _isBackTile(p: Vector2i, tiles: Array) -> bool:
-	return isTileId(_back.get_cell_source_id(0, p), tiles)
+	return tiles.has(_tileMap.get_cell_source_id(Layer.Back, p))
 
 func isFloor(p: Vector2i) -> bool:
 	return _isBackTile(p, _floorTiles)
 
-func clearBack(p: Vector2i) -> void:
-	_setBack(p, INVALID_CELL)
-
-func isBackInvalid(p: Vector2i) -> bool:
-	return _back.get_cell(p) == INVALID_CELL
-
 #endregion
 
-#region Fore
+#region Fore / Wall
 
-# TODO: flip and rotate in alternate now?
-func _setFore(p: Vector2i, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2i.ZERO) -> void:
-	_fore.set_cell(0, p, tile, coord)
-
-func _setForeRandom(p: Vector2i, int, tile: int, flipX := false, flipY := false, rot90 := false) -> void:
-	_setRandomTile(_fore, p, tile, flipX, flipY, rot90)
+func _setForeRandom(p: Vector2i, tile: int, include: bool = true) -> void:
+	_setRandomTile(Layer.Fore, p, tile, include)
 
 func setWallPlain(p: Vector2i) -> void:
-	var id
+	var id: Tile
 	match theme:
-		0: id = Tile.Theme0WallPlain
-		1: id = Tile.Theme1WallPlain
-		2: id = Tile.Theme2WallPlain
-		3: id = Tile.Theme3WallPlain
+		0: id = Tile.Theme1WallPlain
+		1: id = Tile.Theme2WallPlain
+		2: id = Tile.Theme3WallPlain
+		3: id = Tile.Theme4WallPlain
 	_setForeRandom(p, id, Random.nextBool())
 
 func setWall(p: Vector2i) -> void:
-	var id
+	var id: Tile
 	match theme:
-		0: id = Tile.Theme0Wall
-		1: id = Tile.Theme1Wall
-		2: id = Tile.Theme2Wall
-		3: id = Tile.Theme3Wall
+		0: id = Tile.Theme1Wall
+		1: id = Tile.Theme2Wall
+		2: id = Tile.Theme3Wall
+		3: id = Tile.Theme4Wall
 	_setForeRandom(p, id, Random.nextBool())
 
 func setTorch(p: Vector2i) -> void:

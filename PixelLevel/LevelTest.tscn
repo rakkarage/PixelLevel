@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dy04j08kbrse1"]
 
-[ext_resource type="Script" path="res://PixelLevel/LevelTest.gd" id="1_7qypr"]
-[ext_resource type="TileSet" uid="uid://cjn2ri268c5yx" path="res://PixelLevel/TileSet.tres" id="2_sxhad"]
+[ext_resource type="Script" path="res://PixelLevel/LevelTest.gd" id="1_l5axw"]
+[ext_resource type="TileSet" uid="uid://cjn2ri268c5yx" path="res://PixelLevel/TileSet.tres" id="2_mgp7v"]
 
 [node name="LevelTest" type="Control"]
 layout_mode = 3
@@ -24,13 +24,13 @@ stretch = true
 handle_input_locally = false
 size = Vector2i(1152, 648)
 render_target_update_mode = 4
-script = ExtResource("1_7qypr")
+script = ExtResource("1_l5axw")
 
 [node name="Camera" type="Camera2D" parent="Container/SubViewport"]
 anchor_mode = 0
 
 [node name="TileMap" type="TileMap" parent="Container/SubViewport"]
-tile_set = ExtResource("2_sxhad")
+tile_set = ExtResource("2_mgp7v")
 format = 2
 layer_0/name = "Back"
 layer_0/tile_data = PackedInt32Array(0, 38, 0)
