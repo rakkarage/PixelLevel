@@ -8,8 +8,7 @@ extends SubViewport
 @onready var _target:  Node2D   = $Target
 @onready var _path:    Node2D   = $Path
 
-const INVALID := -1
-const INVALID_CELL := Vector2i(INVALID, INVALID)
+const INVALID_CELL := Vector2i(Tile.Invalid, Tile.Invalid)
 const _turnTime := 0.22
 const _duration := 0.333
 const _zoomMin := Vector2(0.2, 0.2)
@@ -56,6 +55,7 @@ enum Layer {
 
 # matches tileSet source id
 enum Tile {
+	Invalid = -1,
 	Cliff1, Cliff2,	Banner1, Banner2, Doodad, Rug, Fountain, Loot,
 	EdgeInside, EdgeInsideCorner, EdgeOutsideCorner, EdgeOutside,
 	Light, LightDebug,
@@ -68,7 +68,7 @@ enum Tile {
 	Theme2Torch, Theme2WallPlain, Theme2Wall, Theme2Floor, Theme2FloorRoom, Theme2Stair, Theme2Door,
 	Theme3Torch, Theme3WallPlain, Theme3Wall, Theme3Floor, Theme3FloorRoom, Theme3Stair, Theme3Door,
 	Theme4Torch, Theme4WallPlain, Theme4Wall, Theme4Floor, Theme4FloorRoom, Theme4Stair, Theme4Door,
-	WaterShallowBack, WaterShallowBackFore, WaterDeepBack, WaterDeepFore,
+	WaterShallowBack, WaterShallowFore, WaterDeepBack, WaterDeepFore,
 	WaterShallowPurpleBack, WaterShallowPurpleFore, WaterDeepPurpleBack, WaterDeepPurpleFore }
 
 # these are used for testing if a tile is a certain type with isTileId
@@ -83,7 +83,7 @@ const _wallTiles := [
 const _cliffTiles := [Tile.Cliff1, Tile.Cliff2]
 const _stairTiles := [Tile.Theme1Stair, Tile.Theme2Stair, Tile.Theme3Stair, Tile.Theme4Stair, Tile.DayStair, Tile.NightStair]
 const _doorTiles := [Tile.Theme1Door, Tile.Theme2Door, Tile.Theme3Door, Tile.Theme4Door]
-const _waterTiles := [Tile.WaterShallowBack, Tile.WaterShallowBackFore, Tile.WaterDeepBack, Tile.WaterDeepFore,
+const _waterTiles := [Tile.WaterShallowBack, Tile.WaterShallowFore, Tile.WaterDeepBack, Tile.WaterDeepFore,
 	Tile.WaterShallowPurpleBack, Tile.WaterShallowPurpleFore, Tile.WaterDeepPurpleBack, Tile.WaterDeepPurpleFore]
 const _waterDeepTiles := [Tile.WaterDeepBack, Tile.WaterDeepFore, Tile.WaterDeepPurpleBack, Tile.WaterDeepPurpleFore]
 const _waterPurpleTiles := [Tile.WaterShallowPurpleBack, Tile.WaterShallowPurpleFore, Tile.WaterDeepPurpleBack, Tile.WaterDeepPurpleFore]
@@ -91,7 +91,7 @@ const _waterPurpleTiles := [Tile.WaterShallowPurpleBack, Tile.WaterShallowPurple
 # atlas coords
 enum Door { Shut, Open, Broke }
 enum Stair { Down, Up}
-enum OutsideStair { DownGrass, UpGrass, Down, Up }
+enum StairOutside { DownGrass, UpGrass, Down, Up }
 
 #endregion
 
@@ -703,16 +703,19 @@ func _darken() -> void:
 
 #region Tile
 
-func _setTile(layer: Layer, p: Vector2i, id: Tile, coords: Vector2 = Vector2(0, 0), alternative: int = 0) -> void:
+func _setTile(layer: Layer, p: Vector2i, id: Tile, coords := Vector2(0, 0), alternative := 0) -> void:
 	_tileMap.set_cell(layer, p, id, coords, alternative)
 
-func _setRandomTile(layer: Layer, p: Vector2i, id: Tile, include: bool = true) -> void:
-	var source := _tileMap.tile_set.get_source(id)
-	var coords := _randomTileCoord(source)
-	var alternative := _randomTileAlternative(source, coords) if include else 0
-	_setTile(layer, p, id, coords, alternative)
+func _clearTile(layer: Layer, p: Vector2i) -> void:
+	_setTile(layer, p, Tile.Invalid)
 
-func _randomTileCoord(source: TileSetSource) -> Vector2:
+func _setRandomTile(layer: Layer, p: Vector2i, id: Tile, coords := INVALID_CELL, alternative := -1) -> void:
+	var source := _tileMap.tile_set.get_source(id)
+	var c := _randomTileCoord(source) if coords == INVALID_CELL else coords
+	var a := _randomTileAlternative(source, c) if alternative == Tile.Invalid else 0
+	_setTile(layer, p, id, c, a)
+
+func _randomTileCoord(source: TileSetSource) -> Vector2i:
 	var array := []
 	for i in source.get_tiles_count():
 		array[i] = source.get_tile_probability(i)
@@ -728,26 +731,26 @@ func _randomTileAlternative(source: TileSetSource, coords: Vector2i) -> int:
 
 #region Back / Floor
 
-func _setBackRandom(p: Vector2i, tile: int, include: bool = true) -> void:
-	_setRandomTile(Layer.Back, p, tile, include)
+func _setBackRandom(p: Vector2i, tile: int) -> void:
+	_setRandomTile(Layer.Back, p, tile)
 
-func setFloor(p: Vector2, wonky := true) -> void:
+func setFloor(p: Vector2) -> void:
 	var id: Tile
 	match theme:
 		0: id = Tile.Theme1Floor
 		1: id = Tile.Theme2Floor
 		2: id = Tile.Theme3Floor
 		3: id = Tile.Theme4Floor
-	_setBackRandom(p, id, wonky)
+	_setBackRandom(p, id)
 
-func setFloorRoom(p: Vector2, wonky := true) -> void:
+func setFloorRoom(p: Vector2) -> void:
 	var id: Tile
 	match theme:
 		0: id = Tile.Theme1FloorRoom
 		1: id = Tile.Theme2FloorRoom
 		2: id = Tile.Theme3FloorRoom
 		3: id = Tile.Theme4FloorRoom
-	_setBackRandom(p, id, wonky)
+	_setBackRandom(p, id)
 
 func setOutside(p: Vector2i) -> void:
 	if desert:
@@ -774,11 +777,8 @@ func isFloor(p: Vector2i) -> bool:
 
 #region Fore / Wall
 
-func _setFore(p: Vector2i, tile: int, coords) -> void:
-	_setTile(Layer.Fore, p, tile, coords)
-
-func _setForeRandom(p: Vector2i, tile: int, include: bool = true) -> void:
-	_setRandomTile(Layer.Fore, p, tile, include)
+func _setForeRandom(p: Vector2i, tile: int, coords: Vector2i = INVALID_CELL) -> void:
+	_setRandomTile(Layer.Fore, p, tile, coords)
 
 func setWallPlain(p: Vector2i) -> void:
 	var id: Tile
@@ -821,23 +821,23 @@ func setCliff(p: Vector2i) -> void:
 	_setForeRandom(p, id)
 
 func _setStair(p: Vector2i, type: Stair) -> void:
-	var id
+	var id: Tile
 	match theme:
-		0: id = Tile.Theme0Stair
-		1: id = Tile.Theme1Stair
-		2: id = Tile.Theme2Stair
-		3: id = Tile.Theme3Stair
-	_setFore(p, id, Random.nextBool(), false, false, coord)
+		0: id = Tile.Theme1Stair
+		1: id = Tile.Theme2Stair
+		2: id = Tile.Theme3Stair
+		3: id = Tile.Theme4Stair
+	_setForeRandom(p, id, Vector2i(type, 0))
 
 func setStairDown(p: Vector2i) -> void:
-	_setStair(p, Vector2(0, 0))
+	_setStair(p, Stair.Down)
 
 func setStairUp(p: Vector2i) -> void:
-	_setStair(p, Vector2(1, 0))
+	_setStair(p, Stair.Up)
 
-func _setStairOutside(p: Vector2i, coord: Vector2i) -> void:
+func _setStairOutside(p: Vector2i, type: StairOutside) -> void:
 	if desert:
-		_setFore(p, Tile.OutsideDayDesertStair if day else Tile.OutsideNightDesertStair, Random.nextBool(), false, false, coord)
+		_setForeRandom(p, Tile.DayDesertStair if day else Tile.NightDesertStair, Vector2i(type, 0))
 	else:
 		_setFore(p, Tile.OutsideDayStair if day else Tile.OutsideNightStair, Random.nextBool(), false, false, coord)
 
@@ -928,23 +928,20 @@ func verifyCliff() -> void:
 #region Flower
 
 func setFlower(p: Vector2i) -> void:
-	_setRandomTile(_flower, p, Tile.OutsideFlower, Random.nextBool())
+	_setRandomTile(Layer.Flower, p, Tile.Flower)
 
 #endregion
 
 #region Tree
 
 func setTree(p: Vector2i) -> void:
-	var coord := Vector2(Random.next(3), 0)
-	_tree.set_cell(0, p, Tile.TreeBack, coord)
-	_top.set_cell(0, Vector2i(p.x, p.y - 1), Tile.TreeFore, coord)
+	_setRandomTile(Layer.Tree, p, Tile.Tree)
 
 func setTreeStump(p: Vector2i) -> void:
-	_setRandomTile(_tree, p, Tile.TreeStump, Random.nextBool())
+	_setRandomTile(Layer.Tree, p, Tile.TreeStump)
 
 func clearTree(p: Vector2i) -> void:
-	_tree.set_cell(0, p, INVALID_CELL)
-	_top.set_cell(0, Vector2i(p.x, p.y - 1), INVALID_CELL)
+	_clearTile(Layer.Tree, p)
 
 func cutTree(p: Vector2i) -> void:
 	clearTree(p)
@@ -955,23 +952,23 @@ func cutTree(p: Vector2i) -> void:
 #region Water
 
 func setWaterShallow(p: Vector2i) -> void:
-	_waterBack.set_cell(0, p, Tile.WaterShallowBack)
-	_waterFore.set_cell(0, p, Tile.WaterShallowFore)
+	_setTile(Layer.WaterBack, p, Tile.WaterShallowBack)
+	_setTile(Layer.WaterFore, p, Tile.WaterShallowFore)
 
 func setWaterDeep(p: Vector2i) -> void:
-	_waterBack.set_cell(0, p, Tile.WaterDeepBack)
-	_waterFore.set_cell(0, p, Tile.WaterDeepFore)
+	_setTile(Layer.WaterBack, p, Tile.WaterDeepBack)
+	_setTile(Layer.WaterFore, p, Tile.WaterDeepFore)
 
 func setWaterShallowPurple(p: Vector2i) -> void:
-	_waterBack.set_cell(0, p, Tile.WaterShallowBackPurple)
-	_waterFore.set_cell(0, p, Tile.WaterShallowForePurple)
+	_setTile(Layer.WaterBack, p, Tile.WaterShallowPurpleBack)
+	_setTile(Layer.WaterFore, p, Tile.WaterShallowPurpleFore)
 
 func setWaterDeepPurple(p: Vector2i) -> void:
-	_waterBack.set_cell(0, p, Tile.WaterDeepBackPurple)
-	_waterFore.set_cell(0, p, Tile.WaterDeepForePurple)
+	_setTile(Layer.WaterBack, p, Tile.WaterDeepPurpleBack)
+	_setTile(Layer.WaterFore, p, Tile.WaterDeepPurpleFore)
 
 func _isWaterTile(p: Vector2i, tiles: Array) -> bool:
-	return isTileId(_waterBack.get_cell(p), tiles)
+	return tiles.has(_tileMap.get_cell_source_id(Layer.WaterBack, p))
 
 func isWater(p: Vector2i) -> bool:
 	return _isWaterTile(p, _waterTiles)
@@ -986,7 +983,6 @@ func isWaterPurple(p: Vector2i) -> bool:
 
 #region Item
 
-# TODO: flip and rotate in alternate now?
 func _setItemFore(p: Vector2i, tile: int, flipX := false, flipY := false, rot90 := false, coord := Vector2.ZERO) -> void:
 	_itemFore.set_cell(0, p, tile, coord)
 
