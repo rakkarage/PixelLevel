@@ -59,7 +59,7 @@ func _init(level: Level) -> void:
 
 func generate(delta: int = 1) -> void:
 	super.generate(delta)
-	var template = Random.priority(_data)
+	var template = Random.probability(_data)
 	var single := true
 	if template.name == "c":
 		_cliff = false

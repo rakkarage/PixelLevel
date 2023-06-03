@@ -82,7 +82,7 @@ func _generate(delta: int = 1) -> void:
 	_mask.play("Go")
 	await _mask.animation_finished
 	if delta != 0 or _selected == null:
-		_selected = Random.priority(_g)
+		_selected = Random.probability(_g)
 	_selected.generate(delta)
 	_depth.text = str(_level.state.depth)
 	_light.text = str(_level.lightRadius)

@@ -8,7 +8,7 @@ extends SubViewport
 @onready var _target:  Node2D   = $TileMap/Target
 @onready var _path:    Node2D   = $TileMap/Path
 
-const INVALID = -1
+const INVALID = Tile.Invalid
 const INVALID_CELL := Vector2i(INVALID, INVALID)
 const _turnTime := 0.22
 const _duration := 0.333
@@ -56,6 +56,7 @@ enum Layer {
 
 # matches tileSet source id
 enum Tile {
+	Invalid = -1,
 	Cliff1, Cliff2,	Banner1, Banner2, Doodad, Rug, Fountain, Loot,
 	EdgeInside, EdgeInsideCorner, EdgeOutsideCorner, EdgeOutside,
 	Light, LightDebug,
@@ -112,7 +113,7 @@ func _onResize() -> void:
 
 func _generated() -> void:
 	_drawEdge()
-	pass
+	# TODO: etc
 
 func _process(delta: float) -> void:
 	_time += delta
@@ -699,22 +700,22 @@ func _darken() -> void:
 
 #region Tile
 
-func _setTile(layer: Layer, p: Vector2i, id: Tile, coords := Vector2(0, 0), alternative := 0) -> void:
-	_tileMap.set_cell(layer, p, id, coords, alternative)
+func _setTile(layer: Layer, p: Vector2i, tile: Tile, coords := Vector2(0, 0), alternative := 0) -> void:
+	_tileMap.set_cell(layer, p, tile, coords, alternative)
 
 func _clearTile(layer: Layer, p: Vector2i) -> void:
-	_tileMap.set_cell(layer, p, 0)
+	_setTile(layer, p, Tile.Invalid)
 
-func _setRandomTile(layer: Layer, p: Vector2i, id: Tile, coords := INVALID_CELL, alternative := INVALID) -> void:
-	var source := _tileMap.tile_set.get_source(id)
-	var c := _randomTileCoord(layer, p, source) if coords == INVALID_CELL else coords
+func _setRandomTile(layer: Layer, p: Vector2i, tile: Tile, coords := INVALID_CELL, alternative := INVALID) -> void:
+	var source := _tileMap.tile_set.get_source(tile)
+	var c := _randomTileCoords(source) if coords == INVALID_CELL else coords
 	var a := _randomTileAlternative(source, c) if alternative == INVALID else alternative
-	_setTile(layer, p, id, c, a)
+	_setTile(layer, p, tile, c, a)
 
-func _randomTileCoord(layer: Layer, p: Vector2i, source: TileSetSource) -> Vector2i:
+func _randomTileCoords(source: TileSetSource) -> Vector2i:
 	var array := []
 	for i in source.get_tiles_count():
-		array[i] = _tileMap.get_cell_tile_data(layer, p).probability
+		array.append(source.get_tile_data(source.get_tile_id(i), 0).probability)
 	return source.get_tile_id(Random.probabilityIndex(array))
 
 func _randomTileAlternative(source: TileSetSource, coords: Vector2i) -> int:
@@ -986,6 +987,8 @@ func isLit(p: Vector2i) -> bool:
 
 func _drawEdge() -> void:
 	var rect := _tileMap.get_used_rect()
+	if rect.size == Vector2i.ZERO:
+		return
 	var minY: int = rect.position.y - 1
 	var maxY: int = rect.end.y
 	var minX: int = rect.position.x - 1
