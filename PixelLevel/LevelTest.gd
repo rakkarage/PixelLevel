@@ -8,6 +8,10 @@ extends SubViewport
 @onready var _target:  Node2D   = $TileMap/Target
 @onready var _path:    Node2D   = $TileMap/Path
 
+signal updateMap
+signal generate
+signal generateUp
+
 const INVALID = Tile.Invalid
 const INVALID_CELL := Vector2i(INVALID, INVALID)
 const _turnTime := 0.22
@@ -41,6 +45,10 @@ const themeCliffCount := 2 # number of cliff themes
 var _tweenCamera : Tween
 var _tweenStep : Tween
 var _tweenTarget : Tween
+
+#endregion
+
+#region Tile Data
 
 # matches tileMap layers
 enum Layer {
