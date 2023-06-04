@@ -12,7 +12,7 @@ signal updateMap
 signal generate
 signal generateUp
 
-const INVALID = Tile.Invalid
+const INVALID := Tile.Invalid
 const INVALID_CELL := Vector2i(INVALID, INVALID)
 const _turnTime := 0.22
 const _duration := 0.333
@@ -49,6 +49,8 @@ var _tweenTarget : Tween
 #endregion
 
 #region Tile Data
+
+enum Direction { N, S, E, W, NE, NW, SE, SW }
 
 # matches tileMap layers
 enum Layer {
@@ -102,24 +104,37 @@ enum Door { Shut, Open, Broke }
 enum Stair { Down, Up}
 enum Loot { ChestShut, ChestOpenFull, ChestOpenEmpty, ChestBroke, Pile }
 enum Weed { BackDry, Back, ForeDry, Fore }
+enum EdgeOutsideCornerType { BottomLeft, BottomRight, TopRight, TopLeft }
+
+# alternatives
+enum EdgeInside { Top, TopFlip, Bottom, Left, Right, LeftFlip, BottomFlip, RightFlip }
+enum EdgeInsideCorner { TopLeft, TopRight, BottomLeft, TopLeftFlip, TopRightFlip, BottomLeftFlip, BottomRight, BottomRightFlip }
+enum EdgeOutside { Bottom, BottomFlip, Top, Right, Left, RightFlip, TopFlip, LeftFlip }
 
 #endregion
 
 #region Init / Input
 
 func _ready() -> void:
-	_camera.zoom = Vector2(0.75, 0.75)
+	call_deferred("_readyDeferred")
+
+func _readyDeferred() -> void:
+	# _camera.zoom = Vector2(0.75, 0.75)
+	print(size)
 	_generated()
 	_cameraCenter()
 	connect("size_changed", _onResize)
 
 func _onResize() -> void:
-	var normalize := (_camera.global_position - Vector2(_mapSize() / 2.0)) / _oldSize
-	_camera.global_position = normalize * Vector2(size + Vector2i(_mapSize() / 2.0))
+	var mapSize := _mapSize()
+	print(mapSize, _oldSize)
+	var normalize := (_camera.global_position - Vector2(mapSize)) / _oldSize
+	_camera.global_position = normalize * Vector2(size + mapSize)
 	_oldSize = size
 	_cameraUpdate()
 
 func _generated() -> void:
+	_oldSize = size
 	_drawEdge()
 	# TODO: etc
 
@@ -993,6 +1008,45 @@ func isLit(p: Vector2i) -> bool:
 
 #region Edge
 
+func _randomEdgeOutside(d: Direction) -> int:
+	var r = INVALID
+	match d:
+		Direction.N:
+			r = EdgeOutside.Top if Utility.randomBool() else EdgeOutside.TopFlip
+		Direction.E:
+			r = EdgeOutside.Right if Utility.randomBool() else EdgeOutside.RightFlip
+		Direction.S:
+			r = EdgeOutside.Bottom if Utility.randomBool() else EdgeOutside.BottomFlip
+		Direction.W:
+			r = EdgeOutside.Left if Utility.randomBool() else EdgeOutside.LeftFlip
+	return r
+
+func _randomEdgeInside(d: Direction) -> int:
+	var r = INVALID
+	match d:
+		Direction.N:
+			r = EdgeInside.Top if Utility.randomBool() else EdgeInside.TopFlip
+		Direction.E:
+			r = EdgeInside.Right if Utility.randomBool() else EdgeInside.RightFlip
+		Direction.S:
+			r = EdgeInside.Bottom if Utility.randomBool() else EdgeInside.BottomFlip
+		Direction.W:
+			r = EdgeInside.Left if Utility.randomBool() else EdgeInside.LeftFlip
+	return r
+
+func _randomEdgeInsideCorner(d: Direction) -> int:
+	var r = INVALID
+	match d:
+		Direction.NW:
+			r = EdgeInsideCorner.TopLeft if Utility.randomBool() else EdgeInsideCorner.TopLeftFlip
+		Direction.NE:
+			r = EdgeInsideCorner.TopRight if Utility.randomBool() else EdgeInsideCorner.TopRightFlip
+		Direction.SW:
+			r = EdgeInsideCorner.BottomLeft if Utility.randomBool() else EdgeInsideCorner.BottomLeftFlip
+		Direction.SE:
+			r = EdgeInsideCorner.BottomRight if Utility.randomBool() else EdgeInsideCorner.BottomRightFlip
+	return r
+
 func _drawEdge() -> void:
 	var rect := _tileMap.get_used_rect()
 	if rect.size == Vector2i.ZERO:
@@ -1005,37 +1059,37 @@ func _drawEdge() -> void:
 		for x in range(minX, maxX + 1):
 			if x == minX or x == maxX or y == minY or y == maxY:
 				if x == minX and y == minY: # nw
-					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutsideCorner)
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutsideCorner, Vector2i(EdgeOutsideCornerType.TopLeft, 0))
 				elif x == minX and y == maxY: # sw
-					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutsideCorner)
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutsideCorner, Vector2i(EdgeOutsideCornerType.BottomLeft, 0))
 				elif x == maxX and y == minY: # ne
-					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutsideCorner)
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutsideCorner, Vector2i(EdgeOutsideCornerType.TopRight, 0))
 				elif x == maxX and y == maxY: # se
-					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutsideCorner)
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutsideCorner, Vector2i(EdgeOutsideCornerType.BottomRight, 0))
 				elif x == minX: # w
-					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutside)
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutside, INVALID_CELL, _randomEdgeOutside(Direction.W))
 				elif x == maxX: # e
-					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutside)
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutside, INVALID_CELL, _randomEdgeOutside(Direction.E))
 				elif y == minY: # n
-					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutside)
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutside, INVALID_CELL, _randomEdgeOutside(Direction.N))
 				elif y == maxY: # s
-					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutside)
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeOutside, INVALID_CELL, _randomEdgeOutside(Direction.S))
 			elif (x == minX + 1) or (x == maxX - 1) or (y == minY + 1) or (y == maxY - 1):
 				if x == minX + 1 and y == minY + 1: # nw
-					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInsideCorner)
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInsideCorner, Vector2i(EdgeInsideCorner.TopLeft, 0), _randomEdgeInsideCorner(Direction.NW))
 				elif x == minX + 1 and y == maxY - 1: # sw
-					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInsideCorner)
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInsideCorner, Vector2i(EdgeInsideCorner.TopRight, 0), _randomEdgeInsideCorner(Direction.NE))
 				elif x == maxX - 1 and y == minY + 1: # ne
-					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInsideCorner)
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInsideCorner, Vector2i(EdgeInsideCorner.BottomLeft, 0), _randomEdgeInsideCorner(Direction.SW))
 				elif x == maxX - 1 and y == maxY - 1: # se
-					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInsideCorner)
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInsideCorner, Vector2i(EdgeInsideCorner.BottomRight, 0), _randomEdgeInsideCorner(Direction.SE))
 				elif x == minX + 1: # w
-					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInside)
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInside, INVALID_CELL, _randomEdgeInside(Direction.E))
 				elif x == maxX - 1: # e
-					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInside)
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInside, INVALID_CELL, _randomEdgeInside(Direction.W))
 				elif y == minY + 1: # n
-					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInside)
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInside, INVALID_CELL, _randomEdgeInside(Direction.N))
 				elif y == maxY - 1: # s
-					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInside)
+					_setRandomTile(Layer.Edge, Vector2i(x, y), Tile.EdgeInside, INVALID_CELL, _randomEdgeInside(Direction.S))
 
 #endregion
