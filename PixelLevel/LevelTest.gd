@@ -172,10 +172,10 @@ func _unhandled_input(event: InputEvent) -> void:
 					_targetUpdate()
 				_dragLeft = false
 		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
-			_zoomIn(event.global_position)
+			_zoom(true, event.global_position)
 			_cameraUpdate()
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			_zoomOut(event.global_position)
+			_zoom(false, event.global_position)
 			_cameraUpdate()
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
