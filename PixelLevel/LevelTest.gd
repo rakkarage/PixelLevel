@@ -131,10 +131,9 @@ func _readyDeferred() -> void:
 	connect("size_changed", _onResize)
 
 func _onResize() -> void:
-	print(size)
-	var s := _mapSize()
-	var p := (_camera.global_position - Vector2(s)) / _oldSize
-	_camera.global_position = p * Vector2(size + Vector2i(s))
+	var oldCenter = (_camera.global_position + Vector2(_oldSize) / 2.0) * _camera.zoom
+	var newCenter = Vector2(size) / 2.0 * _camera.zoom
+	_camera.global_position = (oldCenter - newCenter) / _camera.zoom
 	_oldSize = size
 	_cameraUpdate()
 
