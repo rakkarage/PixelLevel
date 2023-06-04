@@ -405,23 +405,17 @@ func _checkCenter() -> void:
 		emit_signal("updateMap")
 
 func _zoomPinch(at: Vector2, amount: float) -> void:
-	if amount > 0: _zoom(at, _zoomFactorOut)
-	elif amount < 0: _zoom(at, _zoomFactorIn)
+	if amount > 0: _zoom(false, at)
+	elif amount < 0: _zoom(true, at)
 
-func _zoomIn(at: Vector2) -> void: _zoom(at, _zoomFactorIn)
-
-func _zoomOut(at: Vector2) -> void: _zoom(at, _zoomFactorOut)
-
-func _zoom(at: Vector2, factor: float) -> void:
-	var z0 := _camera.zoom
-	var z1 := _zoomClamp(z0 * factor)
-	var c0 := _camera.global_position
-	var c1 := c0 + at * (z0 - z1)
-	_camera.zoom = z1
-	_camera.global_position = c1
-
-func _zoomClamp(z: Vector2) -> Vector2:
-	return _zoomMin if z < _zoomMin else _zoomMax if z > _zoomMax else z
+func _zoom(zoomIn: bool, at: Vector2) -> void:
+	var factor := _zoomFactorIn if zoomIn else _zoomFactorOut
+	var zoom := _camera.zoom
+	var zoomNew: Vector2 = clamp(zoom * factor, _zoomMin, _zoomMax)
+	_camera.zoom = zoomNew
+	var position := _camera.global_position
+	var positionNew := position + at * (zoom - zoomNew)
+	_camera.global_position = positionNew
 
 #endregion
 
