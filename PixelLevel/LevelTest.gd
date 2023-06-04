@@ -14,6 +14,7 @@ signal generateUp
 
 const INVALID := Tile.Invalid
 const INVALID_CELL := Vector2i(INVALID, INVALID)
+const _edge := Vector2i(2, 2)
 const _turnTime := 0.22
 const _duration := 0.333
 const _zoomMin := Vector2(0.2, 0.2)
@@ -130,10 +131,10 @@ func _readyDeferred() -> void:
 	connect("size_changed", _onResize)
 
 func _onResize() -> void:
-	var mapSize := _mapSize()
-	print(mapSize, _oldSize)
-	var normalize := (_camera.global_position - Vector2(mapSize)) / _oldSize
-	_camera.global_position = normalize * Vector2(size + mapSize)
+	print(size)
+	var s := _mapSize()
+	var p := (_camera.global_position - Vector2(s)) / _oldSize
+	_camera.global_position = p * Vector2(size + Vector2i(s))
 	_oldSize = size
 	_cameraUpdate()
 
@@ -353,13 +354,13 @@ func _map(position: Vector2) -> Vector2i:
 	return _tileMap.local_to_map(position)
 
 func _mapSize() -> Vector2i:
-	return _tileMap.get_used_rect().size * _tileMap.tile_set.tile_size
+	return (_tileMap.get_used_rect().size - _edge) * _tileMap.tile_set.tile_size
 
 func mapBounds() -> Rect2i:
 	return Rect2(-_camera.global_position, _mapSize())
 
 func _center() -> Vector2i:
-	return -(_worldSize() / 2.0) + _mapSize() / 2.0
+	return _mapSize() / 2.0 - _worldSize() / 2.0
 
 func _cameraCenter() -> void:
 	_cameraTo(_center())
