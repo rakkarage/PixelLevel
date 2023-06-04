@@ -409,9 +409,8 @@ func _zoomPinch(at: Vector2, amount: float) -> void:
 	elif amount < 0: _zoom(true, at)
 
 func _zoom(zoomIn: bool, at: Vector2) -> void:
-	var factor := _zoomFactorIn if zoomIn else _zoomFactorOut
 	var zoom := _camera.zoom
-	var zoomNew: Vector2 = clamp(zoom * factor, _zoomMin, _zoomMax)
+	var zoomNew := (zoom * (_zoomFactorIn if zoomIn else _zoomFactorOut)).clamp(_zoomMin, _zoomMax)
 	_camera.zoom = zoomNew
 	var position := _camera.global_position
 	var positionNew := position + at * (zoom - zoomNew)

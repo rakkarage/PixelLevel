@@ -30,7 +30,6 @@ render_target_update_mode = 4
 script = ExtResource("1_d2frh")
 
 [node name="Camera" type="Camera2D" parent="Container/SubViewport"]
-anchor_mode = 0
 
 [node name="TileMap" type="TileMap" parent="Container/SubViewport"]
 tile_set = ExtResource("2_sxolt")
