@@ -1,32 +1,20 @@
-extends SubViewport
+extends LevelBase
 
 #region Variable
 
-@onready var _camera:  Camera2D = $Camera
-@onready var _tileMap: TileMap  = $TileMap
 @onready var _hero:    Node2D   = $TileMap/Hero
 @onready var _target:  Node2D   = $TileMap/Target
 @onready var _path:    Node2D   = $TileMap/Path
 
-signal updateMap
 signal generate
 signal generateUp
 
-const INVALID := Tile.Invalid
-const INVALID_CELL := Vector2i(INVALID, INVALID)
 const _edge := Vector2i(2, 2)
 const _turnTime := 0.22
-const _duration := 0.333
-const _zoomMin := 0.2
-const _zoomMax := 4.0
-const _zoomFactor := 0.1
 const _pathScene := preload("res://Interface/Path.tscn")
 
 var _astar: AStar2D = AStar2D.new()
-var _oldSize := Vector2.ZERO
 var _pathPoints := PackedVector2Array()
-var _dragLeft := false
-var _capture := false
 var _turn := false
 var _time := 0.0
 var _turnTotal := 0
@@ -40,12 +28,8 @@ const themeCount := 4 # number of dungeon themes
 var themeCliff := 0 # cliff theme
 const themeCliffCount := 2 # number of cliff themes
 
-var _tweenCamera: Tween
 var _tweenStep: Tween
 var _tweenTarget: Tween
-
-var _tileSet: TileSet
-var _sources: Array[TileSetSource]
 
 #endregion
 
@@ -116,26 +100,10 @@ enum EdgeInsideCorner { TopLeft, TopRight, BottomLeft, TopLeftFlip, TopRightFlip
 #region Init / Input
 
 func _ready() -> void:
-	call_deferred("_readyDeferred")
-
-func _readyDeferred() -> void:
-	_tileSet = _tileMap.tile_set
-	for i in _tileSet.get_source_count():
-		_sources.append(_tileSet.get_source(_tileSet.get_source_id(i)))
-	# _camera.zoom = Vector2(0.75, 0.75)
-	_generated()
-	_cameraCenter()
-	connect("size_changed", _onResize)
-
-func _onResize() -> void:
-	var center: Vector2 = _center()
-	var normalized := (_camera.global_position - center) / _oldSize
-	_camera.global_position = normalized * Vector2(size) + center
-	_oldSize = size
-	_cameraUpdate()
+	super._ready()
 
 func _generated() -> void:
-	_oldSize = size
+	super._generated()
 	_drawEdge()
 	# TODO: etc
 
@@ -320,10 +288,10 @@ func _connect(p: Vector2i) -> void:
 						_astar.set_point_disabled(_tileIndex(pp), true)
 
 func _tileIndex(pos: Vector2) -> int:
-	return Utility.index(pos, _mapSize().x)
+	return Utility.tileIndex(pos, _mapSize().x)
 
 func _tilePosition(index: int) -> Vector2:
-	return Utility.position(index, _mapSize().x)
+	return Utility.tilePosition(index, _mapSize().x)
 
 func isBlocked(p: Vector2i) -> bool:
 	return isFloor(p) && !isBlockedLight(p)
@@ -334,60 +302,8 @@ func isBlockedLight(p: Vector2i) -> bool:
 func insideMap(p: Vector2i) -> bool:
 	return _tileMap.get_used_rect().has_point(p)
 
-func getCameraRect() -> Rect2:
-	return Rect2(_map(_camera.global_position), _map(_camera.global_position + _worldSize()))
-
-func _world(tile: Vector2i) -> Vector2:
-	return _tileMap.map_to_local(tile)
-
-func _worldSize() -> Vector2:
-	return Vector2(size) * _camera.zoom
-
-func _worldBounds() -> Rect2:
-	return Rect2(Vector2.ZERO, _worldSize())
-
-func _map(position: Vector2) -> Vector2i:
-	return _tileMap.local_to_map(position)
-
-func _mapSize() -> Vector2i:
-	return (_tileMap.get_used_rect().size - _edge) * _tileMap.tile_set.tile_size
-
-func mapBounds() -> Rect2i:
-	return Rect2(-_camera.global_position, _mapSize())
-
-func _center() -> Vector2i:
-	return _mapSize() / 2.0
-
-func _cameraCenter() -> void:
-	_cameraTo(_center())
-
-func _cameraTo(to: Vector2) -> void:
-	if _tweenCamera:
-		_tweenCamera.kill()
-	_camera.global_position = to
-
 func _cameraToMob() -> void:
 	_cameraTo(-(_worldSize() / 2.0) + _hero.global_position)
-
-func _cameraBy(by: Vector2) -> void:
-	_cameraTo(_camera.global_position + by)
-
-func _cameraUpdate() -> void:
-	var map := mapBounds()
-	var world := _worldBounds().grow(_tileMap.tile_set.tile_size.x)
-	if not world.intersects(map):
-		_cameraSnap(_camera.global_position + Utility.constrainRect(world, map))
-	else:
-		emit_signal("updateMap")
-
-func _cameraSnap(to: Vector2) -> void:
-	if _tweenCamera:
-		_tweenCamera.kill()
-	_tweenCamera = create_tween()
-	_tweenCamera.set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
-	_tweenCamera.tween_property(_camera, "global_position", to, _duration)
-	await _tweenCamera.finished
-	emit_signal("updateMap")
 
 const _edgeOffset := 1.5
 const _edgeOffsetV := Vector2(_edgeOffset, _edgeOffset)
@@ -400,26 +316,6 @@ func _checkCenter() -> void:
 		_cameraSnap(-(_worldSize() / 2.0) + _hero.global_position)
 	else:
 		emit_signal("updateMap")
-
-func _zoomPinch(at: Vector2, amount: float) -> void:
-	if amount > 0: _zoom(at, _zoomFactor)
-	elif amount < 0: _zoom(at, -_zoomFactor)
-
-func _zoom(at: Vector2, factor: float) -> void:
-	var zoom := _camera.zoom.x
-	var zoomNew := zoom + factor
-	zoomNew = clamp(zoomNew, _zoomMin, _zoomMax)
-	_camera.zoom = Vector2(zoomNew, zoomNew)
-	var position := -size / 2.0 + get_mouse_position()
-	var positionNew := at - position / zoom - position / zoomNew
-	_camera.global_position = positionNew
-
-	# var z0 := _camera.zoom
-	# var z1 := _zoomClamp(z0 * factor)
-	# var c0 := _camera.global_position
-	# var c1 := c0 + at * (z0 - z1)
-	# _camera.zoom = z1
-	# _camera.global_position = c1
 
 #endregion
 
