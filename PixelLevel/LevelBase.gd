@@ -34,6 +34,7 @@ func _readyDeferred() -> void:
 	_generated()
 	_cameraCenter()
 	connect("size_changed", _onResize)
+	print(mapBounds(), _worldBounds())
 
 func _generated() -> void:
 	_oldSize = size
@@ -70,17 +71,17 @@ func _onResize() -> void:
 func getCameraRect() -> Rect2:
 	return Rect2(_map(_camera.global_position), _map(_camera.global_position + _worldSize()))
 
-func _world(tile: Vector2i) -> Vector2:
-	return _tileMap.map_to_local(tile)
+func _world(p: Vector2i) -> Vector2:
+	return _tileMap.map_to_local(p)
 
 func _worldSize() -> Vector2:
 	return Vector2(size) * _camera.zoom
 
 func _worldBounds() -> Rect2:
-	return Rect2(Vector2.ZERO, _worldSize())
+	return Rect2(_camera.global_position, _worldSize())
 
-func _map(position: Vector2) -> Vector2i:
-	return _tileMap.local_to_map(position)
+func _map(p: Vector2) -> Vector2i:
+	return _tileMap.local_to_map(p)
 
 func _mapPosition() -> Vector2:
 	return _tileMap.get_used_rect().position
@@ -118,9 +119,8 @@ func _zoom(at: Vector2, factor: float) -> void:
 
 func _cameraUpdate() -> void:
 	var map := mapBounds()
-	print(map)
-	var world := _worldBounds().grow(_tileSize.x)
-	print(world)
+	var world := _worldBounds() #.grow(_tileSize.x)
+	print(map, world)
 	if not world.intersects(map):
 		print("snap")
 		_cameraSnap(_camera.global_position + Utility.constrainRect(world, map))
@@ -131,7 +131,7 @@ func _cameraSnap(to: Vector2) -> void:
 	if _tweenCamera:
 		_tweenCamera.kill()
 	_tweenCamera = create_tween()
-	_tweenCamera.set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+	_tweenCamera.set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)
 	_tweenCamera.tween_property(_camera, "global_position", to, _duration)
 	await _tweenCamera.finished
 	emit_signal("updateMap")
