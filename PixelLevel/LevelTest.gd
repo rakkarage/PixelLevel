@@ -17,9 +17,9 @@ const INVALID_CELL := Vector2i(INVALID, INVALID)
 const _edge := Vector2i(2, 2)
 const _turnTime := 0.22
 const _duration := 0.333
-const _zoomMin := Vector2(0.2, 0.2)
-const _zoomMax := Vector2(4.0, 4.0)
-const _zoomFactor := Vector2(0.1, 0.1)
+const _zoomMin := 0.2
+const _zoomMax := 4.0
+const _zoomFactor := 0.1
 const _pathScene := preload("res://Interface/Path.tscn")
 
 var _astar: AStar2D = AStar2D.new()
@@ -169,10 +169,10 @@ func _unhandled_input(event: InputEvent) -> void:
 					_targetUpdate()
 				_dragLeft = false
 		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
-			_zoom(true, event.global_position)
+			_zoom(event.global_position, _zoomFactor)
 			_cameraUpdate()
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			_zoom(false, event.global_position)
+			_zoom(event.global_position, -_zoomFactor)
 			_cameraUpdate()
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
@@ -402,16 +402,24 @@ func _checkCenter() -> void:
 		emit_signal("updateMap")
 
 func _zoomPinch(at: Vector2, amount: float) -> void:
-	if amount > 0: _zoom(false, at)
-	elif amount < 0: _zoom(true, at)
+	if amount > 0: _zoom(at, _zoomFactor)
+	elif amount < 0: _zoom(at, -_zoomFactor)
 
-func _zoom(zoomIn: bool, at: Vector2) -> void:
-	var zoom := _camera.zoom
-	var zoomNew := (zoom + (_zoomFactor if zoomIn else -_zoomFactor)).clamp(_zoomMin, _zoomMax)
-	_camera.zoom = zoomNew
-	var position := _camera.global_position
-	var positionNew := position + at * (zoom - zoomNew)
+func _zoom(at: Vector2, factor: float) -> void:
+	var zoom := _camera.zoom.x
+	var zoomNew := zoom + factor
+	zoomNew = clamp(zoomNew, _zoomMin, _zoomMax)
+	_camera.zoom = Vector2(zoomNew, zoomNew)
+	var position := -size / 2.0 + get_mouse_position()
+	var positionNew := at - position / zoom - position / zoomNew
 	_camera.global_position = positionNew
+
+	# var z0 := _camera.zoom
+	# var z1 := _zoomClamp(z0 * factor)
+	# var c0 := _camera.global_position
+	# var c1 := c0 + at * (z0 - z1)
+	# _camera.zoom = z1
+	# _camera.global_position = c1
 
 #endregion
 
