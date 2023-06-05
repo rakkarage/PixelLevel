@@ -34,7 +34,6 @@ func _readyDeferred() -> void:
 	_generated()
 	_cameraCenter()
 	connect("size_changed", _onResize)
-	print(mapBounds(), _worldBounds())
 
 func _generated() -> void:
 	_oldSize = size
@@ -68,20 +67,11 @@ func _onResize() -> void:
 	_oldSize = size
 	_cameraUpdate()
 
-func getCameraRect() -> Rect2:
-	return Rect2(_map(_camera.global_position), _map(_camera.global_position + _worldSize()))
-
-func _world(p: Vector2i) -> Vector2:
-	return _tileMap.map_to_local(p)
-
 func _worldSize() -> Vector2:
 	return Vector2(size) * _camera.zoom
 
-func _worldBounds() -> Rect2:
-	return Rect2(_camera.global_position, _worldSize())
-
-func _map(p: Vector2) -> Vector2i:
-	return _tileMap.local_to_map(p)
+func _worldBounds() -> Rect2i:
+	return Rect2i(_camera.global_position - _worldSize() / 2.0, _worldSize())
 
 func _mapPosition() -> Vector2:
 	return _tileMap.get_used_rect().position
@@ -94,7 +84,7 @@ func mapBounds() -> Rect2i:
 
 func _center() -> Vector2i:
 	var bounds := mapBounds()
-	return bounds.position + Vector2i(bounds.size / 2.0)
+	return Vector2(bounds.position) - _camera.global_position + bounds.size / 2.0
 
 func _cameraCenter() -> void:
 	_cameraTo(_center())
@@ -119,10 +109,8 @@ func _zoom(at: Vector2, factor: float) -> void:
 
 func _cameraUpdate() -> void:
 	var map := mapBounds()
-	var world := _worldBounds() #.grow(_tileSize.x)
-	print(map, world)
+	var world := _worldBounds().grow(-_tileSize.x)
 	if not world.intersects(map):
-		print("snap")
 		_cameraSnap(_camera.global_position + Utility.constrainRect(world, map))
 	else:
 		emit_signal("updateMap")
