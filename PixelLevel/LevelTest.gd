@@ -18,11 +18,8 @@ const _edge := Vector2i(2, 2)
 const _turnTime := 0.22
 const _duration := 0.333
 const _zoomMin := Vector2(0.2, 0.2)
-const _zoomMax := Vector2(1.0, 1.0)
-const _zoomFactorIn := 0.90
-const _zoomFactorOut := 1.10
-const _zoomPinchIn := 0.02
-const _zoomPinchOut := 1.02
+const _zoomMax := Vector2(4.0, 4.0)
+const _zoomFactor := Vector2(0.1, 0.1)
 const _pathScene := preload("res://Interface/Path.tscn")
 
 var _astar: AStar2D = AStar2D.new()
@@ -180,7 +177,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
 			_capture = true
-			_cameraTo(_camera.global_position - event.relative * _camera.zoom)
+			_cameraTo(_camera.global_position - event.relative / _camera.zoom)
 			emit_signal("updateMap")
 
 func _processWasd() -> bool:
@@ -410,7 +407,7 @@ func _zoomPinch(at: Vector2, amount: float) -> void:
 
 func _zoom(zoomIn: bool, at: Vector2) -> void:
 	var zoom := _camera.zoom
-	var zoomNew := (zoom * (_zoomFactorIn if zoomIn else _zoomFactorOut)).clamp(_zoomMin, _zoomMax)
+	var zoomNew := (zoom + (_zoomFactor if zoomIn else -_zoomFactor)).clamp(_zoomMin, _zoomMax)
 	_camera.zoom = zoomNew
 	var position := _camera.global_position
 	var positionNew := position + at * (zoom - zoomNew)
