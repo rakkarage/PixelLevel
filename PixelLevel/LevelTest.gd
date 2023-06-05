@@ -287,10 +287,10 @@ func _connect(p: Vector2i) -> void:
 					if isDoorShut(pp):
 						_astar.set_point_disabled(_tileIndex(pp), true)
 
-func _tileIndex(pos: Vector2) -> int:
+func _tileIndex(pos: Vector2i) -> int:
 	return Utility.tileIndex(pos, _mapSize().x)
 
-func _tilePosition(index: int) -> Vector2:
+func _tilePosition(index: int) -> Vector2i:
 	return Utility.tilePosition(index, _mapSize().x)
 
 func isBlocked(p: Vector2i) -> bool:

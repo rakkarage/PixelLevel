@@ -1,10 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://82wscvw880j4"]
+[gd_scene load_steps=3 format=3 uid="uid://82wscvw880j4"]
 
 [ext_resource type="Script" path="res://PixelLevel/LevelBase.gd" id="1_lhx64"]
 [ext_resource type="TileSet" uid="uid://cjn2ri268c5yx" path="res://PixelLevel/TileSet.tres" id="2_kxgey"]
-[ext_resource type="PackedScene" uid="uid://ccr3g4syt5uau" path="res://PixelMobs/Mob/SlimeSquare.tscn" id="3_fw0hk"]
-[ext_resource type="PackedScene" uid="uid://c0gglcpbg3xyp" path="res://Interface/Target.tscn" id="4_a0eip"]
-[ext_resource type="PackedScene" uid="uid://cfvthl6ipvclo" path="res://Interface/Path.tscn" id="5_djeem"]
 
 [node name="LevelTest" type="Control"]
 layout_mode = 3
@@ -120,22 +117,3 @@ layer_12/y_sort_enabled = false
 layer_12/y_sort_origin = 0
 layer_12/z_index = 0
 layer_12/tile_data = PackedInt32Array()
-
-[node name="Hero" parent="Container/SubViewport/TileMap" instance=ExtResource("3_fw0hk")]
-
-[node name="Target" parent="Container/SubViewport/TileMap" instance=ExtResource("4_a0eip")]
-
-[node name="Path" parent="Container/SubViewport/TileMap" instance=ExtResource("5_djeem")]
-
-[node name="Generate" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -80.0
-offset_top = -31.0
-grow_horizontal = 0
-grow_vertical = 0
-text = "Generate"

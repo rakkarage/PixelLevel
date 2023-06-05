@@ -86,7 +86,7 @@ func _map(p: Vector2) -> Vector2i:
 func _mapPosition() -> Vector2:
 	return _tileMap.get_used_rect().position
 
-func _mapSize() -> Vector2:
+func _mapSize() -> Vector2i:
 	return _tileMap.get_used_rect().size * _tileSize
 
 func mapBounds() -> Rect2i:
