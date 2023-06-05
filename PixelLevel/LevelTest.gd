@@ -131,9 +131,9 @@ func _readyDeferred() -> void:
 	connect("size_changed", _onResize)
 
 func _onResize() -> void:
-	var oldCenter = (_camera.global_position + Vector2(_oldSize) / 2.0) * _camera.zoom
-	var newCenter = Vector2(size) / 2.0 * _camera.zoom
-	_camera.global_position = (oldCenter - newCenter) / _camera.zoom
+	var center: Vector2 = _center()
+	var normalized := (_camera.global_position - center) / _oldSize
+	_camera.global_position = normalized * Vector2(size) + center
 	_oldSize = size
 	_cameraUpdate()
 
@@ -359,7 +359,7 @@ func mapBounds() -> Rect2i:
 	return Rect2(-_camera.global_position, _mapSize())
 
 func _center() -> Vector2i:
-	return _mapSize() / 2.0 - _worldSize() / 2.0
+	return _mapSize() / 2.0
 
 func _cameraCenter() -> void:
 	_cameraTo(_center())
