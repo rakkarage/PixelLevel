@@ -61,9 +61,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			emit_signal("updateMap")
 
 func _onResize() -> void:
-	var center: Vector2 = _center()
-	var normalized := (_camera.global_position - center) / _oldSize
-	_camera.global_position = normalized * Vector2(size) + center
+	_camera.global_position = Vector2(_center()) + (_camera.global_position - Vector2(_center())) * (Vector2(size) / _oldSize)
 	_oldSize = size
 	_cameraUpdate()
 
@@ -84,7 +82,7 @@ func mapBounds() -> Rect2i:
 
 func _center() -> Vector2i:
 	var bounds := mapBounds()
-	return Vector2(bounds.position) - _camera.global_position + bounds.size / 2.0
+	return Vector2(bounds.position) + Vector2(bounds.size) / 2.0 / _camera.zoom
 
 func _cameraCenter() -> void:
 	_cameraTo(_center())
