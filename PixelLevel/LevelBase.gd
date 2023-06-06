@@ -80,24 +80,30 @@ func _onResize() -> void:
 	_oldSize = size
 	_cameraUpdate()
 
-func _worldSize() -> Vector2:
+func _world(p: Vector2i) -> Vector2:
+	return _tileMap.map_to_local(p)
+
+func _worldSize() -> Vector2i:
 	return Vector2(size) / _zoomTarget
 
 func _worldBounds() -> Rect2i:
 	return Rect2i(_camera.global_position - _worldSize() / 2.0, _worldSize())
 
-func _mapPosition() -> Vector2:
+func _map(p: Vector2i) -> Vector2i:
+	return _tileMap.local_to_map(p)
+
+func _mapPosition() -> Vector2i:
 	return _tileMap.get_used_rect().position
 
 func _mapSize() -> Vector2i:
 	return _tileMap.get_used_rect().size * _tileSize
 
-func mapBounds() -> Rect2i:
-	return Rect2(_mapPosition(), _mapSize())
+func _mapBounds() -> Rect2i:
+	return Rect2i(_mapPosition(), _mapSize())
 
 func _center() -> Vector2i:
-	var bounds := mapBounds()
-	return Vector2(bounds.position) + Vector2(bounds.size) / 2.0 / _zoomTarget
+	var bounds := _mapBounds()
+	return Vector2(bounds.position) + bounds.size / 2.0 / _zoomTarget
 
 func _cameraCenter() -> void:
 	_cameraTo(_center())
@@ -122,7 +128,7 @@ func _zoom(at: Vector2, factor: float) -> void:
 	_camera.global_position = positionNew + diff
 
 func _cameraUpdate() -> bool:
-	var map := mapBounds()
+	var map := _mapBounds()
 	var world := _worldBounds().grow(-int(_tileSize.x / _zoomTarget.x))
 	if not world.intersects(map):
 		_cameraSnap(_camera.global_position + Utility.constrainRect(world, map))
