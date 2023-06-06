@@ -498,7 +498,7 @@ func _lightEmitRecursive(at: Vector2i, radius: float, maxRadius: float, start: f
 		while dx <= 0:
 			dx += 1
 			var p := Vector2i(at.x + dx * xx + dy * xy, at.y + dx * yx + dy * yy)
-			if not insideMap(p): continue
+			if not _insideMap(p): continue
 			var lSlope := (dx - 0.5) / (dy + 0.5)
 			var rSlope := (dx + 0.5) / (dy - 0.5)
 			if start < rSlope: continue
@@ -553,7 +553,7 @@ func _lightTorches() -> void:
 		var south := Vector2i(p.x, p.y - 1)
 		var west := Vector2i(p.x - 1, p.y)
 		var emitted := false
-		if insideMap(p):
+		if _insideMap(p):
 			var northBlocked = isBlocked(north)
 			if not northBlocked and isLit(north):
 				emitted = true
