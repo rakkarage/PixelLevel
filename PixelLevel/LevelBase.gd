@@ -9,12 +9,12 @@ signal updateMap
 const INVALID := -1
 const INVALID_CELL := Vector2i(INVALID, INVALID)
 
+const _tweenTime := 0.333
 const _zoomMin := 0.2
 const _zoomMax := 4.0
 const _zoomFactor := 0.1
-
-const _duration := 0.333
-
+const _zoomRate := 5.0
+var _zoomTarget := Vector2.ONE
 var _dragLeft := false
 var _capture := false
 var _oldSize := Vector2.ZERO
@@ -38,6 +38,10 @@ func _readyDeferred() -> void:
 func _generated() -> void:
 	_oldSize = size
 
+func _process(delta: float) -> void:
+	_camera.zoom = lerp(_camera.zoom, _zoomTarget, delta * _zoomRate)
+	set_physics_process(not _camera.zoom.is_equal_approx(_zoomTarget))
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
@@ -57,7 +61,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
 			_capture = true
-			_cameraTo(_camera.global_position - event.relative / _camera.zoom)
+			_cameraTo(_camera.global_position - event.relative / _zoomTarget)
 			emit_signal("updateMap")
 
 func _onResize() -> void:
@@ -66,7 +70,7 @@ func _onResize() -> void:
 	_cameraUpdate()
 
 func _worldSize() -> Vector2:
-	return Vector2(size) / _camera.zoom
+	return Vector2(size) / _zoomTarget
 
 func _worldBounds() -> Rect2i:
 	return Rect2i(_camera.global_position - _worldSize() / 2.0, _worldSize())
@@ -82,7 +86,7 @@ func mapBounds() -> Rect2i:
 
 func _center() -> Vector2i:
 	var bounds := mapBounds()
-	return Vector2(bounds.position) + Vector2(bounds.size) / 2.0 / _camera.zoom
+	return Vector2(bounds.position) + Vector2(bounds.size) / 2.0 / _zoomTarget
 
 func _cameraCenter() -> void:
 	_cameraTo(_center())
@@ -97,18 +101,19 @@ func _zoomPinch(at: Vector2, amount: float) -> void:
 	elif amount < 0: _zoom(at, -_zoomFactor)
 
 func _zoom(at: Vector2, factor: float) -> void:
-	var zoom := _camera.zoom.x
-	var zoomNew := zoom + factor
+	var zoom := _zoomTarget.x
+	var zoomNew := zoom * pow(_zoomRate, factor)
 	zoomNew = clamp(zoomNew, _zoomMin, _zoomMax)
-	_camera.zoom = Vector2(zoomNew, zoomNew)
+	_zoomTarget = Vector2(zoomNew, zoomNew)
 	var position := _camera.global_position
 	var positionNew := at + (position - at) * (zoom / zoomNew)
 	var diff := position - positionNew
 	_camera.global_position = positionNew + diff
+	set_physics_process(true)
 
 func _cameraUpdate() -> void:
 	var map := mapBounds()
-	var world := _worldBounds().grow(-int(_tileSize.x / _camera.zoom.x))
+	var world := _worldBounds().grow(-int(_tileSize.x / _zoomTarget.x))
 	if not world.intersects(map):
 		_cameraSnap(_camera.global_position + Utility.constrainRect(world, map))
 	else:
@@ -119,6 +124,6 @@ func _cameraSnap(to: Vector2) -> void:
 		_tweenCamera.kill()
 	_tweenCamera = create_tween()
 	_tweenCamera.set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)
-	_tweenCamera.tween_property(_camera, "global_position", to, _duration)
+	_tweenCamera.tween_property(_camera, "global_position", to, _tweenTime)
 	await _tweenCamera.finished
 	emit_signal("updateMap")
