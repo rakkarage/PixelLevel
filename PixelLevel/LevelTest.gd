@@ -2,16 +2,15 @@ extends LevelBase
 
 #region Variable
 
-@onready var _hero:    Node2D   = $TileMap/Hero
-@onready var _target:  Node2D   = $TileMap/Target
-@onready var _path:    Node2D   = $TileMap/Path
+@onready var _hero:   Node2D = $TileMap/Hero
+@onready var _target: Node2D = $TileMap/Target
+@onready var _path:   Node2D = $TileMap/Path
 
 signal generate
 signal generateUp
 
 const _edge := Vector2i(2, 2)
 const _turnTime := 0.22
-const _pathScene := preload("res://Interface/Path.tscn")
 
 var _astar: AStar2D = AStar2D.new()
 var _pathPoints := PackedVector2Array()
@@ -355,7 +354,7 @@ func _drawPath(from: Vector2i, to: Vector2i) -> void:
 		var tile := _pathPoints[i]
 		if i + 1 < _pathPoints.size():
 			rotation = _pathRotate(_delta(tile, _pathPoints[i + 1]), pathDelta)
-		var child := _pathScene.instantiate()
+		var child = _path.instantiate()
 		child.modulate = color
 		child.global_rotation_degrees = rotation
 		child.global_position = _world(tile)
