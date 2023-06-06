@@ -22,6 +22,10 @@ var _tweenCamera: Tween
 var _tileSet: TileSet
 var _sources: Array[TileSetSource]
 var _tileSize: Vector2i
+var _dragMomentum: Vector2 = Vector2.ZERO
+const _momentumDecay: float = 0.9
+const _momentumDamping: float = 0.2
+const _minMouseSpeed: float = 0.1
 
 func _ready() -> void:
 	call_deferred("_readyDeferred")
@@ -40,7 +44,12 @@ func _generated() -> void:
 
 func _process(delta: float) -> void:
 	_camera.zoom = lerp(_camera.zoom, _zoomTarget, delta * _zoomRate)
-	set_physics_process(not _camera.zoom.is_equal_approx(_zoomTarget))
+	if not _dragLeft and _dragMomentum.length() > _minMouseSpeed:
+		_cameraTo(_camera.global_position - _dragMomentum * _momentumDamping)
+	_dragMomentum = _dragMomentum * _momentumDecay
+	if not _dragLeft and _dragMomentum.is_zero_approx() or _cameraUpdate():
+		_dragMomentum = Vector2.ZERO
+		emit_signal("updateMap")
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -61,7 +70,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventMouseMotion:
 		if _dragLeft:
 			_capture = true
-			_cameraTo(_camera.global_position - event.relative / _zoomTarget)
+			var mouseDelta = event.relative / _zoomTarget
+			_dragMomentum = _dragMomentum * _momentumDecay + mouseDelta
+			_cameraTo(_camera.global_position - mouseDelta)
 			emit_signal("updateMap")
 
 func _onResize() -> void:
@@ -109,15 +120,16 @@ func _zoom(at: Vector2, factor: float) -> void:
 	var positionNew := at + (position - at) * (zoom / zoomNew)
 	var diff := position - positionNew
 	_camera.global_position = positionNew + diff
-	set_physics_process(true)
 
-func _cameraUpdate() -> void:
+func _cameraUpdate() -> bool:
 	var map := mapBounds()
 	var world := _worldBounds().grow(-int(_tileSize.x / _zoomTarget.x))
 	if not world.intersects(map):
 		_cameraSnap(_camera.global_position + Utility.constrainRect(world, map))
+		return true
 	else:
 		emit_signal("updateMap")
+		return false
 
 func _cameraSnap(to: Vector2) -> void:
 	if _tweenCamera:
