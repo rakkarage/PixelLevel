@@ -110,6 +110,7 @@ func _mapBounds() -> Rect2i:
 func _insideMap(p: Vector2i) -> bool:
 	return _tileMap.get_used_rect().has_point(p)
 
+# sometimes a border is added around the map from -1, -1, to map size + 1 by derived
 func _center() -> Vector2i:
 	var bounds: Rect2 = _mapBounds()
 	var borderSize := Vector2(max(-bounds.position.x, 0), max(-bounds.position.y, 0))
@@ -141,7 +142,7 @@ func _zoom(at: Vector2, factor: float) -> void:
 
 func _cameraUpdate() -> bool:
 	var map := _mapBounds()
-	var world := _worldBounds().grow(-int(_tileSize.x / _zoomTarget.x))
+	var world := _worldBounds().grow(-int(_tileSize.x / _zoomTarget.x)) # 1 tile buffer
 	if not world.intersects(map):
 		_cameraSnap(_camera.global_position + Utility.constrainRect(world, map))
 		return true
