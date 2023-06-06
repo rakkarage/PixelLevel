@@ -177,21 +177,22 @@ func _processWasd() -> bool:
 	return done
 
 func _wasd(direction: Vector2i) -> void:
-	var p := heroPosition() + direction
-	if isDoorShut(p):
-		_toggleDoor(p)
-	if not isBlocked(p):
-		_face(_hero, direction)
-		await _step(_hero, direction)
-		_pathClear()
-		if not isStair(p):
-			_lightUpdate(p, lightRadius)
-			_checkCenter()
-		else:
-			if isStairDown(p):
-				emit_signal("generate")
-			elif isStairUp(p):
-				emit_signal("generateUp")
+	# var p := heroPosition() + direction
+	# if isDoorShut(p):
+	# 	_toggleDoor(p)
+	# if not isBlocked(p):
+	# 	_face(_hero, direction)
+	# 	await _step(_hero, direction)
+	# 	_pathClear()
+	# 	if not isStair(p):
+	# 		_lightUpdate(p, lightRadius)
+	# 		_checkCenter()
+	# 	else:
+	# 		if isStairDown(p):
+	# 			emit_signal("generate")
+	# 		elif isStairUp(p):
+	# 			emit_signal("generateUp")
+	pass
 
 #endregion
 
@@ -218,25 +219,27 @@ func _fadeAndFree() -> void:
 		_pathClear()
 
 func _handleStair() -> bool:
-	if _pathPoints.size() == 1:
-		var p := heroPosition()
-		if isStairDown(p):
-			emit_signal("generate")
-			return true
-		elif isStairUp(p):
-			emit_signal("generateUp")
-			return true
-	return false
+	# if _pathPoints.size() == 1:
+	# 	var p := heroPosition()
+	# 	if isStairDown(p):
+	# 		emit_signal("generate")
+	# 		return true
+	# 	elif isStairUp(p):
+	# 		emit_signal("generateUp")
+	# 		return true
+	# return false
+	pass
 
 func _handleDoor() -> bool:
-	var from := heroPosition()
-	var to := targetPosition()
-	if (from - to).length() < 2.0:
-		if isDoor(to):
-			_toggleDoor(to)
-			_astar.set_point_disabled(_tileIndex(to), isDoorShut(to))
-			return true
-	return false
+	# var from := heroPosition()
+	# var to := targetPosition()
+	# if (from - to).length() < 2.0:
+	# 	if isDoor(to):
+	# 		_toggleDoor(to)
+	# 		_astar.set_point_disabled(_tileIndex(to), isDoorShut(to))
+	# 		return true
+	# return false
+	pass
 
 const _doorBreakChance = 0.02
 
@@ -259,7 +262,7 @@ func _step(mob: Node2D, direction: Vector2i) -> void:
 		_tweenStep.kill()
 	_tweenStep = create_tween()
 	_tweenStep.set_trans(Tween.TRANS_CIRC).set_ease(Tween.EASE_IN_OUT)
-	_tweenStep.tween_property(mob, "global_position", mob.global_position + Vector2(_world(direction)), _turnTime)
+	# _tweenStep.tween_property(mob, "global_position", mob.global_position + Vector2(_world(direction)), _turnTime)
 	await _tweenStep.finished
 
 func _addPoints() -> void:
@@ -309,42 +312,45 @@ const _edgeOffset := 1.5
 const _edgeOffsetV := Vector2(_edgeOffset, _edgeOffset)
 
 func _checkCenter() -> void:
-	var edge := Vector2(_world(_edgeOffsetV)) / _camera.zoom
-	var test := -(_camera.global_position - _hero.global_position) / _camera.zoom
-	if ((test.x > size.x - edge.x) or (test.x < edge.x) or
-		(test.y > size.y - edge.y) or (test.y < edge.y)):
-		_cameraSnap(-(_worldSize() / 2.0) + _hero.global_position)
-	else:
-		emit_signal("updateMap")
+	# var edge := Vector2(_world(_edgeOffsetV)) / _camera.zoom
+	# var test := -(_camera.global_position - _hero.global_position) / _camera.zoom
+	# if ((test.x > size.x - edge.x) or (test.x < edge.x) or
+	# 	(test.y > size.y - edge.y) or (test.y < edge.y)):
+	# 	_cameraSnap(-(_worldSize() / 2.0) + _hero.global_position)
+	# else:
+	# 	emit_signal("updateMap")
+	pass
 
 #endregion
 
 #region Target
 
-func heroPosition() -> Vector2i:
-	return _map(_hero.global_position)
+# func heroPosition() -> Vector2i:
+# 	return _map(_hero.global_position)
 
-func targetPosition() -> Vector2i:
-	return _map(_target.global_position)
+# func targetPosition() -> Vector2i:
+# 	return _map(_target.global_position)
 
 func _targetToMob() -> void:
 	_targetTo(_hero.global_position, true)
 
 func _targetTo(to: Vector2, turn: bool) -> void:
-	if _tweenTarget:
-		_tweenTarget.kill()
-	var tile := _map(_camera.global_position + to * _camera.zoom)
-	if tile == targetPosition():
-		_turn = turn
-	else:
-		_target.global_position = _world(tile)
+	# if _tweenTarget:
+	# 	_tweenTarget.kill()
+	# var tile := _map(_camera.global_position + to * _camera.zoom)
+	# if tile == targetPosition():
+	# 	_turn = turn
+	# else:
+	# 	_target.global_position = _world(tile)
+	pass
 
 func _targetUpdate() -> void:
-	var from := heroPosition()
-	var to := _targetSnapClosest(targetPosition())
-	_pathClear()
-	if from != to:
-		_drawPath(from, to)
+	# var from := heroPosition()
+	# var to := _targetSnapClosest(targetPosition())
+	# _pathClear()
+	# if from != to:
+	# 	_drawPath(from, to)
+	pass
 
 func _targetSnapClosest(tile: Vector2i) -> Vector2i:
 	var p := _astar.get_point_position(_astar.get_closest_point(tile, true))
@@ -352,33 +358,35 @@ func _targetSnapClosest(tile: Vector2i) -> Vector2i:
 	return p
 
 func _targetSnap(tile: Vector2) -> void:
-	var p := _world(tile)
-	if not _target.global_position.is_equal_approx(p):
-		if _tweenTarget:
-			_tweenTarget.kill()
-		_tweenTarget = create_tween()
-		_tweenTarget.set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
-		_tweenTarget.tween_property(_target, "global_position", p, _duration)
+	# var p := _world(tile)
+	# if not _target.global_position.is_equal_approx(p):
+	# 	if _tweenTarget:
+	# 		_tweenTarget.kill()
+	# 	_tweenTarget = create_tween()
+	# 	_tweenTarget.set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+	# 	_tweenTarget.tween_property(_target, "global_position", p, _duration)
+	pass
 
 #endregion
 
 #region Path
 
 func _drawPath(from: Vector2i, to: Vector2i) -> void:
-	var color := _getPathColor(to)
-	_target.modulate = color
-	var rotation := 0
-	var pathDelta := _delta(from, to)
-	_pathPoints = _astar.get_point_path(_tileIndex(from), _tileIndex(to))
-	for i in _pathPoints.size():
-		var tile := _pathPoints[i]
-		if i + 1 < _pathPoints.size():
-			rotation = _pathRotate(_delta(tile, _pathPoints[i + 1]), pathDelta)
-		var child := _pathScene.instantiate()
-		child.modulate = color
-		child.global_rotation_degrees = rotation
-		child.global_position = _world(tile)
-		_path.add_child(child)
+	# var color := _getPathColor(to)
+	# _target.modulate = color
+	# var rotation := 0
+	# var pathDelta := _delta(from, to)
+	# _pathPoints = _astar.get_point_path(_tileIndex(from), _tileIndex(to))
+	# for i in _pathPoints.size():
+	# 	var tile := _pathPoints[i]
+	# 	if i + 1 < _pathPoints.size():
+	# 		rotation = _pathRotate(_delta(tile, _pathPoints[i + 1]), pathDelta)
+	# 	var child := _pathScene.instantiate()
+	# 	child.modulate = color
+	# 	child.global_rotation_degrees = rotation
+	# 	child.global_position = _world(tile)
+	# 	_path.add_child(child)
+	pass
 
 func _delta(from: Vector2i, to: Vector2i) -> Vector2:
 	return to - from
@@ -426,29 +434,29 @@ const _colorFloor := Color(0.2, 0.2, 0.2, _alpha)
 const _colorCamera := Color(1, 0, 1, _alpha)
 
 func getMapColor(p: Vector2i) -> Color:
-	var camera := getCameraRect()
+	# var camera := getCameraRect()
 	var color := Color(0.25, 0.25, 0.25, 0.25)
-	var on := _isRect(p, camera)
-	if on:
-		color = _colorCamera
-	var lit := isLit(p)
-	var explored := isExplored(p)
-	var hero := heroPosition()
-	if not _tileMap.is_layer_enabled(Layer.Light) or (lit or explored):
-		if p == hero:
-			color = _colorMob
-		elif isStair(p):
-			color = _colorStair
-		elif isDoor(p):
-			color = _colorDoor
-		elif on:
-			color = _colorCamera
-		elif isWall(p):
-			color = _colorWallLit if lit else _colorWall
-		elif isFloor(p):
-			color = _colorFloorLit if lit else _colorFloor
-		else:
-			color = _colorWallLit if lit else _colorWall
+	# var on := _isRect(p, camera)
+	# if on:
+	# 	color = _colorCamera
+	# var lit := isLit(p)
+	# var explored := isExplored(p)
+	# var hero := heroPosition()
+	# if not _tileMap.is_layer_enabled(Layer.Light) or (lit or explored):
+	# 	if p == hero:
+	# 		color = _colorMob
+	# 	elif isStair(p):
+	# 		color = _colorStair
+	# 	elif isDoor(p):
+	# 		color = _colorDoor
+	# 	elif on:
+	# 		color = _colorCamera
+	# 	elif isWall(p):
+	# 		color = _colorWallLit if lit else _colorWall
+	# 	elif isFloor(p):
+	# 		color = _colorFloorLit if lit else _colorFloor
+	# 	else:
+	# 		color = _colorWallLit if lit else _colorWall
 	return color
 
 func _isRect(p: Vector2i, r: Rect2i) -> bool:
@@ -497,11 +505,11 @@ func lightToggle() -> void:
 
 func lightIncrease() -> void:
 	lightRadius += 1
-	_lightUpdate(heroPosition(), lightRadius)
+	# _lightUpdate(heroPosition(), lightRadius)
 
 func lightDecrease() -> void:
 	lightRadius -= 1
-	_lightUpdate(heroPosition(), lightRadius)
+	# _lightUpdate(heroPosition(), lightRadius)
 
 # https://web.archive.org/web/20130705072606/http://doryen.eptalys.net/2011/03/ramblings-on-lights-in-full-color-roguelikes/
 # https://journal.stuffwithstuff.com/2015/09/07/what-the-hero-sees/
