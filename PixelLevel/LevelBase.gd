@@ -101,9 +101,10 @@ func _zoom(at: Vector2, factor: float) -> void:
 	var zoomNew := zoom + factor
 	zoomNew = clamp(zoomNew, _zoomMin, _zoomMax)
 	_camera.zoom = Vector2(zoomNew, zoomNew)
-	var position := -size / 2.0 + get_mouse_position()
-	var positionNew := at - position / zoom - position / zoomNew
-	_camera.global_position = positionNew
+	var position := _camera.global_position
+	var positionNew := at + (position - at) * (zoom / zoomNew)
+	var diff := position - positionNew
+	_camera.global_position = positionNew + diff
 
 func _cameraUpdate() -> void:
 	var map := mapBounds()
