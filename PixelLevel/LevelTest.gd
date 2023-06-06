@@ -108,6 +108,7 @@ func _generated() -> void:
 	# TODO: etc
 
 func _process(delta: float) -> void:
+	super._process(delta)
 	_time += delta
 	if _time > _turnTime and (_turn or _processWasd()):
 		_timeTotal += _time
@@ -123,6 +124,7 @@ func _process(delta: float) -> void:
 		_time = 0.0
 
 func _unhandled_input(event: InputEvent) -> void:
+	super._unhandled_input(event)
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			_turn = false

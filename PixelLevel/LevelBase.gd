@@ -102,8 +102,11 @@ func _mapBounds() -> Rect2i:
 	return Rect2i(_mapPosition(), _mapSize())
 
 func _center() -> Vector2i:
-	var bounds := _mapBounds()
-	return Vector2(bounds.position) + bounds.size / 2.0 / _zoomTarget
+	var bounds: Rect2 = _mapBounds()
+	var borderSize := Vector2(max(-bounds.position.x, 0), max(-bounds.position.y, 0))
+	var center := bounds.position + (bounds.size + 2.0 * borderSize) / 2.0 / _zoomTarget
+	center -= borderSize * (_tileSize.x / _zoomTarget.x)
+	return center
 
 func _cameraCenter() -> void:
 	_cameraTo(_center())
