@@ -47,7 +47,7 @@ func _process(delta: float) -> void:
 	if not _dragLeft and _dragMomentum.length() > _minMouseSpeed:
 		_cameraTo(_camera.global_position - _dragMomentum * _momentumDamping)
 	_dragMomentum = _dragMomentum * _momentumDecay
-	if not _dragLeft and _dragMomentum.is_zero_approx() or _cameraUpdate():
+	if not _dragLeft and (_dragMomentum.is_zero_approx() or _cameraUpdate()):
 		_dragMomentum = Vector2.ZERO
 		emit_signal("updateMap")
 

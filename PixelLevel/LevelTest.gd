@@ -126,28 +126,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	super._unhandled_input(event)
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
-			_turn = false
-			if event.pressed:
-				_dragLeft = true
-				_capture = false
-			else:
-				if _capture:
-					_cameraUpdate()
-				elif _tweenStep:
+			if not event.pressed:
+				if _tweenStep:
 					_targetTo(event.global_position, not _tweenStep.is_running())
 					_targetUpdate()
-				_dragLeft = false
-		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
-			_zoom(event.global_position, _zoomFactor)
-			_cameraUpdate()
-		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			_zoom(event.global_position, -_zoomFactor)
-			_cameraUpdate()
-	elif event is InputEventMouseMotion:
-		if _dragLeft:
-			_capture = true
-			_cameraTo(_camera.global_position - event.relative / _camera.zoom)
-			emit_signal("updateMap")
 
 func _processWasd() -> bool:
 	var done := false
