@@ -80,6 +80,12 @@ func _onResize() -> void:
 	_oldSize = size
 	_cameraUpdate()
 
+func _tileIndex(p: Vector2i) -> int:
+	return Utility.tileIndex(p, _mapSize().x)
+
+func _tilePosition(i: int) -> Vector2i:
+	return Utility.tilePosition(i, _mapSize().x)
+
 func _world(p: Vector2i) -> Vector2:
 	return _tileMap.map_to_local(p)
 
@@ -100,6 +106,9 @@ func _mapSize() -> Vector2i:
 
 func _mapBounds() -> Rect2i:
 	return Rect2i(_mapPosition(), _mapSize())
+
+func _insideMap(p: Vector2i) -> bool:
+	return _tileMap.get_used_rect().has_point(p)
 
 func _center() -> Vector2i:
 	var bounds: Rect2 = _mapBounds()

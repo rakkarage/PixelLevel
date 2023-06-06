@@ -277,20 +277,11 @@ func _connect(p: Vector2i) -> void:
 					if isDoorShut(pp):
 						_astar.set_point_disabled(_tileIndex(pp), true)
 
-func _tileIndex(pos: Vector2i) -> int:
-	return Utility.tileIndex(pos, _mapSize().x)
-
-func _tilePosition(index: int) -> Vector2i:
-	return Utility.tilePosition(index, _mapSize().x)
-
 func isBlocked(p: Vector2i) -> bool:
 	return isFloor(p) && !isBlockedLight(p)
 
 func isBlockedLight(p: Vector2i) -> bool:
 	return isWall(p) or isDoorShut(p)
-
-func insideMap(p: Vector2i) -> bool:
-	return _tileMap.get_used_rect().has_point(p)
 
 func _cameraToMob() -> void:
 	_cameraTo(-(_worldSize() / 2.0) + _hero.global_position)

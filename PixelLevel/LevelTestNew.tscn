@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://bf14nrbj1oaud"]
+
+[ext_resource type="PackedScene" uid="uid://82wscvw880j4" path="res://PixelLevel/LevelBase.tscn" id="1_m1rxo"]
+
+[node name="LevelTest" instance=ExtResource("1_m1rxo")]
+
+[node name="Generate" type="Button" parent="." index="1"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -80.0
+offset_top = -31.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Generate"
