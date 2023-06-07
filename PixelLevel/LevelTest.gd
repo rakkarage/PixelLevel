@@ -6,6 +6,7 @@ extends LevelBase
 @onready var _target: Node2D = $TileMap/Target
 @onready var _path:   Node2D = $TileMap/Path
 
+signal updateMap
 signal generate
 signal generateUp
 
@@ -101,8 +102,8 @@ enum EdgeInsideCorner { TopLeft, TopRight, BottomLeft, TopLeftFlip, TopRightFlip
 func _ready() -> void:
 	super._ready()
 
-func _generated() -> void:
-	super._generated()
+func _onGenerated() -> void:
+	super._onGenerated()
 	_drawEdge()
 	# TODO: etc
 
@@ -119,7 +120,7 @@ func _process(delta: float) -> void:
 				await _move(_hero)
 			if not _handleStair():
 				_lightUpdate(heroPosition(), lightRadius)
-				_checkCenter()
+				#_checkCenter()
 		_time = 0.0
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -157,7 +158,7 @@ func _wasd(direction: Vector2i) -> void:
 		_pathClear()
 		if not isStair(p):
 			_lightUpdate(p, lightRadius)
-			_checkCenter()
+			#_checkCenter()
 		else:
 			if isStairDown(p):
 				emit_signal("generate")
@@ -230,7 +231,7 @@ func _step(mob: Node2D, direction: Vector2i) -> void:
 		_tweenStep.kill()
 	_tweenStep = create_tween()
 	_tweenStep.set_trans(Tween.TRANS_CIRC).set_ease(Tween.EASE_IN_OUT)
-	_tweenStep.tween_property(mob, "global_position", mob.global_position + Vector2(_world(direction)), _turnTime)
+	_tweenStep.tween_property(mob, "global_position", mob.global_position + Vector2(_mapToLocal(direction)), _turnTime)
 	await _tweenStep.finished
 
 func _addPoints() -> void:
@@ -265,29 +266,17 @@ func isBlockedLight(p: Vector2i) -> bool:
 	return isWall(p) or isDoorShut(p)
 
 func _cameraToMob() -> void:
-	_cameraTo(-(_worldSize() / 2.0) + _hero.global_position)
-
-const _edgeOffset := 1.5
-const _edgeOffsetV := Vector2(_edgeOffset, _edgeOffset)
-
-func _checkCenter() -> void:
-	var edge := Vector2(_world(_edgeOffsetV)) / _camera.zoom
-	var test := -(_camera.global_position - _hero.global_position) / _camera.zoom
-	if ((test.x > size.x - edge.x) or (test.x < edge.x) or
-		(test.y > size.y - edge.y) or (test.y < edge.y)):
-		_cameraSnap(-(_worldSize() / 2.0) + _hero.global_position)
-	else:
-		emit_signal("updateMap")
+	_cameraTo(_hero.global_position)
 
 #endregion
 
 #region Target
 
 func heroPosition() -> Vector2i:
-	return _map(_hero.global_position)
+	return _localToMap(_hero.global_position)
 
 func targetPosition() -> Vector2i:
-	return _map(_target.global_position)
+	return _localToMap(_target.global_position)
 
 func _targetToMob() -> void:
 	_targetTo(_hero.global_position, true)
@@ -295,11 +284,11 @@ func _targetToMob() -> void:
 func _targetTo(to: Vector2, turn: bool) -> void:
 	if _tweenTarget:
 		_tweenTarget.kill()
-	var tile := _map(_camera.global_position + to * _camera.zoom)
+	var tile := _localToMap(_camera.global_position + to * _camera.zoom)
 	if tile == targetPosition():
 		_turn = turn
 	else:
-		_target.global_position = _world(tile)
+		_target.global_position = _mapToLocal(tile)
 
 func _targetUpdate() -> void:
 	var from := heroPosition()
@@ -314,7 +303,7 @@ func _targetSnapClosest(tile: Vector2i) -> Vector2i:
 	return p
 
 func _targetSnap(tile: Vector2) -> void:
-	var p := _world(tile)
+	var p := _mapToLocal(tile)
 	if not _target.global_position.is_equal_approx(p):
 		if _tweenTarget:
 			_tweenTarget.kill()
@@ -339,7 +328,7 @@ func _drawPath(from: Vector2i, to: Vector2i) -> void:
 		var child = _path.instantiate()
 		child.modulate = color
 		child.global_rotation_degrees = rotation
-		child.global_position = _world(tile)
+		child.global_position = _mapToLocal(tile)
 		_path.add_child(child)
 
 func _delta(from: Vector2i, to: Vector2i) -> Vector2:
@@ -388,7 +377,7 @@ const _colorFloor := Color(0.2, 0.2, 0.2, _alpha)
 const _colorCamera := Color(1, 0, 1, _alpha)
 
 func getMapColor(p: Vector2i) -> Color:
-	var camera := _worldBounds()
+	var camera := _camera.get_viewport_rect()
 	var color := Color(0.25, 0.25, 0.25, 0.25)
 	var on := _isRect(p, camera)
 	if on:
