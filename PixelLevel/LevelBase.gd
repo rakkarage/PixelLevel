@@ -105,7 +105,9 @@ func _viewBounds() -> Rect2i:
 	return Rect2i(_viewPosition(), _viewSize())
 
 func _mapPosition() -> Vector2i:
-	return _tileMap.get_used_rect().position
+	var bounds := _tileMap.get_used_rect()
+	var borderSize := Vector2i(max(-bounds.position.x, 0), max(-bounds.position.y, 0))
+	return bounds.position - borderSize * _tileSize
 
 func _mapSize() -> Vector2i:
 	return _tileMap.get_used_rect().size * _tileSize
