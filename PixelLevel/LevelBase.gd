@@ -36,6 +36,7 @@ func _readyDeferred() -> void:
 	_onGenerated()
 	_cameraCenter()
 	connect("size_changed", _onResize)
+	Gesture.connect("onZoom", _zoom)
 
 func _onResize() -> void:
 	_cameraTo(Vector2(_center()) + (_camera.global_position - Vector2(_center())) * (Vector2(size) / _oldSize))

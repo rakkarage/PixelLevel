@@ -2,13 +2,14 @@ extends LevelBase
 
 #region Variable
 
-@onready var _hero:   Node2D = $TileMap/Hero
-@onready var _target: Node2D = $TileMap/Target
-@onready var _path:   Node2D = $TileMap/Path
+@onready var _hero:   Node2D = $Hero
+@onready var _target: Node2D = $Target
 
 signal updateMap
 signal generate
 signal generateUp
+
+const _pathScene := preload("res://Interface/Path.tscn")
 
 const _edge := Vector2i(2, 2)
 const _turnTime := 0.22
@@ -99,13 +100,20 @@ enum EdgeInsideCorner { TopLeft, TopRight, BottomLeft, TopLeftFlip, TopRightFlip
 
 #region Init / Input
 
-func _ready() -> void:
-	super._ready()
-
 func _onGenerated() -> void:
 	super._onGenerated()
 	_drawEdge()
-	# TODO: etc
+	_hero.global_position = _localToMap(startAt)
+	_pathClear()
+	_addPoints()
+	_connectPoints()
+	_target.modulate = Color.TRANSPARENT
+	_cameraToMob()
+	_dark()
+	_findTorches()
+	_lightUpdate(heroPosition(), lightRadius)
+	_cameraSnap()
+	verifyCliff()
 
 func _process(delta: float) -> void:
 	super._process(delta)
@@ -179,7 +187,7 @@ func _move(mob: Node2D) -> void:
 
 func _fadeAndFree() -> void:
 	_pathPoints.remove_at(0)
-	var node := _path.get_child(0)
+	var node := _tileMap.get_child(0)
 	var tween := get_tree().create_tween()
 	tween.tween_property(node, "modulate", Color.TRANSPARENT, _turnTime)
 	await tween.finished
@@ -325,11 +333,11 @@ func _drawPath(from: Vector2i, to: Vector2i) -> void:
 		var tile := _pathPoints[i]
 		if i + 1 < _pathPoints.size():
 			rotation = _pathRotate(_delta(tile, _pathPoints[i + 1]), pathDelta)
-		var child = _path.instantiate()
+		var child = _pathScene.instantiate()
 		child.modulate = color
 		child.global_rotation_degrees = rotation
 		child.global_position = _mapToLocal(tile)
-		_path.add_child(child)
+		_tileMap.add_child(child)
 
 func _delta(from: Vector2i, to: Vector2i) -> Vector2:
 	return to - from
@@ -357,7 +365,7 @@ func _pathRotate(stepDelta: Vector2i, pathDelta: Vector2i) -> int:
 
 func _pathClear():
 	_target.modulate = Color.TRANSPARENT
-	for path in _path.get_children():
+	for path in _tileMap.get_children():
 		path.free()
 	for i in range(_pathPoints.size() - 1, 0, -1):
 		_pathPoints.remove_at(i)
