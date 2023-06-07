@@ -78,10 +78,16 @@ func _process(delta: float) -> void:
 			_cameraSnap()
 
 func _tileIndex(p: Vector2i) -> int:
-	return p.x + p.y * _width
+	return _index(p, _width)
+
+func _index(p: Vector2i, w: int) -> int:
+	return p.x + p.y * w
 
 func _tilePosition(i: int) -> Vector2i:
-	return Vector2i(i % _width, int(i / float(_width)))
+	return _position(i, _width)
+
+func _position(i: int, w: int) -> Vector2i:
+	return Vector2i(i % w, int(i / float(w)))
 
 func _mapToLocal(p: Vector2i) -> Vector2:
 	return _tileMap.map_to_local(p)

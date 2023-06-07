@@ -6,7 +6,7 @@ const _maxRoomHeight := 7
 const _minRoomWidth := 4
 const _minRoomHeight := 4
 
-func _init(level: Level) -> void:
+func _init(level: LevelBase) -> void:
 	super(level)
 
 func generate(delta: int = 1) -> void:
@@ -36,7 +36,7 @@ func _placeRooms() -> Array:
 			roomIndex = Random.next(maxRooms)
 			usedRoom = used[roomIndex]
 		used[roomIndex] = true
-		var p := Utility.tilePosition(roomIndex, across) * Vector2i(_maxRoomWidth, _maxRoomHeight)
+		var p := _level._position(roomIndex, across) * Vector2i(_maxRoomWidth, _maxRoomHeight)
 		var room := Rect2(p.x, p.y, _maxRoomWidth, _maxRoomHeight)
 		_drawRoom(_findRoom(room))
 		rooms.append(room)

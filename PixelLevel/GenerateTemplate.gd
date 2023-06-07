@@ -54,7 +54,7 @@ var _data := {
 	}
 }
 
-func _init(level: Level) -> void:
+func _init(level: LevelBase) -> void:
 	super(level)
 
 func generate(delta: int = 1) -> void:
