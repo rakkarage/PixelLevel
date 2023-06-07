@@ -593,8 +593,6 @@ func _randomTileCoords(tile: Tile) -> Vector2i:
 func _randomTileAlternative(tile: Tile, coords: Vector2i) -> int:
 	return Random.next(_sources[tile].get_alternative_tiles_count(coords))
 
-#endregion
-
 #region Back / Floor
 
 func _setBackRandom(p: Vector2i, tile: int) -> void:
@@ -940,5 +938,7 @@ func _drawEdge() -> void:
 					_setRandomTile(Layer.Edge, p, Tile.EdgeInside, INVALID_CELL, _randomEdgeInside(Direction.N))
 				elif y == maxY - 1: # s
 					_setRandomTile(Layer.Edge, p, Tile.EdgeInside, INVALID_CELL, _randomEdgeInside(Direction.S))
+
+#endregion
 
 #endregion
