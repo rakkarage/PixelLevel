@@ -100,6 +100,9 @@ enum EdgeInsideCorner { TopLeft, TopRight, BottomLeft, TopLeftFlip, TopRightFlip
 
 #region Init / Input
 
+func _ready() -> void:
+	super._ready()
+
 func _onGenerated() -> void:
 	super._onGenerated()
 	_drawEdge()

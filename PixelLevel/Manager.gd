@@ -46,21 +46,21 @@ func _throttleUpdateMap() -> void:
 func _updateMap() -> void:
 	var at = _level._heroPosition()
 	var original = _level._tileMap.get_used_rect().size
-	var miniSize = original
+	var trimSize = original
 	var offset := Vector2i.ZERO
-	if miniSize.x > _max.x:
-		miniSize.x = _max.x
-		offset.x = at.x - int(miniSize.x / 2.0)
+	if trimSize.x > _max.x:
+		trimSize.x = _max.x
+		offset.x = at.x - int(trimSize.x / 2.0)
 		if offset.x < 0: offset.x = 0
-		if offset.x > original.x - miniSize.x + 1: offset.x = original.x - miniSize.x + 1
-	if miniSize.y > _max.y:
-		miniSize.y = _max.y
-		offset.y = at.y - int(miniSize.y / 2.0)
+		if offset.x > original.x - trimSize.x + 1: offset.x = original.x - trimSize.x + 1
+	if trimSize.y > _max.y:
+		trimSize.y = _max.y
+		offset.y = at.y - int(trimSize.y / 2.0)
 		if offset.y < 0: offset.y = 0
-		if offset.y > original.y - miniSize.y + 1: offset.y = original.y - miniSize.y + 1
-	var image = Image.create(miniSize.x, miniSize.y, false, Image.FORMAT_RGBA8)
-	for y in range(miniSize.y):
-		for x in range(miniSize.x):
+		if offset.y > original.y - trimSize.y + 1: offset.y = original.y - trimSize.y + 1
+	var image = Image.create(trimSize.x, trimSize.y, false, Image.FORMAT_RGBA8)
+	for y in range(trimSize.y):
+		for x in range(trimSize.x):
 			image.set_pixel(x, y, _level.getMapColor(Vector2i(x + offset.x, y + offset.y)))
 	image.resize_to_po2(false, Image.INTERPOLATE_NEAREST)
 	image.resize_to_po2(false, Image.INTERPOLATE_NEAREST)

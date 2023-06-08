@@ -19,6 +19,7 @@ var _oldSize := Vector2.ZERO
 var _dragMomentum: Vector2 = Vector2.ZERO
 var _click := false
 var _drag := false
+var _update := false
 
 func _ready() -> void: call_deferred("_readyDeferred")
 
@@ -45,8 +46,9 @@ func _unhandled_input(event: InputEvent) -> void:
 				_drag = false
 			else:
 				if _drag:
-					_cameraSnap()
+					_update = true
 				_click = false
+			_dragMomentum = Vector2.ZERO
 		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			_zoom(event.global_position, _zoomFactor)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
@@ -64,8 +66,8 @@ func _process(delta: float) -> void:
 		_cameraTo(_camera.global_position - _dragMomentum * _momentumDamping)
 	_dragMomentum = _dragMomentum * _momentumDecay
 	if _dragMomentum.is_zero_approx():
-		_dragMomentum = Vector2.ZERO
-		if not _click:
+		if _update:
+			_update = false
 			_cameraSnap()
 
 func _zoom(at: Vector2, factor: float) -> void:
@@ -114,10 +116,10 @@ func _cameraPosition() -> Vector2: return _camera.global_position - _cameraSize(
 
 func _cameraBounds() -> Rect2: return Rect2(_cameraPosition(), _cameraSize())
 
-func constrainRect(view: Rect2, map: Rect2i) -> Vector2:
+func constrainRect(view: Rect2i, map: Rect2i) -> Vector2:
 	return constrain(view.position, view.end, map.position, map.end)
 
-func constrain(minView: Vector2i, maxView: Vector2i, minMap: Vector2i, maxMap: Vector2i) -> Vector2:
+func constrain(minView: Vector2i, maxView: Vector2i, minMap: Vector2i, maxMap: Vector2i) -> Vector2i:
 	var delta := Vector2i.ZERO
 	if minView.x > minMap.x: delta.x += minMap.x - minView.x
 	if maxView.x < maxMap.x: delta.x -= maxView.x - maxMap.x
