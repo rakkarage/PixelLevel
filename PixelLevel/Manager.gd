@@ -1,6 +1,6 @@
 extends Node
 
-@onready var _level: Level = $Level/SubViewport
+@onready var _level: LevelBase = $Level/SubViewport
 @onready var _mask: AnimationPlayer = $Fore/Mask/Mask/AnimationPlayer
 @onready var _textureRect: TextureRect = $Fore/MiniMap
 @onready var _position: Label = $Fore/Panel/VBox/Mouse/Value
@@ -43,9 +43,9 @@ func _limitedUpdateMap() -> void:
 	_timerUpdateMap.start(_updateMapDelay)
 
 func _updateMap() -> void:
-	var at := Vector2i(_level.mobPosition()) # TODO: make mob return int
-	var original := _level._back.get_used_rect().size
-	var size := original
+	var at = _level.heroPosition()
+	var original = _level._back.get_used_rect().size
+	var size = original
 	var offset := Vector2i.ZERO
 	if size.x > _max.x:
 		size.x = _max.x

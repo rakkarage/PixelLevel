@@ -20,7 +20,7 @@ var _turn := false
 var _time := 0.0
 var _turnTotal := 0
 var _timeTotal := 0.0
-var startAt := Vector2(4, 4)
+var startAt := Vector2i(4, 4)
 
 var theme := 0 # dungeon theme
 var day := true # day or night outside theme
@@ -103,15 +103,15 @@ enum EdgeInsideCorner { TopLeft, TopRight, BottomLeft, TopLeftFlip, TopRightFlip
 func _onGenerated() -> void:
 	super._onGenerated()
 	_drawEdge()
-	_hero.global_position = _localToMap(startAt)
+	_hero.global_position = _mapToLocal(startAt)
 	_pathClear()
 	_addPoints()
-	_connectPoints()
+	_connect(_heroPosition())
 	_target.modulate = Color.TRANSPARENT
 	_cameraToMob()
 	_dark()
 	_findTorches()
-	_lightUpdate(heroPosition(), lightRadius)
+	_lightUpdate(_heroPosition(), lightRadius)
 	_cameraSnap()
 	verifyCliff()
 
@@ -127,7 +127,7 @@ func _process(delta: float) -> void:
 			if not _handleDoor():
 				await _move(_hero)
 			if not _handleStair():
-				_lightUpdate(heroPosition(), lightRadius)
+				_lightUpdate(_heroPosition(), lightRadius)
 				#_checkCenter()
 		_time = 0.0
 
@@ -157,7 +157,7 @@ func _processWasd() -> bool:
 	return done
 
 func _wasd(direction: Vector2i) -> void:
-	var p := heroPosition() + direction
+	var p := _heroPosition() + direction
 	if isDoorShut(p):
 		_toggleDoor(p)
 	if not isBlocked(p):
@@ -199,7 +199,7 @@ func _fadeAndFree() -> void:
 
 func _handleStair() -> bool:
 	if _pathPoints.size() == 1:
-		var p := heroPosition()
+		var p := _heroPosition()
 		if isStairDown(p):
 			emit_signal("generate")
 			return true
@@ -209,8 +209,8 @@ func _handleStair() -> bool:
 	return false
 
 func _handleDoor() -> bool:
-	var from := heroPosition()
-	var to := targetPosition()
+	var from := _heroPosition()
+	var to := _targetPosition()
 	if (from - to).length() < 2.0:
 		if isDoor(to):
 			_toggleDoor(to)
@@ -244,27 +244,19 @@ func _step(mob: Node2D, direction: Vector2i) -> void:
 
 func _addPoints() -> void:
 	_astar.clear()
-	var rect := _tileMap.get_used_rect()
+	var rect := _mapBounds()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
 			var p := Vector2i(x, y)
-			_astar.add_point(_tileIndex(p), p)
-
-func _connectPoints() -> void:
-	var rect := _tileMap.get_used_rect()
-	for y in range(rect.size.y):
-		for x in range(rect.size.x):
-			_connect(Vector2i(x, y))
+			if isDoor(p) or not isBlocked(p):
+				_astar.add_point(_tileIndex(p), p)
+				if isDoorShut(p):
+					_astar.set_point_disabled(_tileIndex(p))
 
 func _connect(p: Vector2i) -> void:
-	for yy in range(p.y - 1, p.y + 2):
-		for xx in range(p.x - 1, p.x + 2):
-			var pp := Vector2i(xx, yy)
-			if (not is_equal_approx(yy, p.y) or not is_equal_approx(xx, p.x)) and _insideMap(pp):
-				if isDoor(pp) or not isBlocked(pp):
-					_astar.connect_points(_tileIndex(p), _tileIndex(pp), false)
-					if isDoorShut(pp):
-						_astar.set_point_disabled(_tileIndex(pp), true)
+	for cell in _tileMap.get_surrounding_cells(p):
+		if _insideMap(cell):
+			_astar.connect_points(_tileIndex(p), _tileIndex(cell))
 
 func isBlocked(p: Vector2i) -> bool:
 	return isFloor(p) && !isBlockedLight(p)
@@ -279,10 +271,10 @@ func _cameraToMob() -> void:
 
 #region Target
 
-func heroPosition() -> Vector2i:
+func _heroPosition() -> Vector2i:
 	return _localToMap(_hero.global_position)
 
-func targetPosition() -> Vector2i:
+func _targetPosition() -> Vector2i:
 	return _localToMap(_target.global_position)
 
 func _targetToMob() -> void:
@@ -292,14 +284,14 @@ func _targetTo(to: Vector2, turn: bool) -> void:
 	if _tweenTarget:
 		_tweenTarget.kill()
 	var tile := _localToMap(_camera.global_position + to * _camera.zoom)
-	if tile == targetPosition():
+	if tile == _targetPosition():
 		_turn = turn
 	else:
 		_target.global_position = _mapToLocal(tile)
 
 func _targetUpdate() -> void:
-	var from := heroPosition()
-	var to := _targetSnapClosest(targetPosition())
+	var from := _heroPosition()
+	var to := _targetSnapClosest(_targetPosition())
 	_pathClear()
 	if from != to:
 		_drawPath(from, to)
@@ -391,7 +383,7 @@ func getMapColor(p: Vector2i) -> Color:
 		color = _colorCamera
 	var lit := isLit(p)
 	var explored := isExplored(p)
-	var hero := heroPosition()
+	var hero := _heroPosition()
 	if not _tileMap.is_layer_enabled(Layer.Light) or (lit or explored):
 		if p == hero:
 			color = _colorMob
@@ -455,11 +447,11 @@ func lightToggle() -> void:
 
 func lightIncrease() -> void:
 	lightRadius += 1
-	_lightUpdate(heroPosition(), lightRadius)
+	_lightUpdate(_heroPosition(), lightRadius)
 
 func lightDecrease() -> void:
 	lightRadius -= 1
-	_lightUpdate(heroPosition(), lightRadius)
+	_lightUpdate(_heroPosition(), lightRadius)
 
 # https://web.archive.org/web/20130705072606/http://doryen.eptalys.net/2011/03/ramblings-on-lights-in-full-color-roguelikes/
 # https://journal.stuffwithstuff.com/2015/09/07/what-the-hero-sees/

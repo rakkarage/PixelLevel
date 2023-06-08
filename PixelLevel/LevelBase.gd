@@ -19,7 +19,6 @@ var _oldSize := Vector2.ZERO
 var _tileSet: TileSet
 var _sources: Array[TileSetSource]
 var _tileSize: Vector2i
-var _width: int
 var _dragMomentum: Vector2 = Vector2.ZERO
 const _momentumDecay: float = 0.8
 const _momentumDamping: float = 0.333
@@ -45,7 +44,6 @@ func _onResize() -> void:
 
 func _onGenerated() -> void:
 	_oldSize = size
-	_width = _mapSize().x
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -85,19 +83,19 @@ func _zoom(at: Vector2, factor: float) -> void:
 	_cameraTo(positionNew + _camera.global_position - positionNew)
 	_cameraSnap()
 
-func _tileIndex(p: Vector2i) -> int:
-	return _index(p, _width)
-
 func _index(p: Vector2i, w: int) -> int:
 	return p.x + p.y * w
-
-func _tilePosition(i: int) -> Vector2i:
-	return _position(i, _width)
 
 func _position(i: int, w: int) -> Vector2i:
 	return Vector2i(i % w, int(i / float(w)))
 
-func _mapToLocal(p: Vector2i) -> Vector2:
+func _tileIndex(p: Vector2i) -> int:
+	return _index(p, _mapSize().x)
+
+func _tilePosition(i: int) -> Vector2i:
+	return _position(i, _mapSize().x)
+
+func _mapToLocal(p: Vector2i) -> Vector2i:
 	return _tileMap.map_to_local(p)
 
 func _localToMap(p: Vector2i) -> Vector2i:
@@ -112,6 +110,8 @@ func _viewSize() -> Vector2i:
 func _viewBounds() -> Rect2i:
 	return Rect2i(_viewPosition(), _viewSize())
 
+# TODO: This is a hack to get around the fact that the tilemap doesn't
+#       have a way to get the used rect without the border.
 func _mapBounds() -> Rect2i:
 	var rect := _tileMap.get_used_rect()
 	var borderSize := Vector2i(max(-rect.position.x, 0), max(-rect.position.y, 0))
