@@ -1,13 +1,16 @@
-[gd_scene load_steps=7 format=3 uid="uid://bf14nrbj1oaud"]
+[gd_scene load_steps=9 format=3 uid="uid://bf14nrbj1oaud"]
 
 [ext_resource type="PackedScene" uid="uid://82wscvw880j4" path="res://PixelLevel/LevelBase.tscn" id="1_m1rxo"]
 [ext_resource type="PackedScene" uid="uid://c1mewurj1iqoa" path="res://PixelMobs/Mob/Slime.tscn" id="2_1y2b4"]
 [ext_resource type="Script" path="res://PixelLevel/LevelTest.gd" id="2_3ebrx"]
+[ext_resource type="Script" path="res://PixelLevel/Manager.gd" id="2_6ydkp"]
 [ext_resource type="PackedScene" uid="uid://cpwpn22g1oh61" path="res://Interface/Back.tscn" id="2_ij0qj"]
 [ext_resource type="TileSet" uid="uid://cjn2ri268c5yx" path="res://PixelLevel/TileSet.tres" id="3_2nw2k"]
 [ext_resource type="PackedScene" uid="uid://c0gglcpbg3xyp" path="res://Interface/Target.tscn" id="4_gpw00"]
+[ext_resource type="PackedScene" uid="uid://dplcfrlu5as7j" path="res://Interface/Mask.tscn" id="7_aghgx"]
 
 [node name="LevelTest" instance=ExtResource("1_m1rxo")]
+script = ExtResource("2_6ydkp")
 
 [node name="Back" parent="." index="0" instance=ExtResource("2_ij0qj")]
 layout_mode = 1
@@ -24,15 +27,128 @@ format = 2
 
 [node name="Target" parent="Container/SubViewport" index="4" instance=ExtResource("4_gpw00")]
 
-[node name="Generate" type="Button" parent="." index="2"]
+[node name="Fore" type="Control" parent="." index="2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MiniMap" type="TextureRect" parent="Fore" index="0"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 80.0
+offset_bottom = 80.0
+mouse_filter = 2
+
+[node name="Mask" parent="Fore" index="1" instance=ExtResource("7_aghgx")]
+layout_mode = 1
+
+[node name="Panel" type="PanelContainer" parent="Fore" index="2"]
+modulate = Color(1, 1, 1, 0.74902)
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -80.0
-offset_top = -31.0
+offset_left = -236.0
+offset_top = -159.0
 grow_horizontal = 0
 grow_vertical = 0
-text = "Generate"
+
+[node name="VBox" type="VBoxContainer" parent="Fore/Panel" index="0"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="Mouse" type="HBoxContainer" parent="Fore/Panel/VBox" index="0"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Fore/Panel/VBox/Mouse" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Mouse:"
+
+[node name="Value" type="Label" parent="Fore/Panel/VBox/Mouse" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "(0, 0)"
+
+[node name="Level" type="HBoxContainer" parent="Fore/Panel/VBox" index="1"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Fore/Panel/VBox/Level" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Level:"
+
+[node name="Value" type="Label" parent="Fore/Panel/VBox/Level" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "0"
+
+[node name="HBoxLevel" type="HBoxContainer" parent="Fore/Panel/VBox" index="2"]
+layout_mode = 2
+
+[node name="Down" type="Button" parent="Fore/Panel/VBox/HBoxLevel" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Down"
+
+[node name="Regen" type="Button" parent="Fore/Panel/VBox/HBoxLevel" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Regen"
+
+[node name="Up" type="Button" parent="Fore/Panel/VBox/HBoxLevel" index="2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Up"
+
+[node name="Light" type="HBoxContainer" parent="Fore/Panel/VBox" index="3"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Fore/Panel/VBox/Light" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Light:"
+
+[node name="Value" type="Label" parent="Fore/Panel/VBox/Light" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "0"
+
+[node name="HBoxLight" type="HBoxContainer" parent="Fore/Panel/VBox" index="4"]
+layout_mode = 2
+
+[node name="Minus" type="Button" parent="Fore/Panel/VBox/HBoxLight" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Minus"
+
+[node name="Toggle" type="Button" parent="Fore/Panel/VBox/HBoxLight" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Toggle"
+
+[node name="Plus" type="Button" parent="Fore/Panel/VBox/HBoxLight" index="2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Plus"

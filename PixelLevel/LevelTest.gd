@@ -259,7 +259,7 @@ func _connect(p: Vector2i) -> void:
 			_astar.connect_points(_tileIndex(p), _tileIndex(cell))
 
 func isBlocked(p: Vector2i) -> bool:
-	return isFloor(p) && !isBlockedLight(p)
+	return !isFloor(p) || isBlockedLight(p)
 
 func isBlockedLight(p: Vector2i) -> bool:
 	return isWall(p) or isDoorShut(p)

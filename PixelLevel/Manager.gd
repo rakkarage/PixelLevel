@@ -1,6 +1,6 @@
-extends Node
+extends Control
 
-@onready var _level: LevelBase = $Level/SubViewport
+@onready var _level: LevelBase = $Container/SubViewport
 @onready var _mask: AnimationPlayer = $Fore/Mask/Mask/AnimationPlayer
 @onready var _textureRect: TextureRect = $Fore/MiniMap
 @onready var _position: Label = $Fore/Panel/VBox/Mouse/Value
@@ -13,14 +13,15 @@ extends Node
 @onready var _toggle: Button = $Fore/Panel/VBox/HBoxLight/Toggle
 @onready var _plus: Button = $Fore/Panel/VBox/HBoxLight/Plus
 @onready var _imageTexture := ImageTexture.new()
+
 const _max := Vector2i(64, 64)
-var _timerUpdateMap = Timer.new()
 const _updateMapDelay = 0.1
+var _timerUpdateMap = Timer.new()
 
 func _ready() -> void:
 	_textureRect.texture = _imageTexture
 	_updateMap()
-	_level.connect("updateMap", _limitedUpdateMap)
+	_level.connect("updateMap", _throttleUpdateMap)
 	_timerUpdateMap.connect("timeout", _updateMap)
 	add_child(_timerUpdateMap)
 	_level.connect("generate", _generate)
@@ -39,27 +40,27 @@ func _input(event: InputEvent) -> void:
 		var y := str(snapped(event.position.y, 0.01))
 		_position.text = "({0}, {1})".format([x, y])
 
-func _limitedUpdateMap() -> void:
+func _throttleUpdateMap() -> void:
 	_timerUpdateMap.start(_updateMapDelay)
 
 func _updateMap() -> void:
-	var at = _level.heroPosition()
-	var original = _level._back.get_used_rect().size
-	var size = original
+	var at = _level._heroPosition()
+	var original = _level._tileMap.get_used_rect().size
+	var miniSize = original
 	var offset := Vector2i.ZERO
-	if size.x > _max.x:
-		size.x = _max.x
-		offset.x = at.x - int(size.x / 2.0)
+	if miniSize.x > _max.x:
+		miniSize.x = _max.x
+		offset.x = at.x - int(miniSize.x / 2.0)
 		if offset.x < 0: offset.x = 0
-		if offset.x > original.x - size.x + 1: offset.x = original.x - size.x + 1
-	if size.y > _max.y:
-		size.y = _max.y
-		offset.y = at.y - int(size.y / 2.0)
+		if offset.x > original.x - miniSize.x + 1: offset.x = original.x - miniSize.x + 1
+	if miniSize.y > _max.y:
+		miniSize.y = _max.y
+		offset.y = at.y - int(miniSize.y / 2.0)
 		if offset.y < 0: offset.y = 0
-		if offset.y > original.y - size.y + 1: offset.y = original.y - size.y + 1
-	var image = Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
-	for y in range(size.y):
-		for x in range(size.x):
+		if offset.y > original.y - miniSize.y + 1: offset.y = original.y - miniSize.y + 1
+	var image = Image.create(miniSize.x, miniSize.y, false, Image.FORMAT_RGBA8)
+	for y in range(miniSize.y):
+		for x in range(miniSize.x):
 			image.set_pixel(x, y, _level.getMapColor(Vector2i(x + offset.x, y + offset.y)))
 	image.resize_to_po2(false, Image.INTERPOLATE_NEAREST)
 	image.resize_to_po2(false, Image.INTERPOLATE_NEAREST)
