@@ -9,10 +9,10 @@ const INVALID_CELL := Vector2i(INVALID, INVALID)
 
 const _tweenTime := 0.333
 const _zoomMin := 0.2
-const _zoomMax := 4.0
+const _zoomMax := 8.0
 const _zoomFactor := 0.1
 const _zoomRate := 5.0
-var _zoomTarget := Vector2.ONE
+var _zoomTarget := 1.0
 var _click := false
 var _drag := false
 var _oldSize := Vector2.ZERO
@@ -69,7 +69,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			_cameraTo(_camera.global_position - mouseDelta)
 
 func _process(delta: float) -> void:
-	_camera.zoom = _camera.zoom.move_toward(_zoomTarget, delta * _zoomRate)
+	_camera.zoom = _camera.zoom.move_toward(Vector2(_zoomTarget, _zoomTarget), delta * _zoomRate)
 	if not _click and _dragMomentum.length() > _minMouseSpeed:
 		_cameraTo(_camera.global_position - _dragMomentum * _momentumDamping)
 	_dragMomentum = _dragMomentum * _momentumDecay
@@ -77,6 +77,13 @@ func _process(delta: float) -> void:
 		_dragMomentum = Vector2.ZERO
 		if not _click:
 			_cameraSnap()
+
+func _zoom(at: Vector2, factor: float) -> void:
+	var zoomNew := _zoomTarget * pow(_zoomRate, factor)
+	_zoomTarget = clamp(zoomNew, _zoomMin, _zoomMax)
+	var positionNew := at + (_camera.global_position - at) * (_zoomTarget / zoomNew)
+	_cameraTo(positionNew + _camera.global_position - positionNew)
+	_cameraSnap()
 
 func _tileIndex(p: Vector2i) -> int:
 	return _index(p, _width)
@@ -105,39 +112,39 @@ func _viewSize() -> Vector2i:
 func _viewBounds() -> Rect2i:
 	return Rect2i(_viewPosition(), _viewSize())
 
+func _mapBounds() -> Rect2i:
+	var rect := _tileMap.get_used_rect()
+	var borderSize := Vector2i(max(-rect.position.x, 0), max(-rect.position.y, 0))
+	rect.position += borderSize
+	rect.size -= borderSize * 2
+	return rect
+
 func _mapPosition() -> Vector2i:
-	var bounds := _tileMap.get_used_rect()
-	var borderSize := Vector2i(max(-bounds.position.x, 0), max(-bounds.position.y, 0))
-	return bounds.position - borderSize * _tileSize
+	return _mapBounds().position
 
 func _mapSize() -> Vector2i:
-	return _tileMap.get_used_rect().size * _tileSize
-
-func _mapBounds() -> Rect2i:
-	return Rect2i(_mapPosition(), _mapSize())
+	return _mapBounds().size
 
 func _insideMap(p: Vector2i) -> bool:
-	return _tileMap.get_used_rect().has_point(p)
+	return _mapBounds().has_point(p)
+
+func _tileMapPosition() -> Vector2i:
+	return _mapBounds().position * _tileSize
+
+func _tileMapSize() -> Vector2i:
+	return _mapBounds().size * _tileSize
+
+func _tileMapBounds() -> Rect2i:
+	return Rect2i(_tileMapPosition(), _tileMapSize())
 
 func _center() -> Vector2i:
-	return _mapPosition() + _mapSize() / 2
+	return _tileMapPosition() + _tileMapSize() / 2
 
 func _cameraTo(to: Vector2i) -> void:
 	_camera.global_position = to
 
 func _cameraCenter() -> void:
 	_cameraTo(_center())
-
-func _zoom(at: Vector2, factor: float) -> void:
-	var zoom := _zoomTarget.x
-	var zoomNew := zoom * pow(_zoomRate, factor)
-	zoomNew = clamp(zoomNew, _zoomMin, _zoomMax)
-	_zoomTarget = Vector2(zoomNew, zoomNew)
-	var position := _camera.global_position
-	var positionNew := at + (position - at) * (zoom / zoomNew)
-	var diff := position - positionNew
-	_cameraTo(positionNew + diff)
-	_cameraSnap()
 
 func constrainRect(view: Rect2i, map: Rect2i) -> Vector2:
 	return constrain(view.position, view.end, map.position, map.end)
@@ -151,8 +158,8 @@ func constrain(minView: Vector2i, maxView: Vector2i, minMap: Vector2i, maxMap: V
 	return delta
 
 func _cameraSnap() -> void:
-	var map := _mapBounds()
-	var view := _viewBounds().grow(-int(_tileSize.x / _zoomTarget.x))
+	var map := _tileMapBounds()
+	var view := _viewBounds().grow(-int(_tileSize.x / _zoomTarget))
 	if not view.intersects(map):
 		var to := _camera.global_position + constrainRect(view, map)
 		create_tween().tween_property(_camera, "global_position", to, _tweenTime).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)

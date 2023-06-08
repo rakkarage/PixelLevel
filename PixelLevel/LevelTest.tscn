@@ -8,6 +8,7 @@
 [node name="LevelTest" instance=ExtResource("1_m1rxo")]
 
 [node name="SubViewport" parent="Container" index="0"]
+canvas_item_default_texture_filter = 0
 script = ExtResource("2_3ebrx")
 
 [node name="Hero" parent="Container/SubViewport" index="2" instance=ExtResource("2_1y2b4")]
