@@ -244,7 +244,7 @@ func _step(mob: Node2D, direction: Vector2i) -> void:
 
 func _addPoints() -> void:
 	_astar.clear()
-	var rect := _mapBounds()
+	var rect := _tileMap.get_used_rect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
 			var p := Vector2i(x, y)
@@ -914,7 +914,7 @@ func _randomEdgeInsideCorner(d: Direction) -> int:
 	return INVALID
 
 func _drawEdge() -> void:
-	var rect := _mapBounds()
+	var rect := _tileMap.get_used_rect()
 	if rect.size == Vector2i.ZERO:
 		return
 	var tileSet = _tileMapEdge.tile_set

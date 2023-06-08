@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://bf14nrbj1oaud"]
+[gd_scene load_steps=6 format=3 uid="uid://bf14nrbj1oaud"]
 
 [ext_resource type="PackedScene" uid="uid://82wscvw880j4" path="res://PixelLevel/LevelBase.tscn" id="1_m1rxo"]
 [ext_resource type="PackedScene" uid="uid://c1mewurj1iqoa" path="res://PixelMobs/Mob/Slime.tscn" id="2_1y2b4"]
 [ext_resource type="Script" path="res://PixelLevel/LevelTest.gd" id="2_3ebrx"]
+[ext_resource type="TileSet" uid="uid://cjn2ri268c5yx" path="res://PixelLevel/TileSet.tres" id="3_2nw2k"]
 [ext_resource type="PackedScene" uid="uid://c0gglcpbg3xyp" path="res://Interface/Target.tscn" id="4_gpw00"]
 
 [node name="LevelTest" instance=ExtResource("1_m1rxo")]
@@ -11,9 +12,13 @@
 canvas_item_default_texture_filter = 0
 script = ExtResource("2_3ebrx")
 
-[node name="Hero" parent="Container/SubViewport" index="2" instance=ExtResource("2_1y2b4")]
+[node name="TileMapEdge" type="TileMap" parent="Container/SubViewport" index="2"]
+tile_set = ExtResource("3_2nw2k")
+format = 2
 
-[node name="Target" parent="Container/SubViewport" index="3" instance=ExtResource("4_gpw00")]
+[node name="Hero" parent="Container/SubViewport" index="3" instance=ExtResource("2_1y2b4")]
+
+[node name="Target" parent="Container/SubViewport" index="4" instance=ExtResource("4_gpw00")]
 
 [node name="Generate" type="Button" parent="." index="1"]
 layout_mode = 1

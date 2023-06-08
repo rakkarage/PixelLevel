@@ -83,10 +83,10 @@ func _position(i: int, w: int) -> Vector2i:
 	return Vector2i(i % w, int(i / float(w)))
 
 func _tileIndex(p: Vector2i) -> int:
-	return _index(p, _mapSize().x)
+	return _index(p, _tileMap.get_used_rect().size.x)
 
 func _tilePosition(i: int) -> Vector2i:
-	return _position(i, _mapSize().x)
+	return _position(i, _tileMap.get_used_rect().size.x)
 
 func _mapToLocal(p: Vector2i) -> Vector2i:
 	return _tileMap.map_to_local(p)
@@ -94,44 +94,11 @@ func _mapToLocal(p: Vector2i) -> Vector2i:
 func _localToMap(p: Vector2i) -> Vector2i:
 	return _tileMap.local_to_map(p)
 
-func _viewPosition() -> Vector2i:
-	return _camera.global_position - _viewSize() / 2.0
-
-func _viewSize() -> Vector2i:
-	return _camera.get_viewport_rect().size / _zoomTarget
-
-func _viewBounds() -> Rect2i:
-	return Rect2i(_viewPosition(), _viewSize())
-
-# TODO: This is a hack to get around the fact that the tilemap doesn't
-#       have a way to get the used rect without the border.
-func _mapBounds() -> Rect2i:
-	var rect := _tileMap.get_used_rect()
-	var borderSize := Vector2i(max(-rect.position.x, 0), max(-rect.position.y, 0))
-	rect.position += borderSize
-	rect.size -= borderSize * 2
-	return rect
-
-func _mapPosition() -> Vector2i:
-	return _mapBounds().position
-
-func _mapSize() -> Vector2i:
-	return _mapBounds().size
-
 func _insideMap(p: Vector2i) -> bool:
-	return _mapBounds().has_point(p)
-
-func _tileMapPosition() -> Vector2i:
-	return _mapBounds().position * _tileMap.tile_set.tile_size
-
-func _tileMapSize() -> Vector2i:
-	return _mapBounds().size * _tileMap.tile_set.tile_size
-
-func _tileMapBounds() -> Rect2i:
-	return Rect2i(_tileMapPosition(), _tileMapSize())
+	return _tileMap.get_used_rect().has_point(p)
 
 func _center() -> Vector2i:
-	return _tileMapPosition() + _tileMapSize() / 2
+	return _tileMap.get_used_rect().size * _tileMap.tile_set.tile_size / 2.0
 
 func _cameraTo(to: Vector2i) -> void:
 	_camera.global_position = to
@@ -150,9 +117,12 @@ func constrain(minView: Vector2i, maxView: Vector2i, minMap: Vector2i, maxMap: V
 	if maxView.y < maxMap.y: delta.y -= maxView.y - maxMap.y
 	return delta
 
+func _cameraBounds() -> Rect2i:
+	return Rect2i(_camera.global_position - size / 2.0, _camera.get_viewport_rect().size / _zoomTarget)
+
 func _cameraSnap() -> void:
-	var map := _tileMapBounds()
-	var view := _viewBounds().grow(-int(_tileMap.tile_set.tile_size.x / _zoomTarget))
+	var map := _tileMap.get_used_rect()
+	var view := _cameraBounds().grow(-int(_tileMap.tile_set.tile_size.x / _zoomTarget))
 	if not view.intersects(map):
 		var to := _camera.global_position + constrainRect(view, map)
 		create_tween().tween_property(_camera, "global_position", to, _tweenTime).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)

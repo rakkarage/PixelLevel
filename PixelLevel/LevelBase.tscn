@@ -110,7 +110,3 @@ layer_11/y_sort_enabled = false
 layer_11/y_sort_origin = 0
 layer_11/z_index = 0
 layer_11/tile_data = PackedInt32Array()
-
-[node name="TileMapEdge" type="TileMap" parent="Container/SubViewport"]
-tile_set = ExtResource("2_kxgey")
-format = 2
