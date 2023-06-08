@@ -2,8 +2,9 @@ extends LevelBase
 
 #region Variable
 
-@onready var _hero:   Node2D = $Hero
+@onready var _hero: Node2D = $Hero
 @onready var _target: Node2D = $Target
+@onready var _tileMapEdge: TileMap = $TileMapEdge
 
 signal updateMap
 signal generate
@@ -47,8 +48,7 @@ enum Layer {
 	Tree,
 	ItemFore, SplitFore, WaterFore,
 	Top,
-	Light,
-	Edge }
+	Light }
 
 # matches tileSet source id
 enum Tile {
@@ -571,26 +571,49 @@ func _darken() -> void:
 
 #region Tile
 
+# make same for _tileMapEdge
+
+func _setTileMap(tileMap: TileMap, layer: Layer, p: Vector2i, tile := INVALID, coords := INVALID_CELL, alternative := 0) -> void:
+	tileMap.set_cell(layer, p, tile, coords, alternative)
+
 func _setTile(layer: Layer, p: Vector2i, tile := INVALID, coords := INVALID_CELL, alternative := 0) -> void:
-	_tileMap.set_cell(layer, p, tile, coords, alternative)
+	_setTileMap(_tileMap, layer, p, tile, coords, alternative)
+
+func _clearTileMap(tileMap: TileMap, layer: Layer, p: Vector2i) -> void:
+	_setTileMap(tileMap, layer, p)
 
 func _clearTile(layer: Layer, p: Vector2i) -> void:
-	_setTile(layer, p)
+	_clearTileMap(_tileMap, layer, p)
 
-func _setRandomTile(layer: Layer, p: Vector2i, tile: Tile, coords := INVALID_CELL, alternative := INVALID) -> void:
+func _setRandomTileMap(tileMap: TileMap, layer: Layer, p: Vector2i, tile: Tile, coords := INVALID_CELL, alternative := INVALID) -> void:
 	var c := _randomTileCoords(tile) if coords == INVALID_CELL else coords
 	var a := _randomTileAlternative(tile, c) if alternative == INVALID else alternative
-	_setTile(layer, p, tile, c, a)
+	_setTileMap(tileMap, layer, p, tile, c, a)
 
-func _randomTileCoords(tile: Tile) -> Vector2i:
+func _setRandomTile(layer: Layer, p: Vector2i, tile: Tile, coords := INVALID_CELL, alternative := INVALID) -> void:
+	_setRandomTileMap(_tileMap, layer, p, tile, coords, alternative)
+
+func _setRandomTileEdge(p: Vector2i, tile: Tile, coords := INVALID_CELL, alternative := INVALID) -> void:
+	_setRandomTileMap(_tileMapEdge, Layer.Back, p, tile, coords, alternative)
+
+func _randomTileMapCoords(tileMap: TileMap, tile: Tile) -> Vector2i:
 	var array := []
-	var source := _sources[tile]
+	var tileSet = tileMap.tile_set
+	var source = tileSet.get_source(tileSet.get_source_id(tile))
 	for i in source.get_tiles_count():
 		array.append(source.get_tile_data(source.get_tile_id(i), 0).probability)
 	return source.get_tile_id(Random.probabilityIndex(array))
 
+func _randomTileCoords(tile: Tile) -> Vector2i:
+	return _randomTileMapCoords(_tileMap, tile)
+
+func _randomTileMapAlternative(tileMap: TileMap, tile: Tile, coords: Vector2i) -> int:
+	var tileSet = tileMap.tile_set
+	var source = tileSet.get_source(tileSet.get_source_id(tile))
+	return Random.next(source.get_alternative_tiles_count(coords))
+
 func _randomTileAlternative(tile: Tile, coords: Vector2i) -> int:
-	return Random.next(_sources[tile].get_alternative_tiles_count(coords))
+	return _randomTileMapAlternative(_tileMap, tile, coords)
 
 #region Back / Floor
 
@@ -891,11 +914,12 @@ func _randomEdgeInsideCorner(d: Direction) -> int:
 	return INVALID
 
 func _drawEdge() -> void:
-	var rect := _tileMap.get_used_rect()
+	var rect := _mapBounds()
 	if rect.size == Vector2i.ZERO:
 		return
-	var o := _sources[Tile.EdgeOutsideCorner]
-	var i := _sources[Tile.EdgeInsideCorner]
+	var tileSet = _tileMapEdge.tile_set
+	var o = tileSet.get_source(tileSet.get_source_id(Tile.EdgeOutsideCorner))
+	var i = tileSet.get_source(tileSet.get_source_id(Tile.EdgeInsideCorner))
 	var minY: int = rect.position.y - 1
 	var maxY: int = rect.end.y
 	var minX: int = rect.position.x - 1
@@ -905,38 +929,38 @@ func _drawEdge() -> void:
 			var p := Vector2i(x, y)
 			if x == minX or x == maxX or y == minY or y == maxY:
 				if x == minX and y == minY: # nw
-					_setRandomTile(Layer.Edge, p, Tile.EdgeOutsideCorner, o.get_tile_id(EdgeOutsideCorner.TopLeft))
+					_setRandomTileEdge(p, Tile.EdgeOutsideCorner, o.get_tile_id(EdgeOutsideCorner.TopLeft))
 				elif x == minX and y == maxY: # sw
-					_setRandomTile(Layer.Edge, p, Tile.EdgeOutsideCorner, o.get_tile_id(EdgeOutsideCorner.BottomLeft))
+					_setRandomTileEdge(p, Tile.EdgeOutsideCorner, o.get_tile_id(EdgeOutsideCorner.BottomLeft))
 				elif x == maxX and y == minY: # ne
-					_setRandomTile(Layer.Edge, p, Tile.EdgeOutsideCorner, o.get_tile_id(EdgeOutsideCorner.TopRight))
+					_setRandomTileEdge(p, Tile.EdgeOutsideCorner, o.get_tile_id(EdgeOutsideCorner.TopRight))
 				elif x == maxX and y == maxY: # se
-					_setRandomTile(Layer.Edge, p, Tile.EdgeOutsideCorner, o.get_tile_id(EdgeOutsideCorner.BottomRight))
+					_setRandomTileEdge(p, Tile.EdgeOutsideCorner, o.get_tile_id(EdgeOutsideCorner.BottomRight))
 				elif x == minX: # w
-					_setRandomTile(Layer.Edge, p, Tile.EdgeOutside, INVALID_CELL, _randomEdgeOutside(Direction.W))
+					_setRandomTileEdge(p, Tile.EdgeOutside, INVALID_CELL, _randomEdgeOutside(Direction.W))
 				elif x == maxX: # e
-					_setRandomTile(Layer.Edge, p, Tile.EdgeOutside, INVALID_CELL, _randomEdgeOutside(Direction.E))
+					_setRandomTileEdge(p, Tile.EdgeOutside, INVALID_CELL, _randomEdgeOutside(Direction.E))
 				elif y == minY: # n
-					_setRandomTile(Layer.Edge, p, Tile.EdgeOutside, INVALID_CELL, _randomEdgeOutside(Direction.N))
+					_setRandomTileEdge(p, Tile.EdgeOutside, INVALID_CELL, _randomEdgeOutside(Direction.N))
 				elif y == maxY: # s
-					_setRandomTile(Layer.Edge, p, Tile.EdgeOutside, INVALID_CELL, _randomEdgeOutside(Direction.S))
+					_setRandomTileEdge(p, Tile.EdgeOutside, INVALID_CELL, _randomEdgeOutside(Direction.S))
 			elif (x == minX + 1) or (x == maxX - 1) or (y == minY + 1) or (y == maxY - 1):
 				if x == minX + 1 and y == minY + 1: # nw
-					_setRandomTile(Layer.Edge, p, Tile.EdgeInsideCorner, i.get_tile_id(EdgeInsideCorner.TopLeft), _randomEdgeInsideCorner(Direction.NW))
+					_setRandomTileEdge(p, Tile.EdgeInsideCorner, i.get_tile_id(EdgeInsideCorner.TopLeft), _randomEdgeInsideCorner(Direction.NW))
 				elif x == minX + 1 and y == maxY - 1: # sw
-					_setRandomTile(Layer.Edge, p, Tile.EdgeInsideCorner, i.get_tile_id(EdgeInsideCorner.BottomLeft), _randomEdgeInsideCorner(Direction.SW))
+					_setRandomTileEdge(p, Tile.EdgeInsideCorner, i.get_tile_id(EdgeInsideCorner.BottomLeft), _randomEdgeInsideCorner(Direction.SW))
 				elif x == maxX - 1 and y == minY + 1: # ne
-					_setRandomTile(Layer.Edge, p, Tile.EdgeInsideCorner, i.get_tile_id(EdgeInsideCorner.TopRight), _randomEdgeInsideCorner(Direction.NE))
+					_setRandomTileEdge(p, Tile.EdgeInsideCorner, i.get_tile_id(EdgeInsideCorner.TopRight), _randomEdgeInsideCorner(Direction.NE))
 				elif x == maxX - 1 and y == maxY - 1: # se
-					_setRandomTile(Layer.Edge, p, Tile.EdgeInsideCorner, i.get_tile_id(EdgeInsideCorner.BottomRight), _randomEdgeInsideCorner(Direction.SE))
+					_setRandomTileEdge(p, Tile.EdgeInsideCorner, i.get_tile_id(EdgeInsideCorner.BottomRight), _randomEdgeInsideCorner(Direction.SE))
 				elif x == minX + 1: # w
-					_setRandomTile(Layer.Edge, p, Tile.EdgeInside, INVALID_CELL, _randomEdgeInside(Direction.W))
+					_setRandomTileEdge(p, Tile.EdgeInside, INVALID_CELL, _randomEdgeInside(Direction.W))
 				elif x == maxX - 1: # e
-					_setRandomTile(Layer.Edge, p, Tile.EdgeInside, INVALID_CELL, _randomEdgeInside(Direction.E))
+					_setRandomTileEdge(p, Tile.EdgeInside, INVALID_CELL, _randomEdgeInside(Direction.E))
 				elif y == minY + 1: # n
-					_setRandomTile(Layer.Edge, p, Tile.EdgeInside, INVALID_CELL, _randomEdgeInside(Direction.N))
+					_setRandomTileEdge(p, Tile.EdgeInside, INVALID_CELL, _randomEdgeInside(Direction.N))
 				elif y == maxY - 1: # s
-					_setRandomTile(Layer.Edge, p, Tile.EdgeInside, INVALID_CELL, _randomEdgeInside(Direction.S))
+					_setRandomTileEdge(p, Tile.EdgeInside, INVALID_CELL, _randomEdgeInside(Direction.S))
 
 #endregion
 

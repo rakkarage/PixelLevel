@@ -16,9 +16,6 @@ var _zoomTarget := 1.0
 var _click := false
 var _drag := false
 var _oldSize := Vector2.ZERO
-var _tileSet: TileSet
-var _sources: Array[TileSetSource]
-var _tileSize: Vector2i
 var _dragMomentum: Vector2 = Vector2.ZERO
 const _momentumDecay: float = 0.8
 const _momentumDamping: float = 0.333
@@ -28,10 +25,6 @@ func _ready() -> void:
 	call_deferred("_readyDeferred")
 
 func _readyDeferred() -> void:
-	_tileSet = _tileMap.tile_set
-	_tileSize = _tileSet.tile_size
-	for i in _tileSet.get_source_count():
-		_sources.append(_tileSet.get_source(_tileSet.get_source_id(i)))
 	_onGenerated()
 	_cameraCenter()
 	connect("size_changed", _onResize)
@@ -129,10 +122,10 @@ func _insideMap(p: Vector2i) -> bool:
 	return _mapBounds().has_point(p)
 
 func _tileMapPosition() -> Vector2i:
-	return _mapBounds().position * _tileSize
+	return _mapBounds().position * _tileMap.tile_set.tile_size
 
 func _tileMapSize() -> Vector2i:
-	return _mapBounds().size * _tileSize
+	return _mapBounds().size * _tileMap.tile_set.tile_size
 
 func _tileMapBounds() -> Rect2i:
 	return Rect2i(_tileMapPosition(), _tileMapSize())
@@ -159,7 +152,7 @@ func constrain(minView: Vector2i, maxView: Vector2i, minMap: Vector2i, maxMap: V
 
 func _cameraSnap() -> void:
 	var map := _tileMapBounds()
-	var view := _viewBounds().grow(-int(_tileSize.x / _zoomTarget))
+	var view := _viewBounds().grow(-int(_tileMap.tile_set.tile_size.x / _zoomTarget))
 	if not view.intersects(map):
 		var to := _camera.global_position + constrainRect(view, map)
 		create_tween().tween_property(_camera, "global_position", to, _tweenTime).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)
