@@ -122,7 +122,7 @@ func _insideMap(p: Vector2i) -> bool:
 func _center() -> Vector2i:
 	return _mapPosition() + _mapSize() / 2
 
-func _cameraTo(to: Vector2) -> void:
+func _cameraTo(to: Vector2i) -> void:
 	_camera.global_position = to
 
 func _cameraCenter() -> void:
