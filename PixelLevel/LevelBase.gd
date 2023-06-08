@@ -31,7 +31,8 @@ func _readyDeferred() -> void:
 	Gesture.connect("onZoom", _zoom)
 
 func _onResize() -> void:
-	_cameraTo(Vector2(_center()) + (_camera.global_position - Vector2(_center())) * (Vector2(size) / _oldSize))
+	var center: Vector2 = _center()
+	_cameraTo(center + (_camera.global_position - center) * (Vector2(size) / _oldSize))
 	_oldSize = size
 	_cameraSnap()
 

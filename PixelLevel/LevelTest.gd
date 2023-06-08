@@ -571,8 +571,6 @@ func _darken() -> void:
 
 #region Tile
 
-# make same for _tileMapEdge
-
 func _setTileMap(tileMap: TileMap, layer: Layer, p: Vector2i, tile := INVALID, coords := INVALID_CELL, alternative := 0) -> void:
 	tileMap.set_cell(layer, p, tile, coords, alternative)
 
