@@ -6,32 +6,30 @@ class_name LevelBase
 
 const INVALID := -1
 const INVALID_CELL := Vector2i(INVALID, INVALID)
-
 const _tweenTime := 0.333
 const _zoomMin := 0.2
 const _zoomMax := 8.0
 const _zoomFactor := 0.1
 const _zoomRate := 5.0
-var _zoomTarget := 1.0
-var _click := false
-var _drag := false
-var _oldSize := Vector2.ZERO
-var _dragMomentum: Vector2 = Vector2.ZERO
 const _momentumDecay: float = 0.8
 const _momentumDamping: float = 0.333
 const _minMouseSpeed: float = 0.1
+var _zoomTarget := 1.0
+var _oldSize := Vector2.ZERO
+var _dragMomentum: Vector2 = Vector2.ZERO
+var _click := false
+var _drag := false
 
-func _ready() -> void:
-	call_deferred("_readyDeferred")
+func _ready() -> void: call_deferred("_readyDeferred")
 
 func _readyDeferred() -> void:
 	_onGenerated()
-	_cameraCenter()
+	_centerCamera()
 	connect("size_changed", _onResize)
 	Gesture.connect("onZoom", _zoom)
 
 func _onResize() -> void:
-	var center: Vector2 = _center()
+	var center: Vector2 = _mapCenter()
 	_cameraTo(center + (_camera.global_position - center) * (Vector2(size) / _oldSize))
 	_oldSize = size
 	_cameraSnap()
@@ -77,37 +75,46 @@ func _zoom(at: Vector2, factor: float) -> void:
 	_cameraTo(positionNew + _camera.global_position - positionNew)
 	_cameraSnap()
 
-func _index(p: Vector2i, w: int) -> int:
-	return p.x + p.y * w
+func _cameraTo(to: Vector2) -> void: _camera.global_position = to
 
-func _position(i: int, w: int) -> Vector2i:
-	return Vector2i(i % w, int(i / float(w)))
+func _centerCamera() -> void: _cameraTo(_mapCenter())
 
-func _tileIndex(p: Vector2i) -> int:
-	return _index(p, _tileMap.get_used_rect().size.x)
+func _cameraSnap() -> void:
+	var map := _mapBounds()
+	var view := _cameraBounds().grow(-int(_tileMap.tile_set.tile_size.x / _zoomTarget))
+	if not view.intersects(map):
+		var to := _camera.global_position + constrainRect(view, map)
+		create_tween().tween_property(_camera, "global_position", to, _tweenTime).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)
 
-func _tilePosition(i: int) -> Vector2i:
-	return _position(i, _tileMap.get_used_rect().size.x)
+func _index(p: Vector2i, w: int) -> int: return p.x + p.y * w
 
-func _mapToLocal(p: Vector2i) -> Vector2i:
-	return _tileMap.map_to_local(p)
+func _position(i: int, w: int) -> Vector2i: return Vector2i(i % w, int(i / float(w)))
 
-func _localToMap(p: Vector2i) -> Vector2i:
-	return _tileMap.local_to_map(p)
+func _tileIndex(p: Vector2i) -> int: return _index(p, _tileMap.get_used_rect().size.x)
 
-func _insideMap(p: Vector2i) -> bool:
-	return _tileMap.get_used_rect().has_point(p)
+func _tilePosition(i: int) -> Vector2i: return _position(i, _tileMap.get_used_rect().size.x)
 
-func _center() -> Vector2i:
-	return _tileMap.get_used_rect().size * _tileMap.tile_set.tile_size / 2.0
+func _mapToLocal(p: Vector2i) -> Vector2i: return _tileMap.map_to_local(p)
 
-func _cameraTo(to: Vector2i) -> void:
-	_camera.global_position = to
+func _localToMap(p: Vector2i) -> Vector2i: return _tileMap.local_to_map(p)
 
-func _cameraCenter() -> void:
-	_cameraTo(_center())
+func _insideMap(p: Vector2i) -> bool: return _tileMap.get_used_rect().has_point(p)
 
-func constrainRect(view: Rect2i, map: Rect2i) -> Vector2:
+func _mapCenter() -> Vector2i: return _mapSize() / 2.0
+
+func _mapSize() -> Vector2i: return _tileMap.get_used_rect().size * _tileMap.tile_set.tile_size
+
+func _mapPosition() -> Vector2i: return _tileMap.get_used_rect().position * _tileMap.tile_set.tile_size
+
+func _mapBounds() -> Rect2i: return Rect2i(_mapPosition(), _mapSize())
+
+func _cameraSize() -> Vector2: return size / _zoomTarget
+
+func _cameraPosition() -> Vector2: return _camera.global_position - _cameraSize() / 2.0
+
+func _cameraBounds() -> Rect2: return Rect2(_cameraPosition(), _cameraSize())
+
+func constrainRect(view: Rect2, map: Rect2i) -> Vector2:
 	return constrain(view.position, view.end, map.position, map.end)
 
 func constrain(minView: Vector2i, maxView: Vector2i, minMap: Vector2i, maxMap: Vector2i) -> Vector2:
@@ -117,13 +124,3 @@ func constrain(minView: Vector2i, maxView: Vector2i, minMap: Vector2i, maxMap: V
 	if minView.y > minMap.y: delta.y += minMap.y - minView.y
 	if maxView.y < maxMap.y: delta.y -= maxView.y - maxMap.y
 	return delta
-
-func _cameraBounds() -> Rect2i:
-	return Rect2i(_camera.global_position - size / 2.0, _camera.get_viewport_rect().size / _zoomTarget)
-
-func _cameraSnap() -> void:
-	var map := _tileMap.get_used_rect()
-	var view := _cameraBounds().grow(-int(_tileMap.tile_set.tile_size.x / _zoomTarget))
-	if not view.intersects(map):
-		var to := _camera.global_position + constrainRect(view, map)
-		create_tween().tween_property(_camera, "global_position", to, _tweenTime).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)
