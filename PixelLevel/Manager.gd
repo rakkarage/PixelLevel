@@ -43,15 +43,12 @@ func _input(event: InputEvent) -> void:
 		var x := str(snapped(event.position.x, 0.01))
 		var y := str(snapped(event.position.y, 0.01))
 		_position.text = "({0}, {1})".format([x, y])
-		# TODO: move to level
-		var tileMap = _level._tileMap
-		var local = tileMap.to_local(event.position / _level._zoomTarget + _level._cameraPosition())
-		var p = tileMap.local_to_map(local)
-		if _level._insideMap(p):
+		var map = _level._globalToMap(event.position)
+		if _level._insideMap(map):
 			_mapPosition.modulate = Color(1, 1, 1)
 		else:
 			_mapPosition.modulate = Color(1, 0, 0)
-		_mapPosition.text = "({0}, {1})".format([p.x, p.y])
+		_mapPosition.text = "({0}, {1})".format([map.x, map.y])
 
 func _throttleUpdateMap() -> void:
 	_timerUpdateMap.start(_updateMapDelay)

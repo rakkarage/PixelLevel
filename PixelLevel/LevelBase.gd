@@ -104,6 +104,14 @@ func _mapToLocal(p: Vector2i) -> Vector2i: return _tileMap.map_to_local(p)
 
 func _localToMap(p: Vector2i) -> Vector2i: return _tileMap.local_to_map(p)
 
+func _localToGlobal(p: Vector2i) -> Vector2: return _tileMap.to_global(p) * _zoomTarget - _cameraPosition()
+
+func _globalToLocal(p: Vector2) -> Vector2i: return _tileMap.to_local(p / _zoomTarget + _cameraPosition())
+
+func _mapToGlobal(p: Vector2i) -> Vector2: return _localToGlobal(_mapToLocal(p))
+
+func _globalToMap(p: Vector2) -> Vector2i: return _localToMap(_globalToLocal(p))
+
 func _insideMap(p: Vector2i) -> bool: return _tileMap.get_used_rect().has_point(p)
 
 func _mapCenter() -> Vector2i: return _mapSize() / 2.0
