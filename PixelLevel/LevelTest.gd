@@ -29,9 +29,6 @@ const themeCount := 4 # number of dungeon themes
 var themeCliff := 0 # cliff theme
 const themeCliffCount := 2 # number of cliff themes
 
-var _tweenStep: Tween
-var _tweenTarget: Tween
-
 #endregion
 
 #region Tile Data
@@ -138,9 +135,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if not event.pressed:
-				if _tweenStep:
-					_targetTo(event.global_position, not _tweenStep.is_running())
-					_targetUpdate()
+				_targetTo(event.global_position)
+				_targetUpdate()
 
 func _processWasd() -> bool:
 	var done := false
@@ -164,7 +160,7 @@ func _wasd(direction: Vector2i) -> void:
 		_toggleDoor(p)
 	if not isBlocked(p):
 		_face(_hero, direction)
-		await _step(_hero, direction)
+		_step(_hero, direction)
 		_pathClear()
 		if not isStair(p):
 			_lightUpdate(p, lightRadius)
@@ -185,7 +181,7 @@ func _move(mob: Node2D) -> void:
 		var delta := _delta(_pathPoints[0], _pathPoints[1])
 		_face(mob, delta)
 		_fadeAndFree()
-		await _step(mob, delta)
+		_step(mob, delta)
 
 func _fadeAndFree() -> void:
 	_pathPoints.remove_at(0)
@@ -237,12 +233,7 @@ func _face(mob: Node2D, direction: Vector2i) -> void:
 
 func _step(mob: Node2D, direction: Vector2i) -> void:
 	mob.walk()
-	if _tweenStep:
-		_tweenStep.kill()
-	_tweenStep = create_tween()
-	_tweenStep.set_trans(Tween.TRANS_CIRC).set_ease(Tween.EASE_IN_OUT)
-	_tweenStep.tween_property(mob, "global_position", mob.global_position + Vector2(_mapToLocal(direction)), _turnTime)
-	await _tweenStep.finished
+	create_tween().tween_property(mob, "global_position", mob.global_position + Vector2(_mapToLocal(direction)), _turnTime).set_trans(Tween.TRANS_CIRC).set_ease(Tween.EASE_IN_OUT)
 
 func _addPoints() -> void:
 	_astar.clear()
@@ -279,17 +270,16 @@ func _heroPosition() -> Vector2i:
 func _targetPosition() -> Vector2i:
 	return _localToMap(_target.global_position)
 
-func _targetToMob() -> void:
+func _targetToHero() -> void:
 	_targetTo(_hero.global_position, true)
 
-func _targetTo(to: Vector2, turn: bool) -> void:
-	if _tweenTarget:
-		_tweenTarget.kill()
-	var tile := _localToMap(_camera.global_position + to * _camera.zoom)
-	if tile == _targetPosition():
-		_turn = turn
-	else:
-		_target.global_position = _mapToLocal(tile)
+func _targetTo(to: Vector2, turn := true) -> void:
+	var tile := _globalToMap(to)
+	if _insideMap(tile):
+		if tile == _targetPosition():
+			_turn = turn
+		else:
+			_target.global_position = _mapToLocal(tile)
 
 func _targetUpdate() -> void:
 	var from := _heroPosition()
@@ -306,11 +296,7 @@ func _targetSnapClosest(tile: Vector2i) -> Vector2i:
 func _targetSnap(tile: Vector2) -> void:
 	var p := _mapToLocal(tile)
 	if not _target.global_position.is_equal_approx(p):
-		if _tweenTarget:
-			_tweenTarget.kill()
-		_tweenTarget = create_tween()
-		_tweenTarget.set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
-		_tweenTarget.tween_property(_target, "global_position", p, _tweenTime)
+		create_tween().tween_property(_target, "global_position", p, _tweenTime).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)
 
 #endregion
 
