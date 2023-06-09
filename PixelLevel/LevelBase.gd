@@ -13,12 +13,12 @@ const _zoomMin := 0.2
 const _zoomMax := 8.0
 const _zoomFactor := 0.1
 const _zoomRate := 5.0
-const _momentumDecay: float = 0.8
-const _momentumDamping: float = 0.333
-const _minMouseSpeed: float = 0.1
+const _momentumDecay := 0.8
+const _momentumDamping := 0.333
+const _minMouseSpeed := 7.0
 var _zoomTarget := 1.0
 var _oldSize := Vector2.ZERO
-var _dragMomentum: Vector2 = Vector2.ZERO
+var _dragMomentum := Vector2.ZERO
 var _click := false
 var _drag := false
 var _update := false
@@ -50,7 +50,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				if _drag:
 					_update = true
 				_click = false
-			_dragMomentum = Vector2.ZERO
+			_cameraSnap()
 		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			_zoom(event.global_position, _zoomFactor)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:

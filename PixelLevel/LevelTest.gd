@@ -391,7 +391,6 @@ func getMapColor(p: Vector2i) -> Color:
 	var explored := isExplored(p)
 	var hero := _heroPosition()
 	if not _tileMap.is_layer_enabled(Layer.Light) or (lit or explored):
-		print("found")
 		if p == hero:
 			color = _colorMob
 		elif isStair(p):
