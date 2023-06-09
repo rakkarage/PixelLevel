@@ -377,22 +377,14 @@ const _colorFloorLit := Color(0.4, 0.4, 0.4, _alpha)
 const _colorFloor := Color(0.2, 0.2, 0.2, _alpha)
 const _colorCamera := Color(1, 0, 1, _alpha)
 
-func getCameraRect() -> Rect2i:
-	# TODO: this is wrong
-	var p = _camera.global_position - _cameraSize() / 2 * _camera.zoom
-	# print(p)
-	p = _localToMap(p)
-	# print(p)
-	var r = _cameraSize()
-	# print(r)
-	r = _localToMap(r)
-	# print(r)
-	return Rect2i(p, r)
+func _isOnRect(p: Vector2i, r: Rect2i) -> bool:
+	return (((p.x >= r.position.x and p.x <= r.position.x + r.size.x - 1) and (p.y == r.position.y or p.y == r.position.y + r.size.y - 1)) or
+			((p.y >= r.position.y and p.y <= r.position.y + r.size.y - 1) and (p.x == r.position.x or p.x == r.position.x + r.size.x - 1)))
 
 func getMapColor(p: Vector2i) -> Color:
-	var camera := getCameraRect()
+	var camera := _cameraBoundsMap()
 	var color := Color(0.25, 0.25, 0.25, 0.25)
-	var on := _isRect(p, camera)
+	var on := _isOnRect(p, camera)
 	if on:
 		color = _colorCamera
 	var lit := isLit(p)
@@ -415,10 +407,6 @@ func getMapColor(p: Vector2i) -> Color:
 		else:
 			color = _colorWallLit if lit else _colorWall
 	return color
-
-func _isRect(p: Vector2i, r: Rect2i) -> bool:
-	return (((p.x >= r.position.x and p.x <= r.size.x) and (p.y == r.position.y or p.y == r.size.y)) or
-		((p.y >= r.position.y and p.y <= r.size.y) and (p.x == r.position.x or p.x == r.size.x)))
 
 const _alphaPath := 0.333
 const _colorPathMob := Color(_colorMob.r, _colorMob.g, _colorMob.b, _alphaPath)

@@ -128,6 +128,8 @@ func _cameraPosition() -> Vector2: return _camera.global_position - _cameraSize(
 
 func _cameraBounds() -> Rect2: return Rect2(_cameraPosition(), _cameraSize())
 
+func _cameraBoundsMap() -> Rect2i: return Rect2i(_localToMap(_cameraPosition()), _localToMap(_cameraSize()))
+
 func constrainRect(view: Rect2i, map: Rect2i) -> Vector2:
 	return constrain(view.position, view.end, map.position, map.end)
 
