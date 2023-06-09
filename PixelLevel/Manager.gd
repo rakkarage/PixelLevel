@@ -4,6 +4,7 @@ extends Control
 @onready var _mask: AnimationPlayer = $Fore/Mask/Mask/AnimationPlayer
 @onready var _textureRect: TextureRect = $Fore/MiniMap
 @onready var _position: Label = $Fore/Panel/VBox/Mouse/Value
+@onready var _mapPosition: Label = $Fore/Panel/VBox/Tile/Value
 @onready var _depth: Label = $Fore/Panel/VBox/Level/Value
 @onready var _up: Button = $Fore/Panel/VBox/HBoxLevel/Up
 @onready var _regen: Button = $Fore/Panel/VBox/HBoxLevel/Regen
@@ -12,16 +13,18 @@ extends Control
 @onready var _minus: Button = $Fore/Panel/VBox/HBoxLight/Minus
 @onready var _toggle: Button = $Fore/Panel/VBox/HBoxLight/Toggle
 @onready var _plus: Button = $Fore/Panel/VBox/HBoxLight/Plus
-@onready var _imageTexture := ImageTexture.new()
 
 const _max := Vector2i(64, 64)
-const _updateMapDelay = 0.1
-var _timerUpdateMap = Timer.new()
+const _updateMapDelay := 0.1
+var _timerUpdateMap := Timer.new()
+var _ok := false
 
-func _ready() -> void:
-	_textureRect.texture = _imageTexture
+func _ready() -> void: call_deferred("_readyDeferred")
+
+func _readyDeferred() -> void:
 	_updateMap()
 	_level.connect("updateMap", _throttleUpdateMap)
+	_timerUpdateMap.one_shot = true
 	_timerUpdateMap.connect("timeout", _updateMap)
 	add_child(_timerUpdateMap)
 	_level.connect("generate", _generate)
@@ -33,12 +36,22 @@ func _ready() -> void:
 	_regen.connect("pressed", _levelRegen)
 	_down.connect("pressed", _levelDown)
 	_light.text = str(_level.lightRadius)
+	_ok = true
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion:
+	if _ok and event is InputEventMouseMotion:
 		var x := str(snapped(event.position.x, 0.01))
 		var y := str(snapped(event.position.y, 0.01))
 		_position.text = "({0}, {1})".format([x, y])
+		# TODO: move to level
+		var tileMap = _level._tileMap
+		var local = tileMap.to_local(event.position / _level._zoomTarget + _level._cameraPosition())
+		var p = tileMap.local_to_map(local)
+		if _level._insideMap(p):
+			_mapPosition.modulate = Color(1, 1, 1)
+		else:
+			_mapPosition.modulate = Color(1, 0, 0)
+		_mapPosition.text = "({0}, {1})".format([p.x, p.y])
 
 func _throttleUpdateMap() -> void:
 	_timerUpdateMap.start(_updateMapDelay)
@@ -64,7 +77,7 @@ func _updateMap() -> void:
 			image.set_pixel(x, y, _level.getMapColor(Vector2i(x + offset.x, y + offset.y)))
 	image.resize_to_po2(false, Image.INTERPOLATE_NEAREST)
 	image.resize_to_po2(false, Image.INTERPOLATE_NEAREST)
-	_imageTexture = ImageTexture.create_from_image(image)
+	_textureRect.texture = ImageTexture.create_from_image(image)
 
 @onready var _g := {
 	# GenerateBasic.new(_level): 1,

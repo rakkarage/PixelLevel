@@ -6,7 +6,6 @@ extends LevelBase
 @onready var _target: Node2D = $Target
 @onready var _tileMapEdge: TileMap = $TileMapEdge
 
-signal updateMap
 signal generate
 signal generateUp
 
@@ -378,8 +377,20 @@ const _colorFloorLit := Color(0.4, 0.4, 0.4, _alpha)
 const _colorFloor := Color(0.2, 0.2, 0.2, _alpha)
 const _colorCamera := Color(1, 0, 1, _alpha)
 
+func getCameraRect() -> Rect2i:
+	# TODO: this is wrong
+	var p = _camera.global_position - _cameraSize() / 2 * _camera.zoom
+	# print(p)
+	p = _localToMap(p)
+	# print(p)
+	var r = _cameraSize()
+	# print(r)
+	r = _localToMap(r)
+	# print(r)
+	return Rect2i(p, r)
+
 func getMapColor(p: Vector2i) -> Color:
-	var camera := _camera.get_viewport_rect()
+	var camera := getCameraRect()
 	var color := Color(0.25, 0.25, 0.25, 0.25)
 	var on := _isRect(p, camera)
 	if on:
@@ -388,6 +399,7 @@ func getMapColor(p: Vector2i) -> Color:
 	var explored := isExplored(p)
 	var hero := _heroPosition()
 	if not _tileMap.is_layer_enabled(Layer.Light) or (lit or explored):
+		print("found")
 		if p == hero:
 			color = _colorMob
 		elif isStair(p):

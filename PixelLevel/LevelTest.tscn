@@ -81,7 +81,22 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "(0, 0)"
 
-[node name="Level" type="HBoxContainer" parent="Fore/Panel/VBox" index="1"]
+[node name="Tile" type="HBoxContainer" parent="Fore/Panel/VBox" index="1"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Fore/Panel/VBox/Tile" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Tile:"
+
+[node name="Value" type="Label" parent="Fore/Panel/VBox/Tile" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "(0, 0)"
+
+[node name="Level" type="HBoxContainer" parent="Fore/Panel/VBox" index="2"]
 layout_mode = 2
 
 [node name="Label" type="Label" parent="Fore/Panel/VBox/Level" index="0"]
@@ -96,7 +111,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "0"
 
-[node name="HBoxLevel" type="HBoxContainer" parent="Fore/Panel/VBox" index="2"]
+[node name="HBoxLevel" type="HBoxContainer" parent="Fore/Panel/VBox" index="3"]
 layout_mode = 2
 
 [node name="Down" type="Button" parent="Fore/Panel/VBox/HBoxLevel" index="0"]
@@ -117,7 +132,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Up"
 
-[node name="Light" type="HBoxContainer" parent="Fore/Panel/VBox" index="3"]
+[node name="Light" type="HBoxContainer" parent="Fore/Panel/VBox" index="4"]
 layout_mode = 2
 
 [node name="Label" type="Label" parent="Fore/Panel/VBox/Light" index="0"]
@@ -132,7 +147,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "0"
 
-[node name="HBoxLight" type="HBoxContainer" parent="Fore/Panel/VBox" index="4"]
+[node name="HBoxLight" type="HBoxContainer" parent="Fore/Panel/VBox" index="5"]
 layout_mode = 2
 
 [node name="Minus" type="Button" parent="Fore/Panel/VBox/HBoxLight" index="0"]

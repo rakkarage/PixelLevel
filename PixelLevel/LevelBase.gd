@@ -4,6 +4,8 @@ class_name LevelBase
 @onready var _camera: Camera2D = $Camera
 @onready var _tileMap: TileMap = $TileMap
 
+signal updateMap
+
 const INVALID := -1
 const INVALID_CELL := Vector2i(INVALID, INVALID)
 const _tweenTime := 0.333
@@ -59,6 +61,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			var mouseDelta = event.relative / _zoomTarget
 			_dragMomentum = _dragMomentum * _momentumDecay + mouseDelta
 			_cameraTo(_camera.global_position - mouseDelta)
+			updateMap.emit()
 
 func _process(delta: float) -> void:
 	_camera.zoom = _camera.zoom.move_toward(Vector2(_zoomTarget, _zoomTarget), delta * _zoomRate)
@@ -87,6 +90,7 @@ func _cameraSnap() -> void:
 	if not view.intersects(map):
 		var to := _camera.global_position + constrainRect(view, map)
 		create_tween().tween_property(_camera, "global_position", to, _tweenTime).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)
+	updateMap.emit()
 
 func _index(p: Vector2i, w: int) -> int: return p.x + p.y * w
 
