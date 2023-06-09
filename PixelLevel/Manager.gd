@@ -40,20 +40,22 @@ func _readyDeferred() -> void:
 
 func _input(event: InputEvent) -> void:
 	if _ok and event is InputEventMouseMotion:
-		var x := str(snapped(event.position.x, 0.01))
-		var y := str(snapped(event.position.y, 0.01))
-		_position.text = "({0}, {1})".format([x, y])
-		var map = _level._globalToMap(event.position)
-		if _level._insideMap(map):
-			_mapPosition.modulate = Color(1, 1, 1)
-		else:
-			_mapPosition.modulate = Color(1, 0, 0)
-		_mapPosition.text = "({0}, {1})".format([map.x, map.y])
+		_updateText(event.position)
+
+func _updateText(p: Vector2) -> void:
+	_position.text = "({0}, {1})".format([snapped(p.x, 0.01), snapped(p.y, 0.01)])
+	var map = _level._globalToMap(p)
+	if _level._insideMap(map):
+		_mapPosition.modulate = Color(1, 1, 1)
+	else:
+		_mapPosition.modulate = Color(1, 0, 0)
+	_mapPosition.text = "({0}, {1})".format([map.x, map.y])
 
 func _throttleUpdateMap() -> void:
 	_timerUpdateMap.start(_updateMapDelay)
 
 func _updateMap() -> void:
+	_updateText(get_global_mouse_position())
 	var at = _level._heroPosition()
 	var original = _level._tileMap.get_used_rect().size
 	var trimSize = original
