@@ -171,9 +171,9 @@ func _wasd(direction: Vector2i) -> void:
 			#_checkCenter()
 		else:
 			if isStairDown(p):
-				emit_signal("generate")
+				generate.emit()
 			elif isStairUp(p):
-				emit_signal("generateUp")
+				generateUp.emit()
 
 #endregion
 
@@ -203,10 +203,10 @@ func _handleStair() -> bool:
 	if _pathPoints.size() == 1:
 		var p := _heroPosition()
 		if isStairDown(p):
-			emit_signal("generate")
+			generate.emit()
 			return true
 		elif isStairUp(p):
-			emit_signal("generateUp")
+			generateUp.emit()
 			return true
 	return false
 

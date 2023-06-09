@@ -186,10 +186,10 @@ func _handleStair() -> bool:
 	if _pathPoints.size() == 1:
 		var p := mobPosition()
 		if isStairDown(p):
-			emit_signal("generate")
+			generate.emit()
 			return true
 		elif isStairUp(p):
-			emit_signal("generateUp")
+			generateUp.emit()
 			return true
 	return false
 
@@ -274,7 +274,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if _dragLeft:
 			_capture = true
 			_cameraTo(_camera.global_position - event.relative * _camera.zoom)
-			emit_signal("updateMap")
+			updateMap.emit()
 
 func _processWasd() -> bool:
 	var done := false
@@ -317,9 +317,9 @@ func _wasd(direction: Vector2i) -> void:
 			_checkCenter()
 		else:
 			if isStairDown(p):
-				emit_signal("generate")
+				generate.emit()
 			elif isStairUp(p):
-				emit_signal("generateUp")
+				generateUp.emit()
 
 func _tileIndex(p: Vector2i) -> int:
 	return Utility.index(p, _back.get_used_rect().size.x)
@@ -374,7 +374,7 @@ func _cameraUpdate() -> void:
 	if not world.intersects(map):
 		_cameraSnap(_camera.global_position + Utility.constrainRect(world, map))
 	else:
-		emit_signal("updateMap")
+		updateMap.emit()
 
 func _cameraSnap(to: Vector2) -> void:
 	if _tweenCamera:
@@ -383,7 +383,7 @@ func _cameraSnap(to: Vector2) -> void:
 	_tweenCamera.set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
 	_tweenCamera.tween_property(_camera, "global_position", to, _duration)
 	await _tweenCamera.finished
-	emit_signal("updateMap")
+	updateMap.emit()
 
 const _edgeOffset := 1.5
 const _edgeOffsetV := Vector2(_edgeOffset, _edgeOffset)
@@ -395,7 +395,7 @@ func _checkCenter() -> void:
 		(test.y > size.y - edge.y) or (test.y < edge.y)):
 		_cameraSnap(-(_worldSize() / 2.0) + _mob.global_position)
 	else:
-		emit_signal("updateMap")
+		updateMap.emit()
 
 func _zoomPinch(at: Vector2, amount: float) -> void:
 	if amount > 0: _zoom(at, _zoomFactorOut)
