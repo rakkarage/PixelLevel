@@ -21,6 +21,7 @@ var _pathPoints := PackedVector2Array()
 var _turn := false
 var _time := 0.0
 var startAt := Vector2i(4, 4)
+var _tweenStep : Tween
 
 var theme := 0 # dungeon theme
 var day := true # day or night outside theme
@@ -137,7 +138,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if not event.pressed && not _dragging:
-				_targetTo(_globalToMap(event.global_position))
+				var turn = not _tweenStep or not _tweenStep.is_running()
+				_targetTo(_globalToMap(event.global_position), turn)
 
 func _processWasd() -> bool:
 	var done := false
@@ -161,7 +163,7 @@ func _wasd(direction: Vector2i) -> void:
 		_toggleDoor(p)
 	if not isBlocked(p):
 		_face(_hero, direction)
-		_step(_hero, direction)
+		await _step(_hero, direction)
 		_pathClear()
 		if not isStair(p):
 			_lightUpdate(p, lightRadius)
@@ -182,14 +184,12 @@ func _move(mob: Node2D) -> void:
 		var delta := _delta(_pathPoints[0], _pathPoints[1])
 		_face(mob, delta)
 		_fadeAndFree()
-		_step(mob, delta)
+		await _step(mob, delta)
 
 func _fadeAndFree() -> void:
 	_pathPoints.remove_at(0)
 	var node := _tileMap.get_child(0)
-	var tween := get_tree().create_tween()
-	tween.tween_property(node, "modulate", Color.TRANSPARENT, _turnTime)
-	await tween.finished
+	await create_tween().tween_property(node, "modulate", Color.TRANSPARENT, _turnTime).finished
 	node.queue_free()
 	if _pathPoints.size() > 1:
 		_turn = true
@@ -236,7 +236,10 @@ func _face(mob: Node2D, direction: Vector2i) -> void:
 
 func _step(mob: Node2D, direction: Vector2i) -> void:
 	var to: Vector2 = _mapToLocal(_localToMap(mob.global_position) + direction)
-	create_tween().tween_property(mob, "global_position", to, _turnTime).set_trans(Tween.TRANS_CIRC).set_ease(Tween.EASE_IN_OUT)
+	_tweenStep = create_tween()
+	_tweenStep.tween_property(mob, "global_position", to, _turnTime)
+	_tweenStep.set_trans(Tween.TRANS_CIRC).set_ease(Tween.EASE_IN_OUT)
+	await _tweenStep.finished
 
 func _addPoints() -> void:
 	_astar.clear()
