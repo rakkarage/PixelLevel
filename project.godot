@@ -12,7 +12,7 @@ config_version=5
 
 config/name="PixelLevel"
 config/description="Pixel-perfect dungeon and environment sprites."
-run/main_scene="res://PixelLevel/LevelTest.tscn"
+run/main_scene="res://PixelLevel/Level.tscn"
 config/features=PackedStringArray("4.1")
 boot_splash/bg_color=Color(0.231373, 0.262745, 0.321569, 1)
 boot_splash/image="res://Intro/Henry.png"

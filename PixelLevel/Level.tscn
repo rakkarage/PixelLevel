@@ -2,10 +2,10 @@
 
 [ext_resource type="PackedScene" uid="uid://82wscvw880j4" path="res://PixelLevel/LevelBase.tscn" id="1_m1rxo"]
 [ext_resource type="PackedScene" uid="uid://c1mewurj1iqoa" path="res://PixelMobs/Mob/Slime.tscn" id="2_1y2b4"]
-[ext_resource type="Script" path="res://PixelLevel/LevelTest.gd" id="2_3ebrx"]
+[ext_resource type="Script" path="res://PixelLevel/Level.gd" id="2_3ebrx"]
 [ext_resource type="Script" path="res://PixelLevel/Manager.gd" id="2_6ydkp"]
 [ext_resource type="PackedScene" uid="uid://cpwpn22g1oh61" path="res://Interface/Back.tscn" id="2_ij0qj"]
-[ext_resource type="TileSet" uid="uid://cjn2ri268c5yx" path="res://PixelLevel/TileSet.tres" id="3_2nw2k"]
+[ext_resource type="TileSet" uid="uid://cjn2ri268c5yx" path="res://PixelLevel/Level.tres" id="3_2nw2k"]
 [ext_resource type="PackedScene" uid="uid://c0gglcpbg3xyp" path="res://Interface/Target.tscn" id="4_gpw00"]
 [ext_resource type="PackedScene" uid="uid://dplcfrlu5as7j" path="res://Interface/Mask.tscn" id="7_aghgx"]
 

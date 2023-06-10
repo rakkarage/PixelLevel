@@ -1,18 +1,18 @@
 [gd_resource type="TileSet" load_steps=84 format=3 uid="uid://cjn2ri268c5yx"]
 
-[ext_resource type="Texture2D" uid="uid://c3bh4c5u38kck" path="res://PixelLevel/Sprite/Cliff.png" id="1_p2ka8"]
-[ext_resource type="Texture2D" uid="uid://dmlsau242lru8" path="res://PixelLevel/Sprite/Edge.png" id="2_ketm4"]
-[ext_resource type="Texture2D" uid="uid://bnar2ktn6wetc" path="res://PixelLevel/Sprite/Light.png" id="3_uemkw"]
-[ext_resource type="Texture2D" uid="uid://ced3blswswgqk" path="res://PixelLevel/Sprite/LightDebug.png" id="4_ydi1u"]
-[ext_resource type="Texture2D" uid="uid://dxvhnffojvwl4" path="res://PixelLevel/Sprite/Outside.png" id="5_30g2w"]
-[ext_resource type="Texture2D" uid="uid://chj51r4eeklhh" path="res://PixelLevel/Sprite/Doodad.png" id="6_j7de7"]
-[ext_resource type="Texture2D" uid="uid://c0im6owsmcawv" path="res://PixelLevel/Sprite/Theme.png" id="7_gwp18"]
-[ext_resource type="Material" uid="uid://pngx2bqmic5y" path="res://Interface/Additive.tres" id="8_7fdtw"]
-[ext_resource type="Texture2D" uid="uid://djvsnumdjbfjc" path="res://PixelLevel/Sprite/Water.png" id="9_btmxx"]
+[ext_resource type="Texture2D" uid="uid://c3bh4c5u38kck" path="res://PixelLevel/Sprite/Cliff.png" id="1_unbod"]
+[ext_resource type="Texture2D" uid="uid://dmlsau242lru8" path="res://PixelLevel/Sprite/Edge.png" id="2_5h5xc"]
+[ext_resource type="Texture2D" uid="uid://bnar2ktn6wetc" path="res://PixelLevel/Sprite/Light.png" id="3_dikk6"]
+[ext_resource type="Texture2D" uid="uid://ced3blswswgqk" path="res://PixelLevel/Sprite/LightDebug.png" id="4_gbktl"]
+[ext_resource type="Texture2D" uid="uid://dxvhnffojvwl4" path="res://PixelLevel/Sprite/Outside.png" id="5_pav0b"]
+[ext_resource type="Texture2D" uid="uid://chj51r4eeklhh" path="res://PixelLevel/Sprite/Doodad.png" id="6_1smrv"]
+[ext_resource type="Texture2D" uid="uid://c0im6owsmcawv" path="res://PixelLevel/Sprite/Theme.png" id="7_awoa3"]
+[ext_resource type="Material" uid="uid://pngx2bqmic5y" path="res://Interface/Additive.tres" id="8_4jm5a"]
+[ext_resource type="Texture2D" uid="uid://djvsnumdjbfjc" path="res://PixelLevel/Sprite/Water.png" id="9_f0onm"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bqlht"]
 resource_name = "Cliff1"
-texture = ExtResource("1_p2ka8")
+texture = ExtResource("1_unbod")
 0:0/next_alternative_id = 3
 0:0/0 = 0
 0:0/2 = 2
@@ -56,7 +56,7 @@ texture = ExtResource("1_p2ka8")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7tsy3"]
 resource_name = "Cliff2"
-texture = ExtResource("1_p2ka8")
+texture = ExtResource("1_unbod")
 0:1/next_alternative_id = 2
 0:1/0 = 0
 0:1/1 = 1
@@ -100,7 +100,7 @@ texture = ExtResource("1_p2ka8")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0w215"]
 resource_name = "EdgeOutsideCorner"
-texture = ExtResource("2_ketm4")
+texture = ExtResource("2_5h5xc")
 0:2/next_alternative_id = 8
 0:2/0 = 0
 1:2/next_alternative_id = 8
@@ -112,7 +112,7 @@ texture = ExtResource("2_ketm4")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_y0qr8"]
 resource_name = "EdgeOutside"
-texture = ExtResource("2_ketm4")
+texture = ExtResource("2_5h5xc")
 4:2/next_alternative_id = 8
 4:2/0 = 0
 4:2/1 = 1
@@ -703,7 +703,7 @@ texture = ExtResource("2_ketm4")
 31:2/7/transpose = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2sojx"]
-texture = ExtResource("3_uemkw")
+texture = ExtResource("3_dikk6")
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -738,7 +738,7 @@ texture = ExtResource("3_uemkw")
 31:0/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_tj8ev"]
-texture = ExtResource("4_ydi1u")
+texture = ExtResource("4_gbktl")
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -774,7 +774,7 @@ texture = ExtResource("4_ydi1u")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_470i4"]
 resource_name = "DayGrass"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 0:0/next_alternative_id = 8
 0:0/0 = 0
 0:0/1 = 1
@@ -1014,7 +1014,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ltr3l"]
 resource_name = "DayPillar"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 11:0/next_alternative_id = 2
 11:0/0 = 0
 11:0/1 = 1
@@ -1026,7 +1026,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7ju24"]
 resource_name = "DayPath"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 13:0/next_alternative_id = 8
 13:0/0 = 0
 13:0/1 = 1
@@ -1093,7 +1093,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_eimsg"]
 resource_name = "DayStair"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 16:0/next_alternative_id = 2
 16:0/0 = 0
 16:0/1 = 1
@@ -1113,7 +1113,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5vdse"]
 resource_name = "DayDesert"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 20:0/next_alternative_id = 8
 20:0/0 = 0
 20:0/1 = 1
@@ -1289,7 +1289,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_h2s0x"]
 resource_name = "DayDoodad"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 28:0/next_alternative_id = 2
 28:0/0 = 0
 28:0/1 = 1
@@ -1329,7 +1329,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yrua3"]
 resource_name = "Banner1"
-texture = ExtResource("6_j7de7")
+texture = ExtResource("6_1smrv")
 0:0/next_alternative_id = 2
 0:0/animation_speed = 8.0
 0:0/animation_frame_0/duration = 1.0
@@ -1344,7 +1344,7 @@ texture = ExtResource("6_j7de7")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bk77a"]
 resource_name = "DayWeed"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 37:0/next_alternative_id = 2
 37:0/0 = 0
 37:0/1 = 1
@@ -1364,7 +1364,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lsj75"]
 resource_name = "DayHedge"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 41:0/next_alternative_id = 2
 41:0/0 = 0
 41:0/1 = 1
@@ -1384,7 +1384,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8r8yx"]
 resource_name = "DayWall"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 45:0/next_alternative_id = 2
 45:0/0 = 0
 45:0/1 = 1
@@ -1412,7 +1412,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6ijoh"]
 resource_name = "DayFloor"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 51:0/next_alternative_id = 8
 51:0/0 = 0
 51:0/1 = 1
@@ -1521,7 +1521,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_itgiq"]
 resource_name = "NightGrass"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 0:1/next_alternative_id = 8
 0:1/0 = 0
 0:1/1 = 1
@@ -1761,7 +1761,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0utyg"]
 resource_name = "NightPillar"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 11:1/next_alternative_id = 3
 11:1/0 = 0
 11:1/2 = 2
@@ -1773,7 +1773,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_54u3j"]
 resource_name = "NightPath"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 14:1/next_alternative_id = 8
 14:1/0 = 0
 14:1/1 = 1
@@ -1840,7 +1840,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_42h31"]
 resource_name = "NightStair"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 16:1/next_alternative_id = 2
 16:1/0 = 0
 16:1/1 = 1
@@ -1860,7 +1860,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wv7kk"]
 resource_name = "NightDesert"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 20:1/next_alternative_id = 8
 20:1/0 = 0
 20:1/1 = 1
@@ -2036,7 +2036,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_m52cv"]
 resource_name = "NightDoodad"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 28:1/next_alternative_id = 2
 28:1/0 = 0
 28:1/1 = 1
@@ -2076,7 +2076,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0kgob"]
 resource_name = "Banner2"
-texture = ExtResource("6_j7de7")
+texture = ExtResource("6_1smrv")
 0:1/next_alternative_id = 2
 0:1/animation_speed = 8.0
 0:1/animation_frame_0/duration = 1.0
@@ -2090,7 +2090,7 @@ texture = ExtResource("6_j7de7")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xsx4a"]
 resource_name = "NightWeed"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 37:1/next_alternative_id = 2
 37:1/0 = 0
 37:1/1 = 1
@@ -2110,7 +2110,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4xp2m"]
 resource_name = "NightHedge"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 41:1/next_alternative_id = 2
 41:1/0 = 0
 41:1/1 = 1
@@ -2130,7 +2130,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ymh8j"]
 resource_name = "NightWall"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 45:1/next_alternative_id = 2
 45:1/0 = 0
 45:1/1 = 1
@@ -2158,7 +2158,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jjqij"]
 resource_name = "NightFloor"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 51:1/next_alternative_id = 8
 51:1/0 = 0
 51:1/1 = 1
@@ -2267,7 +2267,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_db0f0"]
 resource_name = "Tree"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 0:2/size_in_atlas = Vector2i(1, 2)
 0:2/next_alternative_id = 2
 0:2/0 = 0
@@ -2289,7 +2289,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_c15vn"]
 resource_name = "TreeStump"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 3:3/next_alternative_id = 2
 3:3/0 = 0
 3:3/1 = 1
@@ -2305,7 +2305,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jbe0q"]
 resource_name = "Flower"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 6:3/next_alternative_id = 8
 6:3/0 = 0
 6:3/1 = 1
@@ -2477,7 +2477,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_o5p3m"]
 resource_name = "Rubble"
-texture = ExtResource("5_30g2w")
+texture = ExtResource("5_pav0b")
 3:2/next_alternative_id = 8
 3:2/0 = 0
 3:2/1 = 1
@@ -2607,7 +2607,7 @@ texture = ExtResource("5_30g2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_talck"]
 resource_name = "01Torch"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 0:0/next_alternative_id = 2
 0:0/animation_speed = 8.0
 0:0/animation_frame_0/duration = 1.0
@@ -2620,7 +2620,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qoxnv"]
 resource_name = "01WallPlain"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 4:0/next_alternative_id = 2
 4:0/0 = 0
 4:0/1 = 1
@@ -2640,7 +2640,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_i7o2d"]
 resource_name = "Doodad"
-texture = ExtResource("6_j7de7")
+texture = ExtResource("6_1smrv")
 0:2/next_alternative_id = 2
 0:2/0 = 0
 0:2/1 = 1
@@ -2692,7 +2692,7 @@ texture = ExtResource("6_j7de7")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4rjw3"]
 resource_name = "01Wall"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 8:0/next_alternative_id = 2
 8:0/0 = 0
 8:0/0/probability = 0.333
@@ -2716,7 +2716,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qvbfu"]
 resource_name = "01Floor"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 12:0/next_alternative_id = 9
 12:0/0 = 0
 12:0/1 = 1
@@ -2758,7 +2758,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7mbvo"]
 resource_name = "01FloorRoom"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 18:0/next_alternative_id = 8
 18:0/0 = 0
 18:0/1 = 1
@@ -2890,7 +2890,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bd81c"]
 resource_name = "01Stair"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 24:0/next_alternative_id = 2
 24:0/0 = 0
 24:0/1 = 1
@@ -2902,7 +2902,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_m0lxt"]
 resource_name = "01Door"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 26:0/next_alternative_id = 2
 26:0/0 = 0
 26:0/1 = 1
@@ -2918,7 +2918,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_npi3x"]
 resource_name = "02Torch"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 0:1/next_alternative_id = 2
 0:1/animation_speed = 8.0
 0:1/animation_frame_0/duration = 1.0
@@ -2931,7 +2931,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_y3f04"]
 resource_name = "02WallPlain"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 4:1/next_alternative_id = 2
 4:1/0 = 0
 4:1/1 = 1
@@ -2951,7 +2951,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_n30gm"]
 resource_name = "02Wall"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 8:1/next_alternative_id = 2
 8:1/0 = 0
 8:1/1 = 1
@@ -2971,7 +2971,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_hlldg"]
 resource_name = "02Floor"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 12:1/next_alternative_id = 8
 12:1/0 = 0
 12:1/1 = 1
@@ -3102,7 +3102,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_rtppt"]
 resource_name = "03FloorRoom"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 18:1/next_alternative_id = 8
 18:1/0 = 0
 18:1/1 = 1
@@ -3234,7 +3234,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_b32ox"]
 resource_name = "Rug"
-texture = ExtResource("6_j7de7")
+texture = ExtResource("6_1smrv")
 0:3/next_alternative_id = 8
 0:3/0 = 0
 0:3/0/probability = 6.0
@@ -3369,7 +3369,7 @@ texture = ExtResource("6_j7de7")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_mf4d8"]
 resource_name = "02Stair"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 24:1/next_alternative_id = 2
 24:1/0 = 0
 24:1/1 = 1
@@ -3381,7 +3381,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1txd5"]
 resource_name = "02Door"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 26:1/next_alternative_id = 2
 26:1/0 = 0
 26:1/1 = 1
@@ -3397,7 +3397,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gnf21"]
 resource_name = "03Torch"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 0:2/next_alternative_id = 2
 0:2/animation_speed = 8.0
 0:2/animation_frame_0/duration = 1.0
@@ -3410,7 +3410,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_frevb"]
 resource_name = "03WallPlain"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 4:2/next_alternative_id = 2
 4:2/0 = 0
 4:2/1 = 1
@@ -3430,7 +3430,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_n82pd"]
 resource_name = "03Wall"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 8:2/next_alternative_id = 2
 8:2/0 = 0
 8:2/0/probability = 0.333
@@ -3454,7 +3454,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_njgc1"]
 resource_name = "03Floor"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 12:2/next_alternative_id = 8
 12:2/0 = 0
 12:2/1 = 1
@@ -3586,7 +3586,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ksahj"]
 resource_name = "03FloorRoom"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 18:2/next_alternative_id = 8
 18:2/0 = 0
 18:2/1 = 1
@@ -3718,7 +3718,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yruen"]
 resource_name = "03Stair"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 24:2/next_alternative_id = 2
 24:2/0 = 0
 24:2/1 = 1
@@ -3730,7 +3730,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_hrowk"]
 resource_name = "03Door"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 26:2/next_alternative_id = 2
 26:2/0 = 0
 26:2/1 = 1
@@ -3746,7 +3746,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_66r8c"]
 resource_name = "04Torch"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 0:3/next_alternative_id = 2
 0:3/animation_speed = 8.0
 0:3/animation_frame_0/duration = 1.0
@@ -3759,7 +3759,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fi2r4"]
 resource_name = "Fountain"
-texture = ExtResource("6_j7de7")
+texture = ExtResource("6_1smrv")
 0:4/next_alternative_id = 2
 0:4/animation_speed = 8.0
 0:4/animation_frame_0/duration = 1.0
@@ -3774,7 +3774,7 @@ texture = ExtResource("6_j7de7")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_w3au1"]
 resource_name = "04WallPlain"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 4:3/next_alternative_id = 2
 4:3/0 = 0
 4:3/1 = 1
@@ -3794,7 +3794,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dljhd"]
 resource_name = "04Wall"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 8:3/next_alternative_id = 2
 8:3/0 = 0
 8:3/0/probability = 0.333
@@ -3818,7 +3818,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1mkix"]
 resource_name = "04Floor"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 12:3/0 = 0
 13:3/0 = 0
 14:3/0 = 0
@@ -3828,7 +3828,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5krx3"]
 resource_name = "04FloorRoom"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 18:3/next_alternative_id = 2
 18:3/0 = 0
 19:3/next_alternative_id = 2
@@ -3844,7 +3844,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_obs4o"]
 resource_name = "04Stair"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 24:3/next_alternative_id = 2
 24:3/0 = 0
 24:3/1 = 1
@@ -3856,7 +3856,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xjaya"]
 resource_name = "04Door"
-texture = ExtResource("7_gwp18")
+texture = ExtResource("7_awoa3")
 26:3/next_alternative_id = 2
 26:3/0 = 0
 26:3/1 = 1
@@ -3872,7 +3872,7 @@ texture = ExtResource("7_gwp18")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3tlxn"]
 resource_name = "WaterShallowBack"
-texture = ExtResource("9_btmxx")
+texture = ExtResource("9_f0onm")
 0:0/next_alternative_id = 2
 0:0/animation_speed = 8.0
 0:0/animation_frame_0/duration = 1.0
@@ -3883,13 +3883,13 @@ texture = ExtResource("9_btmxx")
 0:0/animation_frame_5/duration = 1.0
 0:0/animation_frame_6/duration = 1.0
 0:0/0 = 0
-0:0/0/material = ExtResource("8_7fdtw")
+0:0/0/material = ExtResource("8_4jm5a")
 0:0/1 = 1
 0:0/1/flip_h = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_81gr1"]
 resource_name = "WaterShallowFore"
-texture = ExtResource("9_btmxx")
+texture = ExtResource("9_f0onm")
 7:0/next_alternative_id = 2
 7:0/animation_speed = 8.0
 7:0/animation_frame_0/duration = 1.0
@@ -3900,13 +3900,13 @@ texture = ExtResource("9_btmxx")
 7:0/animation_frame_5/duration = 1.0
 7:0/animation_frame_6/duration = 1.0
 7:0/0 = 0
-7:0/0/material = ExtResource("8_7fdtw")
+7:0/0/material = ExtResource("8_4jm5a")
 7:0/1 = 1
 7:0/1/flip_h = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_mypgx"]
 resource_name = "WaterDeepBack"
-texture = ExtResource("9_btmxx")
+texture = ExtResource("9_f0onm")
 0:1/next_alternative_id = 2
 0:1/animation_speed = 8.0
 0:1/animation_frame_0/duration = 1.0
@@ -3917,13 +3917,13 @@ texture = ExtResource("9_btmxx")
 0:1/animation_frame_5/duration = 1.0
 0:1/animation_frame_6/duration = 1.0
 0:1/0 = 0
-0:1/0/material = ExtResource("8_7fdtw")
+0:1/0/material = ExtResource("8_4jm5a")
 0:1/1 = 1
 0:1/1/flip_h = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1u41s"]
 resource_name = "WaterDeepFore"
-texture = ExtResource("9_btmxx")
+texture = ExtResource("9_f0onm")
 7:1/next_alternative_id = 2
 7:1/animation_speed = 8.0
 7:1/animation_frame_0/duration = 1.0
@@ -3934,13 +3934,13 @@ texture = ExtResource("9_btmxx")
 7:1/animation_frame_5/duration = 1.0
 7:1/animation_frame_6/duration = 1.0
 7:1/0 = 0
-7:1/0/material = ExtResource("8_7fdtw")
+7:1/0/material = ExtResource("8_4jm5a")
 7:1/1 = 1
 7:1/1/flip_h = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ihee1"]
 resource_name = "Loot"
-texture = ExtResource("6_j7de7")
+texture = ExtResource("6_1smrv")
 12:5/next_alternative_id = 3
 12:5/0 = 0
 12:5/1 = 1
@@ -3996,7 +3996,7 @@ texture = ExtResource("6_j7de7")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_cjt3m"]
 resource_name = "WaterShallowPurpleBack"
-texture = ExtResource("9_btmxx")
+texture = ExtResource("9_f0onm")
 0:2/next_alternative_id = 2
 0:2/animation_speed = 8.0
 0:2/animation_frame_0/duration = 1.0
@@ -4007,13 +4007,13 @@ texture = ExtResource("9_btmxx")
 0:2/animation_frame_5/duration = 1.0
 0:2/animation_frame_6/duration = 1.0
 0:2/0 = 0
-0:2/0/material = ExtResource("8_7fdtw")
+0:2/0/material = ExtResource("8_4jm5a")
 0:2/1 = 1
 0:2/1/flip_h = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6ndyl"]
 resource_name = "WaterShallowPurpleFore"
-texture = ExtResource("9_btmxx")
+texture = ExtResource("9_f0onm")
 7:2/next_alternative_id = 2
 7:2/animation_speed = 8.0
 7:2/animation_frame_0/duration = 1.0
@@ -4024,13 +4024,13 @@ texture = ExtResource("9_btmxx")
 7:2/animation_frame_5/duration = 1.0
 7:2/animation_frame_6/duration = 1.0
 7:2/0 = 0
-7:2/0/material = ExtResource("8_7fdtw")
+7:2/0/material = ExtResource("8_4jm5a")
 7:2/1 = 1
 7:2/1/flip_h = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gmhv7"]
 resource_name = "WaterDeepPurpleBack"
-texture = ExtResource("9_btmxx")
+texture = ExtResource("9_f0onm")
 0:3/next_alternative_id = 2
 0:3/animation_speed = 8.0
 0:3/animation_frame_0/duration = 1.0
@@ -4041,13 +4041,13 @@ texture = ExtResource("9_btmxx")
 0:3/animation_frame_5/duration = 1.0
 0:3/animation_frame_6/duration = 1.0
 0:3/0 = 0
-0:3/0/material = ExtResource("8_7fdtw")
+0:3/0/material = ExtResource("8_4jm5a")
 0:3/1 = 1
 0:3/1/flip_h = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3stgg"]
 resource_name = "WaterDeepPurpleFore"
-texture = ExtResource("9_btmxx")
+texture = ExtResource("9_f0onm")
 7:3/next_alternative_id = 2
 7:3/animation_speed = 8.0
 7:3/animation_frame_0/duration = 1.0
@@ -4058,13 +4058,13 @@ texture = ExtResource("9_btmxx")
 7:3/animation_frame_5/duration = 1.0
 7:3/animation_frame_6/duration = 1.0
 7:3/0 = 0
-7:3/0/material = ExtResource("8_7fdtw")
+7:3/0/material = ExtResource("8_4jm5a")
 7:3/1 = 1
 7:3/1/flip_h = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0tsdn"]
 resource_name = "EdgeInside"
-texture = ExtResource("2_ketm4")
+texture = ExtResource("2_5h5xc")
 0:0/next_alternative_id = 8
 0:0/0 = 0
 0:0/1 = 1
@@ -4929,7 +4929,7 @@ texture = ExtResource("2_ketm4")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wl51w"]
 resource_name = "EdgeInsideCorner"
-texture = ExtResource("2_ketm4")
+texture = ExtResource("2_5h5xc")
 0:1/next_alternative_id = 8
 0:1/0 = 0
 0:1/1 = 1
