@@ -13,6 +13,7 @@ const _pathScene := preload("res://Interface/Path.tscn")
 
 const _edge := Vector2i(2, 2)
 const _turnTime := 0.22
+const _minPathAlpha := 0.1
 const _maxPathAlpha := 0.75
 
 var _astar: AStar2D = AStar2D.new()
@@ -298,8 +299,14 @@ func _targetClosest(tile: Vector2i) -> Vector2i:
 
 func _targetUpdate(tile: Vector2i) -> void:
 	var from := _heroPosition()
+	var to: Vector2 = _mapToLocal(tile)
+	var toColor := _getPathColor(to)
+	toColor.a = 0.75
 	_target.global_position = _mapToLocal(from)
-	create_tween().tween_property(_target, "global_position", Vector2(_mapToLocal(tile)), _tweenTime).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)
+	_target.modulate = Color.TRANSPARENT
+	var tween := create_tween().set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)
+	tween.tween_property(_target, "global_position", to, _tweenTime)
+	tween.parallel().tween_property(_target, "modulate", toColor, _tweenTime)
 	_pathClear()
 	if from != tile:
 		_drawPath(from, tile)
@@ -309,8 +316,6 @@ func _targetUpdate(tile: Vector2i) -> void:
 #region Path
 
 func _drawPath(from: Vector2i, to: Vector2i) -> void:
-	var color := _getPathColor(to)
-	_target.modulate = color
 	var rotation := 0
 	var pathDelta := _delta(from, to)
 	_pathPoints = _astar.get_point_path(_tileIndex(from), _tileIndex(to))
@@ -319,8 +324,9 @@ func _drawPath(from: Vector2i, to: Vector2i) -> void:
 		if i + 1 < _pathPoints.size():
 			rotation = _pathRotate(_delta(tile, _pathPoints[i + 1]), pathDelta)
 		var child = _pathScene.instantiate()
-		child.modulate = color
-		child.modulate.a = i / float(_pathPoints.size()) * _maxPathAlpha
+		var toColor := _getPathColor(to)
+		toColor.a = i / float(_pathPoints.size()) * (_maxPathAlpha - _minPathAlpha) + _minPathAlpha
+		create_tween().tween_property(child, "modulate", toColor, _tweenTime).set_delay(i / float(_pathPoints.size()) * _tweenTime)
 		child.global_rotation_degrees = rotation
 		child.global_position = _mapToLocal(tile)
 		_tileMap.add_child(child)
