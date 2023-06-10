@@ -19,8 +19,8 @@ const _minMouseSpeed := 7.0
 var _zoomTarget := 1.0
 var _oldSize := Vector2.ZERO
 var _dragMomentum := Vector2.ZERO
-var _click := false
-var _drag := false
+var _pressed := false
+var _dragging := false
 var _update := false
 
 func _ready() -> void: call_deferred("_readyDeferred")
@@ -44,20 +44,20 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
-				_click = true
-				_drag = false
+				_pressed = true
+				_dragging = false
 			else:
-				if _drag:
+				if _dragging:
 					_update = true
-				_click = false
+				_pressed = false
 			_cameraSnap()
 		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			_zoom(event.global_position, _zoomFactor)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			_zoom(event.global_position, -_zoomFactor)
 	elif event is InputEventMouseMotion:
-		if _click:
-			_drag = true
+		if _pressed:
+			_dragging = true
 			var mouseDelta = event.relative / _zoomTarget
 			_dragMomentum = _dragMomentum * _momentumDecay + mouseDelta
 			_cameraTo(_camera.global_position - mouseDelta)
@@ -65,13 +65,12 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _process(delta: float) -> void:
 	_camera.zoom = _camera.zoom.move_toward(Vector2(_zoomTarget, _zoomTarget), delta * _zoomRate)
-	if not _click and _dragMomentum.length() > _minMouseSpeed:
+	if not _pressed and _dragMomentum.length() > _minMouseSpeed:
 		_cameraTo(_camera.global_position - _dragMomentum * _momentumDamping)
 	_dragMomentum = _dragMomentum * _momentumDecay
-	if _dragMomentum.is_zero_approx():
-		if _update:
-			_update = false
-			_cameraSnap()
+	if _dragMomentum.is_zero_approx() and _update:
+		_update = false
+		_cameraSnap()
 
 func _zoom(at: Vector2, factor: float) -> void:
 	var zoomNew := _zoomTarget * pow(_zoomRate, factor)

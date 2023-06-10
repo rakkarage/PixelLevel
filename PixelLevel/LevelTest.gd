@@ -13,6 +13,7 @@ const _pathScene := preload("res://Interface/Path.tscn")
 
 const _edge := Vector2i(2, 2)
 const _turnTime := 0.22
+const _maxPathAlpha := 0.75
 
 var _astar: AStar2D = AStar2D.new()
 var _pathPoints := PackedVector2Array()
@@ -134,7 +135,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	super._unhandled_input(event)
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
-			if not event.pressed:
+			if not event.pressed && not _dragging:
 				_targetTo(_globalToMap(event.global_position))
 
 func _processWasd() -> bool:
@@ -227,14 +228,14 @@ func _toggleDoor(p: Vector2i) -> void:
 		setDoor(p, Door.Broke if broke else Door.Shut if door == Door.Open else Door.Open)
 
 func _face(mob: Node2D, direction: Vector2i) -> void:
-	if direction.x > 0:
+	if direction.x > 0 or direction.y > 0:
 		mob.scale = Vector2i(-1, 1)
 	else:
 		mob.scale = Vector2i(1, 1)
 
 func _step(mob: Node2D, direction: Vector2i) -> void:
-	mob.walk()
-	create_tween().tween_property(mob, "global_position", mob.global_position + Vector2(_mapToLocal(direction)), _turnTime).set_trans(Tween.TRANS_CIRC).set_ease(Tween.EASE_IN_OUT)
+	var to: Vector2 = _mapToLocal(_localToMap(mob.global_position) + direction)
+	create_tween().tween_property(mob, "global_position", to, _turnTime).set_trans(Tween.TRANS_CIRC).set_ease(Tween.EASE_IN_OUT)
 
 func _addPoints() -> void:
 	_astar.clear()
@@ -319,6 +320,7 @@ func _drawPath(from: Vector2i, to: Vector2i) -> void:
 			rotation = _pathRotate(_delta(tile, _pathPoints[i + 1]), pathDelta)
 		var child = _pathScene.instantiate()
 		child.modulate = color
+		child.modulate.a = i / float(_pathPoints.size()) * _maxPathAlpha
 		child.global_rotation_degrees = rotation
 		child.global_position = _mapToLocal(tile)
 		_tileMap.add_child(child)
