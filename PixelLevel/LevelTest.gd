@@ -10,7 +10,8 @@ signal generate
 signal generateUp
 
 const _pathScene := preload("res://Interface/Path.tscn")
-
+const Directions: Array[Vector2i] = [Vector2i.UP, Vector2i.UP + Vector2i.RIGHT, Vector2i.RIGHT, Vector2i.RIGHT + Vector2i.DOWN,
+	Vector2i.DOWN, Vector2i.DOWN + Vector2i.LEFT, Vector2i.LEFT, Vector2i.LEFT + Vector2i.UP]
 const _edge := Vector2i(2, 2)
 const _turnTime := 0.22
 const _minPathAlpha := 0.1
@@ -36,7 +37,7 @@ var _state := { "depth": 0, "time": 0.0, "turns": 0 }
 
 #region Tile Data
 
-enum Direction { N, S, E, W, NE, NW, SE, SW }
+enum Direction { N, NE, E, SE, S, SW, W, NW }
 
 # matches tileMap layers
 enum Layer {
@@ -259,8 +260,7 @@ func _connect() -> void:
 			var cell := Vector2i(x, y)
 			var cellId := _tileIndex(cell)
 			if _insideMap(cell):
-				var dirs: Array[Vector2i] = [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]
-				for direction in dirs:
+				for direction in Directions:
 					var neighbor := cell + direction
 					var neighborId := _tileIndex(neighbor)
 					if _insideMap(neighbor) and not _astar.are_points_connected(cellId, neighborId):
@@ -409,11 +409,10 @@ func getMapColor(p: Vector2i) -> Color:
 			color = _colorWallLit if lit else _colorWall
 	return color
 
-const _alphaPath := 0.333
-const _colorPathMob := Color(_colorMob.r, _colorMob.g, _colorMob.b, _alphaPath)
-const _colorPathStair := Color(_colorStair.r, _colorStair.g, _colorStair.b, _alphaPath)
-const _colorPathDoor := Color(_colorDoor.r, _colorDoor.g, _colorDoor.b, _alphaPath)
-const _colorPathWall := Color(_colorWall.r, _colorWall.g, _colorWall.b, _alphaPath)
+const _colorPathMob := Color(_colorMob.r, _colorMob.g, _colorMob.b)
+const _colorPathStair := Color(_colorStair.r, _colorStair.g, _colorStair.b)
+const _colorPathDoor := Color(_colorDoor.r, _colorDoor.g, _colorDoor.b)
+const _colorPathWall := Color(_colorWall.r, _colorWall.g, _colorWall.b)
 
 func _getPathColor(p: Vector2i) -> Color:
 	var color := _colorPathWall
