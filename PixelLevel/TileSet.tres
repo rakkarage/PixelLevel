@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://dxvhnffojvwl4" path="res://PixelLevel/Sprite/Outside.png" id="5_30g2w"]
 [ext_resource type="Texture2D" uid="uid://chj51r4eeklhh" path="res://PixelLevel/Sprite/Doodad.png" id="6_j7de7"]
 [ext_resource type="Texture2D" uid="uid://c0im6owsmcawv" path="res://PixelLevel/Sprite/Theme.png" id="7_gwp18"]
-[ext_resource type="Material" uid="uid://pngx2bqmic5y" path="res://PixelLevel/Additive.tres" id="8_7fdtw"]
+[ext_resource type="Material" uid="uid://pngx2bqmic5y" path="res://Interface/Additive.tres" id="8_7fdtw"]
 [ext_resource type="Texture2D" uid="uid://djvsnumdjbfjc" path="res://PixelLevel/Sprite/Water.png" id="9_btmxx"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bqlht"]

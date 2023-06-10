@@ -18,8 +18,6 @@ var _astar: AStar2D = AStar2D.new()
 var _pathPoints := PackedVector2Array()
 var _turn := false
 var _time := 0.0
-var _turnTotal := 0
-var _timeTotal := 0.0
 var startAt := Vector2i(4, 4)
 
 var theme := 0 # dungeon theme
@@ -28,6 +26,8 @@ var desert := false # desert or grass outside theme
 const themeCount := 4 # number of dungeon themes
 var themeCliff := 0 # cliff theme
 const themeCliffCount := 2 # number of cliff themes
+
+var _state := { "depth": 0, "time": 0.0, "turns": 0 }
 
 #endregion
 
@@ -105,7 +105,7 @@ func _onGenerated() -> void:
 	_hero.global_position = _mapToLocal(startAt)
 	_pathClear()
 	_addPoints()
-	_connect(_heroPosition())
+	_connect()
 	_target.modulate = Color.TRANSPARENT
 	_cameraToMob()
 	_dark()
@@ -117,9 +117,9 @@ func _onGenerated() -> void:
 func _process(delta: float) -> void:
 	super._process(delta)
 	_time += delta
+	_state.time += _time
 	if _time > _turnTime and (_turn or _processWasd()):
-		_timeTotal += _time
-		_turnTotal += 1
+		_state.turns += 1
 		var test := _turn
 		_turn = false
 		if test:
@@ -135,8 +135,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if not event.pressed:
-				_targetTo(event.global_position)
-				_targetUpdate()
+				_targetTo(_globalToMap(event.global_position))
 
 func _processWasd() -> bool:
 	var done := false
@@ -199,9 +198,11 @@ func _handleStair() -> bool:
 	if _pathPoints.size() == 1:
 		var p := _heroPosition()
 		if isStairDown(p):
+			_state.depth += 1
 			generate.emit()
 			return true
 		elif isStairUp(p):
+			_state.depth -= 1
 			generateUp.emit()
 			return true
 	return false
@@ -246,10 +247,19 @@ func _addPoints() -> void:
 				if isDoorShut(p):
 					_astar.set_point_disabled(_tileIndex(p))
 
-func _connect(p: Vector2i) -> void:
-	for cell in _tileMap.get_surrounding_cells(p):
-		if _insideMap(cell):
-			_astar.connect_points(_tileIndex(p), _tileIndex(cell))
+func _connect() -> void:
+	var rect := _tileMap.get_used_rect()
+	for y in range(rect.size.y):
+		for x in range(rect.size.x):
+			var cell := Vector2i(x, y)
+			var cellId := _tileIndex(cell)
+			if _insideMap(cell):
+				var dirs: Array[Vector2i] = [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]
+				for direction in dirs:
+					var neighbor := cell + direction
+					var neighborId := _tileIndex(neighbor)
+					if _insideMap(neighbor) and not _astar.are_points_connected(cellId, neighborId):
+						_astar.connect_points(cellId, neighborId)
 
 func isBlocked(p: Vector2i) -> bool:
 	return !isFloor(p) || isBlockedLight(p)
@@ -271,32 +281,27 @@ func _targetPosition() -> Vector2i:
 	return _localToMap(_target.global_position)
 
 func _targetToHero() -> void:
-	_targetTo(_hero.global_position, true)
+	_targetTo(_heroPosition())
 
-func _targetTo(to: Vector2, turn := true) -> void:
-	var tile := _globalToMap(to)
+func _targetTo(tile: Vector2i, turn := true) -> void:
 	if _insideMap(tile):
 		if tile == _targetPosition():
 			_turn = turn
 		else:
-			_target.global_position = _mapToLocal(tile)
+			_targetUpdate(tile)
+	else:
+		_targetUpdate(_targetClosest(tile))
 
-func _targetUpdate() -> void:
+func _targetClosest(tile: Vector2i) -> Vector2i:
+	return _astar.get_point_position(_astar.get_closest_point(tile, true))
+
+func _targetUpdate(tile: Vector2i) -> void:
 	var from := _heroPosition()
-	var to := _targetSnapClosest(_targetPosition())
+	_target.global_position = _mapToLocal(from)
+	create_tween().tween_property(_target, "global_position", Vector2(_mapToLocal(tile)), _tweenTime).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)
 	_pathClear()
-	if from != to:
-		_drawPath(from, to)
-
-func _targetSnapClosest(tile: Vector2i) -> Vector2i:
-	var p := _astar.get_point_position(_astar.get_closest_point(tile, true))
-	_targetSnap(p)
-	return p
-
-func _targetSnap(tile: Vector2) -> void:
-	var p := _mapToLocal(tile)
-	if not _target.global_position.is_equal_approx(p):
-		create_tween().tween_property(_target, "global_position", p, _tweenTime).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)
+	if from != tile:
+		_drawPath(from, tile)
 
 #endregion
 

@@ -6,6 +6,8 @@ extends Control
 @onready var _position: Label = $Fore/Panel/VBox/Mouse/Value
 @onready var _mapPosition: Label = $Fore/Panel/VBox/Tile/Value
 @onready var _depth: Label = $Fore/Panel/VBox/Level/Value
+@onready var _turns: Label = $Fore/Panel/VBox/Turns/Value
+@onready var _time: Label = $Fore/Panel/VBox/Time/Value
 @onready var _up: Button = $Fore/Panel/VBox/HBoxLevel/Up
 @onready var _regen: Button = $Fore/Panel/VBox/HBoxLevel/Regen
 @onready var _down: Button = $Fore/Panel/VBox/HBoxLevel/Down
@@ -50,6 +52,8 @@ func _updateText(p: Vector2) -> void:
 	else:
 		_mapPosition.modulate = Color(1, 0, 0)
 	_mapPosition.text = "({0}, {1})".format([map.x, map.y])
+	_turns.text = str(_level._state.turns)
+	_time.text = str(snapped(_level._state.time, 0.001))
 
 func _throttleUpdateMap() -> void:
 	_timerUpdateMap.start(_updateMapDelay)
