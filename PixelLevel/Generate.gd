@@ -22,8 +22,8 @@ func generateUp() -> void:
 
 func generate(delta: int = 1) -> void:
 	_level.clear()
-	_level.state.depth += delta
-	var d: int = 10 + int(abs(_level.state.depth))
+	_level._state.depth += delta
+	var d: int = 10 + int(abs(_level._state.depth))
 	_setLevelRect(d * 2 + Random.next(d), d * 2 + Random.next(d))
 	_level.theme = Random.next(_level.themeCount)
 	_level.day = Random.nextBool()

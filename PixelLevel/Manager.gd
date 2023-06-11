@@ -101,7 +101,7 @@ func _generate(delta: int = 1) -> void:
 	if delta != 0 or _selected == null:
 		_selected = Random.probability(_g)
 	_selected.generate(delta)
-	_depth.text = str(_level.state.depth)
+	_depth.text = str(_level._state.depth)
 	_light.text = str(_level.lightRadius)
 	_mask.play_backwards("Go")
 
@@ -119,11 +119,11 @@ func _lightPlus() -> void:
 
 func _levelUp() -> void:
 	_generate(-1)
-	_depth.text = str(_level.state.depth)
+	_depth.text = str(_level._state.depth)
 
 func _levelRegen() -> void:
 	_generate(0)
 
 func _levelDown() -> void:
 	_generate()
-	_depth.text = str(_level.state.depth)
+	_depth.text = str(_level._state.depth)
