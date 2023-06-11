@@ -47,7 +47,7 @@ func _input(event: InputEvent) -> void:
 func _updateText(p: Vector2) -> void:
 	_position.text = "({0}, {1})".format([snapped(p.x, 0.01), snapped(p.y, 0.01)])
 	var map = _level._globalToMap(p)
-	if _level._insideMap(map):
+	if _level.insideMap(map):
 		_mapPosition.modulate = Color(1, 1, 1)
 	else:
 		_mapPosition.modulate = Color(1, 0, 0)

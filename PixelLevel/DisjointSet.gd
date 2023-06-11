@@ -4,7 +4,7 @@ class_name DisjointSet
 var _parent : Array
 
 func _init(count: int) -> void:
-	_parent = Utility.repeat(-1, count)
+	_parent = Utility.arrayRepeat(-1, count)
 
 func find(i: int) -> int:
 	if _parent[i] < 0:

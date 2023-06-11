@@ -36,21 +36,21 @@ var _data := {
 		"back": load("res://PixelLevel/Sprite/Template/ABack.png"),
 		"fore": load("res://PixelLevel/Sprite/Template/AFore.png"),
 		"size": 15,
-		"priority": 33
+		"probability": 33
 	},
 	"b": {
 		"name": "b",
 		"back": load("res://PixelLevel/Sprite/Template/BasicBack.png"),
 		"fore": load("res://PixelLevel/Sprite/Template/BasicFore.png"),
 		"size": 15,
-		"priority": 100
+		"probability": 100
 	},
 	"c": {
 		"name": "c",
 		"back": load("res://PixelLevel/Sprite/Template/CastleBack.png"),
 		"fore": load("res://PixelLevel/Sprite/Template/CastleFore.png"),
 		"size": 75,
-		"priority": 1
+		"probability": 1
 	}
 }
 

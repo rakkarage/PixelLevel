@@ -103,8 +103,8 @@ enum EdgeInsideCorner { TopLeft, TopRight, BottomLeft, TopLeftFlip, TopRightFlip
 func _ready() -> void:
 	super._ready()
 
-func _onGenerated() -> void:
-	super._onGenerated()
+func generated() -> void:
+	super.generated()
 	_drawEdge()
 	_hero.global_position = _mapToLocal(startAt)
 	_pathClear()
@@ -216,7 +216,7 @@ func _handleDoor() -> bool:
 	if (from - to).length() < 2.0:
 		if isDoor(to):
 			_toggleDoor(to)
-			_astar.set_point_disabled(_tileIndex(to), isDoorShut(to))
+			_astar.set_point_disabled(tileIndex(to), isDoorShut(to))
 			return true
 	return false
 
@@ -249,21 +249,21 @@ func _addPoints() -> void:
 		for x in range(rect.size.x):
 			var p := Vector2i(x, y)
 			if isDoor(p) or not isBlocked(p):
-				_astar.add_point(_tileIndex(p), p)
+				_astar.add_point(tileIndex(p), p)
 				if isDoorShut(p):
-					_astar.set_point_disabled(_tileIndex(p))
+					_astar.set_point_disabled(tileIndex(p))
 
 func _connect() -> void:
 	var rect := _tileMap.get_used_rect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
 			var cell := Vector2i(x, y)
-			var cellId := _tileIndex(cell)
-			if _insideMap(cell):
+			var cellId := tileIndex(cell)
+			if insideMap(cell):
 				for direction in Directions:
 					var neighbor := cell + direction
-					var neighborId := _tileIndex(neighbor)
-					if _insideMap(neighbor) and not _astar.are_points_connected(cellId, neighborId):
+					var neighborId := tileIndex(neighbor)
+					if insideMap(neighbor) and not _astar.are_points_connected(cellId, neighborId):
 						_astar.connect_points(cellId, neighborId)
 
 func isBlocked(p: Vector2i) -> bool:
@@ -289,7 +289,7 @@ func _targetToHero() -> void:
 	_targetTo(_heroPosition())
 
 func _targetTo(tile: Vector2i, turn := true) -> void:
-	if _insideMap(tile):
+	if insideMap(tile):
 		if tile == _targetPosition():
 			_turn = turn
 		else:
@@ -321,7 +321,7 @@ func _targetUpdate(tile: Vector2i) -> void:
 func _drawPath(from: Vector2i, to: Vector2i) -> void:
 	var rotation := 0
 	var pathDelta := _delta(from, to)
-	_pathPoints = _astar.get_point_path(_tileIndex(from), _tileIndex(to))
+	_pathPoints = _astar.get_point_path(tileIndex(from), tileIndex(to))
 	for i in _pathPoints.size():
 		var tile := _pathPoints[i]
 		if i + 1 < _pathPoints.size():
@@ -470,7 +470,7 @@ func _lightEmitRecursive(at: Vector2i, radius: float, maxRadius: float, start: f
 		while dx <= 0:
 			dx += 1
 			var p := Vector2i(at.x + dx * xx + dy * xy, at.y + dx * yx + dy * yy)
-			if not _insideMap(p): continue
+			if not insideMap(p): continue
 			var lSlope := (dx - 0.5) / (dy + 0.5)
 			var rSlope := (dx + 0.5) / (dy - 0.5)
 			if start < rSlope: continue
@@ -525,7 +525,7 @@ func _lightTorches() -> void:
 		var south := Vector2i(p.x, p.y - 1)
 		var west := Vector2i(p.x - 1, p.y)
 		var emitted := false
-		if _insideMap(p):
+		if insideMap(p):
 			var northBlocked = isBlocked(north)
 			if not northBlocked and isLit(north):
 				emitted = true
@@ -618,26 +618,29 @@ func _randomTileAlternative(tile: Tile, coords: Vector2i) -> int:
 
 #region Back / Floor
 
-func _setBackRandom(p: Vector2i, tile: int) -> void:
-	_setRandomTile(Layer.Back, p, tile)
+func clearBack(p: Vector2i) -> void:
+	_clearTile(Layer.Back, p)
 
-func setFloor(p: Vector2) -> void:
+func _setBackRandom(p: Vector2i, tile: int, wonky: bool = true) -> void:
+	_setRandomTile(Layer.Back, p, tile, INVALID_CELL if wonky else Vector2i.ZERO)
+
+func setFloor(p: Vector2, wonky: bool) -> void:
 	var id: Tile
 	match theme:
 		0: id = Tile.Theme1Floor
 		1: id = Tile.Theme2Floor
 		2: id = Tile.Theme3Floor
 		3: id = Tile.Theme4Floor
-	_setBackRandom(p, id)
+	_setBackRandom(p, id, wonky)
 
-func setFloorRoom(p: Vector2) -> void:
+func setFloorRoom(p: Vector2, wonky: bool) -> void:
 	var id: Tile
 	match theme:
 		0: id = Tile.Theme1FloorRoom
 		1: id = Tile.Theme2FloorRoom
 		2: id = Tile.Theme3FloorRoom
 		3: id = Tile.Theme4FloorRoom
-	_setBackRandom(p, id)
+	_setBackRandom(p, id, wonky)
 
 func setOutside(p: Vector2i) -> void:
 	if desert:
@@ -663,6 +666,12 @@ func isFloor(p: Vector2i) -> bool:
 #endregion
 
 #region Fore / Wall
+
+func isForeInvalid(p: Vector2i) -> bool:
+	return _tileMap.get_cell_tile_data(Layer.Fore, p) == null
+
+func clearFore(p: Vector2i) -> void:
+	_clearTile(Layer.Fore, p)
 
 func _setForeRandom(p: Vector2i, tile: int, coords: Vector2i = INVALID_CELL) -> void:
 	_setRandomTile(Layer.Fore, p, tile, coords)
@@ -782,7 +791,7 @@ func verifyCliff() -> void:
 		for x in range(rect.size.x):
 			var p = Vector2i(x, y)
 			if isCliff(p) and not isFloor(Vector2i(x, y - 1)):
-				_clearTile(Layer.Fore, p)
+				clearFore(p)
 
 #endregion
 

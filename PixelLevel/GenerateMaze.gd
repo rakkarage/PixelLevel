@@ -69,7 +69,7 @@ func _drawMaze() -> void:
 						(_level.isWall(eastEast) or _level.isCliff(eastEast))):
 						_level.clearFore(east)
 						_setFloorOrRoom(east)
-						_level.clearForeV(eastEast)
+						_level.clearFore(eastEast)
 						_setFloorOrRoom(eastEast)
 						points.append(eastEast)
 				1:

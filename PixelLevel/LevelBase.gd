@@ -26,7 +26,7 @@ var _update := false
 func _ready() -> void: call_deferred("_readyDeferred")
 
 func _readyDeferred() -> void:
-	_onGenerated()
+	generated()
 	_centerCamera()
 	connect("size_changed", _onResize)
 	Gesture.connect("onZoom", _zoom)
@@ -37,7 +37,7 @@ func _onResize() -> void:
 	_oldSize = size
 	_cameraSnap()
 
-func _onGenerated() -> void:
+func generated() -> void:
 	_oldSize = size
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -87,17 +87,17 @@ func _cameraSnap() -> void:
 	var map := _mapBounds()
 	var view := _cameraBounds().grow(-int(_tileMap.tile_set.tile_size.x / _zoomTarget))
 	if not view.intersects(map):
-		var to := _camera.global_position + constrainRect(view, map)
+		var to := _camera.global_position + _constrainRect(view, map)
 		create_tween().tween_property(_camera, "global_position", to, _tweenTime).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)
 	updateMap.emit()
 
-func _index(p: Vector2i, w: int) -> int: return p.x + p.y * w
+func index(p: Vector2i, w: int) -> int: return p.x + p.y * w
 
-func _position(i: int, w: int) -> Vector2i: return Vector2i(i % w, int(i / float(w)))
+func position(i: int, w: int) -> Vector2i: return Vector2i(i % w, int(i / float(w)))
 
-func _tileIndex(p: Vector2i) -> int: return _index(p, _tileMap.get_used_rect().size.x)
+func tileIndex(p: Vector2i) -> int: return index(p, _tileMap.get_used_rect().size.x)
 
-func _tilePosition(i: int) -> Vector2i: return _position(i, _tileMap.get_used_rect().size.x)
+func tilePosition(i: int) -> Vector2i: return position(i, _tileMap.get_used_rect().size.x)
 
 func _mapToLocal(p: Vector2i) -> Vector2i: return _tileMap.map_to_local(p)
 
@@ -111,7 +111,7 @@ func _mapToGlobal(p: Vector2i) -> Vector2: return _localToGlobal(_mapToLocal(p))
 
 func _globalToMap(p: Vector2) -> Vector2i: return _localToMap(_globalToLocal(p))
 
-func _insideMap(p: Vector2i) -> bool: return _tileMap.get_used_rect().has_point(p)
+func insideMap(p: Vector2i) -> bool: return _tileMap.get_used_rect().has_point(p)
 
 func _mapCenter() -> Vector2i: return _mapSize() / 2.0
 
@@ -129,10 +129,10 @@ func _cameraBounds() -> Rect2: return Rect2(_cameraPosition(), _cameraSize())
 
 func _cameraBoundsMap() -> Rect2i: return Rect2i(_localToMap(_cameraPosition()), _localToMap(_cameraSize()))
 
-func constrainRect(view: Rect2i, map: Rect2i) -> Vector2:
-	return constrain(view.position, view.end, map.position, map.end)
+func _constrainRect(view: Rect2i, map: Rect2i) -> Vector2:
+	return _constrain(view.position, view.end, map.position, map.end)
 
-func constrain(minView: Vector2i, maxView: Vector2i, minMap: Vector2i, maxMap: Vector2i) -> Vector2i:
+func _constrain(minView: Vector2i, maxView: Vector2i, minMap: Vector2i, maxMap: Vector2i) -> Vector2i:
 	var delta := Vector2i.ZERO
 	if minView.x > minMap.x: delta.x += minMap.x - minView.x
 	if maxView.x < maxMap.x: delta.x -= maxView.x - maxMap.x

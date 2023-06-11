@@ -21,7 +21,7 @@ func generateUp() -> void:
 	generate(-1)
 
 func generate(delta: int = 1) -> void:
-	_level.clear()
+	_level._tileMap.clear()
 	_level._state.depth += delta
 	var d: int = 10 + int(abs(_level._state.depth))
 	_setLevelRect(d * 2 + Random.next(d), d * 2 + Random.next(d))
@@ -60,17 +60,17 @@ func _fill(wall: bool, wallEdge: bool, outside: bool = false) -> void:
 func _stairs() -> void:
 	var up := _findSpot()
 	_level.startAt = up
-	_level.setStairUpV(up)
-	_level.setStairDownV(_findSpot())
+	_level.setStairUp(up)
+	_level.setStairDown(_findSpot())
 
 func _stairsAt(array: Array) -> void:
 	var up = Utility.position(array[Random.next(array.size())], _width)
 	_level.startAt = up
-	_level.setStairUpV(up)
+	_level.setStairUp(up)
 	var down = Utility.position(array[Random.next(array.size())], _width)
-	while _level.isStairV(down):
+	while _level.isStair(down):
 		down = Utility.position(array[Random.next(array.size())], _width)
-	_level.setStairDownV(down)
+	_level.setStairDown(down)
 
 func _random() -> Vector2i:
 	return Vector2i(Random.nextRange(1, _width - 2), Random.nextRange(1, _height - 2))
