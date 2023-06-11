@@ -142,6 +142,10 @@ func _unhandled_input(event: InputEvent) -> void:
 				var turn = not _tweenStep or not _tweenStep.is_running()
 				_targetTo(_globalToMap(event.global_position), turn)
 
+func clear() -> void:
+	super.clear()
+	_tileMapEdge.clear()
+
 func _processWasd() -> bool:
 	var done := false
 	if Input.is_action_pressed("ui_up"):

@@ -21,7 +21,7 @@ func generateUp() -> void:
 	generate(-1)
 
 func generate(delta: int = 1) -> void:
-	_level._tileMap.clear()
+	_level.clear()
 	_level._state.depth += delta
 	var d: int = 10 + int(abs(_level._state.depth))
 	_setLevelRect(d * 2 + Random.next(d), d * 2 + Random.next(d))

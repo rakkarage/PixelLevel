@@ -91,6 +91,8 @@ func _cameraSnap() -> void:
 		create_tween().tween_property(_camera, "global_position", to, _tweenTime).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)
 	updateMap.emit()
 
+func clear() -> void: _tileMap.clear()
+
 func index(p: Vector2i, w: int) -> int: return p.x + p.y * w
 
 func position(i: int, w: int) -> Vector2i: return Vector2i(i % w, int(i / float(w)))
