@@ -159,7 +159,7 @@ func _isCaveEdge(list: Array, p: Vector2i) -> bool:
 		for xx in range(-1, 2):
 			if not ((xx == 0) and (yy == 0)):
 				var new := Vector2(p.x + xx, p.y + yy)
-				if _level.insideMapV(new) and not list[Utility.indexV(new, _width)]:
+				if _level.insideMapV(new) and not list[_level._index(new, _width)]:
 					edge = true
 	return edge
 
@@ -167,7 +167,7 @@ func _outlineCaves(list: Array) -> void:
 	for y in range(_height):
 		for x in range(_width):
 			var p := Vector2i(x, y)
-			if list[Utility.index(p, _width)]:
+			if list[_level._index(p, _width)]:
 				if _isCaveEdge(list, p):
 					_setWall(p)
 
@@ -187,7 +187,7 @@ func _drawFlowers() -> void:
 	for y in _height:
 		for x in _width:
 			var p := Vector2i(x, y)
-			if not array[Utility.index(p, _width)] and (not _level.isWall(p) and not _level.isBackInvalid(p) and not _level.isStair(p)):
+			if not array[_level._index(p, _width)] and (not _level.isWall(p) and not _level.isBackInvalid(p) and not _level.isStair(p)):
 				_level.setFlower(p)
 
 func _drawTrees() -> void:
@@ -215,7 +215,7 @@ func _cutTrees(array: Array) -> void:
 		if Random.next(3) == 0: # cut
 			if Random.next(4) == 0: # all
 				for i in cave:
-					_level.cutTreeV(Utility.position(i, _width))
+					_level.cutTreeV(_level.position(i, _width))
 			elif Random.nextBool(): # some
 				var direction := Random.next(4)
 				var test := _level.position(cave[Random.next(cave.size())], _width)
@@ -254,14 +254,14 @@ func _drawGrass() -> void:
 	for y in _height:
 		for x in _width:
 			var p := Vector2i(x, y)
-			if not array[Utility.index(p, _width)] and (not _level.isWall(p) and not _level.isBackInvalid(p) and not _level.isStair(p)):
+			if not array[_level.index(p, _width)] and (not _level.isWall(p) and not _level.isBackInvalid(p) and not _level.isStair(p)):
 				_level.setGrass(p)
 
 func _printArray(array: Array) -> void:
 	var output := ""
 	for y in range(_height):
 		for x in range(_width):
-			output += "1" if array[Utility.index(Vector2i(x, y), _width)] else "0"
+			output += "1" if array[_level.index(Vector2i(x, y), _width)] else "0"
 		output += "\n"
 	output += "\r"
 	print(output)

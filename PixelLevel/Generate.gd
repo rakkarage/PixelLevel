@@ -64,12 +64,12 @@ func _stairs() -> void:
 	_level.setStairDown(_findSpot())
 
 func _stairsAt(array: Array) -> void:
-	var up = Utility.position(array[Random.next(array.size())], _width)
+	var up = _level.position(array[Random.next(array.size())], _width)
 	_level.startAt = up
 	_level.setStairUp(up)
-	var down = Utility.position(array[Random.next(array.size())], _width)
+	var down = _level.position(array[Random.next(array.size())], _width)
 	while _level.isStair(down):
-		down = Utility.position(array[Random.next(array.size())], _width)
+		down = _level.position(array[Random.next(array.size())], _width)
 	_level.setStairDown(down)
 
 func _random() -> Vector2i:
