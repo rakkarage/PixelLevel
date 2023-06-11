@@ -202,10 +202,10 @@ func _findTemplateWith(template: Dictionary, connections: Array) -> void:
 	var right := offset + _applyRotateBackV(Vector2(size - 1, size / 2.0), size, _rotate)
 	var down := offset + _applyRotateBackV(Vector2(size / 2.0, size - 1), size, _rotate)
 	var left := offset + _applyRotateBackV(Vector2(0, size / 2.0), size, _rotate)
-	var connectUp: bool = template.back.get_pixelv(up) != _backWall
-	var connectRight: bool = template.back.get_pixelv(right) != _backWall
-	var connectDown: bool = template.back.get_pixelv(down) != _backWall
-	var connectLeft: bool = template.back.get_pixelv(left) != _backWall
+	var connectUp: bool = template.back.get_pixel(up) != _backWall
+	var connectRight: bool = template.back.get_pixel(right) != _backWall
+	var connectDown: bool = template.back.get_pixel(down) != _backWall
+	var connectLeft: bool = template.back.get_pixel(left) != _backWall
 	while (connections.size() and
 		(connections.has(0) and not connectUp) or
 		(connections.has(1) and not connectRight) or

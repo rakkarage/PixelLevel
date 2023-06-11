@@ -37,7 +37,7 @@ func _drawCaves() -> void:
 	for y in range(_height):
 		for x in range(_width):
 			var p := Vector2i(x, y)
-			if list[Utility.index(p, _width)]:
+			if list[_level.index(p, _width)]:
 				if _cliff:
 					_level.setCliff(p)
 				else:
@@ -109,7 +109,6 @@ func _biggest(list: Array) -> Array:
 func _bigEnough(list: Array) -> bool:
 	return _biggest(list).size() > 4
 
-# TODO: should this go with disjoint set / naw replace that anyway
 func _unionAdjacent(disjointSet: DisjointSet, list: Array, p: Vector2i) -> void:
 	for yy in range(-1, 2):
 		for xx in range(-1, 2):
@@ -128,7 +127,7 @@ func _disjointSetup(list: Array) -> DisjointSet:
 	for y in range(_height):
 		for x in range(_width):
 			var p := Vector2i(x, y)
-			if not list[Utility.index(p, _width)]:
+			if not list[_level.index(p, _width)]:
 				_unionAdjacent(disjointSet, list, p)
 	return disjointSet
 
