@@ -117,6 +117,7 @@ func generated() -> void:
 	_lightUpdate(_heroPosition(), lightRadius)
 	_cameraSnap()
 	verifyCliff()
+	_target.z_index = 13
 
 func _process(delta: float) -> void:
 	super._process(delta)
@@ -138,6 +139,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	super._unhandled_input(event)
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
+			_turn = false
 			if not event.pressed && not _dragging:
 				var turn = not _tweenStep or not _tweenStep.is_running()
 				_targetTo(_globalToMap(event.global_position), turn)

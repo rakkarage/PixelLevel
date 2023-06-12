@@ -41,7 +41,6 @@ func regenerate() -> void:
 func _setLevelRect(width: int, height: int) -> void:
 	_width = width
 	_height = height
-	_level.size = Vector2(_width, _height)
 
 func _fill(wall: bool, wallEdge: bool, outside: bool = false) -> void:
 	for y in range(_height):
@@ -64,12 +63,12 @@ func _stairs() -> void:
 	_level.setStairDown(_findSpot())
 
 func _stairsAt(array: Array) -> void:
-	var up = _level.position(array[Random.next(array.size())], _width)
+	var up = _level.position(array.pick_random(), _width)
 	_level.startAt = up
 	_level.setStairUp(up)
-	var down = _level.position(array[Random.next(array.size())], _width)
+	var down = _level.position(array.pick_random(), _width)
 	while _level.isStair(down):
-		down = _level.position(array[Random.next(array.size())], _width)
+		down = _level.position(array.pick_random(), _width)
 	_level.setStairDown(down)
 
 func _random() -> Vector2i:

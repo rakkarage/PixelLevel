@@ -24,6 +24,7 @@ tile_set = ExtResource("3_2nw2k")
 format = 2
 
 [node name="Hero" parent="Container/SubViewport" index="3" instance=ExtResource("2_1y2b4")]
+z_index = 7
 
 [node name="Target" parent="Container/SubViewport" index="4" instance=ExtResource("4_gpw00")]
 
