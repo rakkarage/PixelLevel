@@ -46,7 +46,7 @@ func _input(event: InputEvent) -> void:
 
 func _updateText(p: Vector2) -> void:
 	_position.text = "({0}, {1})".format([snapped(p.x, 0.01), snapped(p.y, 0.01)])
-	var map = _level._globalToMap(p)
+	var map = _level.globalToMap(p)
 	if _level.insideMap(map):
 		_mapPosition.modulate = Color(1, 1, 1)
 	else:
@@ -61,7 +61,7 @@ func _throttleUpdateMap() -> void:
 func _updateMap() -> void:
 	_updateText(get_global_mouse_position())
 	var at = _level._heroPosition()
-	var original = _level._tileMap.get_used_rect().size
+	var original = _level.tileRect().size
 	var trimSize = original
 	var offset := Vector2i.ZERO
 	if trimSize.x > _max.x:

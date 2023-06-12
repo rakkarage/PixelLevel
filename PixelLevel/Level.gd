@@ -108,18 +108,18 @@ func _readyDeferred() -> void:
 
 func generated() -> void:
 	_drawEdge()
-	_hero.global_position = _mapToLocal(startAt)
+	_hero.global_position = mapToLocal(startAt)
 	_pathClear()
-	_addPoints()
-	_connect()
 	_target.modulate = Color.TRANSPARENT
-	_cameraToMob()
+	_target.z_index = 13
+	_cameraToHero()
 	_dark()
 	_findTorches()
 	_lightUpdate(_heroPosition(), lightRadius)
-	_cameraSnap()
+	cameraSnap()
 	verifyCliff()
-	_target.z_index = 13
+	_addPoints()
+	_connect()
 
 func _process(delta: float) -> void:
 	super._process(delta)
@@ -142,9 +142,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			_turn = false
-			if not event.pressed && not _dragging:
+			if not event.pressed && not _panning:
 				var turn = not _tweenStep or not _tweenStep.is_running()
-				_targetTo(_globalToMap(event.global_position), turn)
+				_targetTo(globalToMap(event.global_position), turn)
 
 func clear() -> void:
 	super.clear()
@@ -244,7 +244,7 @@ func _face(mob: Node2D, direction: Vector2i) -> void:
 		mob.scale = Vector2i(1, 1)
 
 func _step(mob: Node2D, direction: Vector2i) -> void:
-	var to: Vector2 = _mapToLocal(_localToMap(mob.global_position) + direction)
+	var to: Vector2 = mapToLocal(localToMap(mob.global_position) + direction)
 	_tweenStep = create_tween()
 	_tweenStep.tween_property(mob, "global_position", to, _turnTime)
 	_tweenStep.set_trans(Tween.TRANS_CIRC).set_ease(Tween.EASE_IN_OUT)
@@ -252,26 +252,25 @@ func _step(mob: Node2D, direction: Vector2i) -> void:
 
 func _addPoints() -> void:
 	_astar.clear()
-	var rect := _tileMap.get_used_rect()
+	var rect := tileRect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
 			var p := Vector2i(x, y)
-			if isDoor(p) or not isBlocked(p):
-				_astar.add_point(tileIndex(p), p)
-				if isDoorShut(p):
-					_astar.set_point_disabled(tileIndex(p))
+			_astar.add_point(tileIndex(p), p)
+			if isDoorShut(p):
+				_astar.set_point_disabled(tileIndex(p))
 
 func _connect() -> void:
-	var rect := _tileMap.get_used_rect()
+	var rect := tileRect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
 			var cell := Vector2i(x, y)
 			var cellId := tileIndex(cell)
-			if insideMap(cell):
+			if insideMap(cell) and not isBlocked(cell):
 				for direction in Directions:
 					var neighbor := cell + direction
 					var neighborId := tileIndex(neighbor)
-					if insideMap(neighbor) and not _astar.are_points_connected(cellId, neighborId):
+					if insideMap(neighbor) and not isBlocked(neighbor) and not _astar.are_points_connected(cellId, neighborId):
 						_astar.connect_points(cellId, neighborId)
 
 func isBlocked(p: Vector2i) -> bool:
@@ -280,18 +279,18 @@ func isBlocked(p: Vector2i) -> bool:
 func isBlockedLight(p: Vector2i) -> bool:
 	return isWall(p) or isDoorShut(p)
 
-func _cameraToMob() -> void:
-	_cameraTo(_hero.global_position)
+func _cameraToHero() -> void:
+	cameraTo(_hero.global_position)
 
 #endregion
 
 #region Target
 
 func _heroPosition() -> Vector2i:
-	return _localToMap(_hero.global_position)
+	return localToMap(_hero.global_position)
 
 func _targetPosition() -> Vector2i:
-	return _localToMap(_target.global_position)
+	return localToMap(_target.global_position)
 
 func _targetToHero() -> void:
 	_targetTo(_heroPosition())
@@ -310,10 +309,10 @@ func _targetClosest(tile: Vector2i) -> Vector2i:
 
 func _targetUpdate(tile: Vector2i) -> void:
 	var from := _heroPosition()
-	var to: Vector2 = _mapToLocal(tile)
+	var to: Vector2 = mapToLocal(tile)
 	var toColor := _getPathColor(to)
 	toColor.a = 0.75
-	_target.global_position = _mapToLocal(from)
+	_target.global_position = mapToLocal(from)
 	_target.modulate = Color.TRANSPARENT
 	var tween := create_tween().set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)
 	tween.tween_property(_target, "global_position", to, _tweenTime)
@@ -339,7 +338,7 @@ func _drawPath(from: Vector2i, to: Vector2i) -> void:
 		toColor.a = i / float(_pathPoints.size()) * (_maxPathAlpha - _minPathAlpha) + _minPathAlpha
 		create_tween().tween_property(child, "modulate", toColor, _tweenTime).set_delay(i / float(_pathPoints.size()) * _tweenTime)
 		child.global_rotation_degrees = rotation
-		child.global_position = _mapToLocal(tile)
+		child.global_position = mapToLocal(tile)
 		_tileMap.add_child(child)
 
 func _delta(from: Vector2i, to: Vector2i) -> Vector2:
@@ -392,7 +391,7 @@ func _isOnRect(p: Vector2i, r: Rect2i) -> bool:
 			((p.y >= r.position.y and p.y <= r.position.y + r.size.y - 1) and (p.x == r.position.x or p.x == r.position.x + r.size.x - 1)))
 
 func getMapColor(p: Vector2i) -> Color:
-	var camera := _cameraBoundsMap()
+	var camera := cameraBoundsMap()
 	var color := Color(0.25, 0.25, 0.25, 0.25)
 	var on := _isOnRect(p, camera)
 	if on:
@@ -565,13 +564,13 @@ func _lightTorches() -> void:
 					_lightEmit(northWest, current)
 
 func _dark() -> void:
-	var rect := _tileMap.get_used_rect()
+	var rect := tileRect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
 			_setLight(Vector2i(x, y), _lightMin, false)
 
 func _darken() -> void:
-	var rect := _tileMap.get_used_rect()
+	var rect := tileRect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
 			var p := Vector2i(x, y)
@@ -794,7 +793,7 @@ func isDoorShut(p: Vector2i) -> bool:
 	return isDoor(p) and _tileMap.get_cell_atlas_coords(Layer.Fore, p) == Vector2i(Door.Shut, 0)
 
 func verifyCliff() -> void:
-	var rect := _tileMap.get_used_rect()
+	var rect := tileRect()
 	for y in range(rect.size.y):
 		for x in range(rect.size.x):
 			var p = Vector2i(x, y)
@@ -932,7 +931,7 @@ func _randomEdgeInsideCorner(d: Direction) -> int:
 	return INVALID
 
 func _drawEdge() -> void:
-	var rect := _tileMap.get_used_rect()
+	var rect := tileRect()
 	if rect.size == Vector2i.ZERO:
 		return
 	var tileSet = _tileMapEdge.tile_set

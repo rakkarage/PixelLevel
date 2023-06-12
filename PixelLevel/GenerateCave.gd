@@ -159,7 +159,7 @@ func _isCaveEdge(list: Array, p: Vector2i) -> bool:
 		for xx in range(-1, 2):
 			if not ((xx == 0) and (yy == 0)):
 				var new := Vector2(p.x + xx, p.y + yy)
-				if _level.insideMapV(new) and not list[_level._index(new, _width)]:
+				if _level.insideMap(new) and not list[_level._index(new, _width)]:
 					edge = true
 	return edge
 
@@ -215,7 +215,7 @@ func _cutTrees(array: Array) -> void:
 		if Random.next(3) == 0: # cut
 			if Random.next(4) == 0: # all
 				for i in cave:
-					_level.cutTreeV(_level.position(i, _width))
+					_level.cutTree(_level.position(i, _width))
 			elif Random.nextBool(): # some
 				var direction := Random.next(4)
 				var test := _level.position(cave[Random.next(cave.size())], _width)
@@ -224,28 +224,28 @@ func _cutTrees(array: Array) -> void:
 					match direction:
 						0:
 							if p.x > test.x:
-								_level.cutTreeV(p)
+								_level.cutTree(p)
 							elif is_equal_approx(p.x, test.x):
 								if Random.nextBool():
-									_level.cutTreeV(p)
+									_level.cutTree(p)
 						1:
 							if p.x < test.x:
-								_level.cutTreeV(p)
+								_level.cutTree(p)
 							elif is_equal_approx(p.x, test.x):
 								if Random.nextBool():
-									_level.cutTreeV(p)
+									_level.cutTree(p)
 						2:
 							if p.y > test.y:
-								_level.cutTreeV(p)
+								_level.cutTree(p)
 							elif is_equal_approx(p.y, test.y):
 								if Random.nextBool():
-									_level.cutTreeV(p)
+									_level.cutTree(p)
 						3:
 							if p.y < test.y:
-								_level.cutTreeV(p)
+								_level.cutTree(p)
 							elif is_equal_approx(p.y, test.y):
 								if Random.nextBool():
-									_level.cutTreeV(p)
+									_level.cutTree(p)
 
 func _drawGrass() -> void:
 	var array := _getCellularList(Random.next(_standardSteps), _standardChance, _standardBirth, _standardDeath)

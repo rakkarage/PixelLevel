@@ -169,27 +169,27 @@ func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 			elif backColor == _backGrass:
 				_setOutside(write)
 			if foreColor == _colorWaterShallow:
-				_level.setWaterShallowV(write)
+				_level.setWaterShallow(write)
 			elif foreColor == _colorWaterDeep:
-				_level.setWaterDeepV(write)
+				_level.setWaterDeep(write)
 			elif foreColor == _colorWaterShallowPurple:
-				_level.setWaterShallowPurpleV(write)
+				_level.setWaterShallowPurple(write)
 			elif foreColor == _colorWaterDeepPurple:
-				_level.setWaterDeepPurpleV(write)
+				_level.setWaterDeepPurple(write)
 			elif foreColor == _colorTileRed:
 				_setFloorRoom(write)
 				_level.setDoor(write)
 			elif foreColor == _colorTilePurple:
 				if Random.nextBool():
 					if Random.nextBool():
-						_level.setBanner0V(write)
+						_level.setBanner0(write)
 					else:
-						_level.setBanner1V(write)
+						_level.setBanner1(write)
 				else:
-					_level.setFountainV(write)
+					_level.setFountain(write)
 			elif foreColor == _colorTileYellow:
 				if Random.nextBool():
-					_level.setLootV(write)
+					_level.setLoot(write)
 
 func _findTemplateWith(template: Dictionary, connections: Array) -> void:
 	var size: int = template.size

@@ -9,79 +9,81 @@ signal updateMap
 const INVALID := -1
 const INVALID_CELL := Vector2i(INVALID, INVALID)
 const _tweenTime := 0.333
+var _oldSize := Vector2.ZERO
+var _pressed := false
+
 const _zoomMin := 0.2
 const _zoomMax := 8.0
 const _zoomFactor := 0.1
 const _zoomRate := 5.0
-const _momentumDecay := 0.8
-const _momentumDamping := 0.333
-const _minMouseSpeed := 7.0
 var _zoomTarget := 1.0
-var _oldSize := Vector2.ZERO
-var _dragMomentum := Vector2.ZERO
-var _pressed := false
-var _dragging := false
-var _update := false
+
+const _panMomentumDecay := 0.8
+const _panMomentumDamping := 0.333
+const _panMomentumThreshold := 7.0
+var _panning := false
+var _panFinished := false
+var _panMomentum := Vector2.ZERO
 
 func _ready() -> void: call_deferred("_readyDeferred")
 
 func _readyDeferred() -> void:
-	_centerCamera()
+	centerCamera()
 	connect("size_changed", _onResize)
 	Gesture.connect("onZoom", _zoom)
 
 func _onResize() -> void:
-	var center: Vector2 = _mapCenter()
-	_cameraTo(center + (_camera.global_position - center) * (Vector2(size) / _oldSize))
+	var center: Vector2 = mapCenter()
+	cameraTo(center + (_camera.global_position - center) * (Vector2(size) / _oldSize))
 	_oldSize = size
-	_cameraSnap()
+	cameraSnap()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
 				_pressed = true
-				_dragging = false
+				_panning = false
 			else:
-				if _dragging:
-					_update = true
+				if _panning:
+					_panFinished = true
 				_pressed = false
-			_cameraSnap()
+			cameraSnap()
 		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			_zoom(event.global_position, _zoomFactor)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			_zoom(event.global_position, -_zoomFactor)
 	elif event is InputEventMouseMotion:
 		if _pressed:
-			_dragging = true
+			_panning = true
 			var mouseDelta = event.relative / _zoomTarget
-			_dragMomentum = _dragMomentum * _momentumDecay + mouseDelta
-			_cameraTo(_camera.global_position - mouseDelta)
+			_panMomentum = _panMomentum * _panMomentumDecay + mouseDelta
+			cameraTo(_camera.global_position - mouseDelta)
 			updateMap.emit()
 
 func _process(delta: float) -> void:
 	_camera.zoom = _camera.zoom.move_toward(Vector2(_zoomTarget, _zoomTarget), delta * _zoomRate)
-	if not _pressed and _dragMomentum.length() > _minMouseSpeed:
-		_cameraTo(_camera.global_position - _dragMomentum * _momentumDamping)
-	_dragMomentum = _dragMomentum * _momentumDecay
-	if _dragMomentum.is_zero_approx() and _update:
-		_update = false
-		_cameraSnap()
+	if not _pressed and _panMomentum.length() > _panMomentumThreshold:
+		cameraTo(_camera.global_position - _panMomentum * _panMomentumDamping)
+	_panMomentum = _panMomentum * _panMomentumDecay
+	if _panMomentum.is_zero_approx() and _panFinished:
+		_panFinished = false
+		cameraSnap()
 
 func _zoom(at: Vector2, factor: float) -> void:
 	var zoomNew := _zoomTarget * pow(_zoomRate, factor)
 	_zoomTarget = clamp(zoomNew, _zoomMin, _zoomMax)
 	var positionNew := at + (_camera.global_position - at) * (_zoomTarget / zoomNew)
-	_cameraTo(positionNew + _camera.global_position - positionNew)
-	_cameraSnap()
+	cameraTo(positionNew + _camera.global_position - positionNew)
+	cameraSnap()
 
-func _cameraTo(to: Vector2) -> void: _camera.global_position = to
+func cameraTo(to: Vector2) -> void: _camera.global_position = to
 
-func _centerCamera() -> void: _cameraTo(_mapCenter())
+func centerCamera() -> void: cameraTo(mapCenter())
 
-func _cameraSnap() -> void:
-	var map := _mapBounds()
-	var view := _cameraBounds().grow(-int(_tileMap.tile_set.tile_size.x / _zoomTarget))
+func cameraSnap() -> void:
+	var map := mapBounds()
+	var view := cameraBounds().grow(-int(_tileMap.tile_set.tile_size.x / _zoomTarget))
 	if not view.intersects(map):
 		var to := _camera.global_position + _constrainRect(view, map)
 		create_tween().tween_property(_camera, "global_position", to, _tweenTime).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)
@@ -93,39 +95,41 @@ func index(p: Vector2i, w: int) -> int: return p.x + p.y * w
 
 func position(i: int, w: int) -> Vector2i: return Vector2i(i % w, int(i / float(w)))
 
-func tileIndex(p: Vector2i) -> int: return index(p, _tileMap.get_used_rect().size.x)
+func tileIndex(p: Vector2i) -> int: return index(p, tileRect().size.x)
 
-func tilePosition(i: int) -> Vector2i: return position(i, _tileMap.get_used_rect().size.x)
+func tilePosition(i: int) -> Vector2i: return position(i, tileRect().size.x)
 
-func _mapToLocal(p: Vector2i) -> Vector2i: return _tileMap.map_to_local(p)
+func mapToLocal(p: Vector2i) -> Vector2i: return _tileMap.map_to_local(p)
 
-func _localToMap(p: Vector2i) -> Vector2i: return _tileMap.local_to_map(p)
+func localToMap(p: Vector2i) -> Vector2i: return _tileMap.local_to_map(p)
 
-func _localToGlobal(p: Vector2i) -> Vector2: return _tileMap.to_global(p) * _zoomTarget - _cameraPosition()
+func localToGlobal(p: Vector2i) -> Vector2: return _tileMap.to_global(p) * _zoomTarget - cameraPosition()
 
-func _globalToLocal(p: Vector2) -> Vector2i: return _tileMap.to_local(p / _zoomTarget + _cameraPosition())
+func globalToLocal(p: Vector2) -> Vector2i: return _tileMap.to_local(p / _zoomTarget + cameraPosition())
 
-func _mapToGlobal(p: Vector2i) -> Vector2: return _localToGlobal(_mapToLocal(p))
+func mapToGlobal(p: Vector2i) -> Vector2: return localToGlobal(mapToLocal(p))
 
-func _globalToMap(p: Vector2) -> Vector2i: return _localToMap(_globalToLocal(p))
+func globalToMap(p: Vector2) -> Vector2i: return localToMap(globalToLocal(p))
 
-func insideMap(p: Vector2i) -> bool: return _tileMap.get_used_rect().has_point(p)
+func tileRect() -> Rect2i: return _tileMap.get_used_rect()
 
-func _mapCenter() -> Vector2i: return _mapSize() / 2.0
+func insideMap(p: Vector2i) -> bool: return tileRect().has_point(p)
 
-func _mapSize() -> Vector2i: return _tileMap.get_used_rect().size * _tileMap.tile_set.tile_size
+func mapCenter() -> Vector2i: return mapSize() / 2.0
 
-func _mapPosition() -> Vector2i: return _tileMap.get_used_rect().position * _tileMap.tile_set.tile_size
+func mapSize() -> Vector2i: return tileRect().size * _tileMap.tile_set.tile_size
 
-func _mapBounds() -> Rect2i: return Rect2i(_mapPosition(), _mapSize())
+func mapPosition() -> Vector2i: return tileRect().position * _tileMap.tile_set.tile_size
 
-func _cameraSize() -> Vector2: return size / _zoomTarget
+func mapBounds() -> Rect2i: return Rect2i(mapPosition(), mapSize())
 
-func _cameraPosition() -> Vector2: return _camera.global_position - _cameraSize() / 2.0
+func cameraSize() -> Vector2: return size / _zoomTarget
 
-func _cameraBounds() -> Rect2: return Rect2(_cameraPosition(), _cameraSize())
+func cameraPosition() -> Vector2: return _camera.global_position - cameraSize() / 2.0
 
-func _cameraBoundsMap() -> Rect2i: return Rect2i(_localToMap(_cameraPosition()), _localToMap(_cameraSize()))
+func cameraBounds() -> Rect2: return Rect2(cameraPosition(), cameraSize())
+
+func cameraBoundsMap() -> Rect2i: return Rect2i(localToMap(cameraPosition()), localToMap(cameraSize()))
 
 func _constrainRect(view: Rect2i, map: Rect2i) -> Vector2:
 	return _constrain(view.position, view.end, map.position, map.end)
