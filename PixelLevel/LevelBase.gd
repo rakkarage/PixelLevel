@@ -26,7 +26,6 @@ var _update := false
 func _ready() -> void: call_deferred("_readyDeferred")
 
 func _readyDeferred() -> void:
-	generated()
 	_centerCamera()
 	connect("size_changed", _onResize)
 	Gesture.connect("onZoom", _zoom)
@@ -36,9 +35,6 @@ func _onResize() -> void:
 	_cameraTo(center + (_camera.global_position - center) * (Vector2(size) / _oldSize))
 	_oldSize = size
 	_cameraSnap()
-
-func generated() -> void:
-	_oldSize = size
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:

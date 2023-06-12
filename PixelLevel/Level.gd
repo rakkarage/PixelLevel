@@ -100,11 +100,13 @@ enum EdgeInsideCorner { TopLeft, TopRight, BottomLeft, TopLeftFlip, TopRightFlip
 
 #region Init / Input
 
-func _ready() -> void:
-	super._ready()
+func _ready() -> void: call_deferred("_readyDeferred")
+
+func _readyDeferred() -> void:
+	super._readyDeferred()
+	generated()
 
 func generated() -> void:
-	super.generated()
 	_drawEdge()
 	_hero.global_position = _mapToLocal(startAt)
 	_pathClear()
