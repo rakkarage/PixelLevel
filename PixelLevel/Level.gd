@@ -23,6 +23,7 @@ var _turn := false
 var _time := 0.0
 var startAt := Vector2i(4, 4)
 var _tweenStep : Tween
+var _sources: Array[TileSetSource]
 
 var _theme := 0 # dungeon _theme
 var _day := true # _day or night outside _theme
@@ -115,6 +116,7 @@ func _readyDeferred() -> void:
 	setWaterShallowPurple(Vector2i(9, 8))
 
 func generated() -> void:
+	_cacheSources()
 	_drawEdge()
 	_hero.global_position = mapToLocal(startAt)
 	_pathClear()
@@ -128,6 +130,10 @@ func generated() -> void:
 	verifyCliff()
 	_addPoints()
 	_connect()
+
+func _cacheSources() -> void:
+	for i in _tileMap.tile_set.get_source_count():
+		_sources.append(_tileMap.tile_set.get_source(i))
 
 func _process(delta: float) -> void:
 	super._process(delta)
@@ -602,8 +608,7 @@ func _clearTile(layer: Layer, p: Vector2i) -> void:
 	_clearTileMap(_tileMap, layer, p)
 
 func _setRandomTileMap(tileMap: TileMap, layer: Layer, p: Vector2i, tile: Tile, coords := INVALID_CELL, alternative := INVALID) -> void:
-	var source := tileMap.tile_set.get_source(tileMap.tile_set.get_source_id(tile))
-	var c := source.get_tile_id(_randomTileCoords(tile)) if coords == INVALID_CELL else coords
+	var c := _sources[tile].get_tile_id(_randomTileCoords(tile)) if coords == INVALID_CELL else coords
 	var a := _randomTileAlternative(tile, c) if alternative == INVALID else alternative
 	_setTileMap(tileMap, layer, p, tile, c, a)
 
@@ -613,24 +618,15 @@ func _setRandomTile(layer: Layer, p: Vector2i, tile: Tile, coords := INVALID_CEL
 func _setRandomTileEdge(p: Vector2i, tile: Tile, coords := INVALID_CELL, alternative := INVALID) -> void:
 	_setRandomTileMap(_tileMapEdge, Layer.Back, p, tile, coords, alternative)
 
-func _randomTileMapCoords(tileMap: TileMap, tile: Tile) -> int:
+func _randomTileCoords(tile: Tile) -> int:
 	var array := []
-	var tileSet = tileMap.tile_set
-	var source = tileSet.get_source(tileSet.get_source_id(tile))
+	var source = _sources[tile]
 	for i in source.get_tiles_count():
 		array.append(source.get_tile_data(source.get_tile_id(i), 0).probability)
 	return Random.probabilityIndex(array)
 
-func _randomTileCoords(tile: Tile) -> int:
-	return _randomTileMapCoords(_tileMap, tile)
-
-func _randomTileMapAlternative(tileMap: TileMap, tile: Tile, coords: Vector2i) -> int:
-	var tileSet = tileMap.tile_set
-	var source = tileSet.get_source(tileSet.get_source_id(tile))
-	return Random.next(source.get_alternative_tiles_count(coords))
-
 func _randomTileAlternative(tile: Tile, coords: Vector2i) -> int:
-	return _randomTileMapAlternative(_tileMap, tile, coords)
+	return Random.next(_sources[tile].get_alternative_tiles_count(coords))
 
 #region Back / Floor
 
@@ -641,22 +637,22 @@ func _setBackRandom(p: Vector2i, tile: int, wonky := true) -> void:
 	_setRandomTile(Layer.Back, p, tile, INVALID_CELL, INVALID if wonky else 0)
 
 func setFloor(p: Vector2, wonky: bool) -> void:
-	var id: Tile
+	var tile: Tile
 	match _theme:
-		0: id = Tile.Theme1Floor
-		1: id = Tile.Theme2Floor
-		2: id = Tile.Theme3Floor
-		3: id = Tile.Theme4Floor
-	_setBackRandom(p, id, wonky)
+		0: tile = Tile.Theme1Floor
+		1: tile = Tile.Theme2Floor
+		2: tile = Tile.Theme3Floor
+		3: tile = Tile.Theme4Floor
+	_setBackRandom(p, tile, wonky)
 
 func setFloorRoom(p: Vector2, wonky: bool) -> void:
-	var id: Tile
+	var tile: Tile
 	match _theme:
-		0: id = Tile.Theme1FloorRoom
-		1: id = Tile.Theme2FloorRoom
-		2: id = Tile.Theme3FloorRoom
-		3: id = Tile.Theme4FloorRoom
-	_setBackRandom(p, id, wonky)
+		0: tile = Tile.Theme1FloorRoom
+		1: tile = Tile.Theme2FloorRoom
+		2: tile = Tile.Theme3FloorRoom
+		3: tile = Tile.Theme4FloorRoom
+	_setBackRandom(p, tile, wonky)
 
 func setOutside(p: Vector2i) -> void:
 	if _desert:
@@ -693,31 +689,31 @@ func _setForeRandom(p: Vector2i, tile: int, coords := INVALID_CELL, alternative 
 	_setRandomTile(Layer.Fore, p, tile, coords, alternative)
 
 func setWallPlain(p: Vector2i) -> void:
-	var id: Tile
+	var tile: Tile
 	match _theme:
-		0: id = Tile.Theme1WallPlain
-		1: id = Tile.Theme2WallPlain
-		2: id = Tile.Theme3WallPlain
-		3: id = Tile.Theme4WallPlain
-	_setForeRandom(p, id)
+		0: tile = Tile.Theme1WallPlain
+		1: tile = Tile.Theme2WallPlain
+		2: tile = Tile.Theme3WallPlain
+		3: tile = Tile.Theme4WallPlain
+	_setForeRandom(p, tile)
 
 func setWall(p: Vector2i) -> void:
-	var id: Tile
+	var tile: Tile
 	match _theme:
-		0: id = Tile.Theme1Wall
-		1: id = Tile.Theme2Wall
-		2: id = Tile.Theme3Wall
-		3: id = Tile.Theme4Wall
-	_setForeRandom(p, id)
+		0: tile = Tile.Theme1Wall
+		1: tile = Tile.Theme2Wall
+		2: tile = Tile.Theme3Wall
+		3: tile = Tile.Theme4Wall
+	_setForeRandom(p, tile)
 
 func setTorch(p: Vector2i) -> void:
-	var id: Tile
+	var tile: Tile
 	match _theme:
-		0: id = Tile.Theme1Torch
-		1: id = Tile.Theme2Torch
-		2: id = Tile.Theme3Torch
-		3: id = Tile.Theme4Torch
-	_setForeRandom(p, id)
+		0: tile = Tile.Theme1Torch
+		1: tile = Tile.Theme2Torch
+		2: tile = Tile.Theme3Torch
+		3: tile = Tile.Theme4Torch
+	_setForeRandom(p, tile)
 
 func setOutsideWall(p: Vector2i) -> void:
 	_setForeRandom(p, Tile.DayWall if _day else Tile.NightWall)
@@ -726,22 +722,20 @@ func setOutsideHedge(p: Vector2i) -> void:
 	_setForeRandom(p, Tile.DayHedge if _day else Tile.NightHedge)
 
 func setCliff(p: Vector2i) -> void:
-	var id: Tile
+	var tile: Tile
 	match _themeCliff:
-		0: id = Tile.Cliff1
-		1: id = Tile.Cliff2
-	_setForeRandom(p, id)
+		0: tile = Tile.Cliff1
+		1: tile = Tile.Cliff2
+	_setForeRandom(p, tile)
 
 func _setStair(p: Vector2i, type: Stair) -> void:
-	var id: Tile
+	var tile: Tile
 	match _theme:
-		0: id = Tile.Theme1Stair
-		1: id = Tile.Theme2Stair
-		2: id = Tile.Theme3Stair
-		3: id = Tile.Theme4Stair
-	var tileSet = _tileMap.tile_set
-	var source = tileSet.get_source(tileSet.get_source_id(id))
-	_setForeRandom(p, id, source.get_tile_id(type), 0)
+		0: tile = Tile.Theme1Stair
+		1: tile = Tile.Theme2Stair
+		2: tile = Tile.Theme3Stair
+		3: tile = Tile.Theme4Stair
+	_setForeRandom(p, tile, _sources[tile].get_tile_id(type), 0)
 
 func setStairDown(p: Vector2i) -> void:
 	_setStair(p, Stair.Down)
@@ -762,15 +756,13 @@ func setStairOutsideDown(p: Vector2i) -> void:
 	_setStairOutside(p, Stair.Down)
 
 func setDoor(p: Vector2i, type: Door) -> void:
-	var id: Tile
+	var tile: Tile
 	match _theme:
-		0: id = Tile.Theme1Door
-		1: id = Tile.Theme2Door
-		2: id = Tile.Theme3Door
-		3: id = Tile.Theme4Door
-	var tileSet = _tileMap.tile_set
-	var source = tileSet.get_source(tileSet.get_source_id(id))
-	_setForeRandom(p, id, source.get_tile_id(type))
+		0: tile = Tile.Theme1Door
+		1: tile = Tile.Theme2Door
+		2: tile = Tile.Theme3Door
+		3: tile = Tile.Theme4Door
+	_setForeRandom(p, tile, _sources[tile].get_tile_id(type))
 
 func setFountain(p: Vector2i) -> void:
 	_setForeRandom(p, Tile.Fountain)
@@ -846,8 +838,8 @@ func setGrass(p: Vector2i) -> void:
 #region Water
 
 func setWaterShallow(p: Vector2i) -> void:
-	var sourceBack := _tileMap.tile_set.get_source(_tileMap.tile_set.get_source_id(Tile.WaterShallowBack))
-	var sourceFore := _tileMap.tile_set.get_source(_tileMap.tile_set.get_source_id(Tile.WaterShallowFore))
+	var sourceBack := _sources[Tile.WaterShallowBack]
+	var sourceFore := _sources[Tile.WaterShallowFore]
 	var c := _randomTileCoords(Tile.WaterShallowBack)
 	var backId := sourceBack.get_tile_id(c)
 	var foreId := sourceFore.get_tile_id(c)
@@ -856,8 +848,8 @@ func setWaterShallow(p: Vector2i) -> void:
 	_setRandomTile(Layer.WaterFore, p, Tile.WaterShallowFore, foreId, a)
 
 func setWaterDeep(p: Vector2i) -> void:
-	var sourceBack := _tileMap.tile_set.get_source(_tileMap.tile_set.get_source_id(Tile.WaterDeepBack))
-	var sourceFore := _tileMap.tile_set.get_source(_tileMap.tile_set.get_source_id(Tile.WaterDeepFore))
+	var sourceBack := _sources[Tile.WaterDeepBack]
+	var sourceFore := _sources[Tile.WaterDeepFore]
 	var c := _randomTileCoords(Tile.WaterDeepBack)
 	var backId := sourceBack.get_tile_id(c)
 	var foreId := sourceFore.get_tile_id(c)
@@ -866,8 +858,8 @@ func setWaterDeep(p: Vector2i) -> void:
 	_setRandomTile(Layer.WaterFore, p, Tile.WaterDeepFore, foreId, a)
 
 func setWaterShallowPurple(p: Vector2i) -> void:
-	var sourceBack := _tileMap.tile_set.get_source(_tileMap.tile_set.get_source_id(Tile.WaterShallowPurpleBack))
-	var sourceFore := _tileMap.tile_set.get_source(_tileMap.tile_set.get_source_id(Tile.WaterShallowPurpleFore))
+	var sourceBack := _sources[Tile.WaterShallowPurpleBack]
+	var sourceFore := _sources[Tile.WaterShallowPurpleFore]
 	var c := _randomTileCoords(Tile.WaterShallowPurpleBack)
 	var backId := sourceBack.get_tile_id(c)
 	var foreId := sourceFore.get_tile_id(c)
@@ -876,8 +868,8 @@ func setWaterShallowPurple(p: Vector2i) -> void:
 	_setRandomTile(Layer.WaterFore, p, Tile.WaterShallowPurpleFore, foreId, a)
 
 func setWaterDeepPurple(p: Vector2i) -> void:
-	var sourceBack := _tileMap.tile_set.get_source(_tileMap.tile_set.get_source_id(Tile.WaterDeepPurpleBack))
-	var sourceFore := _tileMap.tile_set.get_source(_tileMap.tile_set.get_source_id(Tile.WaterDeepPurpleFore))
+	var sourceBack := _sources[Tile.WaterDeepPurpleBack]
+	var sourceFore := _sources[Tile.WaterDeepPurpleFore]
 	var c := _randomTileCoords(Tile.WaterDeepPurpleBack)
 	var backId := sourceBack.get_tile_id(c)
 	var foreId := sourceFore.get_tile_id(c)
@@ -971,9 +963,8 @@ func _drawEdge() -> void:
 	var rect := tileRect()
 	if rect.size == Vector2i.ZERO:
 		return
-	var tileSet = _tileMapEdge.tile_set
-	var o = tileSet.get_source(tileSet.get_source_id(Tile.EdgeOutsideCorner))
-	var i = tileSet.get_source(tileSet.get_source_id(Tile.EdgeInsideCorner))
+	var o = _sources[Tile.EdgeOutsideCorner]
+	var i = _sources[Tile.EdgeInsideCorner]
 	var minY: int = rect.position.y - 1
 	var maxY: int = rect.end.y
 	var minX: int = rect.position.x - 1
