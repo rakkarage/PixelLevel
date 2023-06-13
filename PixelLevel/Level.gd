@@ -106,7 +106,9 @@ func _ready() -> void: call_deferred("_readyDeferred")
 
 func _readyDeferred() -> void:
 	super._readyDeferred()
-	generated()
+	_cacheSources()
+	for i in 10:
+		setWall(Vector2i(i, 9))
 	setBanner0(startAt) if Random.nextBool() else setBanner1(startAt)
 	setWaterShallow(Vector2i(7, 7))
 	setWaterDeep(Vector2i(8, 7))
@@ -114,9 +116,9 @@ func _readyDeferred() -> void:
 	setWaterShallowPurple(Vector2i(7, 8))
 	setWaterDeepPurple(Vector2i(8, 8))
 	setWaterShallowPurple(Vector2i(9, 8))
+	generated()
 
 func generated() -> void:
-	_cacheSources()
 	_drawEdge()
 	_hero.global_position = mapToLocal(startAt)
 	_pathClear()
