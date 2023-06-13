@@ -106,6 +106,13 @@ func _ready() -> void: call_deferred("_readyDeferred")
 func _readyDeferred() -> void:
 	super._readyDeferred()
 	generated()
+	setBanner0(startAt) if Random.nextBool() else setBanner1(startAt)
+	setWaterShallow(Vector2i(7, 7))
+	setWaterDeep(Vector2i(8, 7))
+	setWaterShallow(Vector2i(9, 7))
+	setWaterShallowPurple(Vector2i(7, 8))
+	setWaterDeepPurple(Vector2i(8, 8))
+	setWaterShallowPurple(Vector2i(9, 8))
 
 func generated() -> void:
 	_drawEdge()
@@ -595,7 +602,8 @@ func _clearTile(layer: Layer, p: Vector2i) -> void:
 	_clearTileMap(_tileMap, layer, p)
 
 func _setRandomTileMap(tileMap: TileMap, layer: Layer, p: Vector2i, tile: Tile, coords := INVALID_CELL, alternative := INVALID) -> void:
-	var c := _randomTileCoords(tile) if coords == INVALID_CELL else coords
+	var source := tileMap.tile_set.get_source(tileMap.tile_set.get_source_id(tile))
+	var c := source.get_tile_id(_randomTileCoords(tile)) if coords == INVALID_CELL else coords
 	var a := _randomTileAlternative(tile, c) if alternative == INVALID else alternative
 	_setTileMap(tileMap, layer, p, tile, c, a)
 
@@ -605,15 +613,15 @@ func _setRandomTile(layer: Layer, p: Vector2i, tile: Tile, coords := INVALID_CEL
 func _setRandomTileEdge(p: Vector2i, tile: Tile, coords := INVALID_CELL, alternative := INVALID) -> void:
 	_setRandomTileMap(_tileMapEdge, Layer.Back, p, tile, coords, alternative)
 
-func _randomTileMapCoords(tileMap: TileMap, tile: Tile) -> Vector2i:
+func _randomTileMapCoords(tileMap: TileMap, tile: Tile) -> int:
 	var array := []
 	var tileSet = tileMap.tile_set
 	var source = tileSet.get_source(tileSet.get_source_id(tile))
 	for i in source.get_tiles_count():
 		array.append(source.get_tile_data(source.get_tile_id(i), 0).probability)
-	return source.get_tile_id(Random.probabilityIndex(array))
+	return Random.probabilityIndex(array)
 
-func _randomTileCoords(tile: Tile) -> Vector2i:
+func _randomTileCoords(tile: Tile) -> int:
 	return _randomTileMapCoords(_tileMap, tile)
 
 func _randomTileMapAlternative(tileMap: TileMap, tile: Tile, coords: Vector2i) -> int:
@@ -838,23 +846,47 @@ func setGrass(p: Vector2i) -> void:
 #region Water
 
 func setWaterShallow(p: Vector2i) -> void:
-	_setRandomTile(Layer.WaterBack, p, Tile.WaterShallowBack)
-	_setRandomTile(Layer.WaterFore, p, Tile.WaterShallowFore)
+	var sourceBack := _tileMap.tile_set.get_source(_tileMap.tile_set.get_source_id(Tile.WaterShallowBack))
+	var sourceFore := _tileMap.tile_set.get_source(_tileMap.tile_set.get_source_id(Tile.WaterShallowFore))
+	var c := _randomTileCoords(Tile.WaterShallowBack)
+	var backId := sourceBack.get_tile_id(c)
+	var foreId := sourceFore.get_tile_id(c)
+	var a := _randomTileAlternative(Tile.WaterShallowBack, backId)
+	_setRandomTile(Layer.WaterBack, p, Tile.WaterShallowBack, backId, a)
+	_setRandomTile(Layer.WaterFore, p, Tile.WaterShallowFore, foreId, a)
 
 func setWaterDeep(p: Vector2i) -> void:
-	_setRandomTile(Layer.WaterBack, p, Tile.WaterDeepBack)
-	_setRandomTile(Layer.WaterFore, p, Tile.WaterDeepFore)
+	var sourceBack := _tileMap.tile_set.get_source(_tileMap.tile_set.get_source_id(Tile.WaterDeepBack))
+	var sourceFore := _tileMap.tile_set.get_source(_tileMap.tile_set.get_source_id(Tile.WaterDeepFore))
+	var c := _randomTileCoords(Tile.WaterDeepBack)
+	var backId := sourceBack.get_tile_id(c)
+	var foreId := sourceFore.get_tile_id(c)
+	var a := _randomTileAlternative(Tile.WaterDeepBack, backId)
+	_setRandomTile(Layer.WaterBack, p, Tile.WaterDeepBack, backId, a)
+	_setRandomTile(Layer.WaterFore, p, Tile.WaterDeepFore, foreId, a)
 
 func setWaterShallowPurple(p: Vector2i) -> void:
-	_setRandomTile(Layer.WaterBack, p, Tile.WaterShallowPurpleBack)
-	_setRandomTile(Layer.WaterFore, p, Tile.WaterShallowPurpleFore)
+	var sourceBack := _tileMap.tile_set.get_source(_tileMap.tile_set.get_source_id(Tile.WaterShallowPurpleBack))
+	var sourceFore := _tileMap.tile_set.get_source(_tileMap.tile_set.get_source_id(Tile.WaterShallowPurpleFore))
+	var c := _randomTileCoords(Tile.WaterShallowPurpleBack)
+	var backId := sourceBack.get_tile_id(c)
+	var foreId := sourceFore.get_tile_id(c)
+	var a := _randomTileAlternative(Tile.WaterShallowPurpleBack, backId)
+	_setRandomTile(Layer.WaterBack, p, Tile.WaterShallowPurpleBack, backId, a)
+	_setRandomTile(Layer.WaterFore, p, Tile.WaterShallowPurpleFore, foreId, a)
 
 func setWaterDeepPurple(p: Vector2i) -> void:
-	_setRandomTile(Layer.WaterBack, p, Tile.WaterDeepPurpleBack)
-	_setRandomTile(Layer.WaterFore, p, Tile.WaterDeepPurpleFore)
+	var sourceBack := _tileMap.tile_set.get_source(_tileMap.tile_set.get_source_id(Tile.WaterDeepPurpleBack))
+	var sourceFore := _tileMap.tile_set.get_source(_tileMap.tile_set.get_source_id(Tile.WaterDeepPurpleFore))
+	var c := _randomTileCoords(Tile.WaterDeepPurpleBack)
+	var backId := sourceBack.get_tile_id(c)
+	var foreId := sourceFore.get_tile_id(c)
+	var a := _randomTileAlternative(Tile.WaterDeepPurpleBack, backId)
+	_setRandomTile(Layer.WaterBack, p, Tile.WaterDeepPurpleBack, backId, a)
+	_setRandomTile(Layer.WaterFore, p, Tile.WaterDeepPurpleFore, foreId, a)
 
 func _isWaterTile(p: Vector2i, tiles: Array) -> bool:
-	return tiles.has(_tileMap.get_cell_source_id(Layer.WaterBack, p))
+	return tiles.has(_tileMap.get_cell_source_id(Layer.WaterBack, p)) or tiles.has(_tileMap.get_cell_source_id(Layer.WaterFore, p))
 
 func isWater(p: Vector2i) -> bool:
 	return _isWaterTile(p, _waterTiles)
