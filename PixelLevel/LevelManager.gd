@@ -62,7 +62,8 @@ func _updateMap() -> void:
 	_updateText(get_global_mouse_position())
 	var at = _level._heroPosition()
 	var original = _level.tileRect().size
-	var trimSize = original
+	var minSize = min(original.x, original.y)
+	var trimSize = Vector2i(minSize, minSize)
 	var offset := Vector2i.ZERO
 	if trimSize.x > _max.x:
 		trimSize.x = _max.x
@@ -78,8 +79,6 @@ func _updateMap() -> void:
 	for y in range(trimSize.y):
 		for x in range(trimSize.x):
 			image.set_pixel(x, y, _level.getMapColor(Vector2i(x + offset.x, y + offset.y)))
-	image.resize_to_po2(false, Image.INTERPOLATE_NEAREST)
-	image.resize_to_po2(false, Image.INTERPOLATE_NEAREST)
 	_textureRect.texture = ImageTexture.create_from_image(image)
 
 @onready var _g := {
