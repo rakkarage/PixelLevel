@@ -28,6 +28,7 @@ var _panMomentum := Vector2.ZERO
 func _ready() -> void: call_deferred("_readyDeferred")
 
 func _readyDeferred() -> void:
+	_oldSize = size
 	centerCamera()
 	connect("size_changed", _onResize)
 	Gesture.connect("onZoom", _zoom)
