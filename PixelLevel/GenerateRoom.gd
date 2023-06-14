@@ -8,7 +8,7 @@ func generate(delta: int = 1) -> void:
 	super.generate(delta)
 	_setLevelRect(10, 10)
 	_fill(true, false)
-	_drawRoom(_findRoom(_level.rect))
+	_drawRoom(_findRoom(_level.tileRect()))
 	_stairs()
 	if _stream:
 		_generateStreams()

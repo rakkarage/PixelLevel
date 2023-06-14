@@ -76,8 +76,8 @@ const _floorTiles := [
 	Tile.DayGrass, Tile.NightGrass, Tile.DayPath, Tile.NightPath,
 	Tile.DayDesert, Tile.NightDesert, Tile.DayFloor, Tile.NightFloor, Tile.Rubble ]
 const _wallTiles := [
-	Tile.Theme1Torch, Tile.Theme1Wall, Tile.Theme2Torch, Tile.Theme2Wall,
-	Tile.Theme3Torch, Tile.Theme3Wall, Tile.Theme4Torch, Tile.Theme4Wall,
+	Tile.Theme1Torch, Tile.Theme1Wall, Tile.Theme1WallPlain, Tile.Theme2Torch, Tile.Theme2Wall, Tile.Theme2WallPlain,
+	Tile.Theme3Torch, Tile.Theme3Wall, Tile.Theme3WallPlain, Tile.Theme4Torch, Tile.Theme4Wall, Tile.Theme4WallPlain,
 	Tile.DayWall, Tile.NightWall, Tile.DayHedge, Tile.NightHedge ]
 const _cliffTiles := [Tile.Cliff1, Tile.Cliff2]
 const _stairTiles := [Tile.Theme1Stair, Tile.Theme2Stair, Tile.Theme3Stair, Tile.Theme4Stair, Tile.DayStair, Tile.NightStair]
