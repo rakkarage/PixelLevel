@@ -1,7 +1,7 @@
 extends Control
 
 @onready var _level: LevelBase = $Container/SubViewport
-@onready var _mask: AnimationPlayer = $Fore/Mask/Mask/AnimationPlayer
+@onready var _mask: MaskTween = $Fore/MaskGate
 @onready var _textureRect: TextureRect = $Fore/MiniMap
 @onready var _position: Label = $Fore/Panel/VBox/Mouse/Value
 @onready var _mapPosition: Label = $Fore/Panel/VBox/Tile/Value
@@ -95,14 +95,13 @@ var _selected: Generate
 
 func _generate(delta: int = 1) -> void:
 	await get_tree().process_frame
-	_mask.play("Go")
-	await _mask.animation_finished
+	await _mask.animateIn()
 	if delta != 0 or _selected == null:
 		_selected = Random.probability(_g)
 	_selected.generate(delta)
 	_depth.text = str(_level._state.depth)
 	_light.text = str(_level.lightRadius)
-	_mask.play_backwards("Go")
+	await _mask.animateOut()
 
 func _lightMinus() -> void:
 	_level.lightDecrease()

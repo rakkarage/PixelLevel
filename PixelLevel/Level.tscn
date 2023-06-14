@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://cpwpn22g1oh61" path="res://Interface/Back.tscn" id="2_ij0qj"]
 [ext_resource type="TileSet" uid="uid://cjn2ri268c5yx" path="res://PixelLevel/Level.tres" id="3_2nw2k"]
 [ext_resource type="PackedScene" uid="uid://c0gglcpbg3xyp" path="res://Interface/Target.tscn" id="4_gpw00"]
-[ext_resource type="PackedScene" uid="uid://dplcfrlu5as7j" path="res://Interface/Mask.tscn" id="7_aghgx"]
+[ext_resource type="PackedScene" uid="uid://b2xdfyjb3ol2o" path="res://Interface/MaskTween.tscn" id="8_4cj6s"]
 
 [node name="Level" instance=ExtResource("1_m1rxo")]
 script = ExtResource("2_6ydkp")
@@ -46,7 +46,7 @@ offset_right = 80.0
 offset_bottom = 80.0
 mouse_filter = 2
 
-[node name="Mask" parent="Fore" index="1" instance=ExtResource("7_aghgx")]
+[node name="MaskGate" parent="Fore" index="1" instance=ExtResource("8_4cj6s")]
 layout_mode = 1
 
 [node name="Panel" type="PanelContainer" parent="Fore" index="2"]
