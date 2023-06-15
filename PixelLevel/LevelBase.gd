@@ -16,7 +16,7 @@ var _oldSize := Vector2.ZERO ## Stores the old size of the node. Used for resizi
 var _pressed := false
 
 const _zoomMin := 0.2
-const _zoomMax := 8.0
+const _zoomMax := 16.0
 const _zoomFactor := 0.1
 const _zoomRate := 5.0
 var _zoomTarget := 1.0
@@ -83,7 +83,8 @@ func _process(delta: float) -> void:
 
 ## Zoom the [member _camera] at a given [param position] by a specified [param factor].
 func _zoom(position: Vector2, factor: float) -> void:
-	var zoomNew := _zoomTarget * pow(_zoomRate, factor)
+	var dynamicZoomFactor = _zoomTarget * factor # Adjust factor based on current zoom level
+	var zoomNew := _zoomTarget * pow(_zoomRate, dynamicZoomFactor)
 	_zoomTarget = clamp(zoomNew, _zoomMin, _zoomMax)
 	var positionNew := position + (_camera.global_position - position) * (_zoomTarget / zoomNew)
 	moveCameraTo(positionNew + _camera.global_position - positionNew)
