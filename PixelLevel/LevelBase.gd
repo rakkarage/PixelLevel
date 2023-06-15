@@ -101,13 +101,13 @@ func checkTileInCamera(p: Vector2i) -> void:
 
 func clear() -> void: _tileMap.clear()
 
-func index(p: Vector2i, w: int) -> int: return p.x + p.y * w
+func flatten(p: Vector2i, w: int) -> int: return p.x + p.y * w
 
-func position(i: int, w: int) -> Vector2i: return Vector2i(i % w, int(i / float(w)))
+func unflatten(i: int, w: int) -> Vector2i: return Vector2i(i % w, int(i / float(w)))
 
-func tileIndex(p: Vector2i) -> int: return index(p, tileRect().size.x)
+func tileIndex(p: Vector2i) -> int: return flatten(p, tileRect().size.x)
 
-func tilePosition(i: int) -> Vector2i: return position(i, tileRect().size.x)
+func tilePosition(i: int) -> Vector2i: return unflatten(i, tileRect().size.x)
 
 func mapToLocal(p: Vector2i) -> Vector2i: return _tileMap.map_to_local(p)
 

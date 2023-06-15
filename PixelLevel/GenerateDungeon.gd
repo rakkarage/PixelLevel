@@ -36,7 +36,7 @@ func _placeRooms() -> Array:
 			roomIndex = Random.next(maxRooms)
 			usedRoom = used[roomIndex]
 		used[roomIndex] = true
-		var p := _level.position(roomIndex, across) * Vector2i(_maxRoomWidth, _maxRoomHeight)
+		var p := _level.unflatten(roomIndex, across) * Vector2i(_maxRoomWidth, _maxRoomHeight)
 		var room := Rect2(p.x, p.y, _maxRoomWidth, _maxRoomHeight)
 		_drawRoom(_findRoom(room))
 		rooms.append(room)
