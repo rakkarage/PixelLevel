@@ -635,6 +635,9 @@ func _randomTileAlternative(tile: Tile, coords: Vector2i) -> int:
 
 #region Back / Floor
 
+func isBackInvalid(p: Vector2i) -> bool:
+	return _tileMap.get_cell_tile_data(Layer.Back, p) == null
+
 func clearBack(p: Vector2i) -> void:
 	_clearTile(Layer.Back, p)
 
