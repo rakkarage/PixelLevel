@@ -37,7 +37,7 @@ func _onResize() -> void:
 	var center: Vector2 = mapCenter()
 	cameraTo(center + (_camera.global_position - center) * (Vector2(size) / _oldSize))
 	_oldSize = size
-	cameraSnap()
+	cameraUpdate()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -49,7 +49,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				if _panning:
 					_panFinished = true
 				_pressed = false
-			cameraSnap()
+			cameraUpdate()
 		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			_zoom(event.global_position, _zoomFactor)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
@@ -69,26 +69,35 @@ func _process(delta: float) -> void:
 	_panMomentum = _panMomentum * _panMomentumDecay
 	if _panMomentum.is_zero_approx() and _panFinished:
 		_panFinished = false
-		cameraSnap()
+		cameraUpdate()
 
 func _zoom(at: Vector2, factor: float) -> void:
 	var zoomNew := _zoomTarget * pow(_zoomRate, factor)
 	_zoomTarget = clamp(zoomNew, _zoomMin, _zoomMax)
 	var positionNew := at + (_camera.global_position - at) * (_zoomTarget / zoomNew)
 	cameraTo(positionNew + _camera.global_position - positionNew)
-	cameraSnap()
+	cameraUpdate()
 
 func cameraTo(to: Vector2) -> void: _camera.global_position = to
 
 func centerCamera() -> void: cameraTo(mapCenter())
 
-func cameraSnap() -> void:
+func cameraUpdate() -> void:
 	var map := mapBounds()
 	var view := cameraBounds().grow(-int(_tileMap.tile_set.tile_size.x / _zoomTarget))
 	if not view.intersects(map):
-		var to := _camera.global_position + _constrainRect(view, map)
-		create_tween().tween_property(_camera, "global_position", to, _tweenTime).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)
-	updateMap.emit()
+		cameraSnap(_camera.global_position + _constrainRect(view, map))
+
+func cameraSnap(to: Vector2) -> void:
+	var tween := create_tween()
+	tween.tween_property(_camera, "global_position", to, _tweenTime).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)
+	tween.tween_callback(func(): updateMap.emit())
+
+func checkTileInCamera(p: Vector2i) -> void:
+	var test := Rect2(p, Vector2i.ONE)
+	var view := cameraBoundsMap().grow(-1)
+	if not view.intersects(test):
+		cameraSnap(mapToLocal(test.position))
 
 func clear() -> void: _tileMap.clear()
 

@@ -128,7 +128,6 @@ func generated() -> void:
 	_dark()
 	_findTorches()
 	_lightUpdate(_heroPosition(), lightRadius)
-	cameraSnap()
 	verifyCliff()
 	_addPoints()
 	_connect()
@@ -150,7 +149,7 @@ func _process(delta: float) -> void:
 				await _move(_hero)
 			if not _handleStair():
 				_lightUpdate(_heroPosition(), lightRadius)
-				#_checkCenter()
+				_checkCenter()
 		_time = 0.0
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -165,6 +164,9 @@ func _unhandled_input(event: InputEvent) -> void:
 func clear() -> void:
 	super.clear()
 	_tileMapEdge.clear()
+
+func _checkCenter() -> void:
+	checkTileInCamera(_heroPosition())
 
 func _processWasd() -> bool:
 	var done := false
@@ -192,7 +194,7 @@ func _wasd(direction: Vector2i) -> void:
 		_pathClear()
 		if not isStair(p):
 			_lightUpdate(p, lightRadius)
-			#_checkCenter()
+			_checkCenter()
 		else:
 			if isStairDown(p):
 				generate.emit()
