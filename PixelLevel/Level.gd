@@ -266,6 +266,7 @@ func _step(mob: Node2D, direction: Vector2i) -> void:
 	_tweenStep = create_tween()
 	_tweenStep.tween_property(mob, "global_position", to, _turnTime)
 	_tweenStep.set_trans(Tween.TRANS_CIRC).set_ease(Tween.EASE_IN_OUT)
+	_tweenStep.tween_callback(func(): updateMap.emit())
 	await _tweenStep.finished
 
 func _addPoints() -> void:
