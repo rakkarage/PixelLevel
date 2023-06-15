@@ -215,7 +215,7 @@ func _cutTrees(array: Array) -> void:
 		if Random.next(3) == 0: # cut
 			if Random.next(4) == 0: # all
 				for i in cave:
-					_level.cutTree(_level.position(i, _width))
+					_level.cutTree(_level.unflatten(i, _width))
 			elif Random.nextBool(): # some
 				var direction := Random.next(4)
 				var test := _level.unflatten(cave[Random.next(cave.size())], _width)

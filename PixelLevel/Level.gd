@@ -166,7 +166,7 @@ func clear() -> void:
 	_tileMapEdge.clear()
 
 func _checkCenter() -> void:
-	checkTileInCamera(_heroPosition())
+	constrainTileToCamera(_heroPosition())
 
 func _processWasd() -> bool:
 	var done := false
@@ -298,7 +298,7 @@ func isBlockedLight(p: Vector2i) -> bool:
 	return isWall(p) or isDoorShut(p)
 
 func _cameraToHero() -> void:
-	cameraTo(_hero.global_position)
+	moveCameraTo(_hero.global_position)
 
 #endregion
 

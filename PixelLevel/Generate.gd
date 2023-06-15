@@ -62,12 +62,12 @@ func _stairs() -> void:
 	_level.setStairDown(_findSpot())
 
 func _stairsAt(array: Array) -> void:
-	var up = _level.position(array.pick_random(), _width)
+	var up = _level.unflatten(array.pick_random(), _width)
 	_level.startAt = up
 	_level.setStairUp(up)
-	var down = _level.position(array.pick_random(), _width)
+	var down = _level.unflatten(array.pick_random(), _width)
 	while _level.isStair(down):
-		down = _level.position(array.pick_random(), _width)
+		down = _level.unflatten(array.pick_random(), _width)
 	_level.setStairDown(down)
 
 func _random() -> Vector2i:
