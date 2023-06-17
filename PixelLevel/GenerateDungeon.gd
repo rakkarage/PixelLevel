@@ -6,7 +6,7 @@ const _maxRoomHeight := 7
 const _minRoomWidth := 4
 const _minRoomHeight := 4
 
-func _init(level: Level) -> void:
+func _init(level: LevelBase) -> void:
 	super(level)
 
 func generate(delta: int = 1) -> void:
@@ -36,7 +36,7 @@ func _placeRooms() -> Array:
 			roomIndex = Random.next(maxRooms)
 			usedRoom = used[roomIndex]
 		used[roomIndex] = true
-		var p := Utility.position(roomIndex, across) * Vector2i(_maxRoomWidth, _maxRoomHeight)
+		var p := Utility.unflatten(roomIndex, across) * Vector2i(_maxRoomWidth, _maxRoomHeight)
 		var room := Rect2(p.x, p.y, _maxRoomWidth, _maxRoomHeight)
 		_drawRoom(_findRoom(room))
 		rooms.append(room)
@@ -68,7 +68,7 @@ func _placeTunnels(_rooms: Array) -> void:
 				if movingX: currentCenter.x += deltaXSign * 1
 				else: currentCenter.y += deltaYSign * 1
 				if not is_equal_approx(currentCenter.x, 1) and not is_equal_approx(currentCenter.y, 1):
-					if _level.isWall(currentCenter) or _level.isCliff(currentCenter) or _level.isForeInvalidV(currentCenter):
+					if _level.isWall(currentCenter) or _level.isCliff(currentCenter) or _level.isForeInvalid(currentCenter):
 						_level.clearFore(currentCenter)
 						_setFloorOrRoom(currentCenter)
 			if movingX: delta.x -= deltaXSign * carveLength

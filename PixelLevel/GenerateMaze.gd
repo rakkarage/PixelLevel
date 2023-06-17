@@ -1,12 +1,12 @@
 extends Generate
 class_name GenerateMaze
 
-func _init(level: Level) -> void:
+func _init(level: LevelBase) -> void:
 	super(level)
 
 func generate(delta: int = 1) -> void:
 	super.generate(delta)
-	var depth: int = int(abs(_level.state.depth)) + 10
+	var depth: int = int(abs(_level._state.depth)) + 10
 	var width := Random.nextRangeOdd(depth, depth + Random.next(depth))
 	var height := Random.nextRangeOdd(depth, depth + Random.next(depth))
 	_setLevelRect(width, height)
@@ -69,7 +69,7 @@ func _drawMaze() -> void:
 						(_level.isWall(eastEast) or _level.isCliff(eastEast))):
 						_level.clearFore(east)
 						_setFloorOrRoom(east)
-						_level.clearForeV(eastEast)
+						_level.clearFore(eastEast)
 						_setFloorOrRoom(eastEast)
 						points.append(eastEast)
 				1:

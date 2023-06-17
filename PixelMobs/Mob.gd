@@ -14,7 +14,7 @@ func _ready():
 	_machine.start("Idle")
 
 func randomIdle() -> void:
-	_tree[_key] = Random.priority(_idleAnimationPriority)
+	_tree[_key] = Random.probability(_idleAnimationPriority)
 
 func idle():
 	_machine.travel("Idle")

@@ -1,14 +1,7 @@
 extends Generate
 class_name GenerateCave
 
-const _standardChance := 0.4
-const _standardBirth := 4
-const _standardDeath := 3
-const _standardSteps := 10
-var _outside := false
-var _outsideWall := false
-
-func _init(level: Level) -> void:
+func _init(level: LevelBase) -> void:
 	super(level)
 
 func generate(delta: int = 1) -> void:
@@ -24,135 +17,80 @@ func generate(delta: int = 1) -> void:
 	_level.generated()
 
 func _drawCaves() -> void:
-	var list : Array
-	while list.size() == 0 or not _bigEnough(list):
-		list = _getCellularList(Random.next(_standardSteps), _standardChance, _standardBirth, _standardDeath)
+	var caves := CellularAutomaton.generate(_width, _height)
+	var biggest := _biggest(caves)
+	if Random.nextBool():
+		caves = _mapCave(biggest)
+	while caves.size() < 4:
+		caves = CellularAutomaton.generate(_width, _height)
+		biggest = _biggest(caves)
 		if Random.nextBool():
-			_removeSmall(list)
+			caves = _mapCave(biggest)
+	if Random.nextBool():
+		var other = CellularAutomaton.generate(_width, _height)
+		var otherBiggest = _biggest(other)
 		if Random.nextBool():
-			var other := _getCellularList(Random.next(_standardSteps), _standardChance, _standardBirth, _standardDeath)
-			if Random.nextBool():
-				_removeSmall(other)
-			_combineLists(list, other)
-	for y in range(_height):
-		for x in range(_width):
+			other = _mapCave(otherBiggest)
+		caves = _combineLists(caves, other)
+		biggest.append_array(otherBiggest.filter(func(index: int): return !biggest.has(index)))
+	for y in _height:
+		for x in _width:
 			var p := Vector2i(x, y)
-			if list[Utility.index(p, _width)]:
-				if _cliff:
-					_level.setCliff(p)
-				else:
-					if _outside and _outsideWall:
-						_setOutsideWall(p)
-					else:
-						_setWallPlain(p)
+			if caves[Utility.flatten(p, _width)]:
+				_setCaveWall(p)
 			else:
-				_level.clearFore(p)
-				if _outside:
-					_setOutside(p)
-				else:
-					if _room:
-						_level.setFloorRoom(p)
-					else:
-						_level.setFloor(p)
+				_setCaveFloor(p)
 	if not _outside or not _outsideWall:
-		_outlineCaves(list)
-	_stairsAt(_biggest(list))
+		_outlineCaves(caves)
+	_stairsAt(biggest)
 
-func _getAdjacentCount(list: Array, p: Vector2i) -> int:
-	var count := 0
-	for yy in range(-1, 2):
-		for xx in range(-1, 2):
-			if not ((xx == 0) and (yy == 0)):
-				var new := Vector2(xx + p.x, yy + p.y)
-				if _level.insideMapV(new):
-					if list[Utility.indexV(new, _width)]:
-						count += 1
-				else:
-					count += 1
-	return count
+# returns array of index so can check size
+func _biggest(caves: Array[bool]) -> Array:
+	var disjointSet := DisjointSet.new(_width, _height)
+	for i in _width * _height:
+		if caves[i]:
+			continue
+		var position := Utility.unflatten(i, _width)
+		for x in range(-1, 2):
+			for y in range(-1, 2):
+				if abs(x) + abs(y) != 1:
+					continue
+				var neighbor := Vector2i(position.x + x, position.y + y)
+				if neighbor.x < 0 or neighbor.x >= _width or neighbor.y < 0 or neighbor.y >= _height:
+					continue
+				var neighborIndex := Utility.flatten(neighbor, _width)
+				if not caves[neighborIndex]:
+					disjointSet.union(i, neighborIndex)
+	var arrays := disjointSet.split()
+	if arrays.size() == 0: return []
+	if arrays.size() == 1: return arrays[0]
+	var maxSize := 0
+	var biggest := []
+	for array in arrays:
+		if array.size() > maxSize:
+			maxSize = array.size()
+			biggest = array
+	return biggest
 
-func _getCellularList(steps: int, chance: float, birth: int, death: int) -> Array:
-	var list := Utility.arrayRepeat(false, _width * _height)
-	for i in range(list.size()):
-		list[i] = Random.nextFloat() <= chance
-	for _i in range(steps):
-		var temp := Utility.arrayRepeat(false, _width * _height)
-		for y in range(_height):
-			for x in range(_width):
-				var p := Vector2i(x, y)
-				var adjacent := _getAdjacentCount(list, p)
-				var index := Utility.index(p, _width)
-				var value: bool = list[index]
-				if value:
-					value = value and adjacent >= death
-				else:
-					value = value or adjacent > birth
-				temp[index] = value
-		list = temp.duplicate()
-	if steps > 0 and Random.nextBool():
-		_removeSmall(list)
-	return list
+# returns map sized array of bools to replace old grid
+func _mapCave(cave: Array) -> Array[bool]:
+	var map: Array[bool] = []
+	for y in _height:
+		for x in _width:
+			map.append(Utility.flatten(Vector2i(x, y), _width) not in cave)
+	print("map size: " + str(map.size()))
+	CellularAutomaton._print(map, _width, _height)
+	return map
 
-func _combineLists(destination: Array, source: Array) -> void:
-	var random := Random.nextBool()
+func _combineLists(array1: Array[bool], array2: Array[bool]) -> Array[bool]:
+	var result: Array[bool] = []
 	for y in range(_height):
 		for x in range(_width):
-			var index := Utility.index(Vector2i(x, y), _width)
-			destination[index] = (destination[index] and source[index]) if random else (destination[index] or source[index])
-
-func _biggest(list: Array) -> Array:
-	var disjointSet := _disjointSetup(list)
-	var caves := disjointSet.split(list)
-	_removeSmallCaves(caves, list)
-	return caves.values()[0]
-
-func _bigEnough(list: Array) -> bool:
-	return _biggest(list).size() > 4
-
-# TODO: should this go with disjoint set / naw replace that anyway
-func _unionAdjacent(disjointSet: DisjointSet, list: Array, p: Vector2i) -> void:
-	for yy in range(-1, 2):
-		for xx in range(-1, 2):
-			var new = Vector2i(p.x + xx, p.y + yy)
-			if not ((xx == 0) and (yy == 0)) and _level.insideMap(new):
-				var index1 := Utility.index(new, _width)
-				if not list[index1]:
-					var root1 := disjointSet.find(index1)
-					var index0 := Utility.index(p, _width)
-					var root0 := disjointSet.find(index0)
-					if root0 != root1:
-						disjointSet.union(root0, root1)
-
-func _disjointSetup(list: Array) -> DisjointSet:
-	var disjointSet := DisjointSet.new(_width * _height)
-	for y in range(_height):
-		for x in range(_width):
-			var p := Vector2i(x, y)
-			if not list[Utility.index(p, _width)]:
-				_unionAdjacent(disjointSet, list, p)
-	return disjointSet
-
-func _removeSmall(list: Array) -> void:
-	_removeSmallCaves(_disjointSetup(list).split(list), list)
-
-func _removeSmallCaves(caves: Dictionary, list: Array) -> void:
-	var biggest := 0
-	var biggestKey := 0
-	for key in caves.keys():
-		var size: int = caves[key].size()
-		if size > biggest:
-			biggest = size
-			biggestKey = key
-	var delete := []
-	for key in caves.keys():
-		if key != biggestKey:
-			delete.append(key)
-	for key in delete:
-		if list != null:
-			var cave: Array = caves[key]
-			for i in cave:
-				list[i] = true
-		caves.erase(key)
+			var index := Utility.flatten(Vector2i(x, y), _width)
+			result.append(array1[index] and array2[index])
+	print("combine size: " + str(result.size()))
+	CellularAutomaton._print(result, _width, _height)
+	return result
 
 func _isCaveEdge(list: Array, p: Vector2i) -> bool:
 	var edge := false
@@ -160,7 +98,7 @@ func _isCaveEdge(list: Array, p: Vector2i) -> bool:
 		for xx in range(-1, 2):
 			if not ((xx == 0) and (yy == 0)):
 				var new := Vector2(p.x + xx, p.y + yy)
-				if _level.insideMapV(new) and not list[Utility.indexV(new, _width)]:
+				if _level.insideMap(new) and not list[Utility.flatten(new, _width)]:
 					edge = true
 	return edge
 
@@ -168,101 +106,97 @@ func _outlineCaves(list: Array) -> void:
 	for y in range(_height):
 		for x in range(_width):
 			var p := Vector2i(x, y)
-			if list[Utility.index(p, _width)]:
+			if list[Utility.flatten(p, _width)]:
 				if _isCaveEdge(list, p):
 					_setWall(p)
 
 func _drawOutside() -> void:
-	if not _level.desert:
+	if not _level._desert:
 		if Random.nextBool():
+			print("drawing flowers")
 			_drawFlowers()
 		if Random.nextBool():
+			print("drawing trees")
 			_drawTrees()
 		if Random.nextBool():
+			print("drawing grass")
 			_drawGrass()
 
 func _drawFlowers() -> void:
-	var array := _getCellularList(Random.next(_standardSteps), _standardChance, _standardBirth, _standardDeath)
+	var flowers := CellularAutomaton.generate(_width, _height)
+	var biggest := _biggest(flowers)
 	if Random.nextBool():
-		_removeSmall(array)
+		flowers = _mapCave(biggest)
 	for y in _height:
 		for x in _width:
 			var p := Vector2i(x, y)
-			if not array[Utility.index(p, _width)] and (not _level.isWall(p) and not _level.isBackInvalid(p) and not _level.isStair(p)):
+			if not flowers[Utility.flatten(p, _width)] and not _level.isWall(p) and not _level.isBackInvalid(p) and not _level.isStair(p):
 				_level.setFlower(p)
 
 func _drawTrees() -> void:
-	var steps := Random.next(_standardSteps)
-	var array := _getCellularList(steps, _standardChance, _standardBirth, _standardDeath)
+	var cutSome := Random.nextFloat() < 0.333
+	var cutPatch := Random.nextFloat() < 0.333
+	var trees := CellularAutomaton.generate(_width, _height)
+	var biggest := _biggest(trees)
 	if Random.nextBool():
-		_removeSmall(array)
+		trees = _mapCave(biggest)
 	for y in _height:
 		for x in _width:
 			var p := Vector2i(x, y)
-			var index := Utility.index(p, _width)
-			if not array[index] and (not _level.isWall(p) and not _level.isBackInvalid(p) and not _level.isStair(p)):
-				if steps == 0 and Random.nextBool():
+			if not trees[Utility.flatten(p, _width)] and not _level.isWall(p) and not _level.isBackInvalid(p) and not _level.isStair(p):
+				if cutSome and Random.nextBool():
 					_level.setTreeStump(p)
 				else:
 					_level.setTree(p)
-	if steps > 0 and Random.nextBool():
-		_cutTrees(array)
+	if not cutSome and cutPatch and Random.nextBool():
+		_cutTrees(trees)
 
 func _cutTrees(array: Array) -> void:
-	var disjointSet := _disjointSetup(array)
-	var caves := disjointSet.split(array)
-	for key in caves:
-		var cave = caves[key]
+	var disjointSet := DisjointSet.new(_width, _height, array)
+	var caves := disjointSet.split()
+	for cave in caves:
 		if Random.next(3) == 0: # cut
-			if Random.next(4) == 0: # all
+			if Random.next(4) == 0: # cut all
 				for i in cave:
-					_level.cutTreeV(Utility.position(i, _width))
-			elif Random.nextBool(): # some
+					_level.cutTree(Utility.unflatten(i, _width))
+			elif Random.nextBool(): # cut some
 				var direction := Random.next(4)
-				var test := Utility.position(cave[Random.next(cave.size())], _width)
+				var test := Utility.unflatten(cave[Random.next(cave.size())], _width)
 				for i in cave:
-					var p := Utility.position(i, _width)
+					var p := Utility.unflatten(i, _width)
 					match direction:
 						0:
 							if p.x > test.x:
-								_level.cutTreeV(p)
-							elif is_equal_approx(p.x, test.x):
+								_level.cutTree(p)
+							elif p.x == test.x:
 								if Random.nextBool():
-									_level.cutTreeV(p)
+									_level.cutTree(p)
 						1:
 							if p.x < test.x:
-								_level.cutTreeV(p)
-							elif is_equal_approx(p.x, test.x):
+								_level.cutTree(p)
+							elif p.x == test.x:
 								if Random.nextBool():
-									_level.cutTreeV(p)
+									_level.cutTree(p)
 						2:
 							if p.y > test.y:
-								_level.cutTreeV(p)
-							elif is_equal_approx(p.y, test.y):
+								_level.cutTree(p)
+							elif p.y == test.y:
 								if Random.nextBool():
-									_level.cutTreeV(p)
+									_level.cutTree(p)
 						3:
 							if p.y < test.y:
-								_level.cutTreeV(p)
-							elif is_equal_approx(p.y, test.y):
+								_level.cutTree(p)
+							elif p.y == test.y:
 								if Random.nextBool():
-									_level.cutTreeV(p)
+									_level.cutTree(p)
 
 func _drawGrass() -> void:
-	var array := _getCellularList(Random.next(_standardSteps), _standardChance, _standardBirth, _standardDeath)
+	var grass := CellularAutomaton.generate(_width, _height)
+	var biggest := _biggest(grass)
 	if Random.nextBool():
-		_removeSmall(array)
+		grass = _mapCave(biggest)
 	for y in _height:
 		for x in _width:
 			var p := Vector2i(x, y)
-			if not array[Utility.index(p, _width)] and (not _level.isWall(p) and not _level.isBackInvalid(p) and not _level.isStair(p)):
+			if not grass[Utility.flatten(p, _width)] and not _level.isWall(p) and not _level.isBackInvalid(p) and not _level.isStair(p):
 				_level.setGrass(p)
-
-func _printArray(array: Array) -> void:
-	var output := ""
-	for y in range(_height):
-		for x in range(_width):
-			output += "1" if array[Utility.index(Vector2i(x, y), _width)] else "0"
-		output += "\n"
-	output += "\r"
-	print(output)

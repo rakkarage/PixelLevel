@@ -1,191 +1,35 @@
-[gd_scene load_steps=8 format=3 uid="uid://dk3mnbttn0vi5"]
+[gd_scene load_steps=9 format=3 uid="uid://bf14nrbj1oaud"]
 
-[ext_resource type="Script" path="res://PixelLevel/Manager.gd" id="1_xili0"]
-[ext_resource type="PackedScene" uid="uid://cpwpn22g1oh61" path="res://Interface/Back.tscn" id="2_j002i"]
-[ext_resource type="Script" path="res://PixelLevel/Level.gd" id="3_w24pf"]
-[ext_resource type="TileSet" uid="uid://rer8omh2xmlw" path="res://PixelLevel/Level.tres" id="4_6yiys"]
-[ext_resource type="PackedScene" uid="uid://c1mewurj1iqoa" path="res://PixelMobs/Mob/Slime.tscn" id="5_fpfxs"]
-[ext_resource type="PackedScene" uid="uid://c0gglcpbg3xyp" path="res://Interface/Target.tscn" id="6_fhrww"]
-[ext_resource type="PackedScene" uid="uid://dplcfrlu5as7j" path="res://Interface/Mask.tscn" id="7_st0df"]
+[ext_resource type="PackedScene" uid="uid://82wscvw880j4" path="res://PixelLevel/LevelBase.tscn" id="1_m1rxo"]
+[ext_resource type="PackedScene" uid="uid://c1mewurj1iqoa" path="res://PixelMobs/Mob/Slime.tscn" id="2_1y2b4"]
+[ext_resource type="Script" path="res://PixelLevel/Level.gd" id="2_3ebrx"]
+[ext_resource type="Script" path="res://PixelLevel/LevelManager.gd" id="2_6ydkp"]
+[ext_resource type="PackedScene" uid="uid://cpwpn22g1oh61" path="res://Interface/Back.tscn" id="2_ij0qj"]
+[ext_resource type="TileSet" uid="uid://cjn2ri268c5yx" path="res://PixelLevel/Level.tres" id="3_2nw2k"]
+[ext_resource type="PackedScene" uid="uid://c0gglcpbg3xyp" path="res://Interface/Target.tscn" id="4_gpw00"]
+[ext_resource type="PackedScene" uid="uid://b2xdfyjb3ol2o" path="res://Interface/MaskTween.tscn" id="8_4cj6s"]
 
-[node name="Level" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("1_xili0")
+[node name="Level" instance=ExtResource("1_m1rxo")]
+script = ExtResource("2_6ydkp")
 
-[node name="Back" parent="." instance=ExtResource("2_j002i")]
+[node name="Back" parent="." index="0" instance=ExtResource("2_ij0qj")]
 layout_mode = 1
 
-[node name="Level" type="SubViewportContainer" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-stretch = true
+[node name="SubViewport" parent="Container" index="0"]
+canvas_item_default_texture_filter = 0
+script = ExtResource("2_3ebrx")
 
-[node name="SubViewport" type="SubViewport" parent="Level"]
-transparent_bg = true
-handle_input_locally = false
-size = Vector2i(1152, 648)
-render_target_update_mode = 4
-script = ExtResource("3_w24pf")
-
-[node name="Camera" type="Camera2D" parent="Level/SubViewport"]
-anchor_mode = 0
-
-[node name="Back" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("4_6yiys")
-format = 2
-layer_0/name = "Back"
-layer_0/tile_data = PackedInt32Array(0, 65617, 0, 1, 65617, 0, 2, 65617, 0, 3, 131153, 0, 4, 81, 0, 5, 262225, 0, 6, 65617, 0, 7, 131153, 0, 8, 81, 0, 9, 81, 0, 10, 81, 0, 11, 196689, 0, 12, 81, 0, 13, 65617, 0, 14, 65617, 0, 65536, 131153, 0, 65537, 262225, 0, 65538, 262225, 0, 65539, 131153, 0, 65540, 81, 0, 65541, 196689, 0, 65542, 131153, 0, 65543, 81, 0, 65544, 131153, 0, 65545, 196689, 0, 65546, 81, 0, 65547, 81, 0, 65548, 131153, 0, 65549, 81, 0, 65550, 131153, 0, 131072, 262225, 0, 131073, 196689, 0, 131074, 65617, 0, 131075, 81, 0, 131076, 81, 0, 131077, 65617, 0, 131078, 81, 0, 131079, 196689, 0, 131080, 196689, 0, 131081, 262225, 0, 131082, 81, 0, 131083, 131153, 0, 131084, 196689, 0, 131085, 196689, 0, 131086, 131153, 0, 196608, 131153, 0, 196609, 196689, 0, 196610, 196689, 0, 196611, 81, 0, 196612, 196689, 0, 196613, 81, 0, 196614, 81, 0, 196615, 81, 0, 196616, 196689, 0, 196617, 196689, 0, 196618, 65617, 0, 196619, 65617, 0, 196620, 65617, 0, 196621, 131153, 0, 196622, 65617, 0, 262144, 81, 0, 262145, 65617, 0, 262146, 131153, 0, 262147, 81, 0, 262148, 196689, 0, 262149, 196689, 0, 262150, 81, 0, 262151, 131153, 0, 262152, 81, 0, 262153, 81, 0, 262154, 262225, 0, 262155, 81, 0, 262156, 262225, 0, 262157, 65617, 0, 262158, 131153, 0, 327680, 65617, 0, 327681, 262225, 0, 327682, 196689, 0, 327683, 196689, 0, 327684, 196689, 0, 327685, 196689, 0, 327686, 81, 0, 327687, 262225, 0, 327688, 262225, 0, 327689, 262225, 0, 327690, 81, 0, 327691, 196689, 0, 327692, 81, 0, 327693, 196689, 0, 327694, 81, 0, 393216, 81, 0, 393217, 262225, 0, 393218, 262225, 0, 393219, 65617, 0, 393220, 196689, 0, 393221, 131153, 0, 393222, 262225, 0, 393223, 131153, 0, 393224, 65617, 0, 393225, 131153, 0, 393226, 262225, 0, 393227, 65617, 0, 393228, 81, 0, 393229, 196689, 0, 393230, 131153, 0, 458752, 131153, 0, 458753, 196689, 0, 458754, 131153, 0, 458755, 81, 0, 458756, 196689, 0, 458757, 131153, 0, 458758, 65617, 0, 458759, 196689, 0, 458760, 196689, 0, 458761, 65617, 0, 458762, 131153, 0, 458763, 131153, 0, 458764, 65617, 0, 458765, 81, 0, 458766, 262225, 0, 524288, 262225, 0, 524289, 196689, 0, 524290, 131153, 0, 524291, 196689, 0, 524292, 262225, 0, 524293, 65617, 0, 524294, 131153, 0, 524295, 262225, 0, 524296, 196689, 0, 524297, 81, 0, 524298, 81, 0, 524299, 81, 0, 524300, 81, 0, 524301, 131153, 0, 524302, 262225, 0, 589824, 81, 0, 589825, 196689, 0, 589826, 65617, 0, 589827, 65617, 0, 589828, 81, 0, 589829, 131153, 0, 589830, 196689, 0, 589831, 65617, 0, 589832, 65617, 0, 589833, 65617, 0, 589834, 131153, 0, 589835, 65617, 0, 589836, 81, 0, 589837, 81, 0, 589838, 262225, 0, 655360, 262225, 0, 655361, 81, 0, 655362, 65617, 0, 655363, 196689, 0, 655364, 131153, 0, 655365, 196689, 0, 655366, 262225, 0, 655367, 131153, 0, 655368, 196689, 0, 655369, 131153, 0, 655370, 65617, 0, 655371, 196689, 0, 655372, 262225, 0, 655373, 65617, 0, 655374, 262225, 0)
-layer_1/name = "Fore"
-layer_1/enabled = true
-layer_1/modulate = Color(1, 1, 1, 1)
-layer_1/y_sort_enabled = false
-layer_1/y_sort_origin = 0
-layer_1/z_index = 0
-layer_1/tile_data = PackedInt32Array()
-layer_2/name = "Flower"
-layer_2/enabled = true
-layer_2/modulate = Color(1, 1, 1, 1)
-layer_2/y_sort_enabled = false
-layer_2/y_sort_origin = 0
-layer_2/z_index = 0
-layer_2/tile_data = PackedInt32Array()
-layer_3/name = "SplitBack"
-layer_3/enabled = true
-layer_3/modulate = Color(1, 1, 1, 1)
-layer_3/y_sort_enabled = false
-layer_3/y_sort_origin = 0
-layer_3/z_index = 0
-layer_3/tile_data = PackedInt32Array()
-layer_4/name = "ItemBack"
-layer_4/enabled = true
-layer_4/modulate = Color(1, 1, 1, 1)
-layer_4/y_sort_enabled = false
-layer_4/y_sort_origin = 0
-layer_4/z_index = 0
-layer_4/tile_data = PackedInt32Array()
-layer_5/name = "WaterBack"
-layer_5/enabled = true
-layer_5/modulate = Color(1, 1, 1, 1)
-layer_5/y_sort_enabled = false
-layer_5/y_sort_origin = 0
-layer_5/z_index = 0
-layer_5/tile_data = PackedInt32Array()
-layer_6/name = "Tree"
-layer_6/enabled = true
-layer_6/modulate = Color(1, 1, 1, 1)
-layer_6/y_sort_enabled = false
-layer_6/y_sort_origin = 0
-layer_6/z_index = 0
-layer_6/tile_data = PackedInt32Array()
-layer_7/name = "SplitFore"
-layer_7/enabled = true
-layer_7/modulate = Color(1, 1, 1, 1)
-layer_7/y_sort_enabled = false
-layer_7/y_sort_origin = 0
-layer_7/z_index = 0
-layer_7/tile_data = PackedInt32Array()
-layer_8/name = "ItemFore"
-layer_8/enabled = true
-layer_8/modulate = Color(1, 1, 1, 1)
-layer_8/y_sort_enabled = false
-layer_8/y_sort_origin = 0
-layer_8/z_index = 0
-layer_8/tile_data = PackedInt32Array()
-layer_9/name = "WaterFore"
-layer_9/enabled = true
-layer_9/modulate = Color(1, 1, 1, 1)
-layer_9/y_sort_enabled = false
-layer_9/y_sort_origin = 0
-layer_9/z_index = 0
-layer_9/tile_data = PackedInt32Array()
-layer_10/name = "Top"
-layer_10/enabled = true
-layer_10/modulate = Color(1, 1, 1, 1)
-layer_10/y_sort_enabled = false
-layer_10/y_sort_origin = 0
-layer_10/z_index = 0
-layer_10/tile_data = PackedInt32Array()
-layer_11/name = "Light"
-layer_11/enabled = true
-layer_11/modulate = Color(1, 1, 1, 1)
-layer_11/y_sort_enabled = false
-layer_11/y_sort_origin = 0
-layer_11/z_index = 0
-layer_11/tile_data = PackedInt32Array()
-layer_12/name = "Edge"
-layer_12/enabled = true
-layer_12/modulate = Color(1, 1, 1, 1)
-layer_12/y_sort_enabled = false
-layer_12/y_sort_origin = 0
-layer_12/z_index = 0
-layer_12/tile_data = PackedInt32Array()
-
-[node name="Fore" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("4_6yiys")
-format = 2
-layer_0/tile_data = PackedInt32Array(65536, 327748, 0, 65537, 262212, 0, 65538, 262212, 0, 65539, 68, 0, 65540, 131140, 0, 65541, 131140, 0, 65542, 327748, 0, 65543, 68, 0, 65544, 262212, 0, 65545, 68, 0, 65546, 196676, 0, 65547, 68, 0, 65548, 327748, 0, 65550, 68, 0, 196612, 262146, 0, 196615, 6, 0, 196618, 131075, 0, 327686, 458756, 65536, 327687, 196612, 65536, 327688, 327684, 65536, 458756, 262147, 0, 458759, 9, 0, 458762, 65538, 0, 589824, 65604, 0, 589825, 33, 0, 589826, 262212, 0, 589827, 196676, 0, 589828, 327748, 0, 589829, 327748, 0, 589830, 262212, 0, 589831, 131140, 0, 589832, 196676, 0, 589833, 68, 0, 589834, 68, 0, 589835, 65604, 0, 589836, 327748, 0, 589837, 131140, 0, 589838, 262212, 0, 655374, 73, 0)
-
-[node name="Flower" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("4_6yiys")
+[node name="TileMapEdge" type="TileMap" parent="Container/SubViewport" index="2"]
+tile_set = ExtResource("3_2nw2k")
 format = 2
 
-[node name="SplitBack" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("4_6yiys")
-format = 2
+[node name="Hero" parent="Container/SubViewport" index="3" instance=ExtResource("2_1y2b4")]
+z_index = 7
 
-[node name="ItemBack" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("4_6yiys")
-format = 2
+[node name="Target" parent="Container/SubViewport" index="4" instance=ExtResource("4_gpw00")]
+z_index = 13
 
-[node name="WaterBack" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("4_6yiys")
-format = 2
-
-[node name="Tree" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("4_6yiys")
-format = 2
-
-[node name="Path" type="Node2D" parent="Level/SubViewport"]
-position = Vector2(8, 8)
-
-[node name="Mob" parent="Level/SubViewport" instance=ExtResource("5_fpfxs")]
-
-[node name="SplitFore" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("4_6yiys")
-format = 2
-
-[node name="ItemFore" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("4_6yiys")
-format = 2
-
-[node name="WaterFore" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("4_6yiys")
-format = 2
-
-[node name="Top" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("4_6yiys")
-format = 2
-
-[node name="Light" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("4_6yiys")
-format = 2
-
-[node name="Edge" type="TileMap" parent="Level/SubViewport"]
-tile_set = ExtResource("4_6yiys")
-format = 2
-
-[node name="Target" parent="Level/SubViewport" instance=ExtResource("6_fhrww")]
-
-[node name="Fore" type="Control" parent="."]
+[node name="Fore" type="Control" parent="." index="2"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -194,7 +38,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="MiniMap" type="TextureRect" parent="Fore"]
+[node name="MiniMap" type="TextureRect" parent="Fore" index="0"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 0
 offset_left = 16.0
@@ -203,10 +47,10 @@ offset_right = 80.0
 offset_bottom = 80.0
 mouse_filter = 2
 
-[node name="Mask" parent="Fore" instance=ExtResource("7_st0df")]
+[node name="MaskGate" parent="Fore" index="1" instance=ExtResource("8_4cj6s")]
 layout_mode = 1
 
-[node name="Panel" type="PanelContainer" parent="Fore"]
+[node name="Panel" type="PanelContainer" parent="Fore" index="2"]
 modulate = Color(1, 1, 1, 0.74902)
 layout_mode = 1
 anchors_preset = 3
@@ -214,96 +58,143 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -222.0
-offset_top = -176.0
+offset_left = -236.0
+offset_top = -159.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="VBox" type="VBoxContainer" parent="Fore/Panel"]
+[node name="VBox" type="VBoxContainer" parent="Fore/Panel" index="0"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="Mouse" type="HBoxContainer" parent="Fore/Panel/VBox" index="0"]
 layout_mode = 2
 
-[node name="Mouse" type="HBoxContainer" parent="Fore/Panel/VBox"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Fore/Panel/VBox/Mouse"]
+[node name="Label" type="Label" parent="Fore/Panel/VBox/Mouse" index="0"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Mouse:"
 
-[node name="Value" type="Label" parent="Fore/Panel/VBox/Mouse"]
+[node name="Value" type="Label" parent="Fore/Panel/VBox/Mouse" index="1"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "(0, 0)"
 
-[node name="Level" type="HBoxContainer" parent="Fore/Panel/VBox"]
+[node name="Tile" type="HBoxContainer" parent="Fore/Panel/VBox" index="1"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Fore/Panel/VBox/Level"]
+[node name="Label" type="Label" parent="Fore/Panel/VBox/Tile" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Tile:"
+
+[node name="Value" type="Label" parent="Fore/Panel/VBox/Tile" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "(0, 0)"
+
+[node name="Level" type="HBoxContainer" parent="Fore/Panel/VBox" index="2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Fore/Panel/VBox/Level" index="0"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Level:"
 
-[node name="Value" type="Label" parent="Fore/Panel/VBox/Level"]
+[node name="Value" type="Label" parent="Fore/Panel/VBox/Level" index="1"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "0"
 
-[node name="HBoxLevel" type="HBoxContainer" parent="Fore/Panel/VBox"]
+[node name="Turns" type="HBoxContainer" parent="Fore/Panel/VBox" index="3"]
 layout_mode = 2
 
-[node name="Down" type="Button" parent="Fore/Panel/VBox/HBoxLevel"]
+[node name="Label" type="Label" parent="Fore/Panel/VBox/Turns" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Turns:"
+
+[node name="Value" type="Label" parent="Fore/Panel/VBox/Turns" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "0"
+
+[node name="Time" type="HBoxContainer" parent="Fore/Panel/VBox" index="4"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Fore/Panel/VBox/Time" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Time:"
+
+[node name="Value" type="Label" parent="Fore/Panel/VBox/Time" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "0"
+
+[node name="HBoxLevel" type="HBoxContainer" parent="Fore/Panel/VBox" index="5"]
+layout_mode = 2
+
+[node name="Down" type="Button" parent="Fore/Panel/VBox/HBoxLevel" index="0"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Down"
 
-[node name="Regen" type="Button" parent="Fore/Panel/VBox/HBoxLevel"]
+[node name="Regen" type="Button" parent="Fore/Panel/VBox/HBoxLevel" index="1"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Regen"
 
-[node name="Up" type="Button" parent="Fore/Panel/VBox/HBoxLevel"]
+[node name="Up" type="Button" parent="Fore/Panel/VBox/HBoxLevel" index="2"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Up"
 
-[node name="Light" type="HBoxContainer" parent="Fore/Panel/VBox"]
+[node name="Light" type="HBoxContainer" parent="Fore/Panel/VBox" index="6"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Fore/Panel/VBox/Light"]
+[node name="Label" type="Label" parent="Fore/Panel/VBox/Light" index="0"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Light:"
 
-[node name="Value" type="Label" parent="Fore/Panel/VBox/Light"]
+[node name="Value" type="Label" parent="Fore/Panel/VBox/Light" index="1"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "0"
 
-[node name="HBoxLight" type="HBoxContainer" parent="Fore/Panel/VBox"]
+[node name="HBoxLight" type="HBoxContainer" parent="Fore/Panel/VBox" index="7"]
 layout_mode = 2
 
-[node name="Minus" type="Button" parent="Fore/Panel/VBox/HBoxLight"]
+[node name="Minus" type="Button" parent="Fore/Panel/VBox/HBoxLight" index="0"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Minus"
 
-[node name="Toggle" type="Button" parent="Fore/Panel/VBox/HBoxLight"]
+[node name="Toggle" type="Button" parent="Fore/Panel/VBox/HBoxLight" index="1"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Toggle"
 
-[node name="Plus" type="Button" parent="Fore/Panel/VBox/HBoxLight"]
+[node name="Plus" type="Button" parent="Fore/Panel/VBox/HBoxLight" index="2"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

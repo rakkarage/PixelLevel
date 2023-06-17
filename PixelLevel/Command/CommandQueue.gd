@@ -13,19 +13,19 @@ func execute(c: Command) -> void:
 		_list.resize(index + 1)
 	_list.append(c)
 	index += 1
-	emit_signal("changed")
+	changed.emit()
 
 func undo() -> void:
 	if index + 1 > 0:
 		_list[index].undo()
 		index -= 1
-		emit_signal("changed")
+		changed.emit()
 
 func redo() -> void:
 	if index + 1 < _list.size():
 		index += 1
 		_list[index].redo()
-		emit_signal("changed")
+		changed.emit()
 
 #region iterator
 

@@ -1,7 +1,7 @@
 extends Object
 class_name Generate
 
-var _level : Level
+var _level : LevelBase
 @export var priority = 1
 var _width := 0
 var _height := 0
@@ -13,8 +13,10 @@ const _cliffChance := 0.333
 const _streamChance := 0.22
 var _wonky := false
 var _room := false
+var _outside := false
+var _outsideWall := false
 
-func _init(level: Level) -> void:
+func _init(level: LevelBase) -> void:
 	_level = level
 
 func generateUp() -> void:
@@ -22,18 +24,17 @@ func generateUp() -> void:
 
 func generate(delta: int = 1) -> void:
 	_level.clear()
-	_level.state.depth += delta
-	var d: int = 10 + int(abs(_level.state.depth))
+	_level._state.depth += delta
+	var d: int = 10 + int(abs(_level._state.depth))
 	_setLevelRect(d * 2 + Random.next(d), d * 2 + Random.next(d))
-	_level.theme = Random.next(_level.themeCount)
-	_level.day = Random.nextBool()
-	_level.desert = Random.next(5) == 0
-	_level.themeCliff = Random.next(_level.themeCliffCount)
+	_level._theme = Random.next(_level._themeCount)
+	_level._day = Random.nextBool()
+	_level._desert = Random.next(5) == 0
+	_level._themeCliff = Random.next(_level._themeCliffCount)
 	_cliff = Random.nextFloat() <= _cliffChance
 	_stream = Random.nextFloat() <= _streamChance
 	_wonky = Random.nextBool()
 	_room = Random.nextBool()
-	_level.themeCliff = Random.next(_level.themeCliffCount)
 
 func regenerate() -> void:
 	generate(0)
@@ -41,13 +42,13 @@ func regenerate() -> void:
 func _setLevelRect(width: int, height: int) -> void:
 	_width = width
 	_height = height
-	_level.size = Vector2(_width, _height)
 
 func _fill(wall: bool, wallEdge: bool, outside: bool = false) -> void:
+	_outside = outside
 	for y in range(_height):
 		for x in range(_width):
 			var p := Vector2i(x, y)
-			if outside:
+			if _outside:
 				_setOutside(p)
 			else:
 				_setFloorOrRoom(p)
@@ -60,17 +61,26 @@ func _fill(wall: bool, wallEdge: bool, outside: bool = false) -> void:
 func _stairs() -> void:
 	var up := _findSpot()
 	_level.startAt = up
-	_level.setStairUpV(up)
-	_level.setStairDownV(_findSpot())
+	if _outside:
+		_level.setStairUpOutside(up)
+		_level.setStairOutsideDown(_findSpot())
+	else:
+		_level.setStairUp(up)
+		_level.setStairDown(_findSpot())
 
 func _stairsAt(array: Array) -> void:
-	var up = Utility.position(array[Random.next(array.size())], _width)
+	var up = Utility.unflatten(array.pick_random(), _width)
 	_level.startAt = up
-	_level.setStairUpV(up)
-	var down = Utility.position(array[Random.next(array.size())], _width)
-	while _level.isStairV(down):
-		down = Utility.position(array[Random.next(array.size())], _width)
-	_level.setStairDownV(down)
+	if _outside:
+		_level.setStairOutsideUp(up)
+		var down = Utility.unflatten(array.pick_random(), _width)
+		_level.setStairOutsideDown(down)
+	else:
+		_level.setStairUp(up)
+		var down = Utility.unflatten(array.pick_random(), _width)
+		while _level.isStair(down):
+			down = Utility.unflatten(array.pick_random(), _width)
+		_level.setStairDown(down)
 
 func _random() -> Vector2i:
 	return Vector2i(Random.nextRange(1, _width - 2), Random.nextRange(1, _height - 2))
@@ -123,6 +133,24 @@ func _setWall(p: Vector2i) -> void:
 			else:
 				_level.setWallPlain(p)
 	_level.clearBack(p)
+
+func _setCaveFloor(p: Vector2i) -> void:
+	if _outside:
+		_setOutside(p)
+	else:
+		if _room:
+			_setFloorRoom(p)
+		else:
+			_setFloor(p)
+
+func _setCaveWall(p: Vector2i) -> void:
+	if _cliff:
+		_level.setCliff(p)
+	else:
+		if _outside and _outsideWall:
+			_setOutsideWall(p)
+		else:
+			_setWallPlain(p)
 
 func _generateStreams() -> void:
 	if Random.nextFloat() <= 0.333:

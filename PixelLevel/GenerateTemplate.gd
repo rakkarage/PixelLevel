@@ -36,30 +36,30 @@ var _data := {
 		"back": load("res://PixelLevel/Sprite/Template/ABack.png"),
 		"fore": load("res://PixelLevel/Sprite/Template/AFore.png"),
 		"size": 15,
-		"priority": 33
+		"probability": 33
 	},
 	"b": {
 		"name": "b",
 		"back": load("res://PixelLevel/Sprite/Template/BasicBack.png"),
 		"fore": load("res://PixelLevel/Sprite/Template/BasicFore.png"),
 		"size": 15,
-		"priority": 100
+		"probability": 100
 	},
 	"c": {
 		"name": "c",
 		"back": load("res://PixelLevel/Sprite/Template/CastleBack.png"),
 		"fore": load("res://PixelLevel/Sprite/Template/CastleFore.png"),
 		"size": 75,
-		"priority": 1
+		"probability": 1
 	}
 }
 
-func _init(level: Level) -> void:
+func _init(level: LevelBase) -> void:
 	super(level)
 
 func generate(delta: int = 1) -> void:
 	super.generate(delta)
-	var template = Random.priority(_data)
+	var template = Random.probability(_data)
 	var single := true
 	if template.name == "c":
 		_cliff = false
@@ -169,27 +169,27 @@ func _applyTemplateAt(template: Dictionary, p: Vector2) -> void:
 			elif backColor == _backGrass:
 				_setOutside(write)
 			if foreColor == _colorWaterShallow:
-				_level.setWaterShallowV(write)
+				_level.setWaterShallow(write)
 			elif foreColor == _colorWaterDeep:
-				_level.setWaterDeepV(write)
+				_level.setWaterDeep(write)
 			elif foreColor == _colorWaterShallowPurple:
-				_level.setWaterShallowPurpleV(write)
+				_level.setWaterShallowPurple(write)
 			elif foreColor == _colorWaterDeepPurple:
-				_level.setWaterDeepPurpleV(write)
+				_level.setWaterDeepPurple(write)
 			elif foreColor == _colorTileRed:
 				_setFloorRoom(write)
 				_level.setDoor(write)
 			elif foreColor == _colorTilePurple:
 				if Random.nextBool():
 					if Random.nextBool():
-						_level.setBanner0V(write)
+						_level.setBanner0(write)
 					else:
-						_level.setBanner1V(write)
+						_level.setBanner1(write)
 				else:
-					_level.setFountainV(write)
+					_level.setFountain(write)
 			elif foreColor == _colorTileYellow:
 				if Random.nextBool():
-					_level.setLootV(write)
+					_level.setLoot(write)
 
 func _findTemplateWith(template: Dictionary, connections: Array) -> void:
 	var size: int = template.size
@@ -202,10 +202,10 @@ func _findTemplateWith(template: Dictionary, connections: Array) -> void:
 	var right := offset + _applyRotateBackV(Vector2(size - 1, size / 2.0), size, _rotate)
 	var down := offset + _applyRotateBackV(Vector2(size / 2.0, size - 1), size, _rotate)
 	var left := offset + _applyRotateBackV(Vector2(0, size / 2.0), size, _rotate)
-	var connectUp: bool = template.back.get_pixelv(up) != _backWall
-	var connectRight: bool = template.back.get_pixelv(right) != _backWall
-	var connectDown: bool = template.back.get_pixelv(down) != _backWall
-	var connectLeft: bool = template.back.get_pixelv(left) != _backWall
+	var connectUp: bool = template.back.get_pixel(up) != _backWall
+	var connectRight: bool = template.back.get_pixel(right) != _backWall
+	var connectDown: bool = template.back.get_pixel(down) != _backWall
+	var connectLeft: bool = template.back.get_pixel(left) != _backWall
 	while (connections.size() and
 		(connections.has(0) and not connectUp) or
 		(connections.has(1) and not connectRight) or
