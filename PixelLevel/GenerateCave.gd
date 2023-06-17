@@ -37,21 +37,9 @@ func _drawCaves() -> void:
 		for x in _width:
 			var p := Vector2i(x, y)
 			if caves[Utility.flatten(p, _width)]:
-				if _cliff:
-					_level.setCliff(p)
-				else:
-					if _outside and _outsideWall:
-						_setOutsideWall(p)
-					else:
-						_setWallPlain(p)
+				_setCaveWall(p)
 			else:
-				if _outside:
-					_setOutside(p)
-				else:
-					if _room:
-						_setFloorRoom(p)
-					else:
-						_setFloor(p)
+				_setCaveFloor(p)
 	if not _outside or not _outsideWall:
 		_outlineCaves(caves)
 	_stairsAt(biggest)

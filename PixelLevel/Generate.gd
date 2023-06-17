@@ -72,7 +72,7 @@ func _stairsAt(array: Array) -> void:
 	var up = Utility.unflatten(array.pick_random(), _width)
 	_level.startAt = up
 	if _outside:
-		_level.setStairUpOutside(up)
+		_level.setStairOutsideUp(up)
 		var down = Utility.unflatten(array.pick_random(), _width)
 		_level.setStairOutsideDown(down)
 	else:
@@ -133,6 +133,24 @@ func _setWall(p: Vector2i) -> void:
 			else:
 				_level.setWallPlain(p)
 	_level.clearBack(p)
+
+func _setCaveFloor(p: Vector2i) -> void:
+	if _outside:
+		_setOutside(p)
+	else:
+		if _room:
+			_setFloorRoom(p)
+		else:
+			_setFloor(p)
+
+func _setCaveWall(p: Vector2i) -> void:
+	if _cliff:
+		_level.setCliff(p)
+	else:
+		if _outside and _outsideWall:
+			_setOutsideWall(p)
+		else:
+			_setWallPlain(p)
 
 func _generateStreams() -> void:
 	if Random.nextFloat() <= 0.333:
