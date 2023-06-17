@@ -1,9 +1,6 @@
 extends Generate
 class_name GenerateCave
 
-var _outside := false
-var _outsideWall := false
-
 func _init(level: LevelBase) -> void:
 	super(level)
 

@@ -13,6 +13,8 @@ const _cliffChance := 0.333
 const _streamChance := 0.22
 var _wonky := false
 var _room := false
+var _outside := false
+var _outsideWall := false
 
 func _init(level: LevelBase) -> void:
 	_level = level
@@ -42,10 +44,11 @@ func _setLevelRect(width: int, height: int) -> void:
 	_height = height
 
 func _fill(wall: bool, wallEdge: bool, outside: bool = false) -> void:
+	_outside = outside
 	for y in range(_height):
 		for x in range(_width):
 			var p := Vector2i(x, y)
-			if outside:
+			if _outside:
 				_setOutside(p)
 			else:
 				_setFloorOrRoom(p)
@@ -58,17 +61,26 @@ func _fill(wall: bool, wallEdge: bool, outside: bool = false) -> void:
 func _stairs() -> void:
 	var up := _findSpot()
 	_level.startAt = up
-	_level.setStairUp(up)
-	_level.setStairDown(_findSpot())
+	if _outside:
+		_level.setStairUpOutside(up)
+		_level.setStairOutsideDown(_findSpot())
+	else:
+		_level.setStairUp(up)
+		_level.setStairDown(_findSpot())
 
 func _stairsAt(array: Array) -> void:
 	var up = Utility.unflatten(array.pick_random(), _width)
 	_level.startAt = up
-	_level.setStairUp(up)
-	var down = Utility.unflatten(array.pick_random(), _width)
-	while _level.isStair(down):
-		down = Utility.unflatten(array.pick_random(), _width)
-	_level.setStairDown(down)
+	if _outside:
+		_level.setStairUpOutside(up)
+		var down = Utility.unflatten(array.pick_random(), _width)
+		_level.setStairOutsideDown(down)
+	else:
+		_level.setStairUp(up)
+		var down = Utility.unflatten(array.pick_random(), _width)
+		while _level.isStair(down):
+			down = Utility.unflatten(array.pick_random(), _width)
+		_level.setStairDown(down)
 
 func _random() -> Vector2i:
 	return Vector2i(Random.nextRange(1, _width - 2), Random.nextRange(1, _height - 2))
