@@ -81,9 +81,10 @@ func _updateMap() -> void:
 			image.set_pixel(x, y, _level.getMapColor(Vector2i(x + offset.x, y + offset.y)))
 	_textureRect.texture = ImageTexture.create_from_image(image)
 
+# TODO: fix levels and adjust probabilities
 @onready var _g := {
-	# GenerateBasic.new(_level): 1,
-	# GenerateRoom.new(_level): 1,
+	GenerateBasic.new(_level): 1,
+	GenerateRoom.new(_level): 1,
 	GenerateDungeon.new(_level): 1,
 	GenerateMaze.new(_level): 1,
 	GenerateCave.new(_level): 1,
