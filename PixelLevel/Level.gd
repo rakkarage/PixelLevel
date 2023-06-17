@@ -328,7 +328,7 @@ func _targetClosest(tile: Vector2i) -> Vector2i:
 func _targetUpdate(tile: Vector2i) -> void:
 	var from := _heroPosition()
 	var to: Vector2 = mapToLocal(tile)
-	var toColor := _getPathColor(to)
+	var toColor := _getPathColor(tile)
 	toColor.a = 0.75
 	_target.global_position = mapToLocal(from)
 	_target.modulate = Color.TRANSPARENT
