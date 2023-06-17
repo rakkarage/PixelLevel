@@ -87,7 +87,7 @@ func _combineLists(array1: Array[bool], array2: Array[bool]) -> Array[bool]:
 	for y in range(_height):
 		for x in range(_width):
 			var index := Utility.flatten(Vector2i(x, y), _width)
-			result.append(not array1[index] and not array2[index])
+			result.append(array1[index] and array2[index])
 	print("combine size: " + str(result.size()))
 	CellularAutomaton._print(result, _width, _height)
 	return result
