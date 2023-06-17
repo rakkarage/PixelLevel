@@ -31,10 +31,11 @@ func _drawCaves() -> void:
 			caves = _mapCave(biggest)
 	if Random.nextBool():
 		var other = CellularAutomaton.generate(_width, _height)
-		var otherBiggest = _biggest(other) # TODO: combine with other biggest for stairs!? idk
+		var otherBiggest = _biggest(other)
 		if Random.nextBool():
 			other = _mapCave(otherBiggest)
 		caves = _combineLists(caves, other)
+		biggest.append_array(otherBiggest.filter(func(index: int): return !biggest.has(index)))
 	for y in _height:
 		for x in _width:
 			var p := Vector2i(x, y)
