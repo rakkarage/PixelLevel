@@ -624,7 +624,7 @@ func _setRandomTileEdge(p: Vector2i, tile: Tile, coords := INVALID_CELL, alterna
 	_setRandomTileMap(_tileMapEdge, Layer.Back, p, tile, coords, alternative)
 
 func _randomTileCoords(tile: Tile) -> int:
-	var array := []
+	var array: Array[float] = []
 	var source = _sources[tile]
 	for i in source.get_tiles_count():
 		array.append(source.get_tile_data(source.get_tile_id(i), 0).probability)

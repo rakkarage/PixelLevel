@@ -139,14 +139,10 @@ func tileRect() -> Rect2i: return _tileMap.get_used_rect()
 ## Return true if the given [param position] is inside the [member _tileMap].
 func insideMap(position: Vector2i) -> bool: return tileRect().has_point(position)
 
-## Flatten a 2D [param position] to a 1D index using [param width]. See [method unflatten].
-func flatten(position: Vector2i, width: int) -> int: return position.x + position.y * width
-## Unflatten a 1D [param index] to a 2D position using [param width]. See [method flatten].
-func unflatten(index: int, width: int) -> Vector2i: return Vector2i(index % width, int(index / float(width)))
-## Return the tile index for the given [param position] using the width of the [member _tileMap]. See [method tilePosition].
-func tileIndex(position: Vector2i) -> int: return flatten(position, tileRect().size.x)
-## Return the position of the tile with the given [param index] using the width of the [member _tileMap]. See [method tileIndex].
-func tilePosition(index: int) -> Vector2i: return unflatten(index, tileRect().size.x)
+## Return the index of the tile with the given [param position] using the width of the [member _tileMap]. See [method tilePosition], [method Utility.flatten].
+func tileIndex(position: Vector2i) -> int: return Utility.flatten(position, tileRect().size.x)
+## Return the position of the tile with the given [param index] using the width of the [member _tileMap]. See [method tileIndex], [method Utility.unflatten].
+func tilePosition(index: int) -> Vector2i: return Utility.unflatten(index, tileRect().size.x)
 
 ## Convert a map [param position] to a local position. See [method localToMap].
 func mapToLocal(position: Vector2i) -> Vector2i: return _tileMap.map_to_local(position)
