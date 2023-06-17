@@ -17,7 +17,7 @@ extends Node
 class_name CellularAutomaton
 
 const _steps := 10 ## Default number of steps to simulate. Randomized.
-const _chance := 0.4 ## Default chance of a cell being alive at the start.
+const _chance := 0.2 ## Default half offset chance of a cell being alive at the start.
 const _birth := 4 ## Default number of neighbors required for a dead cell to become alive.
 const _death := 3 ## Default number of neighbors required for a live cell to die.
 
@@ -29,7 +29,7 @@ const _death := 3 ## Default number of neighbors required for a live cell to die
 ## The [param death] parameter defines the number of neighbors required for a live cell to die.
 ## Return the generated grid.
 ## See [method simulate], [method Random.next], [method Random.nextFloat].
-static func generate(width: int, height: int, steps := Random.next(_steps), chance := _chance, birth := _birth, death := _death) -> Array[bool]:
+static func generate(width: int, height: int, steps := Random.next(_steps), chance := Random.nextRangeFloat(0.5 - _chance, 0.5 + _chance), birth := _birth, death := _death) -> Array[bool]:
 	if width <= 0 or height <= 0:
 		return []
 	var grid: Array[bool] = []
