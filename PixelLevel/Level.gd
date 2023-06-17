@@ -123,7 +123,6 @@ func generated() -> void:
 	_hero.global_position = mapToLocal(startAt)
 	_pathClear()
 	_target.modulate = Color.TRANSPARENT
-	_target.z_index = 13
 	_cameraToHero()
 	_dark()
 	_findTorches()
@@ -752,10 +751,11 @@ func setStairUp(p: Vector2i) -> void:
 	_setStair(p, Stair.Up)
 
 func _setStairOutside(p: Vector2i, type: Stair) -> void:
+	var tile := Tile.DayStair if _day else Tile.NightStair
 	if _desert:
-		_setForeRandom(p, Tile.DayStair if _day else Tile.NightStair, Vector2i(type + 2, 0))
+		_setForeRandom(p, tile, _sources[tile].get_tile_id(type + 2))
 	else:
-		_setForeRandom(p, Tile.DayStair if _day else Tile.NightStair, Vector2i(type, 0))
+		_setForeRandom(p, tile, _sources[tile].get_tile_id(type))
 
 func setStairOutsideUp(p: Vector2i) -> void:
 	_setStairOutside(p, Stair.Up)

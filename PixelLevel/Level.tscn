@@ -27,6 +27,7 @@ format = 2
 z_index = 7
 
 [node name="Target" parent="Container/SubViewport" index="4" instance=ExtResource("4_gpw00")]
+z_index = 13
 
 [node name="Fore" type="Control" parent="." index="2"]
 layout_mode = 1
