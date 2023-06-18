@@ -6,12 +6,12 @@ class_name DynamicTileMap
 @onready var _camera: Camera2D = $Camera
 @onready var _tileMap: TileMap = $TileMap
 
-signal updateMap ## Signal emitted when the map is updated due to panning, zooming, or clearing.
+signal updateMap # signal emitted when the map is updated due to panning, zooming, or clearing
 
-const INVALID := -1 ## An invalid int.
-const INVALID_CELL := Vector2i(INVALID, INVALID) ## An invalid Vector2i.
+const INVALID := -1 # invalid int
+const INVALID_CELL := Vector2i(INVALID, INVALID) # invalid Vector2i
 const _tweenTime := 0.333
-var _oldSize := Vector2.ZERO ## Stores the old size of the node. Used for resizing.
+var _oldSize := Vector2.ZERO # stores the old size of the node, for resizing
 var _pressed := false
 
 const _zoomMin := 0.2
@@ -28,7 +28,6 @@ var _panFinished := false
 var _panMomentum := Vector2.ZERO
 
 ## Called when the node enters the scene tree for the first time.
-## TODO: Was to fix a bug where the size was not set correctly on first load. Is this still needed?
 func _ready() -> void: call_deferred("_readyDeferred")
 
 ## Called after the node has entered the scene tree.
@@ -43,7 +42,7 @@ func _onResize() -> void:
 	var center: Vector2 = mapCenter()
 	moveCameraTo(center + (_camera.global_position - center) * (Vector2(size) / _oldSize))
 	_oldSize = size
-	constrainMapToCamera() # Sometimes resize near edge can cause the map to go out of bounds.
+	constrainMapToCamera() # sometimes resize near edge can cause the map to go out of bounds.
 
 ## Called for unhandled input events. Emits an [member updateMap] signal when the [member _camera] is panned or zoomed.
 func _unhandled_input(event: InputEvent) -> void:
@@ -83,7 +82,7 @@ func _process(delta: float) -> void:
 
 ## Zoom the [member _camera] at a given [param position] by a specified [param factor].
 func _zoom(position: Vector2, factor: float) -> void:
-	var dynamicZoomFactor := _zoomTarget * factor # Adjust factor based on current zoom level
+	var dynamicZoomFactor := _zoomTarget * factor # adjust factor based on current zoom level
 	var zoomNew := _zoomTarget * pow(_zoomRate, dynamicZoomFactor)
 	_zoomTarget = clamp(zoomNew, _zoomMin, _zoomMax)
 	var positionNew := position + (_camera.global_position - position) * (_zoomTarget / zoomNew)

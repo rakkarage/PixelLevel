@@ -16,10 +16,10 @@
 extends Object
 class_name CellularAutomaton
 
-const _steps := 10 ## Default number of steps to simulate. Randomized.
-const _chance := 0.2 ## Default half offset chance of a cell being alive at the start.
-const _birth := 4 ## Default number of neighbors required for a dead cell to become alive.
-const _death := 3 ## Default number of neighbors required for a live cell to die.
+const _steps := 10 # default number of steps to simulate (randomized)
+const _chance := 0.2 # default half offset chance of a cell being alive at the start (randomized)
+const _birth := 4 # default number of neighbors required for a dead cell to become alive
+const _death := 3 # default number of neighbors required for a live cell to die
 
 var _width := 0
 var _height := 0
