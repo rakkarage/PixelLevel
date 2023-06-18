@@ -15,6 +15,7 @@ var _height: int ## the width of the grid
 
 ## Initializes the DisjointSet with the specified [param count] of nodes and [param width] of the grid.
 ## Sets up the parent and rank lists and calls make_set for each node.
+## If [param map] is provided, calls make_set only for 'floor' nodes.
 func _init(width: int, height: int, map: Array[bool] = []) -> void:
 	_count = width * height
 	_width = width

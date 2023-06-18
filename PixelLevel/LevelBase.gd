@@ -83,7 +83,7 @@ func _process(delta: float) -> void:
 
 ## Zoom the [member _camera] at a given [param position] by a specified [param factor].
 func _zoom(position: Vector2, factor: float) -> void:
-	var dynamicZoomFactor = _zoomTarget * factor # Adjust factor based on current zoom level
+	var dynamicZoomFactor := _zoomTarget * factor # Adjust factor based on current zoom level
 	var zoomNew := _zoomTarget * pow(_zoomRate, dynamicZoomFactor)
 	_zoomTarget = clamp(zoomNew, _zoomMin, _zoomMax)
 	var positionNew := position + (_camera.global_position - position) * (_zoomTarget / zoomNew)
@@ -149,13 +149,13 @@ func mapToLocal(position: Vector2i) -> Vector2i: return _tileMap.map_to_local(po
 ## Convert a local [param position] to a map position. See [method mapToLocal].
 func localToMap(position: Vector2i) -> Vector2i: return _tileMap.local_to_map(position)
 ## Convert a local [param position] to a global position. See [method globalToLocal].
-func localToGlobal(position: Vector2i) -> Vector2: return _tileMap.to_global(position) * _zoomTarget - cameraPosition()
+func localToGlobal(position: Vector2i) -> Vector2i: return _tileMap.to_global(position) * _zoomTarget - cameraPosition()
 ## Convert a global [param position] to a local position. See [method localToGlobal].
-func globalToLocal(position: Vector2) -> Vector2i: return _tileMap.to_local(position / _zoomTarget + cameraPosition())
+func globalToLocal(position: Vector2i) -> Vector2i: return _tileMap.to_local(position / _zoomTarget + cameraPosition())
 ## Convert a map [param position] to a global position. See [method globalToMap].
-func mapToGlobal(position: Vector2i) -> Vector2: return localToGlobal(mapToLocal(position))
+func mapToGlobal(position: Vector2i) -> Vector2i: return localToGlobal(mapToLocal(position))
 ## Convert a global [param position] to a map position. See [method mapToGlobal].
-func globalToMap(p: Vector2) -> Vector2i: return localToMap(globalToLocal(p))
+func globalToMap(position: Vector2i) -> Vector2i: return localToMap(globalToLocal(position))
 
 ## Return the size of the [member _tileMap] in pixels.
 func mapSize() -> Vector2i: return tileRect().size * _tileMap.tile_set.tile_size

@@ -17,21 +17,22 @@ func generate(delta: int = 1) -> void:
 	_level.generated()
 
 func _drawCaves() -> void:
-	var caves := CellularAutomaton.generate(_width, _height)
-	var biggest := _biggest(caves)
+	var ca := CellularAutomaton.new(_width, _height)
+	var caves := ca.generate()
+	var biggest := ca.findBiggest(caves)
 	if Random.nextBool():
-		caves = _mapCave(biggest)
+		caves = ca.mapBiggest(biggest)
 	while caves.size() < 4:
-		caves = CellularAutomaton.generate(_width, _height)
-		biggest = _biggest(caves)
+		caves = ca.generate()
+		biggest = ca.findBiggest(caves)
 		if Random.nextBool():
-			caves = _mapCave(biggest)
+			caves = ca.mapBiggest(biggest)
 	if Random.nextBool():
-		var other = CellularAutomaton.generate(_width, _height)
-		var otherBiggest = _biggest(other)
+		var other = ca.generate()
+		var otherBiggest = ca.findBiggest(other)
 		if Random.nextBool():
-			other = _mapCave(otherBiggest)
-		caves = _combineLists(caves, other)
+			other = ca.mapBiggest(otherBiggest)
+		caves = ca.combine(caves, other)
 		biggest.append_array(otherBiggest.filter(func(index: int): return !biggest.has(index)))
 	for y in _height:
 		for x in _width:
@@ -43,54 +44,6 @@ func _drawCaves() -> void:
 	if not _outside or not _outsideWall:
 		_outlineCaves(caves)
 	_stairsAt(biggest)
-
-# returns array of index so can check size
-func _biggest(caves: Array[bool]) -> Array:
-	var disjointSet := DisjointSet.new(_width, _height)
-	for i in _width * _height:
-		if caves[i]:
-			continue
-		var position := Utility.unflatten(i, _width)
-		for x in range(-1, 2):
-			for y in range(-1, 2):
-				if abs(x) + abs(y) != 1:
-					continue
-				var neighbor := Vector2i(position.x + x, position.y + y)
-				if neighbor.x < 0 or neighbor.x >= _width or neighbor.y < 0 or neighbor.y >= _height:
-					continue
-				var neighborIndex := Utility.flatten(neighbor, _width)
-				if not caves[neighborIndex]:
-					disjointSet.union(i, neighborIndex)
-	var arrays := disjointSet.split()
-	if arrays.size() == 0: return []
-	if arrays.size() == 1: return arrays[0]
-	var maxSize := 0
-	var biggest := []
-	for array in arrays:
-		if array.size() > maxSize:
-			maxSize = array.size()
-			biggest = array
-	return biggest
-
-# returns map sized array of bools to replace old grid
-func _mapCave(cave: Array) -> Array[bool]:
-	var map: Array[bool] = []
-	for y in _height:
-		for x in _width:
-			map.append(Utility.flatten(Vector2i(x, y), _width) not in cave)
-	print("map size: " + str(map.size()))
-	CellularAutomaton._print(map, _width, _height)
-	return map
-
-func _combineLists(array1: Array[bool], array2: Array[bool]) -> Array[bool]:
-	var result: Array[bool] = []
-	for y in range(_height):
-		for x in range(_width):
-			var index := Utility.flatten(Vector2i(x, y), _width)
-			result.append(array1[index] and array2[index])
-	print("combine size: " + str(result.size()))
-	CellularAutomaton._print(result, _width, _height)
-	return result
 
 func _isCaveEdge(list: Array, p: Vector2i) -> bool:
 	var edge := false
@@ -123,10 +76,10 @@ func _drawOutside() -> void:
 			_drawGrass()
 
 func _drawFlowers() -> void:
-	var flowers := CellularAutomaton.generate(_width, _height)
-	var biggest := _biggest(flowers)
+	var ca := CellularAutomaton.new(_width, _height)
+	var flowers := ca.generate()
 	if Random.nextBool():
-		flowers = _mapCave(biggest)
+		flowers = ca.mapBiggest(ca.findBiggest(flowers))
 	for y in _height:
 		for x in _width:
 			var p := Vector2i(x, y)
@@ -136,10 +89,10 @@ func _drawFlowers() -> void:
 func _drawTrees() -> void:
 	var cutSome := Random.nextFloat() < 0.333
 	var cutPatch := Random.nextFloat() < 0.333
-	var trees := CellularAutomaton.generate(_width, _height)
-	var biggest := _biggest(trees)
+	var ca := CellularAutomaton.new(_width, _height)
+	var trees := ca.generate()
 	if Random.nextBool():
-		trees = _mapCave(biggest)
+		trees = ca.mapBiggest(ca.findBiggest(trees))
 	for y in _height:
 		for x in _width:
 			var p := Vector2i(x, y)
@@ -191,10 +144,10 @@ func _cutTrees(array: Array) -> void:
 									_level.cutTree(p)
 
 func _drawGrass() -> void:
-	var grass := CellularAutomaton.generate(_width, _height)
-	var biggest := _biggest(grass)
+	var ca := CellularAutomaton.new(_width, _height)
+	var grass := ca.generate()
 	if Random.nextBool():
-		grass = _mapCave(biggest)
+		grass = ca.mapBiggest(ca.findBiggest(grass))
 	for y in _height:
 		for x in _width:
 			var p := Vector2i(x, y)
