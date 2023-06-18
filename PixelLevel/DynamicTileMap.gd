@@ -1,8 +1,7 @@
 ## Base class for [TileMap] levels.
-##
 ## Handles panning and zooming with [Camera2D], clearing and coordinate conversions.
 extends SubViewport
-class_name LevelBase
+class_name DynamicTileMap
 
 @onready var _camera: Camera2D = $Camera
 @onready var _tileMap: TileMap = $TileMap
@@ -29,6 +28,7 @@ var _panFinished := false
 var _panMomentum := Vector2.ZERO
 
 ## Called when the node enters the scene tree for the first time.
+## TODO: Was to fix a bug where the size was not set correctly on first load. Is this still needed?
 func _ready() -> void: call_deferred("_readyDeferred")
 
 ## Called after the node has entered the scene tree.

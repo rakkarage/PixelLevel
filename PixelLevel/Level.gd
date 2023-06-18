@@ -1,4 +1,5 @@
-extends LevelBase
+extends DynamicTileMap
+class_name Level
 
 #region Variable
 
@@ -763,7 +764,7 @@ func setStairOutsideUp(p: Vector2i) -> void:
 func setStairOutsideDown(p: Vector2i) -> void:
 	_setStairOutside(p, Stair.Down)
 
-func setDoor(p: Vector2i, type: Door) -> void:
+func setDoor(p: Vector2i, type = Random.next(Door.size())) -> void:
 	var tile: Tile
 	match _theme:
 		0: tile = Tile.Theme1Door

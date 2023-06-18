@@ -6,7 +6,7 @@ const _maxRoomHeight := 7
 const _minRoomWidth := 4
 const _minRoomHeight := 4
 
-func _init(level: LevelBase) -> void:
+func _init(level: Level) -> void:
 	super(level)
 
 func generate(delta: int = 1) -> void:

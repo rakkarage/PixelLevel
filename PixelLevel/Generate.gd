@@ -1,7 +1,7 @@
 extends Object
 class_name Generate
 
-var _level : LevelBase
+var _level : Level
 @export var priority = 1
 var _width := 0
 var _height := 0
@@ -16,7 +16,7 @@ var _room := false
 var _outside := false
 var _outsideWall := false
 
-func _init(level: LevelBase) -> void:
+func _init(level: Level) -> void:
 	_level = level
 
 func generateUp() -> void:

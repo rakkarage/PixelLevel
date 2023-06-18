@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://82wscvw880j4"]
 
-[ext_resource type="Script" path="res://PixelLevel/LevelBase.gd" id="1_lhx64"]
+[ext_resource type="Script" path="res://PixelLevel/DynamicTileMap.gd" id="1_lhx64"]
 [ext_resource type="TileSet" uid="uid://cjn2ri268c5yx" path="res://PixelLevel/Level.tres" id="2_kxgey"]
 
 [node name="Level" type="Control"]

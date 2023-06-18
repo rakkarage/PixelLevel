@@ -1,6 +1,6 @@
-[gd_scene load_steps=9 format=3 uid="uid://bf14nrbj1oaud"]
+[gd_scene load_steps=8 format=3 uid="uid://bf14nrbj1oaud"]
 
-[ext_resource type="PackedScene" uid="uid://82wscvw880j4" path="res://PixelLevel/LevelBase.tscn" id="1_m1rxo"]
+[ext_resource type="PackedScene" uid="uid://82wscvw880j4" path="res://PixelLevel/DynamicTileMap.tscn" id="1_02jht"]
 [ext_resource type="PackedScene" uid="uid://c1mewurj1iqoa" path="res://PixelMobs/Mob/Slime.tscn" id="2_1y2b4"]
 [ext_resource type="Script" path="res://PixelLevel/Level.gd" id="2_3ebrx"]
 [ext_resource type="Script" path="res://PixelLevel/LevelManager.gd" id="2_6ydkp"]
@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://c0gglcpbg3xyp" path="res://Interface/Target.tscn" id="4_gpw00"]
 [ext_resource type="PackedScene" uid="uid://b2xdfyjb3ol2o" path="res://Interface/MaskTween.tscn" id="8_4cj6s"]
 
-[node name="Level" instance=ExtResource("1_m1rxo")]
+[node name="Level" instance=ExtResource("1_02jht")]
 script = ExtResource("2_6ydkp")
 
 [node name="Back" parent="." index="0" instance=ExtResource("2_ij0qj")]

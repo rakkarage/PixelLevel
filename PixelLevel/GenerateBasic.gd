@@ -1,7 +1,7 @@
 extends Generate
 class_name GenerateBasic
 
-func _init(level: LevelBase) -> void:
+func _init(level: Level) -> void:
 	super(level)
 
 func generate(delta: int = 1) -> void:

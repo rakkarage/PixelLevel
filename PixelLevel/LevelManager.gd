@@ -1,6 +1,6 @@
 extends Control
 
-@onready var _level: LevelBase = $Container/SubViewport
+@onready var _level: Level = $Container/SubViewport
 @onready var _mask: MaskTween = $Fore/MaskGate
 @onready var _textureRect: TextureRect = $Fore/MiniMap
 @onready var _position: Label = $Fore/Panel/VBox/Mouse/Value
