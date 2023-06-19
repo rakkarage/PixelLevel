@@ -795,16 +795,19 @@ func isStair(p: Vector2i) -> bool:
 	return _isForeTile(p, _stairTiles)
 
 func isStairUp(p: Vector2i) -> bool:
-	return isStair(p) and _tileMap.get_cell_atlas_coords(Layer.Fore, p) == Vector2i(Stair.Up, 0)
+	var source = _sources[_tileMap.get_cell_source_id(Layer.Fore, p)]
+	return isStair(p) and _tileMap.get_cell_atlas_coords(Layer.Fore, p) == source.get_tile_id(Stair.Up)
 
 func isStairDown(p: Vector2i) -> bool:
-	return isStair(p) and _tileMap.get_cell_atlas_coords(Layer.Fore, p) == Vector2i(Stair.Down, 0)
+	var source = _sources[_tileMap.get_cell_source_id(Layer.Fore, p)]
+	return isStair(p) and _tileMap.get_cell_atlas_coords(Layer.Fore, p) == source.get_tile_id(Stair.Down)
 
 func isDoor(p: Vector2i) -> bool:
 	return _isForeTile(p, _doorTiles)
 
 func isDoorShut(p: Vector2i) -> bool:
-	return isDoor(p) and _tileMap.get_cell_atlas_coords(Layer.Fore, p) == Vector2i(Door.Shut, 0)
+	var source = _sources[_tileMap.get_cell_source_id(Layer.Fore, p)]
+	return isDoor(p) and _tileMap.get_cell_atlas_coords(Layer.Fore, p) == source.get_tile_id(Door.Shut)
 
 func verifyCliff() -> void:
 	var rect := tileRect()
@@ -834,13 +837,14 @@ func cutTree(p: Vector2i) -> void:
 	clearTree(p)
 	setTreeStump(p)
 
-func setGrass(p: Vector2i) -> void:
+func setWeed(p: Vector2i) -> void:
+	var tile := Tile.DayWeed if _day else Tile.NightWeed
 	if _desert:
-		_setRandomTile(Layer.SplitBack, p, Tile.DayWeed if _day else Tile.NightWeed, Vector2i(Weed.BackDry, 0))
-		_setRandomTile(Layer.SplitFore, p, Tile.DayWeed if _day else Tile.NightWeed, Vector2i(Weed.ForeDry, 0))
+		_setRandomTile(Layer.SplitBack, p, tile, _sources[tile].get_tile_id(Weed.BackDry))
+		_setRandomTile(Layer.SplitFore, p, tile, _sources[tile].get_tile_id(Weed.ForeDry))
 	else:
-		_setRandomTile(Layer.SplitBack, p, Tile.DayWeed if _day else Tile.NightWeed, Vector2i(Weed.Back, 0))
-		_setRandomTile(Layer.SplitFore, p, Tile.DayWeed if _day else Tile.NightWeed, Vector2i(Weed.Fore, 0))
+		_setRandomTile(Layer.SplitBack, p, tile, _sources[tile].get_tile_id(Weed.Back))
+		_setRandomTile(Layer.SplitFore, p, tile, _sources[tile].get_tile_id(Weed.Fore))
 
 #endregion
 

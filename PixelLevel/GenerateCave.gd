@@ -76,7 +76,7 @@ func _drawOutside() -> void:
 			_drawTrees()
 		if Random.nextBool():
 			print("drawing grass")
-			_drawGrass()
+			_drawWeed()
 
 func _drawFlowers() -> void:
 	var ca := CellularAutomaton.new(_width, _height)
@@ -146,7 +146,7 @@ func _cutTrees(array: Array) -> void:
 								if Random.nextBool():
 									_level.cutTree(p)
 
-func _drawGrass() -> void:
+func _drawWeed() -> void:
 	var ca := CellularAutomaton.new(_width, _height)
 	var grass := ca.generate()
 	if Random.nextBool():
@@ -155,4 +155,4 @@ func _drawGrass() -> void:
 		for x in _width:
 			var p := Vector2i(x, y)
 			if not grass[Utility.flatten(p, _width)] and not _level.isWall(p) and not _level.isBackInvalid(p) and not _level.isStair(p):
-				_level.setGrass(p)
+				_level.setWeed(p)
