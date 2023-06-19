@@ -62,7 +62,7 @@ enum Tile {
 	DayWeed, DayHedge, DayWall, DayFloor,
 	NightGrass, NightPillar, NightPath, NightStair, NightDesert, NightDoodad,
 	NightWeed, NightHedge, NightWall, NightFloor,
-	Tree, TreeStump, Flower, Rubble,
+	TreeFore, TreeBack, TreeStump, Flower, Rubble,
 	Theme1Torch, Theme1WallPlain, Theme1Wall, Theme1Floor, Theme1FloorRoom, Theme1Stair, Theme1Door,
 	Theme2Torch, Theme2WallPlain, Theme2Wall, Theme2Floor, Theme2FloorRoom, Theme2Stair, Theme2Door,
 	Theme3Torch, Theme3WallPlain, Theme3Wall, Theme3Floor, Theme3FloorRoom, Theme3Stair, Theme3Door,
@@ -825,12 +825,15 @@ func setFlower(p: Vector2i) -> void:
 	_setRandomTile(Layer.Flower, p, Tile.Flower)
 
 func setTree(p: Vector2i) -> void:
-	_setRandomTile(Layer.Tree, p, Tile.Tree)
+	var random = Random.next(3)
+	_setRandomTile(Layer.Top, p + Vector2i(0, -1), Tile.TreeFore, _sources[Tile.TreeFore].get_tile_id(random))
+	_setRandomTile(Layer.Tree, p, Tile.TreeBack, _sources[Tile.TreeBack].get_tile_id(random))
 
 func setTreeStump(p: Vector2i) -> void:
 	_setRandomTile(Layer.Tree, p, Tile.TreeStump)
 
 func clearTree(p: Vector2i) -> void:
+	_clearTile(Layer.Top, p + Vector2i(0, -1))
 	_clearTile(Layer.Tree, p)
 
 func cutTree(p: Vector2i) -> void:
