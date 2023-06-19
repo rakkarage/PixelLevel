@@ -46,7 +46,7 @@ enum Layer {
 	Back,
 	Fore,
 	Flower,
-	WaterBack, SplitBack, ItemBack,
+	ItemBack, SplitBack, WaterBack,
 	Tree,
 	ItemFore, SplitFore, WaterFore,
 	Top,
