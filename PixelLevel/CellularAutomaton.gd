@@ -75,15 +75,14 @@ func _simulate(oldGrid: Array[bool], birth: int, death: int) -> Array[bool]:
 ## See [method Utility.flatten].
 func _countNeighbors(grid: Array[bool], position: Vector2i) -> int:
 	var count := 0
-	for i in range(-1, 2):
-		for j in range(-1, 2):
-			var neighbor_x := position.x + i
-			var neighbor_y := position.y + j
-			if i == 0 and j == 0:
+	for x in range(-1, 2):
+		for y in range(-1, 2):
+			var neighbor := position + Vector2i(x, y)
+			if x == 0 and y == 0:
 				continue
-			elif neighbor_x < 0 or neighbor_y < 0 or neighbor_x >= _width or neighbor_y >= _height:
+			elif neighbor.x < 0 or neighbor.y < 0 or neighbor.x >= _width or neighbor.y >= _height:
 				count += 1
-			elif grid[Utility.flatten(Vector2i(neighbor_x, neighbor_y), _width)]:
+			elif grid[Utility.flatten(neighbor, _width)]:
 				count += 1
 	return count
 

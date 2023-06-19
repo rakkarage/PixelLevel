@@ -14,20 +14,31 @@ var _height: int
 var _count: int
 
 ## Initializes the DisjointSet with the specified [param count] of nodes and [param width] of the grid.
-## If [param map] is provided, calls make_set only for 'floor' nodes. Otherwise, calls make_set for each node.
+## If [param map] is provided, calls [method union] only for connected 'floor' nodes.
+## Otherwise, calls [method make_set] for each node.
 func _init(width: int, height: int, map: Array[bool] = []) -> void:
 	_width = width
 	_height = height
 	_count = _width * _height
 	_parent.resize(_count)
 	_rank.resize(_count)
+	for i in _count:
+		make_set(i)
 	if map.size() == _count:
 		for i in _count:
-			if not map[i]:
-				make_set(i)
-	else:
-		for i in _count:
-			make_set(i)
+			if map[i]:
+				continue
+			var position := Utility.unflatten(i, _width)
+			for x in range(-1, 2):
+				for y in range(-1, 2):
+					var neighbor := Vector2i(position.x + x, position.y + y)
+					if x == 0 and y == 0:
+						continue
+					elif neighbor.x < 0 or neighbor.x >= _width or neighbor.y < 0 or neighbor.y >= _height:
+						continue
+					var neighborIndex := Utility.flatten(neighbor, _width)
+					if not map[neighborIndex]:
+						union(i, neighborIndex)
 
 ## Creates a new set with the given [param node].
 ## Sets the parent of the node to itself and the rank to 0.
@@ -68,6 +79,8 @@ func split() -> Array[Array]:
 	var roots: Array[int] = [] # list to store the roots of each node
 	for i in _parent.size():
 		var root := find(i) # find the root of the set that i belongs to
+		if root == i: # if just a single node, skip
+			continue
 		if not roots.has(root):
 			roots.append(root) # add the root to the list of roots
 			sets.append([]) # create a new set for the root

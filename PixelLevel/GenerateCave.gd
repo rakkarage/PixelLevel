@@ -45,14 +45,17 @@ func _drawCaves() -> void:
 		_outlineCaves(caves)
 	_stairsAt(biggest)
 
-func _isCaveEdge(list: Array, p: Vector2i) -> bool:
+func _isCaveEdge(list: Array, position: Vector2i) -> bool:
 	var edge := false
-	for yy in range(-1, 2):
-		for xx in range(-1, 2):
-			if not ((xx == 0) and (yy == 0)):
-				var new := Vector2(p.x + xx, p.y + yy)
-				if _level.insideMap(new) and not list[Utility.flatten(new, _width)]:
-					edge = true
+	for y in range(-1, 2):
+		for x in range(-1, 2):
+			var neighbor := Vector2i(position.x + x, position.y + y)
+			if x == 0 and y == 0:
+				continue
+			elif neighbor.x < 0 or neighbor.x >= _width or neighbor.y < 0 or neighbor.y >= _height:
+				continue
+			if not list[Utility.flatten(neighbor, _width)]:
+				edge = true
 	return edge
 
 func _outlineCaves(list: Array) -> void:
