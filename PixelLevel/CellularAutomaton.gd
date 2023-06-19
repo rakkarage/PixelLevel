@@ -47,9 +47,9 @@ func generate(steps := Random.next(_steps), chance := Random.nextRangeFloat(0.5 
 		grid.append(Random.nextFloat() < chance)
 	for i in steps:
 		grid = _simulate(grid, birth, death)
-	if OS.is_debug_build():
-		print("Steps: ", steps, ", Chance: ", chance, ", Birth: ", birth, ", Death: ", death)
-		_print(grid)
+	# if OS.is_debug_build():
+	# 	print("Steps: ", steps, ", Chance: ", chance, ", Birth: ", birth, ", Death: ", death)
+	# 	_print(grid)
 	return grid
 
 ## Simulate a single step of a cellular automaton algorithm.
@@ -110,9 +110,9 @@ func mapBiggest(biggest: Array) -> Array[bool]:
 	var map: Array[bool] = []
 	for i in _count:
 		map.append(i not in biggest)
-	if OS.is_debug_build():
-		print("mapBiggest")
-		_print(map)
+	# if OS.is_debug_build():
+	# 	print("mapBiggest")
+	# 	_print(map)
 	return map
 
 ## [param array1] and [param array2] define the grids to combine.
@@ -122,9 +122,9 @@ func combine(array1: Array[bool], array2: Array[bool]) -> Array[bool]:
 	var result: Array[bool] = []
 	for i in _count:
 		result.append(array1[i] and array2[i])
-	if OS.is_debug_build():
-		print("combine")
-		_print(result)
+	# if OS.is_debug_build():
+	# 	print("combine")
+	# 	_print(result)
 	return result
 
 ## Print a grid to the console.
