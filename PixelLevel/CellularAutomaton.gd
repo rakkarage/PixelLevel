@@ -89,7 +89,7 @@ func _countNeighbors(grid: Array[bool], position: Vector2i) -> int:
 ## [param grid] defines the grid to check.
 ## [param width] and [param height] define the size of the grid.
 ## Return the biggest `floor` set as array of indices so can check size etc.
-## See [class DisjointSet], [method Utility.flatten], [method Utility.unflatten].
+## See [DisjointSet], [method Utility.flatten], [method Utility.unflatten].
 func findBiggest(grid: Array[bool]) -> Array:
 	var disjointSet := DisjointSet.new(_width, _height, grid)
 	var arrays := disjointSet.split()
