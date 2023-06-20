@@ -996,9 +996,9 @@ func _drawEdge() -> void:
 	var rect := tileRect()
 	if rect.size == Vector2i.ZERO:
 		return
-	var minY: int = rect.position.y - 1
+	var minY: int = -1
 	var maxY: int = rect.end.y
-	var minX: int = rect.position.x - 1
+	var minX: int = -1
 	var maxX: int = rect.end.x
 	for y in range(minY, maxY + 1):
 		for x in range(minX, maxX + 1):
