@@ -217,9 +217,9 @@ func saveMapsTexture() -> void:
 	viewport.add_child(_hero.duplicate())
 	viewport.size = newSize
 	viewport.transparent_bg = true
-	add_child(viewport)
 	viewport.render_target_clear_mode = ClearMode.CLEAR_MODE_ONCE
 	viewport.render_target_update_mode = UpdateMode.UPDATE_ONCE
+	add_child(viewport)
 	await RenderingServer.frame_post_draw
 	var image = viewport.get_texture().get_image()
 	AutoFileDialog.showSave(func(path: String):
@@ -659,6 +659,7 @@ func _randomTileAlternative(tile: Tile, index: int) -> int:
 
 #region Back / Floor
 
+## used to test for "cliff" walls which are just empty tiles, no floor
 func isBackInvalid(p: Vector2i) -> bool:
 	return _tileMap.get_cell_tile_data(Layer.Back, p) == null
 

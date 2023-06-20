@@ -22,7 +22,7 @@ func _drawCaves() -> void:
 	var biggest := ca.findBiggest(caves)
 	if Random.nextBool():
 		caves = ca.mapBiggest(biggest)
-	while caves.size() < 4:
+	while biggest.size() < 4:
 		caves = ca.generate()
 		biggest = ca.findBiggest(caves)
 		if Random.nextBool():
@@ -114,37 +114,40 @@ func _cutTrees(array: Array) -> void:
 		if Random.next(3) == 0: # cut
 			if Random.next(4) == 0: # cut all
 				for i in cave:
-					_level.cutTree(Utility.unflatten(i, _width))
+					var p := Utility.unflatten(i, _width)
+					if not _level.isWall(p) and not _level.isBackInvalid(p) and not _level.isStair(p):
+						_level.cutTree(Utility.unflatten(i, _width))
 			elif Random.nextBool(): # cut some
 				var direction := Random.next(4)
 				var test := Utility.unflatten(cave[Random.next(cave.size())], _width)
 				for i in cave:
 					var p := Utility.unflatten(i, _width)
-					match direction:
-						0:
-							if p.x > test.x:
-								_level.cutTree(p)
-							elif p.x == test.x:
-								if Random.nextBool():
+					if not _level.isWall(p) and not _level.isBackInvalid(p) and not _level.isStair(p):
+						match direction:
+							0:
+								if p.x > test.x:
 									_level.cutTree(p)
-						1:
-							if p.x < test.x:
-								_level.cutTree(p)
-							elif p.x == test.x:
-								if Random.nextBool():
+								elif p.x == test.x:
+									if Random.nextBool():
+										_level.cutTree(p)
+							1:
+								if p.x < test.x:
 									_level.cutTree(p)
-						2:
-							if p.y > test.y:
-								_level.cutTree(p)
-							elif p.y == test.y:
-								if Random.nextBool():
+								elif p.x == test.x:
+									if Random.nextBool():
+										_level.cutTree(p)
+							2:
+								if p.y > test.y:
 									_level.cutTree(p)
-						3:
-							if p.y < test.y:
-								_level.cutTree(p)
-							elif p.y == test.y:
-								if Random.nextBool():
+								elif p.y == test.y:
+									if Random.nextBool():
+										_level.cutTree(p)
+							3:
+								if p.y < test.y:
 									_level.cutTree(p)
+								elif p.y == test.y:
+									if Random.nextBool():
+										_level.cutTree(p)
 
 func _drawWeed() -> void:
 	var ca := CellularAutomaton.new(_width, _height)
