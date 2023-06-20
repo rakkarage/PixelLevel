@@ -12,7 +12,7 @@ func generate(delta: int = 1) -> void:
 	_drawCaves()
 	if _outside:
 		_drawOutside()
-	if _stream:
+	if not _cliff and _stream:
 		_generateStreams()
 	_level.generated()
 
