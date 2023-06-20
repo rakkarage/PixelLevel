@@ -205,31 +205,27 @@ func _wasd(direction: Vector2i) -> void:
 
 #region Map
 
-# fake layer with Layer.Back, 0, for edge
 func saveMapsTexture() -> void:
-	var s := mapSize()
-	var image := Image.create(s.x, s.y, false, Image.FORMAT_RGBA8)
-	for layer in _tileMap.get_layers_count():
-		if not _tileMap.is_layer_enabled(layer):
-			continue
-		for y in s.y:
-			for x in s.x:
-				var p := Vector2i(x, y)
-				var id = _tileMap.get_cell_source_id(layer, p)
-				if id != -1:
-					var source = _sources[id]
-					var coords = _tileMap.get_cell_atlas_coords(layer, p)
-					var sourceRect = source.get_runtime_tile_texture_region(coords, 0)
-					var tileImage = source.get_runtime_texture().get_image()
-					image.blend_rect(tileImage, sourceRect, Vector2(x * sourceRect.size.x, y * sourceRect.size.y))
-				if _heroPosition() == p && layer == 7:
-					print(p)
-					var tileImage = _hero.texture.get_image()
-					var frame_width = _hero.texture.get_width() / _hero.hframes
-					var tileSize = tileImage.get_size()
-					var heroPos = _heroPosition() * _tileMap.tile_set.tile_size
-					image.blend_rect(tileImage, Rect2(Vector2i(frame_width * _hero.frame, 0), Vector2i(frame_width, tileSize.y)), heroPos)
-	AutoFileDialog.showSave(func(path: String): image.save_png(path), ["*.png ; PNG Files"])
+	var viewport := SubViewport.new()
+	var tileSize := _tileMapEdge.tile_set.tile_size
+	var newSize := _tileMapEdge.get_used_rect().size * tileSize
+	var newCamera := _camera.duplicate()
+	newCamera.global_position = (newSize - tileSize * 2) / 2
+	viewport.add_child(newCamera)
+	viewport.add_child(_tileMapEdge.duplicate())
+	viewport.add_child(_tileMap.duplicate())
+	viewport.add_child(_hero.duplicate())
+	viewport.size = newSize
+	viewport.transparent_bg = true
+	add_child(viewport)
+	viewport.render_target_clear_mode = ClearMode.CLEAR_MODE_ONCE
+	viewport.render_target_update_mode = UpdateMode.UPDATE_ONCE
+	await RenderingServer.frame_post_draw
+	var image = viewport.get_texture().get_image()
+	AutoFileDialog.showSave(func(path: String):
+		image.save_png(path)
+		viewport.queue_free()
+		, ["*.png ; PNG Files"])
 
 func _move(mob: Node2D) -> void:
 	await get_tree().process_frame
