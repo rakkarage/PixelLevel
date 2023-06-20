@@ -64,8 +64,7 @@ func _updateMap() -> void:
 	_updateText(get_global_mouse_position())
 	var at = _level._heroPosition()
 	var original = _level.tileRect().size
-	var minSize = min(original.x, original.y)
-	var trimSize = Vector2i(minSize, minSize)
+	var trimSize = original
 	var offset := Vector2i.ZERO
 	if trimSize.x > _max.x:
 		trimSize.x = _max.x
@@ -78,9 +77,11 @@ func _updateMap() -> void:
 		if offset.y < 0: offset.y = 0
 		if offset.y > original.y - trimSize.y + 1: offset.y = original.y - trimSize.y + 1
 	var image = Image.create(trimSize.x, trimSize.y, false, Image.FORMAT_RGBA8)
-	for y in range(trimSize.y):
-		for x in range(trimSize.x):
+	for y in trimSize.y:
+		for x in trimSize.x:
 			image.set_pixel(x, y, _level.getMapColor(Vector2i(x + offset.x, y + offset.y)))
+	image.resize(image.get_width() * 2, image.get_height() * 2, Image.INTERPOLATE_NEAREST)
+	image.resize(image.get_width() * 2, image.get_height() * 2, Image.INTERPOLATE_NEAREST)
 	_textureRect.texture = ImageTexture.create_from_image(image)
 
 # TODO: fix levels and adjust probabilities
