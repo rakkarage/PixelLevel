@@ -22,6 +22,7 @@ script = ExtResource("2_3ebrx")
 [node name="TileMapEdge" type="TileMap" parent="Container/SubViewport" index="2"]
 tile_set = ExtResource("3_2nw2k")
 format = 2
+layer_0/z_index = 13
 
 [node name="Hero" parent="Container/SubViewport" index="3" instance=ExtResource("2_1y2b4")]
 z_index = 7
