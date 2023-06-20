@@ -205,6 +205,32 @@ func _wasd(direction: Vector2i) -> void:
 
 #region Map
 
+# fake layer with Layer.Back, 0, for edge
+func saveMapsTexture() -> void:
+	var s := mapSize()
+	var image := Image.create(s.x, s.y, false, Image.FORMAT_RGBA8)
+	for layer in _tileMap.get_layers_count():
+		if not _tileMap.is_layer_enabled(layer):
+			continue
+		for y in s.y:
+			for x in s.x:
+				var p := Vector2i(x, y)
+				var id = _tileMap.get_cell_source_id(layer, p)
+				if id != -1:
+					var source = _sources[id]
+					var coords = _tileMap.get_cell_atlas_coords(layer, p)
+					var sourceRect = source.get_runtime_tile_texture_region(coords, 0)
+					var tileImage = source.get_runtime_texture().get_image()
+					image.blend_rect(tileImage, sourceRect, Vector2(x * sourceRect.size.x, y * sourceRect.size.y))
+				if _heroPosition() == p && layer == 7:
+					print(p)
+					var tileImage = _hero.texture.get_image()
+					var frame_width = _hero.texture.get_width() / _hero.hframes
+					var tileSize = tileImage.get_size()
+					var heroPos = _heroPosition() * _tileMap.tile_set.tile_size
+					image.blend_rect(tileImage, Rect2(Vector2i(frame_width * _hero.frame, 0), Vector2i(frame_width, tileSize.y)), heroPos)
+	AutoFileDialog.showSave(func(path: String): image.save_png(path), ["*.png ; PNG Files"])
+
 func _move(mob: Node2D) -> void:
 	await get_tree().process_frame
 	if _pathPoints.size() > 1:
@@ -614,12 +640,13 @@ func _clearTile(layer: Layer, p: Vector2i) -> void:
 
 func _setRandomTileMap(tileMap: TileMap, layer: Layer, p: Vector2i, tile: Tile, index := INVALID, alternative := INVALID) -> void:
 	var coord := _randomTileCoordsIndex(tile) if index == INVALID else index
-	var alt := _randomTileAlternative(tile, index) if alternative == INVALID else alternative
+	var alt := _randomTileAlternative(tile, coord) if alternative == INVALID else alternative
 	_setTileMap(tileMap, layer, p, tile, _sources[tile].get_tile_id(coord), alt)
 
 func _setRandomTile(layer: Layer, p: Vector2i, tile: Tile, index := INVALID, alternative := INVALID) -> void:
 	_setRandomTileMap(_tileMap, layer, p, tile, index, alternative)
 
+# fake layer with Layer.Back, 0, for edge
 func _setRandomTileEdge(p: Vector2i, tile: Tile, index := INVALID, alternative := INVALID) -> void:
 	_setRandomTileMap(_tileMapEdge, Layer.Back, p, tile, index, alternative)
 
@@ -773,6 +800,15 @@ func setDoor(p: Vector2i, type = Random.next(Door.size())) -> void:
 		2: tile = Tile.Theme3Door
 		3: tile = Tile.Theme4Door
 	_setForeRandom(p, tile, type)
+
+func setDoorBroke(p: Vector2i) -> void:
+	var tile: Tile
+	match _theme:
+		0: tile = Tile.Theme1Door
+		1: tile = Tile.Theme2Door
+		2: tile = Tile.Theme3Door
+		3: tile = Tile.Theme4Door
+	_setForeRandom(p, tile, Door.Broke)
 
 func setFountain(p: Vector2i) -> void:
 	_setForeRandom(p, Tile.Fountain)

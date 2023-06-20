@@ -62,7 +62,7 @@ func _stairs() -> void:
 	var up := _findSpot()
 	_level.startAt = up
 	if _outside:
-		_level.setStairUpOutside(up)
+		_level.setStairOutsideUp(up)
 		_level.setStairOutsideDown(_findSpot())
 	else:
 		_level.setStairUp(up)

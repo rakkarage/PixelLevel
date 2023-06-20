@@ -1,5 +1,6 @@
 ## Base class for [TileMap] levels.
 ## Handles panning and zooming with [Camera2D], clearing and coordinate conversions.
+## Depends on [SubViewport] for [method size] and [signal size_changed] and [Gesture] for optional pinch.
 extends SubViewport
 class_name DynamicTileMap
 

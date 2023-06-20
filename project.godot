@@ -27,6 +27,7 @@ buses/default_bus_layout="res://PixelLevel/Audio.tres"
 [autoload]
 
 Random="*res://Core/Random.gd"
+AutoFileDialog="*res://Core/AutoFileDialog.gd"
 Cursor="*res://Interface/Cursor.tscn"
 Gesture="*res://PixelLevel/Gesture.gd"
 Audio="*res://PixelLevel/Audio.tscn"

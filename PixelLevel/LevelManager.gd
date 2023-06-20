@@ -15,6 +15,7 @@ extends Control
 @onready var _minus: Button = $Fore/Panel/VBox/HBoxLight/Minus
 @onready var _toggle: Button = $Fore/Panel/VBox/HBoxLight/Toggle
 @onready var _plus: Button = $Fore/Panel/VBox/HBoxLight/Plus
+@onready var _save: Button = $Fore/Panel/VBox/HBoxOther/Save
 
 const _max := Vector2i(64, 64)
 const _updateMapDelay := 0.1
@@ -37,6 +38,7 @@ func _readyDeferred() -> void:
 	_up.connect("pressed", _levelUp)
 	_regen.connect("pressed", _levelRegen)
 	_down.connect("pressed", _levelDown)
+	_save.connect("pressed", _levelSave)
 	_light.text = str(_level.lightRadius)
 	_ok = true
 
@@ -126,3 +128,6 @@ func _levelRegen() -> void:
 func _levelDown() -> void:
 	_generate()
 	_depth.text = str(_level._state.depth)
+
+func _levelSave() -> void:
+	_level.saveMapsTexture()

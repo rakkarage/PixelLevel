@@ -199,3 +199,12 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Plus"
+
+[node name="HBoxOther" type="HBoxContainer" parent="Fore/Panel/VBox" index="8"]
+layout_mode = 2
+
+[node name="Save" type="Button" parent="Fore/Panel/VBox/HBoxOther" index="0"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Save"
