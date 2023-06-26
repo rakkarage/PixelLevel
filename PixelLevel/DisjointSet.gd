@@ -4,9 +4,8 @@
 extends Object
 class_name DisjointSet
 
-const _initialRank := 0
+const _initial_rank := 0
 const _increment := 1
-
 var _parent: Array[int] = []
 var _rank: Array[int] = []
 var _width: int
@@ -36,15 +35,15 @@ func _init(width: int, height: int, map: Array[bool] = []) -> void:
 						continue
 					elif neighbor.x < 0 or neighbor.x >= _width or neighbor.y < 0 or neighbor.y >= _height:
 						continue
-					var neighborIndex := Utility.flatten(neighbor, _width)
-					if not map[neighborIndex]:
-						union(i, neighborIndex)
+					var neighbor_index := Utility.flatten(neighbor, _width)
+					if not map[neighbor_index]:
+						union(i, neighbor_index)
 
 ## Creates a new set with the given [param node].
 ## Sets the parent of the node to itself and the rank to 0.
 func make_set(node: int) -> void:
 	_parent[node] = node
-	_rank[node] = _initialRank
+	_rank[node] = _initial_rank
 
 ## Finds and returns the root of the set that the given [param node] belongs to.
 ## Performs path compression to optimize future find operations.
@@ -57,21 +56,21 @@ func find(node: int) -> int:
 		_parent[p] = node # set its parent to the root
 	return node
 
-## Unites the sets that contain the given [param node1] and [param node2].
+## Unites the sets that contain the given [param node_1] and [param node_2].
 ## Finds the roots of both nodes and merges the smaller set into the larger set.
 ## Updates the parent and rank lists accordingly.
-func union(node1: int, node2: int) -> void:
-	var root1 := find(node1) # find the root of the set that node1 belongs to
-	var root2 := find(node2) # find the root of the set that node2 belongs to
-	if root1 != root2: # if the roots are different, the sets are not already merged
-		if _rank[root1] > _rank[root2]: # merge the smaller set into the larger set
-			_parent[root2] = root1
+func union(node_1: int, node_2: int) -> void:
+	var root_1 := find(node_1) # find the root of the set that node_1 belongs to
+	var root_2 := find(node_2) # find the root of the set that node_2 belongs to
+	if root_1 != root_2: # if the roots are different, the sets are not already merged
+		if _rank[root_1] > _rank[root_2]: # merge the smaller set into the larger set
+			_parent[root_2] = root_1
 		else:
-			_parent[root1] = root2
-			if _rank[root1] == _rank[root2]: # if the ranks are equal, increment the rank of the new root
-				_rank[root2] += _increment
+			_parent[root_1] = root_2
+			if _rank[root_1] == _rank[root_2]: # if the ranks are equal, increment the rank of the new root
+				_rank[root_2] += _increment
 
-## Splits the DisjointSet into separate sets and returns them.
+## Splits the DisjointSet into separate 'floor' sets and returns them.
 ## Iterates through each node, finds its root, and assigns nodes with the same root to the same set.
 ## Returns a list of sets, where each set is represented as a list of nodes.
 func split() -> Array[Array]:

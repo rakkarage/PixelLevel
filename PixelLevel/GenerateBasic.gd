@@ -6,8 +6,8 @@ func _init(level: Level) -> void:
 
 func generate(delta: int = 1) -> void:
 	super.generate(delta)
-	_fill(false, Random.nextBool())
+	_fill(false, Random.next_bool())
 	_stairs()
 	if _stream:
-		_generateStreams()
+		_generate_streams()
 	_level.generated()

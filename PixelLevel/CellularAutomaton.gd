@@ -1,7 +1,7 @@
 ## Cellular automaton generator.
-## This script is used to generate a 2D grid of boolean values using a cellular automaton algorithm.
+## Used to generate a 2D grid of boolean values using a cellular automaton algorithm.
 ## Intended for creating caves, forests, patches of grass or flowers, or lakes.
-## I use 1 (alive/true) for wall and 0 (dead/false) for floor, but you can use whatever you want.
+## I use 1 (alive/true) for wall and 0 (dead/false) for floor.
 ## Example output for a 10x10 grid with default parameters:
 ## 1111111111 1111111111 1111111111 1111111111 1111111111
 ## 1111111111 1111110011 1111110111 1110111111 1111100111
@@ -20,7 +20,6 @@ const _steps := 10 # default number of steps to simulate (randomized)
 const _chance := 0.2 # default half offset chance of a cell being alive at the start (randomized)
 const _birth := 4 # default number of neighbors required for a dead cell to become alive
 const _death := 3 # default number of neighbors required for a live cell to die
-
 var _width := 0
 var _height := 0
 var _count := 0
@@ -31,20 +30,18 @@ func _init(width: int, height: int) -> void:
 	_height = height
 	_count = width * height
 
-## Generate a 2D grid of boolean values using a cellular automaton algorithm.
-## [param width] and [param height] define the size of the grid.
+## Return a 2D grid of bools using a cellular automaton algorithm.
 ## [param steps] defines the number of steps to simulate.
 ## [param chance] defines the chance of a cell being alive at the start.
 ## [param birth] defines the number of neighbors required for a dead cell to become alive.
 ## [param death] defines the number of neighbors required for a live cell to die.
-## Return the generated grid.
-## See [method simulate], [method Random.next], [method Random.nextFloat].
-func generate(steps := Random.next(_steps), chance := Random.nextRangeFloat(0.5 - _chance, 0.5 + _chance), birth := _birth, death := _death) -> Array[bool]:
+## See [method simulate], [method Random.next], [method Random.next_float].
+func generate(steps := Random.next(_steps), chance := Random.next_range_float(0.5 - _chance, 0.5 + _chance), birth := _birth, death := _death) -> Array[bool]:
 	if _width <= 0 or _height <= 0:
 		return []
 	var grid: Array[bool] = []
 	for i in _count:
-		grid.append(Random.nextFloat() < chance)
+		grid.append(Random.next_float() < chance)
 	for i in steps:
 		grid = _simulate(grid, birth, death)
 	# if OS.is_debug_build():
@@ -52,28 +49,18 @@ func generate(steps := Random.next(_steps), chance := Random.nextRangeFloat(0.5 
 	# 	_print(grid)
 	return grid
 
-## Simulate a single step of a cellular automaton algorithm.
-## [param oldGrid] defines the grid to simulate.
-## [param width] and [param height] define the size of the grid.
-## [param birth] defines the number of neighbors required for a dead cell to become alive.
-## [param death] defines the number of neighbors required for a live cell to die.
-## Return the simulated grid.
+## Return a step of cellular automaton algorithm using the specified [param old_grid] and [param birth] and [param death] parameters.
 ## See [method _count], [method Utility.unflatten].
-func _simulate(oldGrid: Array[bool], birth: int, death: int) -> Array[bool]:
+func _simulate(old_grid: Array[bool], birth: int, death: int) -> Array[bool]:
 	var grid: Array[bool] = []
 	for i in _count:
 		var position := Utility.unflatten(i, _width)
-		var count := _countNeighbors(oldGrid, position)
-		grid.append((oldGrid[i] and count >= death) or (not oldGrid[i] and count > birth))
+		var count := _count_neighbors(old_grid, position)
+		grid.append((old_grid[i] and count >= death) or (not old_grid[i] and count > birth))
 	return grid
 
-## Count the number of live neighbors of a cell.
-## [param map] defines the grid to count neighbors in.
-## [param p] define the position of the cell.
-## [param width] and [param height] define the size of the grid.
-## Return the number of live neighbors.
-## See [method Utility.flatten].
-func _countNeighbors(grid: Array[bool], position: Vector2i) -> int:
+## Return the number of live neighbors of a [param position] in a [param grid]. See [method Utility.flatten].
+func _count_neighbors(grid: Array[bool], position: Vector2i) -> int:
 	var count := 0
 	for x in range(-1, 2):
 		for y in range(-1, 2):
@@ -86,13 +73,10 @@ func _countNeighbors(grid: Array[bool], position: Vector2i) -> int:
 				count += 1
 	return count
 
-## [param grid] defines the grid to check.
-## [param width] and [param height] define the size of the grid.
-## Return the biggest `floor` set as array of indices so can check size etc.
+## Return the biggest `floor` set in [param grid] as array of indices.
 ## See [DisjointSet], [method Utility.flatten], [method Utility.unflatten].
-func findBiggest(grid: Array[bool]) -> Array:
-	var disjointSet := DisjointSet.new(_width, _height, grid)
-	var arrays := disjointSet.split()
+func find_biggest(grid: Array[bool]) -> Array:
+	var arrays := DisjointSet.new(_width, _height, grid).split()
 	if arrays.size() == 0: return []
 	if arrays.size() == 1: return arrays[0]
 	var maxSize := 0
@@ -103,10 +87,8 @@ func findBiggest(grid: Array[bool]) -> Array:
 			result = array
 	return result
 
-## [param biggest] defines the set of indices to map to a grid
-## [param width] and [param height] define the size of the grid.
-## Returns map sized array of bools so can replace old grid with biggest etc.
-func mapBiggest(biggest: Array) -> Array[bool]:
+## Return the [param biggest] set of indices as a map sized array of bools.
+func map_biggest(biggest: Array) -> Array[bool]:
 	var map: Array[bool] = []
 	for i in _count:
 		map.append(i not in biggest)
@@ -115,21 +97,17 @@ func mapBiggest(biggest: Array) -> Array[bool]:
 	# 	_print(map)
 	return map
 
-## [param array1] and [param array2] define the grids to combine.
-## [param width] and [param height] define the size of the grids.
-## Return the combined grid.
-func combine(array1: Array[bool], array2: Array[bool]) -> Array[bool]:
+## Return a combination of [param grid_1] and [param grid_2].
+func combine(grid_1: Array[bool], grid_2: Array[bool]) -> Array[bool]:
 	var result: Array[bool] = []
 	for i in _count:
-		result.append(array1[i] and array2[i])
+		result.append(grid_1[i] and grid_2[i])
 	# if OS.is_debug_build():
 	# 	print("combine")
 	# 	_print(result)
 	return result
 
-## Print a grid to the console.
-## The [param grid] parameter defines the grid to print.
-## The [param width] and [param height] parameters define the size of the grid.
+## Print [param grid] to the console.
 ## See [method Utility.flatten].
 func _print(grid: Array[bool]) -> void:
 	var output := ""

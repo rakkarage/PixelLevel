@@ -11,7 +11,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="LevelTest" parent="." instance=ExtResource("1_1udgo")]
+[node name="Level" parent="." instance=ExtResource("1_1udgo")]
 layout_mode = 1
 
 [node name="Intro" parent="." instance=ExtResource("2_p7pot")]

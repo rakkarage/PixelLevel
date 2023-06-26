@@ -6,10 +6,10 @@ func _init(level: Level) -> void:
 
 func generate(delta: int = 1) -> void:
 	super.generate(delta)
-	_setLevelRect(10, 10)
+	_set_level_rect(10, 10)
 	_fill(true, false)
-	_drawRoom(_findRoom(_level.tileRect()))
+	_draw_room(_find_room(_level.tile_rect()))
 	_stairs()
 	if _stream:
-		_generateStreams()
+		_generate_streams()
 	_level.generated()
