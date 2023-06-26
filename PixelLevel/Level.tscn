@@ -20,6 +20,7 @@ canvas_item_default_texture_filter = 0
 script = ExtResource("2_3ebrx")
 
 [node name="TileMap" parent="Container/SubViewport" index="1"]
+tile_set = ExtResource("3_2nw2k")
 layer_0/name = "Back"
 layer_1/name = "Fore"
 layer_1/enabled = true
