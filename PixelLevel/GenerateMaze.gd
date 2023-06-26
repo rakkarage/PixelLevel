@@ -4,7 +4,7 @@ class_name GenerateMaze
 func _init(level: Level) -> void:
 	super(level)
 
-func generate(delta: int = 1) -> void:
+func generate(delta: int) -> void:
 	super.generate(delta)
 	var depth = abs(_level._state.depth) + 10
 	var width := Random.next_range_odd(depth, depth + Random.next(depth))

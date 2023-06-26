@@ -4,7 +4,7 @@ class_name GenerateBasic
 func _init(level: Level) -> void:
 	super(level)
 
-func generate(delta: int = 1) -> void:
+func generate(delta: int) -> void:
 	super.generate(delta)
 	_fill(false, Random.next_bool())
 	_stairs()

@@ -15,7 +15,7 @@ var _step_count := 0
 func _init(level: Level) -> void:
 	super(level)
 
-func generate(delta: int = 1) -> void:
+func generate(delta: int) -> void:
 	super.generate(delta)
 	_fill(true, false)
 	_draw_walk()

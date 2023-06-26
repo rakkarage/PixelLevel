@@ -4,7 +4,7 @@ class_name GenerateCave
 func _init(level: Level) -> void:
 	super(level)
 
-func generate(delta: int = 1) -> void:
+func generate(delta: int) -> void:
 	super.generate(delta)
 	_outside = Random.next_bool()
 	_outside_wall = Random.next_bool()

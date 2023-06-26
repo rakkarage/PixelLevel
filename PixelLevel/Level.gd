@@ -102,13 +102,13 @@ enum EdgeInsideCorner { TopLeft, TopRight, BottomLeft, TopLeftFlip, TopRightFlip
 
 #region Init / Input
 
-func _ready() -> void: call_deferred("_ready_deferred")
-
-func _ready_deferred() -> void:
-	super._ready_deferred()
+func _ready() -> void:
+	await get_tree().get_root().ready # wait for all nodes (LevelManager) to be ready
+	super._ready()
 	_cache_sources()
 	generate.emit(0)
 	generated()
+	update_map.emit()
 
 func generated() -> void:
 	_draw_edge()
@@ -140,7 +140,8 @@ func _process(delta: float) -> void:
 				await _move(_hero)
 			if not _handle_stair():
 				_light_update(_hero_position(), light_radius)
-				_check_center()
+				if not _panning:
+					_check_center()
 		_time = 0.0
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -185,7 +186,8 @@ func _wasd(direction: Vector2i) -> void:
 		_path_clear()
 		if not is_stair(p):
 			_light_update(p, light_radius)
-			_check_center()
+			if not _panning:
+				_check_center()
 		else:
 			if is_stair_down(p):
 				generate.emit(1)

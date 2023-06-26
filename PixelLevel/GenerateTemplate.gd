@@ -57,7 +57,7 @@ var _data := {
 func _init(level: Level) -> void:
 	super(level)
 
-func generate(delta: int = 1) -> void:
+func generate(delta: int) -> void:
 	super.generate(delta)
 	var template = Random.probability(_data)
 	var single := true

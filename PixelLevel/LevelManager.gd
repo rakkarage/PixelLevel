@@ -23,7 +23,6 @@ var _update_map_timer := Timer.new()
 var _ok := false
 
 func _ready() -> void:
-	_update_map()
 	_level.connect("update_map", _update_map_throttle)
 	add_child(_update_map_timer)
 	_update_map_timer.one_shot = true
@@ -96,17 +95,16 @@ var _selected: Generate
 
 func _on_generate(delta: int) -> void:
 	await get_tree().process_frame
-	await _mask.animate_in()
 	if delta + _level._state.depth == 0:
-		_level._state.depth = 0
 		GenerateTown.new(_level).generate(delta)
 	else:
+		await _mask.animate_in()
 		if delta != 0 or _selected == null:
 			_selected = Random.probability(_g)
 		_selected.generate(delta)
+		await _mask.animate_out()
 	_depth.text = str(_level._state.depth)
 	_light.text = str(_level.light_radius)
-	await _mask.animate_out()
 
 func _on_light_minus() -> void:
 	_level.light_decrease()

@@ -30,10 +30,7 @@ var _pan_momentum_timer := Timer.new()
 var _pan_momentum_after := false
 
 ## Called when the node enters the scene tree for the first time.
-func _ready() -> void: call_deferred("_ready_deferred")
-
-## Called after the node has entered the scene tree.
-func _ready_deferred() -> void:
+func _ready() -> void:
 	_old_size = size
 	center_camera()
 	connect("size_changed", _on_resize)

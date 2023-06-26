@@ -9,7 +9,7 @@ const _min_room_height := 4
 func _init(level: Level) -> void:
 	super(level)
 
-func generate(delta: int = 1) -> void:
+func generate(delta: int) -> void:
 	super.generate(delta)
 	var width := _max_room_width * (1 + Random.next(9))
 	var height := _max_room_height * (1 + Random.next(9))

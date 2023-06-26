@@ -22,7 +22,7 @@ func _init(level: Level) -> void:
 func generate_up() -> void:
 	generate(-1)
 
-func generate(delta: int = 1) -> void:
+func generate(delta: int) -> void:
 	_level.clear()
 	_level._state.depth += delta
 	var d = 10 + abs(_level._state.depth)
