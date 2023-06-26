@@ -62,21 +62,25 @@ func _stairs() -> void:
 	var up := _find_spot()
 	_level.start_at = up
 	if _outside:
-		_level.set_stair_outside_up(up)
+		if _level._state.depth > 0:
+			_level.set_stair_outside_up(up)
 		_level.set_stair_outside_down(_find_spot())
 	else:
-		_level.set_stair_up(up)
+		if _level._state.depth > 0:
+			_level.set_stair_up(up)
 		_level.set_stair_down(_find_spot())
 
 func _stairs_at(array: Array) -> void:
 	var up := Utility.unflatten(array.pick_random(), _width)
 	_level.start_at = up
 	if _outside:
-		_level.set_stair_outside_up(up)
+		if _level._state.depth > 0:
+			_level.set_stair_outside_up(up)
 		var down := Utility.unflatten(array.pick_random(), _width)
 		_level.set_stair_outside_down(down)
 	else:
-		_level.set_stair_up(up)
+		if _level._state.depth > 0:
+			_level.set_stair_up(up)
 		var down := Utility.unflatten(array.pick_random(), _width)
 		while _level.is_stair(down):
 			down = Utility.unflatten(array.pick_random(), _width)

@@ -22,22 +22,19 @@ const _update_map_delay := 0.1
 var _update_map_timer := Timer.new()
 var _ok := false
 
-func _ready() -> void: call_deferred("_ready_deferred")
-
-func _ready_deferred() -> void:
+func _ready() -> void:
 	_update_map()
 	_level.connect("update_map", _update_map_throttle)
 	add_child(_update_map_timer)
 	_update_map_timer.one_shot = true
 	_update_map_timer.connect("timeout", _update_map)
-	_level.connect("generate", _on_generate)
-	_level.connect("generate_up", _on_level_up)
+	_level.connect("generate", func(delta: int): _on_generate(delta))
 	_minus.connect("pressed", _on_light_minus)
 	_toggle.connect("pressed", _on_light_toggle)
 	_plus.connect("pressed", _on_light_plus)
-	_up.connect("pressed", _on_level_up)
-	_regen.connect("pressed", _on_level_regen)
-	_down.connect("pressed", _on_level_down)
+	_up.connect("pressed", func(): if _level._state.depth > 0: _on_generate(-1) else: Audio.error())
+	_regen.connect("pressed", func(): _on_generate(0))
+	_down.connect("pressed", func(): _on_generate(1))
 	_save.connect("pressed", _on_level_save)
 	_light.text = str(_level.light_radius)
 	_ok = true
@@ -97,12 +94,16 @@ func _update_map() -> void:
 
 var _selected: Generate
 
-func _on_generate(delta: int = 1) -> void:
+func _on_generate(delta: int) -> void:
 	await get_tree().process_frame
 	await _mask.animate_in()
-	if delta != 0 or _selected == null:
-		_selected = Random.probability(_g)
-	_selected.generate(delta)
+	if delta + _level._state.depth == 0:
+		_level._state.depth = 0
+		GenerateTown.new(_level).generate(delta)
+	else:
+		if delta != 0 or _selected == null:
+			_selected = Random.probability(_g)
+		_selected.generate(delta)
 	_depth.text = str(_level._state.depth)
 	_light.text = str(_level.light_radius)
 	await _mask.animate_out()
@@ -118,17 +119,6 @@ func _on_light_toggle() -> void:
 func _on_light_plus() -> void:
 	_level.light_increase()
 	_light.text = str(_level.light_radius)
-
-func _on_level_up() -> void:
-	_on_generate(-1)
-	_depth.text = str(_level._state.depth)
-
-func _on_level_regen() -> void:
-	_on_generate(0)
-
-func _on_level_down() -> void:
-	_on_generate()
-	_depth.text = str(_level._state.depth)
 
 func _on_level_save() -> void:
 	_level.save_maps_texture()

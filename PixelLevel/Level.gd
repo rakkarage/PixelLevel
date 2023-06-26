@@ -7,8 +7,7 @@ class_name Level
 @onready var _target: Node2D = $Target
 @onready var _map_edge: TileMap = $TileMapEdge
 
-signal generate
-signal generate_up
+signal generate(delta: int)
 
 const _path_scene := preload("res://Interface/Path.tscn")
 const Directions: Array[Vector2i] = [Vector2i.UP, Vector2i.UP + Vector2i.RIGHT, Vector2i.RIGHT, Vector2i.RIGHT + Vector2i.DOWN,
@@ -108,15 +107,7 @@ func _ready() -> void: call_deferred("_ready_deferred")
 func _ready_deferred() -> void:
 	super._ready_deferred()
 	_cache_sources()
-	for i in 10:
-		set_wall(Vector2i(i, 9))
-	set_banner_0(start_at) if Random.next_bool() else set_banner_1(start_at)
-	set_water_shallow(Vector2i(7, 7))
-	set_water_deep(Vector2i(8, 7))
-	set_water_shallow(Vector2i(9, 7))
-	set_water_shallow_purple(Vector2i(7, 8))
-	set_water_deep_purple(Vector2i(8, 8))
-	set_water_shallow_purple(Vector2i(9, 8))
+	generate.emit(0)
 	generated()
 
 func generated() -> void:
@@ -197,9 +188,9 @@ func _wasd(direction: Vector2i) -> void:
 			_check_center()
 		else:
 			if is_stair_down(p):
-				generate.emit()
+				generate.emit(1)
 			elif is_stair_up(p):
-				generate_up.emit()
+				generate.emit(-1)
 
 #endregion
 
@@ -250,11 +241,11 @@ func _handle_stair() -> bool:
 		var p := _hero_position()
 		if is_stair_down(p):
 			_state.depth += 1
-			generate.emit()
+			generate.emit(1)
 			return true
 		elif is_stair_up(p):
 			_state.depth -= 1
-			generate_up.emit()
+			generate.emit(-1)
 			return true
 	return false
 
