@@ -8,6 +8,6 @@ func generate(delta: int = 1) -> void:
 	super.generate(delta)
 	_fill(false, Random.next_bool())
 	_stairs()
-	if _stream:
+	if not _cliff and _stream:
 		_generate_streams()
 	_level.generated()

@@ -18,7 +18,7 @@ func generate(delta: int = 1) -> void:
 	var rooms := _place_rooms()
 	_place_tunnels(rooms)
 	_stairs()
-	if _stream:
+	if not _cliff and _stream:
 		_generate_streams()
 	_level.generated()
 

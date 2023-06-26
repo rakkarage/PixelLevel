@@ -147,7 +147,7 @@ func generate(delta: int = 1) -> void:
 							_find_template_with(template, connections)
 							_apply_template_at(template, Vector2(x * template.size, y * template.size))
 	_stairs()
-	if _stream:
+	if not _cliff and _stream:
 		_generate_streams()
 	_level.generated()
 

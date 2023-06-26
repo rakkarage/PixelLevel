@@ -12,7 +12,7 @@ func generate(delta: int = 1) -> void:
 	_set_level_rect(width, height)
 	_fill(true, true)
 	_drawMaze()
-	if _stream:
+	if not _cliff and _stream:
 		_generate_streams()
 	_level.generated()
 

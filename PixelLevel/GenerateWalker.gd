@@ -20,7 +20,7 @@ func generate(delta: int = 1) -> void:
 	_fill(true, false)
 	_draw_walk()
 	_stairs()
-	if _stream:
+	if not _cliff and _stream:
 		_generate_streams()
 	_level.generated()
 
