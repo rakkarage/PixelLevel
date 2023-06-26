@@ -126,7 +126,7 @@ func generated() -> void:
 	_target.modulate = Color.TRANSPARENT
 	_camera_to_hero()
 	_dark()
-	_findTorches()
+	_find_torches()
 	_light_update(_hero_position(), light_radius)
 	verify_cliff()
 	_add_points()
@@ -550,7 +550,7 @@ func _light_update(at: Vector2i, radius: int) -> void:
 	_light_emit(at, radius)
 	_light_torches()
 
-func _findTorches() -> void:
+func _find_torches() -> void:
 	_torches.clear()
 	var torch_0 := _map.get_used_cells_by_id(Layer.Fore, Tile.Theme1Torch)
 	var torch_1 := _map.get_used_cells_by_id(Layer.Fore, Tile.Theme1Torch)
