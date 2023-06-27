@@ -22,13 +22,13 @@ func generate(delta: int) -> void:
 		_generate_streams()
 	_level.generated()
 
-func _place_rooms() -> Array:
+func _place_rooms() -> Array[Rect2i]:
 	var across := int((_width) / float(_max_room_width))
 	var down := int((_height) / float(_max_room_height))
 	var max_rooms := across * down
 	var used := Utility.array_repeat(false, max_rooms)
 	var actual := 1 + Random.next(max_rooms - 1)
-	var rooms := []
+	var rooms: Array[Rect2i] = []
 	var room_index := 0
 	for _i in actual:
 		var used_room := true
@@ -37,40 +37,26 @@ func _place_rooms() -> Array:
 			used_room = used[room_index]
 		used[room_index] = true
 		var p := Utility.unflatten(room_index, across) * Vector2i(_max_room_width, _max_room_height)
-		var room := Rect2(p.x, p.y, _max_room_width, _max_room_height)
+		var room := Rect2i(p.x, p.y, _max_room_width, _max_room_height)
 		_draw_room(_find_room(room))
 		rooms.append(room)
 	return rooms
 
-# FIXME: !?
-func _place_tunnels(_rooms: Array) -> void:
-	var delta_x_sign := 0
-	var delta_y_sign := 0
-	var current : Rect2
-	var delta := Vector2.ZERO
+const Directions: Array[Vector2i] = [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]
+
+func _place_tunnels(_rooms: Array[Rect2i]) -> void:
+	var astar := AStarGrid2D.new()
+	astar.size = Vector2i(_width, _height)
+	astar.default_compute_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
+	astar.default_estimate_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
+	astar.update()
+	var current := _rooms[0]
 	for room in _rooms:
-		if current.size == Vector2.ZERO:
-			current = room
-			continue
-		var current_center := current.position + current.size / 2.0
-		var room_center : Vector2 = room.position + room.size / 2.0
-		delta = room_center - current_center
-		if is_equal_approx(delta.x, 0):	delta_x_sign = 1
-		else: delta_x_sign = int(delta.x / abs(delta.x))
-		if is_equal_approx(delta.y, 0): delta_y_sign = 1
-		else: delta_y_sign = int(delta.y / abs(delta.y))
-		while not (is_equal_approx(delta.x, 0) and is_equal_approx(delta.y, 0)):
-			var moving_x := Random.next_bool()
-			if moving_x and is_equal_approx(delta.x, 0): moving_x = false
-			if not moving_x and is_equal_approx(delta.y, 0): moving_x = true
-			var carve_length := Random.next_range(1, int(abs(delta.x if moving_x else delta.y)))
-			for _i in carve_length:
-				if moving_x: current_center.x += delta_x_sign * 1
-				else: current_center.y += delta_y_sign * 1
-				if not is_equal_approx(current_center.x, 1) and not is_equal_approx(current_center.y, 1):
-					if _level.is_wall(current_center) or _level.is_cliff(current_center) or _level.is_fore_invalid(current_center):
-						_level.clear_fore(current_center)
-						_set_floor_or_room(current_center)
-			if moving_x: delta.x -= delta_x_sign * carve_length
-			else: delta.y -= delta_y_sign * carve_length
+		var from := current.position + Vector2i(current.size / 2.0)
+		var to := room.position + Vector2i(room.size / 2.0)
+		var path := astar.get_point_path(from, to)
+		for step in path:
+			if _level.is_wall(step) or _level.is_cliff(step) or _level.is_fore_invalid(step):
+				_level.clear_fore(step)
+				_set_floor_or_room(step)
 		current = room
