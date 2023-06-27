@@ -7,11 +7,11 @@ class_name DynamicTileMap
 @onready var _camera: Camera2D = $Camera
 @onready var _map: TileMap = $TileMap
 
-signal update_map # signal emitted when the map is updated due to panning, zooming, or clearing
+signal update_map
 
-const INVALID := -1 # invalid int
-const INVALID_CELL := Vector2i(INVALID, INVALID) # invalid Vector2i
-var _old_size := Vector2.ZERO # stores the old size of the node, for resizing
+const INVALID := -1
+const INVALID_CELL := Vector2i(INVALID, INVALID)
+var _old_size := Vector2.ZERO
 @export var _duration := 0.333 ## Duration of the camera tween.
 @export_group("Zoom")
 @export var _zoom_min := 0.2 ## Minimum zoom level.
@@ -44,7 +44,7 @@ func _on_resize() -> void:
 	var center: Vector2 = map_center()
 	move_camera_to(center + (_camera.global_position - center) * (Vector2(size) / _old_size))
 	_old_size = size
-	constrain_map_to_camera() # sometimes resize near edge can cause the map to go out of bounds.
+	constrain_map_to_camera()
 
 ## Called for unhandled input events. Emits an [member update_map] signal when the [member _camera] is panned or zoomed.
 func _unhandled_input(event: InputEvent) -> void:
@@ -154,7 +154,7 @@ func local_to_map(position: Vector2i) -> Vector2i: return _map.local_to_map(posi
 func local_to_global(position: Vector2i) -> Vector2i: return _map.to_global(position) * _camera.zoom - camera_position()
 ## Convert a global [param position] to a local position. See [method local_to_global].
 func global_to_local(position: Vector2i) -> Vector2i: return _map.to_local(Vector2(position) / _camera.zoom + camera_position())
-# Convert a map [param position] to a global position. See [method global_to_map].
+## Convert a map [param position] to a global position. See [method global_to_map].
 func map_to_global(position: Vector2i) -> Vector2i: return local_to_global(map_to_local(position))
 ## Convert a global [param position] to a map position. See [method map_to_global].
 func global_to_map(position: Vector2i) -> Vector2i: return local_to_map(global_to_local(position))
@@ -173,5 +173,5 @@ func camera_position() -> Vector2: return _camera.global_position - camera_size(
 ## Return the bounding rectangle of the [member _camera] in pixels. See [method camera_bounds_map].
 func camera_bounds() -> Rect2: return Rect2(camera_position(), camera_size())
 
-# Return the bounding rectangle of the [member _camera] in map coordinates. See [method camera_bounds].
+## Return the bounding rectangle of the [member _camera] in map coordinates. See [method camera_bounds].
 func camera_bounds_map() -> Rect2i: return Rect2i(local_to_map(camera_position()), local_to_map(camera_size()))
