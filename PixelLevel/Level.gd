@@ -204,6 +204,7 @@ func save_maps_texture() -> void:
 	var new_size := _map_edge.get_used_rect().size * tile_size
 	var new_camera := _camera.duplicate()
 	new_camera.global_position = (new_size - tile_size * 2) / 2
+	new_camera.zoom = Vector2i.ONE
 	viewport.add_child(new_camera)
 	viewport.add_child(_map_edge.duplicate())
 	viewport.add_child(_map.duplicate())
@@ -215,10 +216,10 @@ func save_maps_texture() -> void:
 	add_child(viewport)
 	await RenderingServer.frame_post_draw
 	var image := viewport.get_texture().get_image()
-	AutoFileDialog.show_save(func(path: String):
+	var ok := func(path: String) -> void:
 		image.save_png(path)
 		viewport.queue_free()
-		, ["*.png ; PNG Files"])
+	AutoFileDialog.show_save(ok, ["*.png ; PNG Files"])
 
 func _move(mob: Node2D) -> void:
 	await get_tree().process_frame
