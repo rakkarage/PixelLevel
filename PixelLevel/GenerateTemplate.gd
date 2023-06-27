@@ -5,7 +5,6 @@ const _color_back_floor := Color8(71, 112, 76, 0)
 const _color_back_floor_room := Color8(255, 255, 255, 255)
 const _color_back_wall := Color8(0, 0, 0, 255)
 const _color_back_grass := Color8(193, 255, 113, 255)
-
 const _color_fore_water_shallow := Color8(128, 255, 248, 255)
 const _color_fore_water_deep := Color8(128, 200, 255, 255)
 const _color_fore_water_shallow_purple := Color8(196, 110, 255, 255)
@@ -13,22 +12,23 @@ const _color_fore_water_deep_purple := Color8(156, 82, 255, 255)
 const _color_fore_red := Color8(255, 41, 157, 255)
 const _color_fore_yellow := Color8(255, 200, 33, 255)
 const _color_fore_purple := Color8(132, 41, 255, 255)
+const _max := 10
+var _select := Vector2.ZERO
+var _rotate := 0
 
-var _select = Vector2.ZERO
-var _rotate = 0
-
+enum Direction { N, E, S, W, }
 var _connect_any := []
-var _connect_all := [0, 1, 2, 3]
-var _connect_west_east := [1, 3]
-var _connect_north_south := [0, 2]
-var _connect_north := [0]
-var _connect_east := [1]
-var _connect_south := [2]
-var _connect_west := [3]
-var _connect_north_east := [2, 3]
-var _connect_south_east := [0, 3]
-var _connect_south_west := [0, 1]
-var _connect_north_west := [2, 1]
+var _connect_all := [Direction.N, Direction.E, Direction.S, Direction.W]
+var _connect_west_east := [Direction.W, Direction.E]
+var _connect_north_south := [Direction.N, Direction.S]
+var _connect_north := [Direction.N]
+var _connect_east := [Direction.E]
+var _connect_south := [Direction.S]
+var _connect_west := [Direction.W]
+var _connect_north_east := [Direction.N, Direction.E]
+var _connect_south_east := [Direction.S, Direction.E]
+var _connect_south_west := [Direction.S, Direction.W]
+var _connect_north_west := [Direction.N, Direction.W]
 
 var _data := {
 	"a": {
@@ -95,8 +95,8 @@ func generate(delta: int) -> void:
 		else:
 			match Random.next(3):
 				0: # all
-					var width := Random.next(7)
-					var height := Random.next(7)
+					var width := Random.next_range(1, _max)
+					var height := Random.next_range(1, _max)
 					_set_level_rect(template.size * width, template.size * height)
 					_fill(true, true)
 					for y in height:
@@ -104,8 +104,8 @@ func generate(delta: int) -> void:
 							_find_template_with(template, _connect_all)
 							_apply_template_at(template, Vector2(x * template.size, y * template.size))
 				1: # loop
-					var width := Random.next(7)
-					var height := Random.next(7)
+					var width := Random.next_range(1, _max)
+					var height := Random.next_range(1, _max)
 					_set_level_rect(template.size * width, template.size * height)
 					_fill(true, true)
 					for y in height:
@@ -134,10 +134,10 @@ func generate(delta: int) -> void:
 					var connections: Array
 					if Random.next_bool():
 						width = 1
-						height = 1 + Random.next(7)
+						height = 1 + Random.next_range(1, _max)
 						connections = _connect_north_south
 					else:
-						width = 1 + Random.next(7)
+						width = 1 + Random.next_range(1, _max)
 						height = 1
 						connections = _connect_west_east
 					_set_level_rect(template.size * width, template.size * height)
@@ -151,7 +151,6 @@ func generate(delta: int) -> void:
 		_generate_streams()
 	_level.generated()
 
-# TODO bug detetected in this function. looping through the template size is not correct. wtf
 func _apply_template_at(template: Dictionary, p: Vector2) -> void:
 	for y in template.size:
 		for x in template.size:
@@ -208,10 +207,10 @@ func _find_template_with(template: Dictionary, connections: Array) -> void:
 	var connect_down: bool = template.back.get_pixelv(down) != _color_back_wall
 	var connect_left: bool = template.back.get_pixelv(left) != _color_back_wall
 	while (connections.size() and
-		(connections.has(0) and not connect_up) or
-		(connections.has(1) and not connect_right) or
-		(connections.has(2) and not connect_down) or
-		(connections.has(3) and not connect_left)):
+		(connections.has(Direction.N) and not connect_up) or
+		(connections.has(Direction.E) and not connect_right) or
+		(connections.has(Direction.S) and not connect_down) or
+		(connections.has(Direction.W) and not connect_left)):
 		_select = Vector2(Random.next(count_x), Random.next(count_y))
 		_rotate = Random.next(4)
 		offset = Vector2(_select.x * size, _select.y * size)
@@ -227,18 +226,17 @@ func _find_template_with(template: Dictionary, connections: Array) -> void:
 func _apply_rotate(p: Vector2, size: int, rotate: int) -> Vector2:
 	var value: Vector2
 	match rotate:
-		0: value = Vector2(p.x, p.y) # north
-		1: value = Vector2(size - p.y - 1, p.x) # east
-		2: value = Vector2(size - p.x - 1, size - p.y - 1) # south
-		3: value = Vector2(p.y, size - p.x - 1) # west
+		Direction.N: value = Vector2(p.x, p.y) # north
+		Direction.E: value = Vector2(size - p.y - 1, p.x) # east
+		Direction.S: value = Vector2(size - p.x - 1, size - p.y - 1) # south
+		Direction.W: value = Vector2(p.y, size - p.x - 1) # west
 	return value
 
-# TODO: this is a duplicate of _apply_rotate? why does it have different order? connections?
 func _apply_rotate_back(p: Vector2, size: int, rotate: int) -> Vector2:
 	var value: Vector2
 	match rotate:
-		0: value = Vector2(p.x, p.y) # north
-		1: value = Vector2(p.y, size - p.x - 1) # west
-		2: value = Vector2(size - p.x - 1, size - p.y - 1) # south
-		3: value = Vector2(size - p.y - 1, p.x) # east
+		Direction.N: value = Vector2(p.x, p.y) # north
+		Direction.E: value = Vector2(p.y, size - p.x - 1) # west
+		Direction.S: value = Vector2(size - p.x - 1, size - p.y - 1) # south
+		Direction.W: value = Vector2(size - p.y - 1, p.x) # east
 	return value

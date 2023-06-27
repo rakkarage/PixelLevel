@@ -14,15 +14,15 @@ const INVALID_CELL := Vector2i(INVALID, INVALID)
 var _old_size := Vector2.ZERO
 @export var _duration := 0.333 ## Duration of the camera tween.
 @export_group("Zoom")
-@export var _zoom_min := 0.2 ## Minimum zoom level.
-@export var _zoom_max := 16.0 ## Maximum zoom level.
+@export_range(0.1, 1) var _zoom_min := 0.2 ## Minimum zoom level.
+@export_range(1, 1000) var _zoom_max := 16.0 ## Maximum zoom level.
 @export var _zoom_factor := 0.1 ## Zoom factor per mouse wheel tick. Positive = zoom in, negative = zoom out.
 @export var _zoom_factor_base := 10.0 ## Base for zoom factor exponential scaling. 1.0 = linear scaling.
 @export_group("Pan")
 @export var _pan_momentum_max := Vector2(100.0, 100.0) ## Maximum pan momentum.
 @export var _pan_momentum_threshold := 7.0 ## Pan momentum threshold. Below this value, momentum is reset.
-@export var _pan_momentum_decay := 0.07 ## Pan momentum decay. 0.0 = no decay, 1.0 = instant decay.
-@export var _pan_momentum_smoothing := 0.9 ## Pan momentum smoothing. 0.0 = no smoothing, 1.0 = no momentum.
+@export_range(0, 1) var _pan_momentum_decay := 0.07 ## Pan momentum decay. 0.0 = no decay, 1.0 = instant decay.
+@export_range(0, 1) var _pan_momentum_smoothing := 0.9 ## Pan momentum smoothing. 0.0 = no smoothing, 1.0 = no momentum.
 @export var _pan_momentum_reset := 0.1 ## Reset momentum after this many seconds of no movement.
 var _panning := false
 var _pan_momentum := Vector2.ZERO
