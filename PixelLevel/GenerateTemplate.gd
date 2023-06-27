@@ -182,9 +182,9 @@ func _apply_template_at(template: Dictionary, p: Vector2) -> void:
 			elif fore_color == _color_fore_purple:
 				if Random.next_bool():
 					if Random.next_bool():
-						_level.set_banner_0(write)
-					else:
 						_level.set_banner_1(write)
+					else:
+						_level.set_banner_2(write)
 				else:
 					_level.set_fountain(write)
 			elif fore_color == _color_fore_yellow:

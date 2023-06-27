@@ -6,7 +6,7 @@ func _init(level: Level) -> void:
 
 func generate(delta: int) -> void:
 	super.generate(delta)
-	_set_level_rect(33, 33)
+	_set_level_rect(32, 32)
 	_fill(false, Random.next_bool())
 	_cliff = false
 	_level._use_light = false
@@ -18,9 +18,9 @@ func generate(delta: int) -> void:
 		_set_wall(Vector2i(i+11, 5))
 	var right := Vector2i(_level.start_at.x+1, _level.start_at.y)
 	var left := Vector2i(_level.start_at.x-1, _level.start_at.y)
-	_level.set_banner_0(right) if Random.next_bool() else _level.set_banner_1(right)
+	_level.set_banner_1(right) if Random.next_bool() else _level.set_banner_2(right)
 	_level.set_fountain(_level.start_at)
-	_level.set_banner_0(left) if Random.next_bool() else _level.set_banner_1(left)
+	_level.set_banner_1(left) if Random.next_bool() else _level.set_banner_2(left)
 	_level.set_water_shallow(Vector2i(7, 7))
 	_level.set_water_deep(Vector2i(8, 7))
 	_level.set_water_shallow(Vector2i(9, 7))

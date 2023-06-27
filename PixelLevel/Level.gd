@@ -259,7 +259,6 @@ func _handle_door() -> bool:
 	if (from - to).length() < 2.0:
 		if is_door(to):
 			_toggle_door(to)
-			_astar.set_point_disabled(tile_index(to), is_door_shut(to))
 			return true
 	return false
 
@@ -267,10 +266,14 @@ const _door_break_chance = 0.02
 
 func _toggle_door(p: Vector2i) -> void:
 	if not is_door(p): return
-	var door := _map.get_cell_atlas_coords(Layer.Fore, p).x
-	if door != Door.Broke:
+	var door := _map.get_cell_atlas_coords(Layer.Fore, p)
+	var source := _sources[_map.get_cell_source_id(Layer.Fore, p)]
+	var doorBroke := source.get_tile_id(Door.Broke)
+	var doorOpen := source.get_tile_id(Door.Open)
+	if door != doorBroke:
 		var broke := Random.next_float() <= _door_break_chance
-		set_door(p, Door.Broke if broke else Door.Shut if door == Door.Open else Door.Open)
+		set_door(p, Door.Broke if broke else Door.Shut if door == doorOpen else Door.Open)
+		_astar.set_point_disabled(tile_index(p), is_door_shut(p))
 
 func _face(mob: Node2D, direction: Vector2i) -> void:
 	if direction.x > 0 or direction.y > 0:
@@ -799,10 +802,10 @@ func set_door_broke(p: Vector2i) -> void:
 func set_fountain(p: Vector2i) -> void:
 	_set_fore_random(p, Tile.Fountain)
 
-func set_banner_0(p: Vector2i) -> void:
+func set_banner_1(p: Vector2i) -> void:
 	_set_fore_random(p, Tile.Banner1)
 
-func set_banner_1(p: Vector2i) -> void:
+func set_banner_2(p: Vector2i) -> void:
 	_set_fore_random(p, Tile.Banner2)
 
 func _is_fore_tile(p: Vector2i, tiles: Array) -> bool:
