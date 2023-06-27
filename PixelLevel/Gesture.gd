@@ -71,7 +71,6 @@ func _unhandled_input(event: InputEvent) -> void:
 	if count == 2:
 		_zoom(event)
 		_rotate(event)
-	# update() TODO: !?
 
 func _zoom(event: InputEvent) -> void:
 	if event is InputEventScreenDrag:
