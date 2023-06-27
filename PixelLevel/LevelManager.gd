@@ -21,19 +21,20 @@ const _max := Vector2i(64, 64)
 const _update_map_delay := 0.1
 var _update_map_timer := Timer.new()
 var _ok := false
+var _generating := false
 
 func _ready() -> void:
 	_level.connect("update_map", _update_map_throttle)
 	add_child(_update_map_timer)
 	_update_map_timer.one_shot = true
 	_update_map_timer.connect("timeout", _update_map)
-	_level.connect("generate", func(delta: int): _on_generate(delta))
+	_level.connect("generate", func(delta: int): await _on_generate(delta))
 	_minus.connect("pressed", _on_light_minus)
 	_toggle.connect("pressed", _on_light_toggle)
 	_plus.connect("pressed", _on_light_plus)
-	_up.connect("pressed", func(): if _level._state.depth > 0: _on_generate(-1) else: Audio.error())
-	_regen.connect("pressed", func(): _on_generate(0))
-	_down.connect("pressed", func(): _on_generate(1))
+	_up.connect("pressed", func(): Audio.error() if _generating or _level._state.depth == 0 else await _on_generate(-1))
+	_regen.connect("pressed", func(): Audio.error() if _generating else await _on_generate(0))
+	_down.connect("pressed", func(): Audio.error() if _generating else await _on_generate(1))
 	_save.connect("pressed", _on_level_save)
 	_light.text = str(_level.light_radius)
 	_ok = true
@@ -94,6 +95,7 @@ func _update_map() -> void:
 var _selected: Generate
 
 func _on_generate(delta: int) -> void:
+	_generating = true
 	await get_tree().process_frame
 	if delta + _level._state.depth == 0:
 		GenerateTown.new(_level).generate(delta)
@@ -105,6 +107,7 @@ func _on_generate(delta: int) -> void:
 		await _mask.animate_out()
 	_depth.text = str(_level._state.depth)
 	_light.text = str(_level.light_radius)
+	_generating = false
 
 func _on_light_minus() -> void:
 	_level.light_decrease()
