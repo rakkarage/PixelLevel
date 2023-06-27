@@ -81,17 +81,15 @@ func _update_map() -> void:
 	image.resize(image.get_width() * 2, image.get_height() * 2, Image.INTERPOLATE_NEAREST)
 	_texture_rect.texture = ImageTexture.create_from_image(image)
 
-# TODO: fix levels and adjust probabilities
-@onready var _g := {
+@onready var _generators := {
 	GenerateBasic.new(_level): 1,
 	GenerateRoom.new(_level): 1,
-	GenerateDungeon.new(_level): 1,
-	GenerateMaze.new(_level): 1,
-	GenerateCave.new(_level): 1,
-	GenerateWalker.new(_level): 1,
-	GenerateTemplate.new(_level): 1,
+	GenerateDungeon.new(_level): 10,
+	GenerateMaze.new(_level): 33,
+	GenerateCave.new(_level): 33,
+	GenerateWalker.new(_level): 50,
+	GenerateTemplate.new(_level): 100,
 }
-
 var _selected: Generate
 
 func _on_generate(delta: int) -> void:
@@ -102,7 +100,7 @@ func _on_generate(delta: int) -> void:
 	else:
 		await _mask.animate_in()
 		if delta != 0 or _selected == null:
-			_selected = Random.probability(_g)
+			_selected = Random.probability(_generators)
 		_selected.generate(delta)
 		await _mask.animate_out()
 	_depth.text = str(_level._state.depth)

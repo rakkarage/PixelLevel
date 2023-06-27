@@ -31,6 +31,7 @@ var _desert := false # _desert or grass outside _theme
 const _theme_count := 4 # number of dungeon themes
 var _theme_cliff := 0 # cliff _theme
 const _theme_cliff_count := 2 # number of cliff themes
+var _use_light := true
 
 var _state := { "depth": 0, "time": 0.0, "turns": 0 }
 
@@ -540,9 +541,11 @@ func _light_emit(at: Vector2i, radius: int) -> void:
 	_set_light(at, _light_max, true)
 
 func _light_update(at: Vector2i, radius: int) -> void:
-	_darken()
-	_light_emit(at, radius)
-	_light_torches()
+	_map.set_layer_enabled(Layer.Light, _use_light)
+	if _use_light:
+		_darken()
+		_light_emit(at, radius)
+		_light_torches()
 
 func _find_torches() -> void:
 	_torches.clear()

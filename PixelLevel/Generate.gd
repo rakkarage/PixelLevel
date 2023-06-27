@@ -24,6 +24,7 @@ func generate_up() -> void:
 
 func generate(delta: int) -> void:
 	_level.clear()
+	_level._use_light = true
 	_level._state.depth += delta
 	var d = 10 + abs(_level._state.depth)
 	_set_level_rect(d * 2 + Random.next(d), d * 2 + Random.next(d))
@@ -59,32 +60,20 @@ func _fill(wall: bool, wallEdge: bool, outside: bool = false) -> void:
 					_set_wall(p)
 
 func _stairs() -> void:
-	var up := _find_spot()
-	_level.start_at = up
-	if _outside:
-		if _level._state.depth > 0:
-			_level.set_stair_outside_up(up)
-		_level.set_stair_outside_down(_find_spot())
-	else:
-		if _level._state.depth > 0:
-			_level.set_stair_up(up)
-		_level.set_stair_down(_find_spot())
+	if _level._state.depth > 0:
+		var up := _find_spot()
+		_level.start_at = up
+		_level.set_stair_outside_up(up) if _outside else _level.set_stair_up(up)
+	var down := _find_spot()
+	_level.set_stair_outside_down(down) if _outside else _level.set_stair_down(down)
 
 func _stairs_at(array: Array) -> void:
-	var up := Utility.unflatten(array.pick_random(), _width)
-	_level.start_at = up
-	if _outside:
-		if _level._state.depth > 0:
-			_level.set_stair_outside_up(up)
-		var down := Utility.unflatten(array.pick_random(), _width)
-		_level.set_stair_outside_down(down)
-	else:
-		if _level._state.depth > 0:
-			_level.set_stair_up(up)
-		var down := Utility.unflatten(array.pick_random(), _width)
-		while _level.is_stair(down):
-			down = Utility.unflatten(array.pick_random(), _width)
-		_level.set_stair_down(down)
+	if _level._state.depth > 0:
+		var up := Utility.unflatten(array.pick_random(), _width)
+		_level.start_at = up
+		_level.set_stair_outside_up(up) if _outside else _level.set_stair_up(up)
+	var down := Utility.unflatten(array.pick_random(), _width)
+	_level.set_stair_outside_down(down) if _outside else _level.set_stair_down(down)
 
 func _random() -> Vector2i:
 	return Vector2i(Random.next_range(1, _width - 2), Random.next_range(1, _height - 2))
