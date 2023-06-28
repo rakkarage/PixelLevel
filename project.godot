@@ -22,15 +22,15 @@ config/icon="res://icon.png"
 
 [audio]
 
-buses/default_bus_layout="res://PixelLevel/Audio.tres"
+buses/default_bus_layout="res://Interface/Audio.tres"
 
 [autoload]
 
 Random="*res://Core/Random.gd"
 AutoFileDialog="*res://Core/AutoFileDialog.gd"
 Cursor="*res://Interface/Cursor.tscn"
+Audio="*res://Interface/Audio.tscn"
 Gesture="*res://PixelLevel/Gesture.gd"
-Audio="*res://PixelLevel/Audio.tscn"
 
 [display]
 
