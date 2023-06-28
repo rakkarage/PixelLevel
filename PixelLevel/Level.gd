@@ -194,6 +194,8 @@ func _wasd(direction: Vector2i) -> void:
 				generate.emit(1)
 			elif is_stair_up(p):
 				generate.emit(-1)
+	else:
+		Audio.bump()
 
 #endregion
 
@@ -282,6 +284,7 @@ func _face(mob: Node2D, direction: Vector2i) -> void:
 		mob.scale = Vector2i(1, 1)
 
 func _step(mob: Node2D, direction: Vector2i) -> void:
+	mob.walk()
 	var to: Vector2 = map_to_local(local_to_map(mob.global_position) + direction)
 	_tween_step = create_tween()
 	_tween_step.tween_property(mob, "global_position", to, _turn_time)

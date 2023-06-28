@@ -11,7 +11,7 @@ func generate(delta: int) -> void:
 	_cliff = false
 	_level._use_light = false
 	_level.start_at = Vector2i(12, 12)
-	for i in 10:
+	for i in range(1, 10):
 		_set_wall(Vector2i(i, 5))
 	_level.set_door(Vector2i(10, 5))
 	for i in 10:
