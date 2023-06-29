@@ -33,8 +33,6 @@ var _theme_cliff := 0 # cliff _theme
 const _theme_cliff_count := 2 # number of cliff themes
 var _use_light := true
 
-var _state := { "depth": 0, "time": 0.0, "turns": 0 }
-
 #endregion
 
 #region Tile Data
@@ -131,9 +129,9 @@ func _cache_sources() -> void:
 func _process(delta: float) -> void:
 	super._process(delta)
 	_time += delta
-	_state.time += _time
+	LevelStore.data.main.time += _time
 	if _time > _turn_time and (_turn or _process_wasd()):
-		_state.turns += 1
+		LevelStore.data.main.turns += 1
 		var test := _turn
 		_turn = false
 		if test:
@@ -246,11 +244,11 @@ func _handle_stair() -> bool:
 	if _path_points.size() == 1:
 		var p := _hero_position()
 		if is_stair_down(p):
-			_state.depth += 1
+			LevelStore.data.main.depth += 1
 			generate.emit(1)
 			return true
 		elif is_stair_up(p):
-			_state.depth -= 1
+			LevelStore.data.main.depth -= 1
 			generate.emit(-1)
 			return true
 	return false

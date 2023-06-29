@@ -31,6 +31,7 @@ AutoFileDialog="*res://Core/AutoFileDialog.gd"
 Cursor="*res://Interface/Cursor.tscn"
 Audio="*res://Interface/Audio.tscn"
 Gesture="*res://PixelLevel/Gesture.gd"
+LevelStore="*res://PixelLevel/LevelStore.gd"
 
 [display]
 

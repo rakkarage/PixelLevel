@@ -25,8 +25,8 @@ func generate_up() -> void:
 func generate(delta: int) -> void:
 	_level.clear()
 	_level._use_light = true
-	_level._state.depth += delta
-	var d = 10 + abs(_level._state.depth)
+	LevelStore.data.main.depth += delta
+	var d = 10 + abs(LevelStore.data.main.depth)
 	_set_level_rect(d * 2 + Random.next(d), d * 2 + Random.next(d))
 	_level._theme = Random.next(_level._theme_count)
 	_level._day = Random.next_bool()
@@ -60,7 +60,7 @@ func _fill(wall: bool, wallEdge: bool, outside: bool = false) -> void:
 					_set_wall(p)
 
 func _stairs() -> void:
-	if _level._state.depth > 0:
+	if LevelStore.data.main.depth > 0:
 		var up := _find_spot()
 		_level.start_at = up
 		_level.set_stair_outside_up(up) if _outside else _level.set_stair_up(up)
@@ -68,7 +68,7 @@ func _stairs() -> void:
 	_level.set_stair_outside_down(down) if _outside else _level.set_stair_down(down)
 
 func _stairs_at(array: Array) -> void:
-	if _level._state.depth > 0:
+	if LevelStore.data.main.depth > 0:
 		var up := Utility.unflatten(array.pick_random(), _width)
 		_level.start_at = up
 		_level.set_stair_outside_up(up) if _outside else _level.set_stair_up(up)

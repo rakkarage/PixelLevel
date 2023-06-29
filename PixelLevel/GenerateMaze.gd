@@ -6,7 +6,7 @@ func _init(level: Level) -> void:
 
 func generate(delta: int) -> void:
 	super.generate(delta)
-	var depth = abs(_level._state.depth) + 10
+	var depth = abs(LevelStore.data.main.depth) + 10
 	var width := Random.next_range_odd(depth, depth + Random.next(depth))
 	var height := Random.next_range_odd(depth, depth + Random.next(depth))
 	_set_level_rect(width, height)
