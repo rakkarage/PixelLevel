@@ -24,10 +24,11 @@ var _ok := false
 var _generating := false
 
 func _ready() -> void:
-	_level.connect("update_map", _update_map_throttle)
+	_level.connect("update_map", _on_update_map_throttle)
+	_level.connect("update_map_depth", _on_update_map_depth)
 	add_child(_update_map_timer)
 	_update_map_timer.one_shot = true
-	_update_map_timer.connect("timeout", _update_map)
+	_update_map_timer.connect("timeout", _on_update_map)
 	_level.connect("generate", func(delta: int): await _on_generate(delta))
 	_minus.connect("pressed", _on_light_minus)
 	_toggle.connect("pressed", _on_light_toggle)
@@ -41,9 +42,9 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if _ok and event is InputEventMouseMotion:
-		_update_text(event.position)
+		_on_update_text(event.position)
 
-func _update_text(p: Vector2) -> void:
+func _on_update_text(p: Vector2) -> void:
 	_position.text = "({0}, {1})".format([snapped(p.x, 0.01), snapped(p.y, 0.01)])
 	var map = _level.global_to_map(p)
 	if _level.is_inside_map(map):
@@ -54,11 +55,11 @@ func _update_text(p: Vector2) -> void:
 	_turns.text = str(LevelStore.data.main.turns)
 	_time.text = str(snapped(LevelStore.data.main.time, 0.001))
 
-func _update_map_throttle() -> void:
+func _on_update_map_throttle() -> void:
 	_update_map_timer.start(_update_map_delay)
 
-func _update_map() -> void:
-	_update_text(get_global_mouse_position())
+func _on_update_map() -> void:
+	_on_update_text(get_global_mouse_position())
 	var at = _level._hero_position()
 	var original = _level.tile_rect().size
 	var trim_size = original
@@ -107,13 +108,16 @@ func _on_generate(delta: int) -> void:
 	_light.text = str(_level.light_radius)
 	_generating = false
 
+func _on_update_map_depth() -> void:
+	_depth.text = str(LevelStore.data.main.depth)
+
 func _on_light_minus() -> void:
 	_level.light_decrease()
 	_light.text = str(_level.light_radius)
 
 func _on_light_toggle() -> void:
 	_level.light_toggle()
-	_update_map()
+	_on_update_map()
 
 func _on_light_plus() -> void:
 	_level.light_increase()

@@ -1,5 +1,5 @@
 ## Base class for [TileMap] levels.
-## Handles panning and zooming with [Camera2D], clearing and coordinate conversions.
+## Handles panning and zooming with [Camera2D], clearing, coordinate conversions and serialization.
 ## Depends on [SubViewport] for [method size] and [signal size_changed] and [Gesture] for optional pinch.
 extends SubViewport
 class_name DynamicTileMap
@@ -175,3 +175,36 @@ func camera_bounds() -> Rect2: return Rect2(camera_position(), camera_size())
 
 ## Return the bounding rectangle of the [member _camera] in map coordinates. See [method camera_bounds].
 func camera_bounds_map() -> Rect2i: return Rect2i(local_to_map(camera_position()), local_to_map(camera_size()))
+
+## Return a dictionary representing the [member _map]. See [method load_map].
+func save_map(ignoreLayers: Array[int]) -> Dictionary:
+	var data := { }
+	var s := tile_rect().size
+	for layer in _map.get_layers_count():
+		if ignoreLayers.has(layer) or _map.get_used_cells(layer).size() == 0:
+			continue
+		data[str(layer)] = { }
+		for y in s.y:
+			for x in s.x:
+				var p := Vector2i(x, y)
+				if _map.get_cell_tile_data(layer, p):
+					var source_id := _map.get_cell_source_id(layer, p)
+					var coords = _map.get_cell_atlas_coords(layer, p)
+					var alternative = _map.get_cell_alternative_tile(layer, p)
+					data[str(layer)][tile_index(p)] = str(source_id) + "," + str(coords) + "," + str(alternative)
+	return data
+
+## Load a [param data] dictionary into the [member _map]. See [method save_map].
+func load_map(data: Dictionary) -> void:
+	var width = LevelStore.data.main.width;
+	for layer in _map.get_layers_count():
+		if not data.has(str(layer)):
+			continue
+		for index in data[str(layer)]:
+			var p := Utility.unflatten(index, width)
+			var cell = data[str(layer)][index].split(",")
+			var source_id := int(cell[0])
+			var coords := Vector2i(int(cell[1]), int(cell[2]))
+			var alternative := int(cell[3])
+			_map.set_cell(layer, p, source_id, coords, alternative)
+	update_map.emit()

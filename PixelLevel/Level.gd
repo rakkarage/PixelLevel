@@ -8,6 +8,7 @@ class_name Level
 @onready var _map_edge: TileMap = $TileMapEdge
 
 signal generate(delta: int)
+signal update_map_depth
 
 const _path_scene := preload("res://Interface/Path.tscn")
 const Directions: Array[Vector2i] = [Vector2i.UP, Vector2i.UP + Vector2i.RIGHT, Vector2i.RIGHT, Vector2i.RIGHT + Vector2i.DOWN,
@@ -105,8 +106,13 @@ func _ready() -> void:
 	await get_tree().get_root().ready # wait for all nodes (LevelManager) to be ready
 	super._ready()
 	_cache_sources()
-	generate.emit(0)
-	generated()
+	if not LevelStore.data.level.is_empty():
+		load_map(LevelStore.data.level)
+		start_at = LevelStore.data.main.position
+		update_map_depth.emit()
+		generated()
+	else:
+		generate.emit(0)
 	update_map.emit()
 
 func generated() -> void:
@@ -121,6 +127,10 @@ func generated() -> void:
 	verify_cliff()
 	_add_points()
 	_connect()
+	var rect := tile_rect()
+	LevelStore.data.main.width = rect.size.x
+	LevelStore.data.main.height = rect.size.y
+	LevelStore.data.level = save_map([Layer.Light])
 
 func _cache_sources() -> void:
 	for i in _map.tile_set.get_source_count():
@@ -283,12 +293,14 @@ func _face(mob: Node2D, direction: Vector2i) -> void:
 
 func _step(mob: Node2D, direction: Vector2i) -> void:
 	mob.walk()
-	var to: Vector2 = map_to_local(local_to_map(mob.global_position) + direction)
+	var map := local_to_map(mob.global_position) + direction
+	var to: Vector2 = map_to_local(map)
 	_tween_step = create_tween()
 	_tween_step.tween_property(mob, "global_position", to, _turn_time)
 	_tween_step.set_trans(Tween.TRANS_CIRC).set_ease(Tween.EASE_IN_OUT)
 	_tween_step.tween_callback(func(): update_map.emit())
 	await _tween_step.finished
+	LevelStore.data.main.position = map
 
 func _add_points() -> void:
 	_astar.clear()
