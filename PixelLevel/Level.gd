@@ -500,7 +500,8 @@ const _fov_octants = [
 var _torches := {}
 
 func light_toggle() -> void:
-	_map.set_layer_enabled(Layer.Light, not _map.is_layer_enabled(Layer.Light))
+	_use_light = not _map.is_layer_enabled(Layer.Light)
+	_map.set_layer_enabled(Layer.Light, _use_light)
 
 func light_increase() -> void:
 	light_radius += 1
