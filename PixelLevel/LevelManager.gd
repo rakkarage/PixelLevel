@@ -88,6 +88,7 @@ func _on_update_map() -> void:
 	GenerateDungeon.new(_level): 10,
 	GenerateMaze.new(_level): 33,
 	GenerateCave.new(_level): 33,
+	GenerateCaveNoise.new(_level): 33,
 	GenerateWalker.new(_level): 50,
 	GenerateTemplate.new(_level): 100,
 }

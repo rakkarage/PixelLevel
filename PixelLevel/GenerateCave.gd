@@ -9,14 +9,14 @@ func generate(delta: int) -> void:
 	_outside = Random.next_bool()
 	_outside_wall = Random.next_bool()
 	_fill(true, true, _outside)
-	_drawCaves()
+	_draw_caves()
 	if _outside:
 		_draw_outside()
 	if not _cliff and _stream:
 		_generate_streams()
 	_level.generated()
 
-func _drawCaves() -> void:
+func _draw_caves() -> void:
 	var ca := CellularAutomaton.new(_width, _height)
 	var caves := ca.generate()
 	var biggest := ca.find_biggest(caves)
