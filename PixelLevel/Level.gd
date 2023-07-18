@@ -371,13 +371,13 @@ func _targetUpdate(tile: Vector2i) -> void:
 	tween.parallel().tween_property(_target, "modulate", toColor, _duration)
 	_path_clear()
 	if from != tile:
-		_drawPath(from, tile)
+		_draw_path(from, tile)
 
 #endregion
 
 #region Path
 
-func _drawPath(from: Vector2i, to: Vector2i) -> void:
+func _draw_path(from: Vector2i, to: Vector2i) -> void:
 	var rotation := 0
 	var path_delta := _delta(from, to)
 	_path_points = _astar.get_point_path(tile_index(from), tile_index(to))
