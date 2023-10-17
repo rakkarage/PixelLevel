@@ -6,11 +6,11 @@ Pixel-perfect dungeon and environment sprites.
 
 - 📦 <http://henrysoftware.itch.io/godot-pixel-level> : more pixel assets
 - 🌐 <http://rakkarage.github.io/PixelLevel> : run in browser
-- 📃 <http://guthub.com/rakkarage/PixelLevel> : you are here, maybe
+- 📃 <http://github.com/rakkarage/PixelLevel> : you are here, maybe
 
 ## Installation
 
-- `git clone --recurse-submodules http://guthub.com/rakkarage/PixelLevel`
+- `git clone --recurse-submodules http://github.com/rakkarage/PixelLevel`
 - Or `git submodule init` and `git submodule update`.
 
 ---
